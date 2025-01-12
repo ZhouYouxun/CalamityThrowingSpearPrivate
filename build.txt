@@ -1,0 +1,8 @@
+displayName = Throwing Spear For Calamity [灾厄投掷长矛]
+author = 南鸢北笙&锯角&VectorChaos&剃刀刃台风
+version = 1.0.7
+hideCode = false
+hideResources = false
+includeSource = true
+modReferences = CalamityMod
+sortAfter = CalamityMod

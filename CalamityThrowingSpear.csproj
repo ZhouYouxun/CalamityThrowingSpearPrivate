@@ -1,0 +1,126 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Import tModLoader mod properties -->
+	<Import Project="..\tModLoader.targets" />
+
+	<!-- General -->
+	<PropertyGroup>
+		
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="KaiJuXiaoZhiTiao.png" />
+	  <None Remove="Localization\zh-Hans_Mods.CalamityThrowingSpear.hjson" />
+	  <None Remove="TheSkillAcc.png" />
+	  <None Remove="Weapons\ChangedWeapons\APreHardMode\AmidiasTridentC\AmidiasTridentJavWhirlpool.png" />
+	  <None Remove="Weapons\ChangedWeapons\BPrePlantera\StarnightLanceC\StarnightLanceJavBeam.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\AstralPikeC\AstralPikeJav.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\AstralPikeC\AstralPikeSTAR.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\BotanicPiercerC\BotanicPiercerJavPROJSPLIT.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\BotanicPiercerC\翠芒尖枪.txt" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\DiseasedPikeC\瘟疫投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\GalvanizingGlaiveC\磁能分割刀.txt" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\HellionFlowerC\HellionFlowerJavVine.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\HellionFlowerC\TenebreusTidesWaterSword.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TenebreusTidesC\TenebreusTidesJav.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TenebreusTidesC\深渊潮涌.txt" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TyphonsGreedC\TyphonsGreedJavBubble.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\VulcaniteLanceC\VulcaniteLanceJavTinyFlare.png" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\BansheeHookC\BansheeHookJavScythe.png" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\BansheeHookC\女妖之爪投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\ElementalLanceC\ELPStardust.png" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\ElementalLanceC\ELPVortexElectricity.png" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\ElementalLanceC\元素投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\GildedProboscisC\GildedProboscisJavBIRD.png" />
+	  <None Remove="Weapons\ChangedWeapons\DPreDog\GildedProboscisC\闪耀金羽投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\DragonRageC\DragonRageFuckYou.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\DragonRageC\DragonRageJavPROJ1.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\DragonRageC\巨龙之怒投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\NadirC\NadirJav.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\NadirC\天底投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ScourgeoftheCosmosC\ScourgeoftheCosmosJavMini.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ScourgeoftheCosmosC\ScourgeoftheCosmosJavMiniGlow.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ScourgeoftheCosmosC\宇宙吞噬者投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\StreamGougeC\StreamGougeJavPortal.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\StreamGougeC\宇宙暗流投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\恣睢投矛.txt" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\BraisedPorkJav\BraisedPorkJavCloud.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\ElectrocoagulationTenmonJav\ElectrocoagulationTenmonJav.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\GraniteJav\GraniteJav.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\RedtideJav\赤潮投矛.txt" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\RedtideSpear.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\WulfrimJav\WulfrimJav.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\WulfrimJav\钨钢投矛.txt" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\ElectrocutionHalberd\电灼长戟.txt" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\HeartSword\HeartSword.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\HeartSword\心之刺剑.txt" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\PearlwoodJav\StarSpangledBanner.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SHPCK\SHPCK.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SHPCK\超级热离子切割刀.txt" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavBEAM.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavBEAMEnd.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavBEAMMiddle.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavFeather.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAM.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAMEnd.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAMMiddle.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLance.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLanceDASHSUPER.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLancePBuff.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLancePROJ.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\XiaoZhiTiaoLL.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\最后的骑枪.txt" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\FestiveHalberd\FestiveHalberd.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\FestiveHalberd\FestiveHalberdPROJ.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\FestiveHalberd\节日长戟.txt" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\StarGunSagittarius\StarGunSagittariusEDebuff.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\StarGunSagittarius\StarGunSagittariusPROJECHO.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\StarGunSagittarius\贯星枪.txt" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TerraLance\TerraLancePROJ.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TerraLance\泰拉长枪.txt" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TidalMechanics\潮汐.txt" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\ChaosWindJavElectromagneticBall2.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\ChaosWindJavWind.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\Projectile_465.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\ElementalArkJav\XiaoZhiTiaoEA.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\EndlessDevourJav\EndlessDevourJav.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\BlackSLASH.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\InfiniteDarknessJav.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\TerraLance\1.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\ADSStar.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\ArkofTheDragonSoul.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\龙魂方舟.txt" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\AuricJav\AuricJavBallPROJ456456.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\DragonRageStaff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\FinishingTouch\FinishingTouchBALL.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\FinishingTouch\FinishingTouchDASHFuckYou.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\FinishingTouch\不知道\9503E9BC7915B9C2F9F505967D44E87D.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\RevelationSTAR.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\Revelation\Revelation.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\Revelation\RevelationPBuff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\Revelation\RevelationSTAR.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\Revelation\启示录.txt" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SawBladeForkHornJav\SBFHBuff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SawBladeForkHornJav\SBFHJ.txt" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SawBladeForkHornJav\弃用贴图 - 复制.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\ShadowJav\XiaoZhiTiaoS.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\ShadowJav\魔影长枪 - 复制.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SoulSeekerJav\SoulSeekerJav.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SoulSeekerJav\SoulSeekerJavBRID.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\SoulSeekerJav\终幕残翼.txt" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\TheOtherRevelation\TheOtherRevelation.png" />
+	  <None Remove="Weapons\NewWeapons\ZOthers\PhantomShuriken.png" />
+	  <None Remove="Weapons\Others\HeartSwordPSHEART.png" />
+	  <None Remove="Weapons\Others\SHPSP\SHPSPHOULDOUT.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="CalamityMod">
+	    <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Weapons\NewWeapons\AAA这下面是新的武器-----------------\" />
+	</ItemGroup>
+
+	<!-- References -->
+
+</Project>

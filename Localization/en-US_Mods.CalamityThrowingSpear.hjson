@@ -1,0 +1,1045 @@
+# This file will automatically update with entries for new content after a build and reload.
+
+Projectiles: {
+	NewWeapons: {
+		DPreDog: {
+			ElementalArkJavEonBolt.DisplayName: Elemental Burst Bolt
+			BloodstoneJavPROJ.DisplayName: Bloodflame Lance
+			ChaosWindJavAirburst.DisplayName: Weaveless Hurricane Airburst
+			ChaosWindJavElectromagneticBall.DisplayName: Weaveless Hurricane Electromagnetic Ball
+			ChaosWindJavLightningCloud.DisplayName: Weaveless Hurricane Lightning Cloud
+			ChaosWindJavPROJ.DisplayName: Weaveless Hurricane
+			ChaosWindJavWind.DisplayName: Weaveless Hurricane Mini Tornado
+			ElementalArkJavBlade.DisplayName: Elemental Ark Blade
+			ElementalArkJavBlast.DisplayName: Elemental Ark Rend
+			ElementalArkJavFragments.DisplayName: Elemental Ark Shard
+			ElementalArkJavFragments05.DisplayName: Elemental Ark Shard
+			ElementalArkJavSUPERPROJ.DisplayName: Elemental Ark Aggregate Shard
+			EndlessDevourJavOrb.DisplayName: Ceaseless Gnawing Dark Energy
+			EndlessDevourJavPROJ.DisplayName: Ceaseless Gnawing
+			BlackSLASH.DisplayName: Black Slash
+			InfiniteDarknessJavPROJ.DisplayName: Banishless Dim
+			InfiniteDarknessJavPROJStarBomb.DisplayName: Banishless Dim Scythe
+			SoulHunterJavPROJ.DisplayName: Soul Hunter
+			TerraLanceBEAM.DisplayName: Terra Lance Beam
+			TerraLancePROJ.DisplayName: Terra Lance
+		}
+
+		BPrePlantera: {
+			SunEssenceJavBEAM.DisplayName: Sun Essence Laser
+			ChaosEssenceJavFIRE.DisplayName: Chaos Essence Spear Flame
+			ChaosEssenceJavPROJ.DisplayName: Chaos Essence Spear
+			ElectrocutionHalberdPROJ.DisplayName: Electrocution Halberd
+			HeartSwordPROJ.DisplayName: Heart Stinger Sword
+			PearlwoodJavPROJ.DisplayName: Pearlwood Spear
+			PearlwoodJavRainbowFront.DisplayName: Pearlwood Rainbow Tip
+			PearlwoodJavRainbowTrail.DisplayName: Pearlwood Rainbow Trail
+			PolarEssenceJavPROJ.DisplayName: Polar Essence Spear
+			SHPCKEXP.DisplayName: SHPCK Plasma Explosion
+			SHPCKFast.DisplayName: SHPCK Right-Click Attack
+			SHPCKPROJ.DisplayName: SHPCK Left-Click Attack
+			SunEssenceJavFeather.DisplayName: Sun Essence Feather
+			SunEssenceJavPROJ.DisplayName: Sun Essence Spear
+			SunEssenceJavSmallBEAM.DisplayName: Sun Essence Spear Small Laser
+			TheLastLanceDASH.DisplayName: The Last Lance Dash
+			TheLastLancePROJ.DisplayName: The Last Lance
+			TheLastLanceWater.DisplayName: The Last Lance Waterflow
+		}
+
+		APreHardMode: {
+			BraisedPorkJavCloud.DisplayName: Meat Stewer Poison Cloud
+			BraisedPorkJavPROJ.DisplayName: Meat Stewer
+			ElectrocoagulationTenmonJavLight.DisplayName: Electrocoagulation Tenmon Electric Arrow
+			ElectrocoagulationTenmonJavPROJ.DisplayName: Electrocoagulation Tenmon
+			GraniteJavPROJ.DisplayName: Granite Spear
+			RedtideJavPROJ.DisplayName: Redtide Spear
+			WulfrimJavExtraPROJ.DisplayName: Wulfrim Hammer
+			WulfrimJavPROJ.DisplayName: Wulfrim Spear
+			RedtideJavEXP.DisplayName: Redtide Jav E X P
+		}
+
+		CPreMoodLord: {
+			FestiveHalberdPROJ.DisplayName: Festive Halberd
+			StarGunSagittariusPROJ.DisplayName: Star Piercer Gun
+			StarGunSagittariusPROJECHO.DisplayName: Star Piercer Charged Attack
+			StarGunSagittariusSPIT.DisplayName: Star Piercer Split Projectile
+			TidalMechanicsBubbles.DisplayName: Tidal Bubbles
+			TidalMechanicsPROJ.DisplayName: Tidal
+			TidalMechanicsShark.DisplayName: Tidal Shark
+			TidalMechanicsTyphoon.DisplayName: Tidal Typhoon
+		}
+
+		EAfterDog: {
+			AuricJavBallPROJ.DisplayName: Auric Quantum Cooling Cell
+			AuricJavPROJ.DisplayName: Auric Quantum Charged Debug Rod
+			FinishingTouchBALL.DisplayName: Dragon's Ascent Fireball
+			FinishingTouchDASH.DisplayName: Dragon's Ascent Dash
+			FinishingTouchEPROJ.DisplayName: Dragon's Ascent Hostile
+			FinishingTouchPROJ.DisplayName: Dragon's Ascent
+			FinishingTouchDASHFuckYou.DisplayName: Dragon's Ascent Dash Explosion
+			MiracleMatterJavLight.DisplayName: Miracle Spear Light Beam
+			MiracleMatterJavPROJ.DisplayName: Miracle Spear
+			SawBladeForkHornJavPROJ.DisplayName: Saw Blade Forked Lance
+			SawBladeForkHornJavRIGHT.DisplayName: Saw Blade Forked Lance Hovering Version
+			SawBladeForkHornJavRPP.DisplayName: Saw Blade Forked Lance Floating Projectile
+			ShadowJavPROJ.DisplayName: Infinity
+			TheOtherMiracleMatterJavExoFire.DisplayName: Horizon Probe Laser
+			TheOtherMiracleMatterJavPROJ.DisplayName: Horizon Probe
+			ShadowJavREPROJ.DisplayName: Infinity Right-Click
+			RevelationSUPERBoom.DisplayName: Revelation Super Explosion
+			RevelationSTAR.DisplayName: Revelation Falling Star
+			RevelationSpark.DisplayName: Revelation Flame
+			RevelationPROJ.DisplayName: Revelation
+			RevelationBoom.DisplayName: Revelation Regular Explosion
+			TheOtherMiracleMatterJavExoLightningBolt.DisplayName: Horizon Probe Lightning
+			SoulSeekerJavBRID.DisplayName: Soul Seeker Apex Remnant - Supreme Hunter Eye
+			SoulSeekerJavPROJ.DisplayName: Soul Seeker Apex Remnant
+			TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
+			TheOtherMiracleMatterJavEXP.DisplayName: The Other Miracle Matter Jav E X P
+		}
+	}
+
+	ChangedWeapons: {
+		APreHardMode: {
+			AmidiasTridentJavPROJ.DisplayName: Amidias Trident
+			AmidiasTridentJavWhirlpool.DisplayName: Amidias Trident Whirlpool
+			GoldplumeJavPROJ.DisplayName: Goldplume
+			SausageMakerJavPROJ.DisplayName: Sausage Maker Spear
+			YateveoBloomJavPROJ.DisplayName: Blooming Poison Vine
+		}
+
+		BPrePlantera: {
+			BrimlanceJavPROJ.DisplayName: Brimflame Spear
+			StarnightLanceJavBeam.DisplayName: Starnight Lance Beam
+			StarnightLanceJavPROJ.DisplayName: Starnight Lance
+			EarthenJavPROJ.DisplayName: Earthen Geofork
+		}
+
+		CPreMoodLord: {
+			AstralPikeJavPROJ.DisplayName: Astral Pike
+			AstralPikeSTAR.DisplayName: Astral Pike Star
+			BotanicPiercerJavPROJ.DisplayName: Botanic Piercer
+			BotanicPiercerJavPROJSPLIT.DisplayName: Botanic Piercer Beam
+			DiseasedJavLight.DisplayName: Diseased Spear Energy Bolt
+			DiseasedJavPROJ.DisplayName: Diseased Spear
+			GalvanizingGlaiveJavGaussEnergy.DisplayName: Gauss Energy Bolt
+			GalvanizingGlaiveJavGaussFlux.DisplayName: Gauss Flux Vortex
+			GalvanizingGlaiveJavPROJ.DisplayName: Gauss Split Blade
+			HellionFlowerJavPROJ.DisplayName: Hellion Flower Spear
+			HellionFlowerJavVine.DisplayName: Hellion Flower Spear Vine
+			TenebreusTidesJavPROJ.DisplayName: Tenebreus Tides
+			TenebreusTidesJavWaterSword.DisplayName: Tenebreus Tides Water Arrow
+			TyphonsGreedJavBubble.DisplayName: Typhon's Greed Bubble
+			TyphonsGreedJavPROJ.DisplayName: Typhon's Greed
+			VulcaniteLanceJavPROJ.DisplayName: Vulcanite Lance
+			VulcaniteLanceJavTinyFlare.DisplayName: Vulcanite Lance Flare Sprite
+		}
+
+		DPreDog: {
+			BansheeHookJavPROJ.DisplayName: Banshee Claw
+			BansheeHookJavScythe.DisplayName: Banshee Claw Retrieving Scythe
+			ElementalLanceJavPROJNebula.DisplayName: Elemental Lance - Nebula
+			ElementalLanceJavPROJSolar.DisplayName: Elemental Lance - Solar
+			ElementalLanceJavPROJStardust.DisplayName: Elemental Lance - Stardust
+			ElementalLanceJavPROJVortex.DisplayName: Elemental Lance - Vortex
+			ElementalLanceJavPROJEntropy.DisplayName: Elemental Lance - Entropy
+			ELPStardust.DisplayName: Elemental Lance - Stardust Fragment
+			ELPVortexElectricity.DisplayName: Elemental Lance - Vortex Electricity
+			ELPVortexLighting.DisplayName: Elemental Lance - Vortex Lightning
+			ELPVortexSpark.DisplayName: Elemental Lance - Vortex Spark
+			ELPEntropyEXP.DisplayName: Elemental Lance - Entropy Blast
+			NebulaSLASH.DisplayName: Elemental Lance - Nebula Slash
+			GildedProboscisJavBIRD.DisplayName: Gilded Proboscis - Frenzied Dragonkin
+			GildedProboscisJavPROJ.DisplayName: Gilded Proboscis
+		}
+
+		EAfterDog: {
+			DragonRageJavPROJ.DisplayName: Dragon's Rage - Throwable
+			DRSparkInfernal.DisplayName: Dragon's Rage Infernal Firestorm Trigger
+			DragonRageFuckYou.DisplayName: Dragon's Rage Explosion
+			OrangeSLASH.DisplayName: Slash
+			NadirJavPROJ.DisplayName: Nadir
+			NadirJavVoidEssence.DisplayName: Nadir Void Essence
+			ScourgeoftheCosmosJavPROJ.DisplayName: Scourge of the Cosmos
+			ScourgeoftheCosmosJavMini.DisplayName: Mini Devourer
+			StreamGougeJavPortal.DisplayName: Cosmic Stream Portal
+			StreamGougeJavPROJ.DisplayName: Cosmic Stream
+			StreamGougeJavPROJSPLIT.DisplayName: Cosmic Stream Split Projectile
+			ViolenceJavLight.DisplayName: Rampage Light Beam
+			ViolenceJavPROJ.DisplayName: Rampage
+		}
+	}
+
+	PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
+	PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
+	PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
+	PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
+	PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
+	PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
+	PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
+	PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
+	TideTridentProj.DisplayName: Tide Trident Proj
+	SmallTridentProj.DisplayName: Small Trident Proj
+	ArkofTheDragonSoulPROJ.DisplayName: Arkof The Dragon Soul P R O J
+	ADSEonBolt.DisplayName: A D S Eon Bolt
+	ADSSlash.DisplayName: A D S Slash
+	ADSHit.DisplayName: A D S Hit
+	ADSStar.DisplayName: A D S Star
+	ArkofTheDragonSoulBlade.DisplayName: Arkof The Dragon Soul Blade
+	ArkofTheDragonSoulBlast.DisplayName: Arkof The Dragon Soul Blast
+	PhantomShurikenPROJ.DisplayName: Phantom Shuriken P R O J
+	PhantomShurikenBloodPROJ.DisplayName: Phantom Shuriken Blood P R O J
+}
+
+ChangedWeapons: {
+	APreHardMode: {
+		AmidiasTridentJav: {
+			DisplayName: Amidias Trident
+			Tooltip:
+				'''
+				Throws a trident that flies straightly and pierces infinitely.
+				Upon explosion, it releases several water whirlpools that rotate for a while before homing in on enemies.
+				[c/5276fc:" Seemingly fishes swam in the air without support. "]
+				'''
+		}
+
+		GoldplumeJav: {
+			DisplayName: Goldplume
+			Tooltip:
+				'''
+				Falls upwards.
+				Continuously shoots feathers towards enemies while in the air.
+				[c/52f2fc:"Down is up."]
+				'''
+		}
+
+		SausageMakerJav: {
+			DisplayName: Sausage Maker
+			Tooltip:
+				'''
+				Pierce multiple times.
+				Releases homing blood bolts upon disappearing.
+				[c/a21c12:"Yummy!"]
+				'''
+		}
+
+		YateveoBloomJav: {
+			DisplayName: Yateveo Bloom
+			Tooltip:
+				'''
+				Bounces off tile and poisons enemies.
+				Releases leaves upon disappearing.
+				[c/34a212:"A rose in their hand, and thorns for their end."]
+				'''
+		}
+	}
+
+	BPrePlantera: {
+		BrimlanceJav: {
+			DisplayName: Brimlance
+			Tooltip:
+				'''
+				Bounces to the closest enemies after hitting the first target.
+				Releases brimstone flames upon the second hit.
+				[c/a21512:"Why does it bounce?"]
+				'''
+		}
+
+		EarthenJav: {
+			DisplayName: Earthen Pike
+			Tooltip:
+				'''
+				Can bounce multiple times.
+				Releases numerous rock fragments upon bouncing.
+				[c/ac8f50:"Stop hitting the floor; you're breaking it!"]
+				'''
+		}
+
+		StarnightLanceJav: {
+			DisplayName: Starnight Lance
+			Tooltip:
+				'''
+				Homes in on targets.
+				Releases homing, turning starnight beam upon disappearing.
+				[c/f692ff:"Can it release one more sword beam, please?"]
+				'''
+		}
+	}
+
+	CPreMoodLord: {
+		AstralPikeJav: {
+			DisplayName: Astral Pike
+			Tooltip:
+				'''
+				Short a high-speed lance
+				While hits on enemies,lance will generate starburst and spawn astral stars in the distance
+				If it collides with tiles, it will pass through tiles and home in on enemies.
+				[c/ffbf73:"A burrowing meteor."]
+				'''
+		}
+
+		BotanicPiercerJav: {
+			DisplayName: Botanic Piercer
+			Tooltip:
+				'''
+				After a short flight, splits rapidly into two homing botanic energy beam.
+				Before splitting,the lance itself deal 150% damage and Infinite penetration.
+				[c/8dff73:" No one has ever questioned how it is all that all beings come to grow"]
+				'''
+		}
+
+		DiseasedJav: {
+			DisplayName: Diseased Pike
+			Tooltip:
+				'''
+				Homes in on targets and releases multiple homing plague bolts upon disappearing.
+				Bounces out upon hitting enemies.
+				[c/49ff1f:"It flew away and never came back."]
+				'''
+		}
+
+		GalvanizingGlaiveJav: {
+			DisplayName: Galvanizing Glaive
+			Tooltip:
+				'''
+				Releases multiple energy bolts or rotating Gauss flux vortices upon hitting enemies.
+				If Adrenaline Mode is active, both bolts and vortices deal 2.5x damage.
+				[c/1ffbff:"Neutral left and Live right,aid-needed me and aided Thor.
+				'''
+		}
+
+		HellionFlowerJav: {
+			DisplayName: Hellion Flower Spear
+			Tooltip:
+				'''
+				Releases vines extending forward and toxic clouds upon hitting enemies.
+				The vines pierce infinitely.
+				[c/007708:"It Spreads."]
+				'''
+		}
+
+		TenebreusTidesJav: {
+			DisplayName: Tenebreus Tides
+			Tooltip:
+				'''
+				Continuously shoots small tridents to both sides during its flight.
+				Also generates tridents upon hiting enemeies
+				Has an extremely high pierce count.
+				[c/001087:"It calls for you."]
+				'''
+		}
+
+		TyphonsGreedJav: {
+			DisplayName: Typhon's Greed
+			Tooltip:
+				'''
+				Bounces off while colliding tiles
+				Spins after flying for a while.
+				During the spinning phase, continuously releases homing water polo.
+				[c/2f366b:"Finally, it's somewhat useful."]
+				'''
+		}
+
+		VulcaniteLanceJav: {
+			DisplayName: Vulcanite Lance
+			Tooltip:
+				'''
+				Causes explosions upon hitting enemies.
+				Has a chance to release a homing flame sprite from the player.
+				[c/ff8400:"Overflowing magma."]
+				'''
+		}
+	}
+
+	DPreDog: {
+		BansheeHookJav: {
+			DisplayName: Banshee Hook
+			Tooltip:
+				'''
+				Flies straightly and bounces off upon colliding enemies.
+				After that flies back to the enemy, dealing higher damage on the second hit.
+				Releases three scythes upon disappearing, which then return to the player.
+				[c/ffbcd5:"Recyclable material."]
+				'''
+		}
+
+		ElementalLanceJav: {
+			DisplayName: Elemental Lance
+			Tooltip:
+				'''
+				Releases five powerful lance in sequence:
+				The Solar Lance pierces infinitely and explodes.
+				The Vortex Lance releases homing missiles.
+				The Nebula Lance gains homing ability after the first hit.
+				The Stardust Lance creates additional Stardust projectiles.
+				The Meld Lance leaves behind an entropy explosion.
+				[c/8e8e8e:"The white dwarf that should have been there is absent."]
+				'''
+		}
+
+		GildedProboscisJav: {
+			DisplayName: Gilded Proboscis
+			GFBName: Bumble 屮
+			Tooltip:
+				'''
+				Creates a Draconic Swarmer around the player upon hitting enemies.
+				Up to 21 Draconic Swarmer can exist; if the number is maxed, the lance deals increased damage.
+				Each Draconic Swarmer's damage will increases with their total count.
+				Right-click to launch all Draconic Swarmer at once.
+				Draconic Swarmer will persist even if you switch weapons.
+				[c/ffc71d:"Bird lovers strongly condemn this."]
+				'''
+		}
+	}
+
+	EAfterDog: {
+		DragonRageJav: {
+			DisplayName: Dragon's Rage
+			Tooltip:
+				'''
+				Throws a spinning Dragon's Rage in the air.
+				Has limited range but infinite pierce.
+				Releases multiple homing fireballs upon disappearing.
+				[c/ffc27a:"The final wrath of the Auric Dragon."]
+				'''
+		}
+
+		NadirJav: {
+			DisplayName: Nadir
+			Tooltip:
+				'''
+				Releases Abyssal Tentacles on hit, 
+				Also releases multiple homing Abyssal Essences
+				Holding Nadir grants damage which increases with decreasing movement speed
+				Provides a 35% damage increase when stationary.
+				[c/867891:" As Above, So Below."]
+				'''
+		}
+
+		ScourgeoftheCosmosJav: {
+			DisplayName: Scourge of the Cosmos
+			Tooltip:
+				'''
+				Restores health upon hitting enemies.
+				Releases explosions and homing Mini Devourers on hit.
+				[c/9d5ad0:"The universe's revenge."]
+				'''
+		}
+
+		StreamGougeJav: {
+			DisplayName: Stream Gouge
+			Tooltip:
+				'''
+				Creates multiple portals at its position after flying for a while, damaging enemies.
+				The main body can pierce infinitely before splitting but only pierces once after splitting.
+				Shoots multiple homing mini replicas forward upon splitting; the main body remains intact.
+				[c/9d5ad0:"What lies behind the portals?"]
+				'''
+		}
+
+		ViolenceJav: {
+			DisplayName: Violence
+			Tooltip:
+				'''
+				Releases multiple homing Brimstone bolts from the player with every hit.
+				Defaults to releasing 3, increasing by one for each living enemy boss on the field.
+				Worm bosses only count as one.
+				[c/a50101:"Come at me, all of you."]
+				'''
+		}
+	}
+}
+
+NewWeapons: {
+	APreHardMode: {
+		BraisedPorkJav: {
+			DisplayName: Meat Stewer
+			Tooltip:
+				'''
+				Creates a poison cloud at the impact point after hitting an enemy.
+				The poison cloud deals multiple hits of damage.
+				[c/daabff:"Yummy too"]
+				'''
+		}
+
+		ElectrocoagulationTenmonJav: {
+			DisplayName: Electrocoagulation Tenmon
+			Tooltip:
+				'''
+				When hitting an enemy, releases electromagnetic gel bolts in four directions, piercing infinitely.
+				[c/ffabfa:"Delicious, flammable, and conductive!"]
+				'''
+		}
+
+		GraniteJav: {
+			DisplayName: Granite Spear
+			Tooltip:
+				'''
+				Has a chance to cause a small explosion and bounce upwards upon hitting an enemy.
+				[c/8febff:"It's 10% luck, 20% skill, 15% concentrated power of will."]
+				'''
+		}
+
+		RedtideJav: {
+			DisplayName: Redtide Spear
+			Tooltip:
+				'''
+				Leaves bubbles in the air while piercing multiple times.
+				Causes a small explosion upon disappearing.
+				[c/ffc3c6:"The revenge of harmful algae."]
+				'''
+		}
+
+		WulfrimJav: {
+			DisplayName: Wulfrim Spear
+			Tooltip:
+				'''
+				Upon hitting an enemy, summons a heavy Wulfrim hammer from above to strike the unfortunate target.
+				[c/95b47c:"Can someone explain why this spear summons a hammer after hitting? All the materials are wasted this way."]
+				'''
+		}
+	}
+
+	BPrePlantera: {
+		ChaosEssenceJav: {
+			DisplayName: The Kaios
+			Tooltip:
+				'''
+				Explodes upon impact, releasing several firebombs.
+				Firebomb bounce off the screen edges.
+				[c/ff88a7:"Lack its mean,like its name."]
+				'''
+		}
+
+		ElectrocutionHalberd: {
+			DisplayName: Fulguration Halberd
+			Tooltip:
+				'''
+				Creates electric sparks upon hitting an enemy.
+				[c/99fffe:"Ampere's Law."]
+				'''
+		}
+
+		HeartSword: {
+			DisplayName: Heart Rapier
+			Tooltip:
+				'''
+				Restores a significant amount of health upon impact.
+				If the player's health is not full,there's a small chance to release a large number of red hearts upon hitting.
+				[c/e97b7b:"It depends on how lucky you are."]
+				'''
+		}
+
+		PearlwoodJav: {
+			DisplayName: Pearlwood Spear
+			Tooltip:
+				'''
+				Releases three rainbows upon disappearing.
+				Only one Pearlwood Spear can exist on the field at a time.
+				Significantly increases attack speed if you close enough to the enemy
+				[c/bcb696:"Mercy and hatred coexist."]
+				'''
+		}
+
+		PolarEssenceJav: {
+			DisplayName: Frost Stream
+			Tooltip:
+				'''
+				Gains weak homing ability after the first hit.
+				Releases a homing snowflake shard upon disappearing.
+				[c/b06dc3:" Verium, purer Verium."]
+				'''
+		}
+
+		SHPCK: {
+			DisplayName: SHPCK
+			TooltipNormal:
+				'''
+				Left-click to release a superheated plasma cutter that gradually slows down,
+				stopping in the air and causing a plasma explosion.
+				Right-click to quickly throw fast superheated plasma cutters
+				[c/99b3ff:"A legend from another dimension."]
+				'''
+			Tooltip: "[GFB]"
+			TooltipGFB: LEGEND
+		}
+
+		SunEssenceJav: {
+			DisplayName: Radiant Sun
+			Tooltip:
+				'''
+				Spins rapidly in place upon hitting an enemy, attempting to follow the target.
+				During its spin, summons numerous heavenly Wyvern feathers from above.
+				[c/fffaa3:"This spear has entered molting season."]
+				'''
+		}
+
+		TheLastLance: {
+			DisplayName: The Last Lance
+			Tooltip:
+				'''
+				Left-click to throw the lance, releasing streams of water upon impact.
+				Applies Glacial State and Frostburn debuffs.
+				Right-click to dash toward the cursor after a brief spin.
+				If in the inventory, triggers an infinite dash upon taking lethal damage,
+				dealing devastating damage during the dash.
+				Deals more damage in the Ocean biome.
+				The infinite dash can be manually stopped by contacting liquid.
+				[c/0024ff:"You are now—Fate's Favored Child."]
+				'''
+		}
+	}
+
+	CPreMoodLord: {
+		FestiveHalberd: {
+			DisplayName: Holiday Halberd
+			Tooltip:
+				'''
+				Continuously leaves behind numerous Christmas lights along its path.
+				The lights then fall to the ground.
+				[c/86ff4b:"Because you discovered gravity."]
+				'''
+		}
+
+		StarGunSagittarius: {
+			DisplayName: Starpiercer - Sagittarius
+			Tooltip:
+				'''
+				Throws a high-speed Starpiercer.
+				Hitting enemies 5 times consecutively releases a charging Starpiercer.
+				The charged Starpiercer deals massive damage upon impact and summons numerous homing mini Starpiercers.
+				Applies the Radiance debuff upon hitting enemies.
+				Radiance reduces enemy attack power by 30% during the day and defense by 50% at night.
+				[c/fff94b:"Piercing the stars."]
+				'''
+		}
+
+		TidalMechanics: {
+			DisplayName: Tidal
+			Tooltip:
+				'''
+				Gradually slows down and quickly homes in on the nearest enemy.
+				Upon disappearing, releases two orbiting, infinitely piercing typhoons at its position.
+				Right-click to create a bubble shield that blocks 1 projectile hits before vanishing,
+				then enters a 30-second cooldown, left-click is disabled, and right-click can cancel the shield early.
+				While holding this weapon, for every 5 water melee weapon in the player's inventory,
+				will let player gains +75% melee damage and +10% melee critical strike chance.
+				[c/689bf4:"This strike, I'll block for you."]
+				'''
+		}
+	}
+
+	DPreDog: {
+		BloodstoneJav: {
+			DisplayName: Bloodflame Lance
+			TooltipNormal:
+				'''
+				Restores a large amount of health upon hitting an enemy.
+				No one would use this thing against the Devourer of Gods, would they?
+				[c/cc0e11:"Immortality."]
+				'''
+			Tooltip: "[GFB]"
+			TooltipGFB: Seems like you could actually use it against The Devourer of Gods
+		}
+
+		ChaosWindJav: {
+			DisplayName: Weaveless Hurricane
+			Tooltip:
+				'''
+				Throws a high-energy storm lance affected by gravity.
+				If it does not hit an enemy within 1.5 seconds,
+				it creates an electromagnetic sphere that causes a massive explosion and numerous lightning strikes.
+				If it hits an enemy, it only causes a weaker explosion and fewer lightning strikes.
+				[c/6d63e0:" Winds！Obey my command! "]
+				'''
+		}
+
+		ElementalArkJav: {
+			DisplayName: Kitelemental Ark
+			Tooltip:
+				'''
+				[c/ffd700:Throws elemental shards in different trajectories in cycles of five.]
+				[c/ffd700:The fifth throw releases both a glaive and shards	, returning at the endpoint and causing a large rend.]
+				[c/ffa500:Right-click to sacrifice a large amount of health for multiple reality cuts.]
+				Modified by someone, this divine artifact reveals even greater power,
+				but at the cost of the user's wellbeing.
+				[c/ff0000:If four Permanent Health Upgrades items have been consumed,]
+				[c/ff0000:the health sacrifice causes more severe repercussions.]
+				[c/aa5fff:"All things have value,no one can escape."]
+				'''
+		}
+
+		EndlessDevourJav: {
+			DisplayName: Ceaseless Gnawing
+			Tooltip:
+				'''
+				Summon three homing void from afar upon hitting an enemy.
+				In the same time converts nearby enemy projectiles into Player’s projectiles and re-releases them.
+				Converted projectiles deal 6x their original damage.
+				[c/320055:"Do you know how mirrors work? This weapon has nothing to do with mirrors."]
+				'''
+		}
+
+		InfiniteDarknessJav: {
+			DisplayName: Banishless Dim
+			Tooltip:
+				'''
+				Vanishes at extremely high speed, then reappears beside an enemy to strike.
+				Deals more damage if it hits an enemy before vanishing.
+				[c/492861:"Unstoppable and unexpected."]
+				'''
+		}
+
+		SoulHunterJav: {
+			DisplayName: Soul Hunter
+			TooltipNormal:
+				'''
+				Gradually halts in the air, attempting to locate enemies,
+				then repeatedly strikes.
+				[c/2836a1:" The eternal hunt...has begun..."]
+				'''
+			Tooltip: "[GFB]"
+			TooltipGFB: " Counselor,Your ass is on that tree.You can't feel it "
+		}
+
+		TerraLance: {
+			DisplayName: The Terraternal
+			Tooltip:
+				'''
+				Releases a Terra explosion upon hitting an enemy
+				and summons multiple infinitely piercing Terra lasers from the surroundings.
+				[c/89ff69:"It’s worthy of it, Finally."]
+				'''
+		}
+	}
+
+	EAfterDog: {
+		AuricJav: {
+			DisplayName: Auric Quantum Charged Debug Rod
+			Tooltip:
+				'''
+				Releases six infinitely piercing cooling cells to the left and right upon hitting an enemy.
+				The cooling cells do not deal damage during the first 12 frames.
+				[c/fff994:"Which genius thought of sticking cells on a stick as a weapon?"]
+				[c/fff994:"I'll use this thing to 'cool down' their brain."]
+				'''
+		}
+
+		FinishingTouch: {
+			DisplayName: Dragon's Ascent
+			Tooltip:
+				'''
+				Left-click to throw the lance directly, which explodes after a distance and releases numerous homing fireballs.
+				Right-click to hold the lance, consuming significant amounts of health over time.
+				After a certain charge time, continuously dash towards the cursor position.
+				During the dash, releases multiple rings of fireballs, dealing massive damage upon hitting enemies.
+				[c/ff7335:"When the red bonds begin to expand, the truth and spirit shall be delivered to all."]
+				'''
+		}
+
+		MiracleMatterJav: {
+			DisplayName: The Eternal Radiance
+			Tooltip:
+				'''
+				Imbeds itself in enemies, dealing continuous damage.
+				Releases multiple homing energy bolts upon disappearing.
+				[c/757575:"Lighter compared to its counterpart."]
+				'''
+		}
+
+		SawBladeForkHornJav: {
+			DisplayName: SBFHL
+			Tooltip:
+				'''
+				Saw Blade Forked Horn Lance
+				Charge in hand for three seconds before throwing it
+				Pierces infinitely during its flight
+				Shatters the defense and damage reduction of enemies on hit
+				Each hit grants the player stackable defense and damage reduction buffs
+				Right-click to consume the stackable buffs, throwing the weapon to hover in the air for additional support attacks
+				[c/645c02:"The simplest logic, the most brutal effect."]
+				'''
+		}
+
+		ShadowJav: {
+			DisplayName: Infinity Boundless
+			Tooltip:
+				'''
+				Left-click to throw the lance.
+				After flying a short distance, it splits into 2–4 random lances at its position,
+				only selecting lances from this mod (excluding developer weapons).
+				The splitting lances ignore the original lance's limitations (e.g., Pearlwood Spear's one-lance limit).
+				The main lance continues flying after splitting, piercing infinitely.
+				Right-click to shoot a lance that tracks and attaches to enemies,
+				summoning random lances around it during its attachment.
+				While the attached lance exists, clicking left or right will remove it and re-release the lance.
+				[c/8f8f8f:"Encompassing Universe,Interlacing Qiankun"]
+				'''
+		}
+
+		TheOtherMiracleMatterJav: {
+			DisplayName: Horizon Probe
+			Tooltip:
+				'''
+				Throws a slow lance that generates a big explosion and multiple lasers and flames from above upon hitting.
+				If it doesn’t hit an enemy after a while, it returns to the player,
+				piercing infinitely during the returning phase.
+				[c/757575:"Septilightly heavier compared to it counterpart."]
+				'''
+		}
+
+		Revelation: {
+			DisplayName: Revelation
+			Tooltip:
+				'''
+				Hold down left-click to grip the Revelation, releasing it after one second if you hold up the left-click.
+				Releasing earlier than one second reduces damage; the shorter the time, the greater the penalty.
+				Right-click to manually destroy an existing Revelation.
+				Hitting enemies five times increases the weapon’s level, starting at level 0.
+				Level 0—Small explosion on hit.
+				Level 1—Small increase to damage, speed, and explosion range.
+				Level 2—Significant glow, major damage increase, and tracking light bolts accompany its flight.
+				Level 3—Further damage increase, explosion form change, and elemental mix in explosions.
+				Level 4—Further speed increase, explosions release numerous tracking comets.
+				Taking damage or missing enemies will decrease one level.
+				Unequipping the weapon clears its ALL level; re-equipping it does NOT restore levels.
+				[c/494949:"Condensed with all of humanity's technology, incomprehensible to outsiders."]
+				'''
+		}
+
+		SoulSeekerJav: {
+			DisplayName: Apex Remnant
+			Tooltip:
+				'''
+				Gains homing ability after it flying for a while or hitting a tile.
+				Each hit grants one Supreme Soul Seeker, which orbits the player without dealing damage.
+				Right-click to command all Supreme Soul Seekers to dash, applying a one-second Vulnerability Hex debuff.
+				Up to 10 Supreme Soul Seekers can exist; if the count is full, the lance deals more damage on hit.
+				Obtainable by exhumed Gilded Proboscis, reversible by throwing it into Shimmer.
+				[c/630000:"The dragon is a Whispering spiral, drawing fundamental power from the world's fractured soul, growing relentlessly until the finale."]
+				'''
+		}
+
+		TheOtherRevelation: {
+			Tooltip: ""
+			DisplayName: The Other Revelation
+		}
+	}
+}
+
+Items: {
+	XiaoZhiTiaoSG: {
+		DisplayName: Sagittarius
+		Tooltip:
+			'''
+			[c/fff94b: No one would think this is a fair war]
+			[c/ff94b: It's the same for her and for you]
+			[c/ff94b: I should have heard of the terrifying power of the Primordial Light]
+			[c/ff94b: Therefore, what you need to do is to maintain a healthy state as much as possible while ensuring survival]
+			[c/ff94b: According to relevant literature, almost no one was able to survive the fourth attack.]
+			[c/ff94b: Therefore, I have the same requirements for you]
+			[c/fff94b: You may need to work hard for this reward]
+			'''
+	}
+
+	XiaoZhiTiaoTM: {
+		DisplayName: A research paper on paleobiological oceanography
+		Tooltip:
+			'''
+			[c/689bf4:Since the emergence of this world, there have been countless legends surrounding marine organism]
+			[c/689bf4:Because it has escaped several major disasters, some people praise its tenacious vitality]
+			[c/689bf4:Or after being properly tamed, it can maintain a very good friendship with humans]
+			[c/689bf4:No matter which one it is, it reminds humans of the unknown of the ocean]
+			[c/689bf4:Although they can be called top predators, it is difficult for them to have real magnificent power]
+			[c/689bf4: Treasures are not always appear in your view，while you defeated the enemie not quickly enough]
+			[c/689bf4:Now please try to finish this battle faster, if the timing allows, he will appear]
+			'''
+	}
+
+	XiaoZhiTiaoEA: {
+		DisplayName: Proverb of Starnight
+		Tooltip:
+			'''
+			[c/aa5fff:Cosmic radiation crystallizes within the four-colored life crystals,]
+			[c/aa5fff:tainting the mind and distorting the structure.]
+			[c/aa5fff:Keep your distance; let your will reign over desire and instinct.]
+			[c/aa5fff:Only then, when the requiem plays, can you command celestial bodies and stir the galaxy.]
+			'''
+	}
+
+	XiaoZhiTiaoFT: {
+		DisplayName: Dragon Nirvana
+		Tooltip:
+			'''
+			[c/ffa500: Dragon Nirvana], the omen of [c/ffa500: victory flame will burn your body]
+			If you survive this [c/ffa500: victory flame], then I will become your right-hand man
+			But as a price, I will chatter in your ears all the time
+			But I am kind-hearted, I can't bear to see others suffer
+			So when others suffer, [c/ffa500: victory flame] will quickly end their lives
+			So they won't suffer [c/ffa500::)]
+			And if you think I'm noisy, you can deprive me of my right to speak in the configuration [c/d3d3d3: configuration settings]
+			I can't stop you [c/ffa500::(]
+			'''
+	}
+
+	XiaoZhiTiaoLL: {
+		DisplayName: An execution without witnesses
+		Tooltip:
+			'''
+			[c/ADD8E6: The hunter never fell in to obtain answers.]
+			[c/ADD8E6: The knight never jumped up and rushed to the We Many.]
+			[c/ADD8E6: The short-lived friendship did not exist.]
+			[c/ADD8E6: It was just that the hunter's anchor hit the knight's warhorse.]
+			[c/ADD8E6: The favor of fate lost contact again.]
+			'''
+	}
+
+	XiaoZhiTiaoRE: {
+		DisplayName: Revelation - Part I
+		Tooltip:
+			'''
+			[c/494949:"The fate of steel is destruction, yet from destruction arises truth."]
+			[c/494949:"Now, cast away those two obsidian relics that were never yours,]
+			[c/494949:and let the world grant you a new revelation."]
+			'''
+	}
+
+	KaiJuXiaoZhiTiao: {
+		DisplayName: An instruction manual?
+		Tooltip:
+			'''
+			This mod contains all the throwing versions of the pike in CalamityMod. 
+			Please go to Settings > Control Buttons > Configure Custom Buttons > Switch Spear. 
+			Press the key while holding a spear to switch to the corresponding version of the javelin, and vice versa
+			'''
+		ShiftTip: Hold Left Shift to view more details.
+		ShiftTipDetailed:
+			'''
+			Thanks to the following individuals for their contributions to the mod [in no particular order]:
+			Southern Kite、锯角、VectorChaos、终末犽戎、Homo Computer、Yukimu、Endticle Star
+			'''
+	}
+
+	XiaoZhiTiaoLL2: {
+		DisplayName: An execution without witnesses
+		Tooltip: Challenge:slay a Seahorse with an Anchor for the first time
+	}
+
+	XiaoZhiTiaoSG2: {
+		DisplayName: Sagittarius
+		Tooltip: Challenge:defeat the Empress of Light with 4 or fewer hits
+	}
+
+	XiaoZhiTiaoTM2: {
+		DisplayName: A research paper on paleobiological oceanography
+		Tooltip: Challenge:defeat the Duke Fishron within two minutes
+	}
+
+	XiaoZhiTiaoFT2: {
+		DisplayName: Dragon Nirvana
+		Tooltip: Challenge:make Yharon enter the Phase 2
+	}
+
+	XiaoZhiTiaoRE2: {
+		DisplayName: Revelation - Part I
+		Tooltip: Challenge:throw Ultima and Starmada as an item in the same time
+	}
+
+	XiaoZhiTiaoEA2: {
+		DisplayName: Proverb of Starnight
+		Tooltip: Challenge:Kill the Moon Lord without taking any of the 4 max health boosts fruits from the Calamity mod
+	}
+
+	TheSkillAcc: {
+		Tooltip: ""
+		DisplayName: The Skill Acc
+	}
+
+	Weapons: {
+		Rogue: {
+			PhantomShuriken: {
+				Tooltip: ""
+				DisplayName: Phantom Shuriken
+			}
+		}
+	}
+}
+
+ModBuff: {
+	StarGunSagittariusEDebuff: {
+		DisplayName: Sagittarius Flare
+		Description:
+			'''
+			Reduces attack power by 30% during the day and defense power by 50% at night
+			Whether it is day or night, this is not a good thing for the enemy
+			'''
+	}
+
+	CreateVictoryPEBuff: {
+		DisplayName: Create Victory
+		Description: Loses a lot of health and defense
+	}
+
+	SawBladeForkHornEDebuff: {
+		DisplayName: Comminuted Fracture
+		Description:
+			'''
+			Just like the name
+			Comminuted Fracture
+			'''
+	}
+
+	SawBladeForkHornPBuff: {
+		DisplayName: Theory of Defense Expansion
+		Description:
+			'''
+			Stackable defense power!
+			Surprising? Unexpected?
+			'''
+	}
+
+	TheLastLancePBuff: {
+		DisplayName: Charge Form
+		Description:
+			'''
+			The past died on the land, and neither the present nor the future have any meaning. 
+			Only the ocean; kill the ocean. 
+			'''
+	}
+}
+
+Configs: {
+	CTSConfigs: {
+		DisplayName: CTS Configs
+
+		EnableFTSound: {
+			Label: Enable custom voice for some weapons
+			Tooltip:
+				'''
+				All weapons with voice in the current version:
+				Dragon's Ascent
+				'''
+		}
+
+		EnableMeleeSpeed: {
+			Label: Melee Speed Control (Need to reload)
+			Tooltip:
+				'''
+				After turning on this option, all weapons in this mod will NOT be affected by the melee attack speed bonus. 
+				Vice versa
+				'''
+		}
+	}
+}
+
+Keybinds: {
+	更改长枪形态.DisplayName: Switch Spear
+	技能.DisplayName: 技能
+}
+
+Buffs: {
+	TimingBuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.TimingBuff.Description
+		DisplayName: Timing Buff
+	}
+}
