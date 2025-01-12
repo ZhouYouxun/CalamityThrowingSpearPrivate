@@ -303,7 +303,6 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				Releases multiple energy bolts or rotating Gauss flux vortices upon hitting enemies.
-				If Adrenaline Mode is active, both bolts and vortices deal 2.5x damage.
 				[c/1ffbff:"Neutral left and Live right,aid-needed me and aided Thor.
 				'''
 		}

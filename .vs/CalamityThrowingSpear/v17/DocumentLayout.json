@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\localization\\en-us_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:localization\\en-us_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\localization\\zh-hans_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:localization\\zh-hans_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\calamitythrowingspear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:calamitythrowingspear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\localization\\zh-hans_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:localization\\zh-hans_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\weapons\\changedweapons\\aprehardmode\\sausagemakerc\\sausagemakerjavproj.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -53,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\weapons\\newweapons\\dpredog\\endlessdevourjav\\endlessdevourjavproj.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:weapons\\newweapons\\dpredog\\endlessdevourjav\\endlessdevourjavproj.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\localization\\en-us_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|solutionrelative:localization\\en-us_mods.calamitythrowingspear.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{467AC035-1389-4872-9B40-1C1BFE63FA20}|CalamityThrowingSpear.csproj|d:\\documents\\my games\\terraria\\tmodloader\\modsources\\calamitythrowingspear\\build.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
@@ -1177,17 +1177,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "RelativeDocumentMoniker": "Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "RelativeToolTip": "Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
-              "ViewState": "AgIAAJ8CAAAAAAAAAAAAAL0CAAATAAAAAAAAAA==",
+              "ViewState": "AgIAABQBAAAAAAAAAAAiwCwBAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2024-10-05T03:43:48.256Z",
               "IsPinned": true,
@@ -1195,13 +1195,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 0,
               "Title": "en-US_Mods.CalamityThrowingSpear.hjson",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
               "RelativeDocumentMoniker": "Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
               "RelativeToolTip": "Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
-              "ViewState": "AgIAANQAAAAAAAAAAAAiwOkAAAADAAAAAAAAAA==",
+              "ViewState": "AgIAACgBAAAAAAAAAAAiwEsBAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2024-11-05T16:40:11.354Z",
               "IsPinned": true,
@@ -1226,20 +1226,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt",
               "RelativeDocumentMoniker": "\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt",
               "RelativeToolTip": "\u6700\u65B0\u4E00\u6B21\u7684\u7248\u672C\u66F4\u65B0.txt",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAwEoAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAwEUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2024-12-27T00:40:16.364Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "SausageMakerJav.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJav.cs",
               "RelativeDocumentMoniker": "Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJav.cs",
@@ -1247,12 +1247,11 @@
               "RelativeToolTip": "Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJav.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAADAAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T18:38:10.657Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T18:38:10.657Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "SausageMakerJavPROJ.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJavPROJ.cs",
               "RelativeDocumentMoniker": "Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJavPROJ.cs",
@@ -1260,12 +1259,11 @@
               "RelativeToolTip": "Weapons\\ChangedWeapons\\APreHardMode\\SausageMakerC\\SausageMakerJavPROJ.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAYwCwAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-07T05:25:32.579Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-07T05:25:32.579Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "CalamityThrowingSpear.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.cs",
               "RelativeDocumentMoniker": "CalamityThrowingSpear.cs",
@@ -1273,12 +1271,11 @@
               "RelativeToolTip": "CalamityThrowingSpear.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-11T16:06:09.741Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-11T16:06:09.741Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "GoldplumeJav.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\ChangedWeapons\\APreHardMode\\GoldplumeSpearC\\GoldplumeJav.cs",
               "RelativeDocumentMoniker": "Weapons\\ChangedWeapons\\APreHardMode\\GoldplumeSpearC\\GoldplumeJav.cs",
@@ -1286,12 +1283,11 @@
               "RelativeToolTip": "Weapons\\ChangedWeapons\\APreHardMode\\GoldplumeSpearC\\GoldplumeJav.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAowBgAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T18:38:02.143Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T18:38:02.143Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "ElectrocutionHalberd.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberd.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberd.cs",
@@ -1299,12 +1295,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberd.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAADwvwwAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T18:41:20.568Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T18:41:20.568Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "ElectrocutionHalberdPROJ.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberdPROJ.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberdPROJ.cs",
@@ -1312,12 +1307,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\BPrePlantera\\ElectrocutionHalberd\\ElectrocutionHalberdPROJ.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAowEIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-07T05:31:58.793Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-07T05:31:58.793Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "ChaosEssenceJavPROJ.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\BPrePlantera\\ChaosEssenceJav\\ChaosEssenceJavPROJ.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\BPrePlantera\\ChaosEssenceJav\\ChaosEssenceJavPROJ.cs",
@@ -1325,12 +1319,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\BPrePlantera\\ChaosEssenceJav\\ChaosEssenceJavPROJ.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAYwI0AAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-07T05:31:55.304Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-07T05:31:55.304Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "RedtideJavPROJ.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavPROJ.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavPROJ.cs",
@@ -1338,12 +1331,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavPROJ.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAA8wDcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T06:04:40.316Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T06:04:40.316Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "RedtideJavEXP.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavEXP.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavEXP.cs",
@@ -1351,12 +1343,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\APreHardMode\\RedtideJav\\RedtideJavEXP.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACIAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-02T22:40:52.295Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-02T22:40:52.295Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "\u8BB0\u4E8B\u672C.txt",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
@@ -1364,12 +1355,11 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-12-03T17:17:55.913Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-03T17:17:55.913Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "EndlessDevourJavPROJ.cs",
               "DocumentMoniker": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\DPreDog\\EndlessDevourJav\\EndlessDevourJavPROJ.cs",
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\DPreDog\\EndlessDevourJav\\EndlessDevourJavPROJ.cs",
@@ -1377,8 +1367,7 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\DPreDog\\EndlessDevourJav\\EndlessDevourJavPROJ.cs",
               "ViewState": "AgIAAKUAAAAAAAAAAAAQwLkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T04:47:39.875Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-05T04:47:39.875Z"
             },
             {
               "$type": "Document",
@@ -1390,8 +1379,7 @@
               "RelativeToolTip": "build.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-10-20T02:08:47.052Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-20T02:08:47.052Z"
             },
             {
               "$type": "Document",
@@ -1403,8 +1391,7 @@
               "RelativeToolTip": "description.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-10-27T20:31:58.31Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T20:31:58.31Z"
             },
             {
               "$type": "Document",
@@ -1416,8 +1403,7 @@
               "RelativeToolTip": "Weapons\\NewWeapons\\EAfterDog\\AuricJav\\AuricJavPROJ.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:47:54.353Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T01:47:54.353Z"
             },
             {
               "$type": "Document",
