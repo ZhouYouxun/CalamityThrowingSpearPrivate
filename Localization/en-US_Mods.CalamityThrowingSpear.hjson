@@ -10,38 +10,38 @@ Projectiles: {
 			ChaosWindJavLightningCloud.DisplayName: Weaveless Hurricane Lightning Cloud
 			ChaosWindJavPROJ.DisplayName: Weaveless Hurricane
 			ChaosWindJavWind.DisplayName: Weaveless Hurricane Mini Tornado
-			ElementalArkJavBlade.DisplayName: Elemental Ark Blade
-			ElementalArkJavBlast.DisplayName: Elemental Ark Rend
-			ElementalArkJavFragments.DisplayName: Elemental Ark Shard
-			ElementalArkJavFragments05.DisplayName: Elemental Ark Shard
-			ElementalArkJavSUPERPROJ.DisplayName: Elemental Ark Aggregate Shard
+			ElementalArkJavBlade.DisplayName: Kitelemental Ark Blade
+			ElementalArkJavBlast.DisplayName: Kitelemental Ark Rend
+			ElementalArkJavFragments.DisplayName: Kitelemental Ark Shard
+			ElementalArkJavFragments05.DisplayName: Kitelemental Ark Shard
+			ElementalArkJavSUPERPROJ.DisplayName: Kitelemental Ark Aggregate Shard
 			EndlessDevourJavOrb.DisplayName: Ceaseless Gnawing Dark Energy
 			EndlessDevourJavPROJ.DisplayName: Ceaseless Gnawing
 			BlackSLASH.DisplayName: Black Slash
 			InfiniteDarknessJavPROJ.DisplayName: Banishless Dim
 			InfiniteDarknessJavPROJStarBomb.DisplayName: Banishless Dim Scythe
 			SoulHunterJavPROJ.DisplayName: Soul Hunter
-			TerraLanceBEAM.DisplayName: Terra Lance Beam
-			TerraLancePROJ.DisplayName: Terra Lance
+			TerraLanceBEAM.DisplayName: Terraternal Beam
+			TerraLancePROJ.DisplayName: Terraternal Lance
 		}
 
 		BPrePlantera: {
-			SunEssenceJavBEAM.DisplayName: Sun Essence Laser
-			ChaosEssenceJavFIRE.DisplayName: Chaos Essence Spear Flame
-			ChaosEssenceJavPROJ.DisplayName: Chaos Essence Spear
+			SunEssenceJavBEAM.DisplayName: Radiant Sun Laser
+			ChaosEssenceJavFIRE.DisplayName: Kaios Flame
+			ChaosEssenceJavPROJ.DisplayName: Kaios Spear
 			ElectrocutionHalberdPROJ.DisplayName: Electrocution Halberd
 			HeartSwordPROJ.DisplayName: Heart Stinger Sword
 			HeartSwordPROJExtra.DisplayName: Heart Sword Wingman
 			PearlwoodJavPROJ.DisplayName: Pearlwood Spear
 			PearlwoodJavRainbowFront.DisplayName: Pearlwood Rainbow Tip
 			PearlwoodJavRainbowTrail.DisplayName: Pearlwood Rainbow Trail
-			PolarEssenceJavPROJ.DisplayName: Polar Essence Spear
+			PolarEssenceJavPROJ.DisplayName: Frost Stream
 			SHPCKEXP.DisplayName: SHPCK Plasma Explosion
 			SHPCKFast.DisplayName: SHPCK Right-Click Attack
 			SHPCKPROJ.DisplayName: SHPCK Left-Click Attack
-			SunEssenceJavFeather.DisplayName: Sun Essence Feather
-			SunEssenceJavPROJ.DisplayName: Sun Essence Spear
-			SunEssenceJavSmallBEAM.DisplayName: Sun Essence Spear Small Laser
+			SunEssenceJavFeather.DisplayName: Radiant Sun Feather
+			SunEssenceJavPROJ.DisplayName: Radiant Sun
+			SunEssenceJavSmallBEAM.DisplayName: Radiant Sun Small Laser
 			TheLastLanceDASH.DisplayName: The Last Lance Dash
 			TheLastLancePROJ.DisplayName: The Last Lance
 			TheLastLanceWater.DisplayName: The Last Lance Waterflow
@@ -63,9 +63,9 @@ Projectiles: {
 
 		CPreMoodLord: {
 			FestiveHalberdPROJ.DisplayName: Festive Halberd
-			StarGunSagittariusPROJ.DisplayName: Star Piercer Gun
-			StarGunSagittariusPROJECHO.DisplayName: Star Piercer Charged Attack
-			StarGunSagittariusSPIT.DisplayName: Star Piercer Split Projectile
+			StarGunSagittariusPROJ.DisplayName: Starpiercer
+			StarGunSagittariusPROJECHO.DisplayName: Starpiercer Charged Attack
+			StarGunSagittariusSPIT.DisplayName: Starpiercer Split
 			TidalMechanicsBubbles.DisplayName: Tidal Bubbles
 			TidalMechanicsPROJ.DisplayName: Tidal
 			TidalMechanicsShark.DisplayName: Tidal Shark
@@ -80,25 +80,25 @@ Projectiles: {
 			FinishingTouchEPROJ.DisplayName: Dragon's Ascent Hostile
 			FinishingTouchPROJ.DisplayName: Dragon's Ascent
 			FinishingTouchDASHFuckYou.DisplayName: Dragon's Ascent Dash Explosion
-			MiracleMatterJavLight.DisplayName: Miracle Spear Light Beam
-			MiracleMatterJavPROJ.DisplayName: Miracle Spear
-			SawBladeForkHornJavPROJ.DisplayName: Saw Blade Forked Lance
-			SawBladeForkHornJavRIGHT.DisplayName: Saw Blade Forked Lance Hovering Version
-			SawBladeForkHornJavRPP.DisplayName: Saw Blade Forked Lance Floating Projectile
-			ShadowJavPROJ.DisplayName: Infinity
+			MiracleMatterJavLight.DisplayName: Eternal Radiance Light Beam
+			MiracleMatterJavPROJ.DisplayName: Eternal Radiance
+			SawBladeForkHornJavPROJ.DisplayName: Comminuted Fracture
+			SawBladeForkHornJavRIGHT.DisplayName: Comminuted Fracture Hovering Version
+			SawBladeForkHornJavRPP.DisplayName: Comminuted Fracture Floating Projectile
+			ShadowJavPROJ.DisplayName: Infinity Boundless
 			TheOtherMiracleMatterJavExoFire.DisplayName: Horizon Probe Laser
 			TheOtherMiracleMatterJavPROJ.DisplayName: Horizon Probe
-			ShadowJavREPROJ.DisplayName: Infinity Right-Click
+			ShadowJavREPROJ.DisplayName: Infinity Boundless Right-Click
 			RevelationSUPERBoom.DisplayName: Revelation Super Explosion
 			RevelationSTAR.DisplayName: Revelation Falling Star
 			RevelationSpark.DisplayName: Revelation Flame
 			RevelationPROJ.DisplayName: Revelation
 			RevelationBoom.DisplayName: Revelation Regular Explosion
 			TheOtherMiracleMatterJavExoLightningBolt.DisplayName: Horizon Probe Lightning
-			SoulSeekerJavBRID.DisplayName: Soul Seeker Apex Remnant - Supreme Hunter Eye
-			SoulSeekerJavPROJ.DisplayName: Soul Seeker Apex Remnant
+			SoulSeekerJavBRID.DisplayName: Apex Remnant - Supreme Hunter Eye
+			SoulSeekerJavPROJ.DisplayName: Apex Remnant
 			TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
-			TheOtherMiracleMatterJavEXP.DisplayName: The Other Miracle Matter Jav E X P
+			TheOtherMiracleMatterJavEXP.DisplayName: Horizon Probe E X P
 		}
 	}
 
@@ -123,8 +123,8 @@ Projectiles: {
 			AstralPikeSTAR.DisplayName: Astral Pike Star
 			BotanicPiercerJavPROJ.DisplayName: Botanic Piercer
 			BotanicPiercerJavPROJSPLIT.DisplayName: Botanic Piercer Beam
-			DiseasedJavLight.DisplayName: Diseased Spear Energy Bolt
-			DiseasedJavPROJ.DisplayName: Diseased Spear
+			DiseasedJavLight.DisplayName: Diseased Pike Energy Bolt
+			DiseasedJavPROJ.DisplayName: Diseased Pike
 			GalvanizingGlaiveJavGaussEnergy.DisplayName: Gauss Energy Bolt
 			GalvanizingGlaiveJavGaussFlux.DisplayName: Gauss Flux Vortex
 			GalvanizingGlaiveJavPROJ.DisplayName: Gauss Split Blade
@@ -168,8 +168,8 @@ Projectiles: {
 			StreamGougeJavPortal.DisplayName: Cosmic Stream Portal
 			StreamGougeJavPROJ.DisplayName: Cosmic Stream
 			StreamGougeJavPROJSPLIT.DisplayName: Cosmic Stream Split Projectile
-			ViolenceJavLight.DisplayName: Rampage Light Beam
-			ViolenceJavPROJ.DisplayName: Rampage
+			ViolenceJavLight.DisplayName: Violence Light Beam
+			ViolenceJavPROJ.DisplayName: Violence
 		}
 	}
 
@@ -743,7 +743,7 @@ NewWeapons: {
 		}
 
 		MiracleMatterJav: {
-			DisplayName: The Eternal Radiance
+			DisplayName: Eternal Radiance
 			Tooltip:
 				'''
 				Imbeds itself in enemies, dealing continuous damage.
