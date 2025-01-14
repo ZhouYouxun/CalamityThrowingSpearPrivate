@@ -527,10 +527,10 @@ NewWeapons: {
 			DisplayName: Heart Rapier
 			Tooltip:
 				'''
-				Hold the left mouse button to hold the spear.
-				Three aid lances will appear around the player and revolve around the player.
-				Both the main spear and the aid lances can cause damage.
-				Release the left mouse button to let them to sprint to the mouse position.
+				Hold the left-click to hold the spear.
+				Three aid lances will appear and revolve around the player.
+				Both the main spear and the aid lances can cause damage while holding.
+				Release the left-click to let them to sprint to the cursor.
 				When the main spear hits the enemy, there is a very small chance that it will restore a large amount of health to the player.
 				[c/e97b7b: "It depends on whether you are lucky enough"]
 				'''
@@ -952,7 +952,7 @@ Items: {
 
 	XiaoZhiTiaoEA2: {
 		DisplayName: Proverb of Starnight
-		Tooltip: Challenge:Kill the Moon Lord without taking any of the 4 max health boosts fruits from the Calamity mod
+		Tooltip: Challenge:defeat Moon Lord without consuming any of the Calamity Permanent Health Upgrades items
 	}
 
 	TheSkillAcc: {
