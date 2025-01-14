@@ -26,22 +26,22 @@ Projectiles: {
 		}
 
 		BPrePlantera: {
-			SunEssenceJavBEAM.DisplayName: 日光精华激光
-			ChaosEssenceJavFIRE.DisplayName: 混乱精华矛火焰
-			ChaosEssenceJavPROJ.DisplayName: 混乱精华矛
+			SunEssenceJavBEAM.DisplayName: 光耀日激光
+			ChaosEssenceJavFIRE.DisplayName: 凯奥斯焰
+			ChaosEssenceJavPROJ.DisplayName: 凯奥斯
 			ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
 			HeartSwordPROJ.DisplayName: 心之刺剑
 			HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
 			PearlwoodJavPROJ.DisplayName: 珍珠木矛
 			PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
 			PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
-			PolarEssenceJavPROJ.DisplayName: 极地精华矛
+			PolarEssenceJavPROJ.DisplayName: 霜雪川
 			SHPCKEXP.DisplayName: SHPCK等离子爆炸
 			SHPCKFast.DisplayName: SHPCK右键攻击
 			SHPCKPROJ.DisplayName: SHPCK左键攻击
-			SunEssenceJavFeather.DisplayName: 日光精华羽毛
-			SunEssenceJavPROJ.DisplayName: 日光精华矛
-			SunEssenceJavSmallBEAM.DisplayName: 日光精华矛小型激光
+			SunEssenceJavFeather.DisplayName: 光耀日羽毛
+			SunEssenceJavPROJ.DisplayName: 光耀日
+			SunEssenceJavSmallBEAM.DisplayName: 光耀日小型激光
 			TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
 			TheLastLancePROJ.DisplayName: 最后的骑枪
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
