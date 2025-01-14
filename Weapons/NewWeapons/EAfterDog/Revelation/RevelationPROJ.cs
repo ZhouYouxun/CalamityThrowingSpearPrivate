@@ -233,8 +233,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             }
 
             // 瞄准状态逻辑
-            int aimDuration = 54;
-            float aimCompletion = Utils.GetLerpValue(0f, aimDuration, Time, true);
+            //int aimDuration = 54;
+            //float aimCompletion = Utils.GetLerpValue(0f, aimDuration, Time, true);
 
             // 使投射物与玩家保持一致并瞄准鼠标位置
             if (Main.myPlayer == Projectile.owner)
@@ -244,7 +244,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             }
 
             // 将投射物位置与玩家中心对齐，模拟持握效果
-            Projectile.Center = Owner.Center;
+            // Projectile.Center = Owner.Center;
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
             Owner.heldProj = Projectile.whoAmI; // 玩家持有此投射物
 
             // 检查玩家是否松开鼠标

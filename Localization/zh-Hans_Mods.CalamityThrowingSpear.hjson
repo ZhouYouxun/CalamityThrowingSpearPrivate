@@ -31,6 +31,7 @@ Projectiles: {
 			ChaosEssenceJavPROJ.DisplayName: 混乱精华矛
 			ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
 			HeartSwordPROJ.DisplayName: 心之刺剑
+			HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
 			PearlwoodJavPROJ.DisplayName: 珍珠木矛
 			PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
 			PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
@@ -55,7 +56,9 @@ Projectiles: {
 			RedtideJavPROJ.DisplayName: 赤潮矛
 			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
 			WulfrimJavPROJ.DisplayName: 钨钢矛
-			// RedtideJavEXP.DisplayName: Redtide Jav E X P
+			RedtideJavEXP.DisplayName: 赤潮爆炸
+			TheBrokenPROJ.DisplayName: 破旧的长枪
+			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
 		}
 
 		CPreMoodLord: {
@@ -95,7 +98,7 @@ Projectiles: {
 			SoulSeekerJavBRID.DisplayName: 终幕残翼-至尊探魂眼
 			SoulSeekerJavPROJ.DisplayName: 终幕残翼
 			// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
-			// TheOtherMiracleMatterJavEXP.DisplayName: The Other Miracle Matter Jav E X P
+			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
 		}
 	}
 
@@ -170,25 +173,16 @@ Projectiles: {
 		}
 	}
 
-	// PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
-	// PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
-	// PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
-	// PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
-	// PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
-	// PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
-	// PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
-	// PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
-	// TideTridentProj.DisplayName: Tide Trident Proj
 	// SmallTridentProj.DisplayName: Small Trident Proj
-	// ArkofTheDragonSoulPROJ.DisplayName: Arkof The Dragon Soul P R O J
-	// ADSEonBolt.DisplayName: A D S Eon Bolt
-	// ADSSlash.DisplayName: A D S Slash
-	// ADSHit.DisplayName: A D S Hit
-	// ADSStar.DisplayName: A D S Star
-	// ArkofTheDragonSoulBlade.DisplayName: Arkof The Dragon Soul Blade
-	// ArkofTheDragonSoulBlast.DisplayName: Arkof The Dragon Soul Blast
-	// PhantomShurikenPROJ.DisplayName: Phantom Shuriken P R O J
-	// PhantomShurikenBloodPROJ.DisplayName: Phantom Shuriken Blood P R O J
+	// TideTridentProj.DisplayName: Tide Trident Proj
+	// PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
+	// PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
+	// PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
+	// PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
+	// PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
+	// PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
+	// PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
+	// PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
 }
 
 ChangedWeapons: {
@@ -498,6 +492,16 @@ NewWeapons: {
 				[c/95b47c:“谁能告诉我为什么这个矛命中人之后会有锤子砸下来，材料就是被你们这样浪费完的”]
 				'''
 		}
+
+		TheBroken: {
+			Tooltip:
+				'''
+				飞行一段时间后扔出手里剑或投刀
+				穿透一次
+				[c/e0e0e0:“什么？你难道指望着他很强？”]
+				'''
+			DisplayName: 破旧的长枪
+		}
 	}
 
 	BPrePlantera: {
@@ -524,8 +528,11 @@ NewWeapons: {
 			DisplayName: 心之刺剑
 			Tooltip:
 				'''
-				命中后恢复大量生命值
-				如果玩家生命之不为满，则命中时有很小的概率释放海量红心
+				长按左键握住长枪
+				握持期间玩家周围出现三把围绕玩家做公转运动的僚枪
+				握持期间本体和僚枪均可造成伤害
+				松开左键可命令它们往鼠标位置冲刺
+				本体命中敌人时，极小概率为玩家回复海量生命值
 				[c/e97b7b:“这取决于你是否足够幸运”]
 				'''
 		}
@@ -536,7 +543,6 @@ NewWeapons: {
 				'''
 				消失时释放三道彩虹
 				场上的珍珠木矛被限制在一个
-				与敌人近身搏斗时能显著提升攻速
 				[c/bcb696:“仁慈与仇恨并存”]
 				'''
 		}

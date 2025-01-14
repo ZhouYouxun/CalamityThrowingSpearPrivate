@@ -141,7 +141,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
             }
 
             // 将投射物位置与玩家中心对齐，模拟持握效果
-            Projectile.Center = Owner.Center;
+            // Projectile.Center = Owner.Center;
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
             Owner.heldProj = Projectile.whoAmI;
 
             // 每 60 帧生成一次黑色冲击波
@@ -150,61 +151,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
                 Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Black, new Vector2(1f, 1f), Main.rand.NextFloat(6f, 10f), 0.15f, 3f, 10);
                 GeneralParticleHandler.SpawnParticle(pulse);
             }
-
-            // 每 60 帧生成一波 Gore 特效和粒子特效
-            if (Projectile.localAI[0] % 60 == 0)
-            {
-                Player player = Main.player[Projectile.owner]; // 获取弹幕所属玩家
-                Vector2 center = player.Center; // 以玩家为圆心
-                //float radius = 5f * 16f; // 半径为 5 格
-
-                // 生成 Gore 特效
-                //if (Main.netMode != NetmodeID.Server)
-                //{
-                //    int goreCount = Main.rand.Next(10, 16); // 随机生成 10 ~ 15 个 Gore
-                //    for (int i = 0; i < goreCount; i++)
-                //    {
-                //        // 随机生成 Gore 的位置和方向
-                //        Vector2 randomPosition = center + Main.rand.NextVector2Circular(radius, radius);
-                //        Vector2 randomVelocity = Main.rand.NextVector2Circular(2f, 4f); // 随机方向和速度
-                //        Gore gore = Gore.NewGoreDirect(
-                //            Projectile.GetSource_FromThis(),
-                //            randomPosition,
-                //            randomVelocity,
-                //            Main.rand.Next(61, 64)
-                //        );
-                //        gore.velocity *= Main.rand.NextFloat(1.2f, 1.8f); // 增加速度随机性
-                //    }
-                //}
-
-                //// 生成粒子特效
-                //int particleCount = Main.rand.Next(50, 61); // 随机生成 50 ~ 60 个粒子
-                //for (int i = 0; i < particleCount; i++)
-                //{
-                //    // 随机生成粒子的位置和方向
-                //    Vector2 randomPosition = center + Main.rand.NextVector2Circular(radius, radius);
-                //    Vector2 randomVelocity = Main.rand.NextVector2Circular(2f, 5f); // 粒子速度范围
-                //    int dustID = Dust.NewDust(randomPosition, 0, 0, DustID.Smoke, randomVelocity.X, randomVelocity.Y, 100, Color.Gray, Main.rand.NextFloat(1.5f, 2.5f));
-                //    Main.dust[dustID].noGravity = true; // 使粒子无重力
-                //}
-
-                //// 生成粒子特效，形成规律的圆圈
-                //int particleCount = 36; // 粒子数量，决定圆圈的密度
-                //float radius = 5f * 16f; // 圆的半径（5 格）
-
-                //for (int i = 0; i < particleCount; i++)
-                //{
-                //    // 计算每个粒子的位置
-                //    float angle = MathHelper.TwoPi * i / particleCount; // 计算每个粒子在圆中的角度
-                //    Vector2 position = center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius; // 计算粒子位置
-
-                //    // 创建粒子
-                //    int dustID = Dust.NewDust(position, 0, 0, DustID.Smoke, 0f, 0f, 100, Color.Gray, Main.rand.NextFloat(1.5f, 2.5f));
-                //    Main.dust[dustID].noGravity = true; // 使粒子无重力
-                //    Main.dust[dustID].velocity = Vector2.Zero; // 粒子保持静止
-                //}
-            }
-
 
             // 检查玩家是否松开鼠标
             if (!Owner.channel)

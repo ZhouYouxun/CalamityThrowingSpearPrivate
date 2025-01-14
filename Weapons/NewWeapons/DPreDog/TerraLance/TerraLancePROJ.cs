@@ -132,6 +132,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             {
                 Projectile.ai[1]++;
             }
+
+            Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
+            Projectile.rotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
         }
 
         public override void OnKill(int timeLeft)

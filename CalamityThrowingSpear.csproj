@@ -45,9 +45,10 @@
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\恣睢投矛.txt" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\BraisedPorkJav\BraisedPorkJavCloud.png" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\ElectrocoagulationTenmonJav\ElectrocoagulationTenmonJav.png" />
-	  <None Remove="Weapons\NewWeapons\APreHardMode\GraniteJav\GraniteJav.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\GraniteJav\1.png" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\RedtideJav\赤潮投矛.txt" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\RedtideSpear.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\TheBroken\破损的长枪.txt" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\WulfrimJav\WulfrimJav.png" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\WulfrimJav\钨钢投矛.txt" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\ElectrocutionHalberd\电灼长戟.txt" />

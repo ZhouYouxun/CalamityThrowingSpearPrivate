@@ -38,6 +38,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             //ItemID.Sets.BonusAttackSpeedMultiplier[Item.type] = 0.33f;
             ItemID.Sets.Spears[Item.type] = true;
         }
+
         public new string LocalizationCategory => "NewWeapons.EAfterDog";
         public override void SetDefaults()
         {
@@ -65,18 +66,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
         public override bool CanUseItem(Player player)
         {
             // 遍历当前世界中的所有弹幕
-            foreach (Projectile proj in Main.projectile)
-            {
-                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
-                {
-                    // 检查是否为 Aim 状态
-                    if (proj.ModProjectile is RevelationPROJ revelationProj && revelationProj.CurrentState == RevelationPROJ.BehaviorState.Aim)
-                    {
-                        return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
-                                      // Fire 阶段的弹幕不会影响这个判断
-                    }
-                }
-            }
+            //foreach (Projectile proj in Main.projectile)
+            //{
+            //    if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
+            //    {
+            //        // 检查是否为 Aim 状态
+            //        if (proj.ModProjectile is RevelationPROJ revelationProj && revelationProj.CurrentState == RevelationPROJ.BehaviorState.Aim)
+            //        {
+            //            return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
+            //                          // Fire 阶段的弹幕不会影响这个判断
+            //        }
+            //    }
+            //}
             return true; // 如果没有 Aim 状态的弹幕，允许生成
         }
 
@@ -110,6 +111,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             }
 
             damage = (int)(damage * damageMultiplier);
+
+            // 遍历当前世界中的所有弹幕
+            foreach (Projectile proj in Main.projectile)
+            {
+                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
+                {
+                    // 检查是否为 Aim 状态
+                    if (proj.ModProjectile is RevelationPROJ revelationProj && revelationProj.CurrentState == RevelationPROJ.BehaviorState.Aim)
+                    {
+                        return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
+                                      // Fire 阶段的弹幕不会影响这个判断
+                    }
+                }
+            }
 
             // 创建新的弹幕
             int projIndex = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);

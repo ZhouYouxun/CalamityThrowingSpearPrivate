@@ -30,7 +30,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
         public override void SetStaticDefaults()
         {
             Item.ResearchUnlockCount = 1;
-            //ItemID.Sets.BonusAttackSpeedMultiplier[Item.type] = 0.33f;
             ItemID.Sets.Spears[Item.type] = true;
         }
 

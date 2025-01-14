@@ -31,6 +31,7 @@ Projectiles: {
 			ChaosEssenceJavPROJ.DisplayName: Chaos Essence Spear
 			ElectrocutionHalberdPROJ.DisplayName: Electrocution Halberd
 			HeartSwordPROJ.DisplayName: Heart Stinger Sword
+			HeartSwordPROJExtra.DisplayName: Heart Sword Wingman
 			PearlwoodJavPROJ.DisplayName: Pearlwood Spear
 			PearlwoodJavRainbowFront.DisplayName: Pearlwood Rainbow Tip
 			PearlwoodJavRainbowTrail.DisplayName: Pearlwood Rainbow Trail
@@ -55,7 +56,9 @@ Projectiles: {
 			RedtideJavPROJ.DisplayName: Redtide Spear
 			WulfrimJavExtraPROJ.DisplayName: Wulfrim Hammer
 			WulfrimJavPROJ.DisplayName: Wulfrim Spear
-			RedtideJavEXP.DisplayName: Redtide Jav E X P
+			RedtideJavEXP.DisplayName: Redtide Explosion
+			TheBrokenPROJ.DisplayName: The Broken Spear
+			TheBrokenSPIT.DisplayName: The Broken Spits
 		}
 
 		CPreMoodLord: {
@@ -170,25 +173,16 @@ Projectiles: {
 		}
 	}
 
-	PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
-	PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
-	PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
-	PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
-	PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
-	PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
-	PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
-	PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
-	TideTridentProj.DisplayName: Tide Trident Proj
 	SmallTridentProj.DisplayName: Small Trident Proj
-	ArkofTheDragonSoulPROJ.DisplayName: Arkof The Dragon Soul P R O J
-	ADSEonBolt.DisplayName: A D S Eon Bolt
-	ADSSlash.DisplayName: A D S Slash
-	ADSHit.DisplayName: A D S Hit
-	ADSStar.DisplayName: A D S Star
-	ArkofTheDragonSoulBlade.DisplayName: Arkof The Dragon Soul Blade
-	ArkofTheDragonSoulBlast.DisplayName: Arkof The Dragon Soul Blast
-	PhantomShurikenPROJ.DisplayName: Phantom Shuriken P R O J
-	PhantomShurikenBloodPROJ.DisplayName: Phantom Shuriken Blood P R O J
+	TideTridentProj.DisplayName: Tide Trident Proj
+	PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
+	PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
+	PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
+	PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
+	PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
+	PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
+	PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
+	PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
 }
 
 ChangedWeapons: {
@@ -497,6 +491,16 @@ NewWeapons: {
 				[c/95b47c:"Can someone explain why this spear summons a hammer after hitting? All the materials are wasted this way."]
 				'''
 		}
+
+		TheBroken: {
+			Tooltip:
+				'''
+				After flying for a while, throw a shuriken or a throwing knife.
+				Pierce once.
+				[c/e0e0e0: "What? Do you expect him to be strong?"]
+				'''
+			DisplayName: The Broken Spear
+		}
 	}
 
 	BPrePlantera: {
@@ -523,9 +527,12 @@ NewWeapons: {
 			DisplayName: Heart Rapier
 			Tooltip:
 				'''
-				Restores a significant amount of health upon impact.
-				If the player's health is not full,there's a small chance to release a large number of red hearts upon hitting.
-				[c/e97b7b:"It depends on how lucky you are."]
+				Hold the left mouse button to hold the spear.
+				Three aid lances will appear around the player and revolve around the player.
+				Both the main spear and the aid lances can cause damage.
+				Release the left mouse button to let them to sprint to the mouse position.
+				When the main spear hits the enemy, there is a very small chance that it will restore a large amount of health to the player.
+				[c/e97b7b: "It depends on whether you are lucky enough"]
 				'''
 		}
 
@@ -535,7 +542,6 @@ NewWeapons: {
 				'''
 				Releases three rainbows upon disappearing.
 				Only one Pearlwood Spear can exist on the field at a time.
-				Significantly increases attack speed if you close enough to the enemy
 				[c/bcb696:"Mercy and hatred coexist."]
 				'''
 		}

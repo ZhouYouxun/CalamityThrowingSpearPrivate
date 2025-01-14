@@ -17,6 +17,7 @@ using static Terraria.ModLoader.ModContent;
 using CalamityMod.Projectiles.Pets;
 using CalamityMod;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {
@@ -102,8 +103,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 
         public override void AddRecipes()
         {
-            Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Spear, 1);
+            Recipe recipe = CreateRecipe(); 
+            recipe.AddIngredient<TheBroken>(1);
             recipe.AddIngredient<ShadowspecBar>(5);
             //recipe.AddCondition(Condition.BirthdayParty);
             recipe.AddTile(TileType<DraedonsForge>());
