@@ -527,11 +527,8 @@ NewWeapons: {
 			DisplayName: Heart Rapier
 			Tooltip:
 				'''
-				Hold the left-click to hold the spear.
-				Three aid lances will appear and revolve around the player.
-				Both the main spear and the aid lances can cause damage while holding.
-				Release the left-click to let them to sprint to the cursor.
-				When the main spear hits the enemy, there is a very small chance that it will restore a large amount of health to the player.
+				Restores a small amount of stable health when hitting an enemy
+				Restores a large amount of health to the player with a very small chance
 				[c/e97b7b: "It depends on whether you are lucky enough"]
 				'''
 		}

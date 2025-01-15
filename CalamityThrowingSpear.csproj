@@ -68,6 +68,10 @@
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLanceDASHSUPER.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLancePBuff.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLancePROJ.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TLLCoolDown.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TLLCoolDownActive.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TLLCoolDownOutline.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TLLCoolDownOverlay.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\XiaoZhiTiaoLL.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\最后的骑枪.txt" />
 	  <None Remove="Weapons\NewWeapons\CPreMoodLord\FestiveHalberd\FestiveHalberd.png" />
