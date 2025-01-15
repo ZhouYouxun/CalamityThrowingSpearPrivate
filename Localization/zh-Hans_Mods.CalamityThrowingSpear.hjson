@@ -136,6 +136,7 @@ Projectiles: {
 			TyphonsGreedJavPROJ.DisplayName: 提丰之贪婪
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
 			VulcaniteLanceJavTinyFlare.DisplayName: 火山之矛火焰精灵
+			// TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
 		}
 
 		DPreDog: {
@@ -170,6 +171,7 @@ Projectiles: {
 			StreamGougeJavPROJSPLIT.DisplayName: 宇宙暗流分裂弹幕
 			ViolenceJavLight.DisplayName: 恣睢光束
 			ViolenceJavPROJ.DisplayName: 恣睢
+			// StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
 		}
 	}
 
@@ -184,6 +186,8 @@ Projectiles: {
 	// PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
 	// PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
 }
+
+// Projectile.DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
 
 ChangedWeapons: {
 	APreHardMode: {

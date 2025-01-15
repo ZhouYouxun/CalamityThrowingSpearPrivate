@@ -60,9 +60,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
         {
             if (player.altFunctionUse == 2) // 右键点击
             {
-                if (rightClickCooldown > 0)
+                if (rightClickCooldown > 0 || TLLCoolDown.IsCoolingDown)
                 {
-                    return false; // 如果在冷却过程中，那么拒绝
+                    return false; // 如果冷却中，不能使用
                 }
 
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<TheLastLanceDASH>()] > 0)
@@ -70,31 +70,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                     return false; // 禁止多重冲刺
                 }
 
-                // 普通冲刺
                 Item.shoot = ModContent.ProjectileType<TheLastLanceDASH>();
-                // 触发超级冲刺
-                //int projIndex = Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<TheLastLanceDASH>(), 0, 0, player.whoAmI);
-                //if (projIndex >= 0 && projIndex < Main.maxProjectiles)
-                //{
-                //    Projectile proj = Main.projectile[projIndex];
-                //    if (proj.ModProjectile is TheLastLanceDASH dashProj)
-                //    {
-                //        dashProj.SetSuperDash(); // 调用方法设置超级冲刺
-                //    }
-                //}
-
                 Item.shootSpeed = 0f;
                 Item.useTime = Item.useAnimation = 60;
-                if (DownedBossSystem.downedLeviathan) // 如果击败了利维坦
+
+                // 冷却时间设置
+                if (DownedBossSystem.downedLeviathan)
                 {
-                    rightClickCooldown = 240; // 冷却时间被缩短至200
+                    rightClickCooldown = 300;
                 }
                 else
                 {
-                    rightClickCooldown = 300; // 正常冷却时间是300
+                    rightClickCooldown = 300;
                 }
 
+                // 启动冷却视觉效果
+                TLLCoolDown.StartCooldown(rightClickCooldown);
             }
+
+
             else // 左键攻击
             {
                 // 扔出左键的

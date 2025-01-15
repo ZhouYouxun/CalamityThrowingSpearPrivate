@@ -200,8 +200,53 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
+
+
+            // 获取当前小鸟的数量
+            //int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
+
+            // 设置特效颜色和扩散范围
+            Color baseColor = Color.Red;
+            float sideLength = (currentBirdCount < 50) ? 10f : 25f; // 正常状态边长10，增强状态边长25
+            int particlesPerSide = (currentBirdCount < 50) ? 10 : 25; // 每条边的粒子数量
+            float expansionRate = (currentBirdCount < 50) ? 5f : 8f; // 正常状态和增强状态的扩散速度
+
+            // 计算总粒子数量
+            int totalParticles = (int)(particlesPerSide * 4); // 正方形四条边
+
+            // 绘制正方形
+            for (int i = 0; i < totalParticles; i++)
+            {
+                // 确定粒子在正方形的哪个边上
+                float progress = (i / (float)particlesPerSide) % 4; // 每条边的进度
+                Vector2 position;
+
+                if (progress < 1f) // 顶边
+                {
+                    position = Projectile.Center + new Vector2(-sideLength / 2 + progress * sideLength, -sideLength / 2);
+                }
+                else if (progress < 2f) // 右边
+                {
+                    position = Projectile.Center + new Vector2(sideLength / 2, -sideLength / 2 + (progress - 1f) * sideLength);
+                }
+                else if (progress < 3f) // 底边
+                {
+                    position = Projectile.Center + new Vector2(sideLength / 2 - (progress - 2f) * sideLength, sideLength / 2);
+                }
+                else // 左边
+                {
+                    position = Projectile.Center + new Vector2(-sideLength / 2, sideLength / 2 - (progress - 3f) * sideLength);
+                }
+
+                // 计算粒子速度
+                Vector2 velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * expansionRate;
+
+                // 生成粒子
+                GlowOrbParticle squareParticle = new GlowOrbParticle(
+                    position, velocity, false, 5, 0.7f, baseColor, true, true
+                );
+                GeneralParticleHandler.SpawnParticle(squareParticle);
+            }
         }
-
-
     }
 }

@@ -1221,7 +1221,7 @@
               "RelativeDocumentMoniker": "Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
               "RelativeToolTip": "Localization\\zh-Hans_Mods.CalamityThrowingSpear.hjson",
-              "ViewState": "AgIAAPgBAAAAAAAAAAAAAA4CAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAPwBAAAAAAAAAAAAABICAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2024-10-05T03:43:48.256Z",
               "IsPinned": true,
@@ -1235,7 +1235,7 @@
               "RelativeDocumentMoniker": "Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
               "RelativeToolTip": "Localization\\en-US_Mods.CalamityThrowingSpear.hjson",
-              "ViewState": "AgIAAAMCAAAAAAAAAAAAAAMCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAwCAAAAAAAAAAAAAAwCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2024-11-05T16:40:11.354Z",
               "IsPinned": true,
@@ -1279,7 +1279,7 @@
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\BPrePlantera\\TheLastLance\\TheLastLance.cs",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\BPrePlantera\\TheLastLance\\TheLastLance.cs",
               "RelativeToolTip": "Weapons\\NewWeapons\\BPrePlantera\\TheLastLance\\TheLastLance.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAA2wEkAAABLAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAA2wEgAAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-07T16:25:31.338Z",
               "EditorCaption": ""
@@ -1292,7 +1292,7 @@
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
               "RelativeToolTip": "Weapons\\NewWeapons\\\u8BB0\u4E8B\u672C.txt",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAADUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2024-12-03T17:17:55.913Z",
               "EditorCaption": ""
@@ -1344,7 +1344,7 @@
               "RelativeDocumentMoniker": "Weapons\\NewWeapons\\EAfterDog\\MiracleMatterJav\\MiracleMatterJavPROJ.cs",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\NewWeapons\\EAfterDog\\MiracleMatterJav\\MiracleMatterJavPROJ.cs",
               "RelativeToolTip": "Weapons\\NewWeapons\\EAfterDog\\MiracleMatterJav\\MiracleMatterJavPROJ.cs",
-              "ViewState": "AgIAAKoAAAAAAAAAAAAkwLkAAAB7AAAAAAAAAA==",
+              "ViewState": "AgIAAMUAAAAAAAAAAAAkwOMAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-11T01:48:03.894Z",
               "EditorCaption": ""
@@ -1487,7 +1487,7 @@
               "RelativeDocumentMoniker": "Weapons\\ChangedWeapons\\DPreDog\\GildedProboscisC\\GildedProboscisJavPROJ.cs",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\ChangedWeapons\\DPreDog\\GildedProboscisC\\GildedProboscisJavPROJ.cs",
               "RelativeToolTip": "Weapons\\ChangedWeapons\\DPreDog\\GildedProboscisC\\GildedProboscisJavPROJ.cs",
-              "ViewState": "AgIAAMoAAAAAAAAAAAAowM0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAowPoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T04:48:58.842Z",
               "EditorCaption": ""
@@ -1500,7 +1500,7 @@
               "RelativeDocumentMoniker": "Weapons\\ChangedWeapons\\EAfterDog\\NadirC\\NadirJavPlayer.cs",
               "ToolTip": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\Weapons\\ChangedWeapons\\EAfterDog\\NadirC\\NadirJavPlayer.cs",
               "RelativeToolTip": "Weapons\\ChangedWeapons\\EAfterDog\\NadirC\\NadirJavPlayer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-08T22:45:54.781Z",
               "EditorCaption": ""
@@ -1860,7 +1860,8 @@
               "RelativeToolTip": "CalamityThrowingSpear.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-05T00:09:19.864Z"
+              "WhenOpened": "2024-10-05T00:09:19.864Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
