@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             Projectile.width = 10;
             Projectile.height = 10;
             Projectile.friendly = true;
-            Projectile.penetrate = 5;
+            Projectile.penetrate = 3;
             Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.aiStyle = ProjAIStyleID.Nail;
