@@ -26,7 +26,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 18; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 24; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
