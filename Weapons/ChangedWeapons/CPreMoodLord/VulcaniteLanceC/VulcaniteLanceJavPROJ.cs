@@ -41,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 2; // 允许2次伤害
+            Projectile.penetrate = 1;
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -94,12 +94,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 
             // 10% 概率召唤 TinyFlare 弹幕
-            if (Main.rand.NextFloat() < 0.1f)
+            if (Main.rand.NextFloat() < 1f)
             {
                 // 攻击后在玩家位置生成TinyFlare弹幕，速度为0.7倍，伤害为0.33倍
                 Vector2 flareDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Main.player[Projectile.owner].Center, flareDirection * 0.7f * 10f,
-                    ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(), (int)(Projectile.damage * 3.33f), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(), (int)(Projectile.damage * 1.25f), Projectile.knockBack, Projectile.owner);
             }
         }
 
