@@ -88,7 +88,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 5;
             Projectile.timeLeft = 360;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -116,7 +116,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                 if (target != null)
                 {
                     Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 12f, 0.08f); // 追踪速度为12f
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 20f, 0.08f);
                 }
 
                 if (Projectile.localAI[0] == 0f)
@@ -136,7 +136,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                     // 生成三个传送门弹幕
                     foreach (Vector2 position in portalPositions)
                     {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavPortal>(), (int)(Projectile.damage * 0.8), Projectile.knockBack, Projectile.owner);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavPortal>(), (int)(Projectile.damage * 1), Projectile.knockBack, Projectile.owner);
                     }
 
 
@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                         Vector2 splitDirection = Projectile.velocity.RotatedBy(MathHelper.ToRadians(randomAngle));
 
                         // 生成分裂弹幕
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, splitDirection * 0.5f, ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(), (int)(Projectile.damage * 0.35), Projectile.knockBack, Projectile.owner);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, splitDirection * 0.5f, ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
                     }
 
 
