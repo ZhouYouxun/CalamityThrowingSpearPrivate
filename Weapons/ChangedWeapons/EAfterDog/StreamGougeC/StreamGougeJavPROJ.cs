@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                         Vector2 splitDirection = Projectile.velocity.RotatedBy(MathHelper.ToRadians(randomAngle));
 
                         // 生成分裂弹幕
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, splitDirection * 0.5f, ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, splitDirection * 0.5f, ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(), (int)(Projectile.damage * 0.4), Projectile.knockBack, Projectile.owner);
                     }
 
 
