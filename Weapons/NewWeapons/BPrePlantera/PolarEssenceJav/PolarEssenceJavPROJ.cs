@@ -152,7 +152,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                 bool isInTundra = owner != null && owner.ZoneSnow; // 检测玩家是否在苔原区域
 
                 // 生成 CoolWhipProj
-                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 917, (int)(Projectile.damage * 2f), 0, Projectile.owner);
+                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 917, (int)(Projectile.damage * 1.5f), 0, Projectile.owner);
 
                 // 修改生成投射物的属性
                 if (projID != Main.maxProjectiles)

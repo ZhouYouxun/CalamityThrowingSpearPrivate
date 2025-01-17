@@ -105,7 +105,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                     float rotation = MathHelper.ToRadians(45);
                     Vector2 velocity = Projectile.velocity.RotatedByRandom(rotation) * Main.rand.NextFloat(0.8f, 1.2f) * 1.4f; // 增加速度到 1.4 倍
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, velocity,
-                        ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+                        ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
                 }
 
 

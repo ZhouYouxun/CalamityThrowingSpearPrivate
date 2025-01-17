@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.alpha = 255;
-            Projectile.penetrate = 5;
+            Projectile.penetrate = 1;
             Projectile.timeLeft = 240;
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 1;

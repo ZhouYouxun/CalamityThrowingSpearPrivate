@@ -208,7 +208,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 if (targetPlayer.active && !targetPlayer.dead)
                 {
                     // 为玩家施加 创造胜利，持续时间为 300 帧（5 秒）
-                    targetPlayer.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 300);
+                    targetPlayer.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 180);
                 }
             }
 
