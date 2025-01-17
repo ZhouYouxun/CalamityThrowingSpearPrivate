@@ -127,25 +127,23 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
             target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
 
             //肾上腺素期间增强移除
-            /*if (Main.rand.NextFloat() < 0.8f)
+            if (Main.rand.NextFloat() < 0.8f)
             {
                 // 如果玩家拥有 AdrenalineMode Buff，将 GalvanizingGlaiveJavGaussEnergy 的伤害增加至 1.25
-                float energyDamageMultiplier = hasAdrenalineMode ? 1.25f : 0.5f;
-
+                //float energyDamageMultiplier = hasAdrenalineMode ? 1.25f : 0.5f;
                 for (int i = 0; i < 4; i++)
                 {
                     Vector2 spawnVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(45)) * 0.6f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussEnergy>(), (int)(Projectile.damage * energyDamageMultiplier), Projectile.knockBack, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussEnergy>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
                 }
             }
             else
             {
                 // 如果玩家拥有 AdrenalineMode Buff，将 GalvanizingGlaiveJavGaussFlux 的伤害增加至 7.5
-                float fluxDamageMultiplier = hasAdrenalineMode ? 7.5f : 3f;
-
+                //float fluxDamageMultiplier = hasAdrenalineMode ? 3f : 3f;
                 Vector2 fluxVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * 0.8f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fluxVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussFlux>(), (int)(Projectile.damage * fluxDamageMultiplier), Projectile.knockBack, Projectile.owner);
-            }*/
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fluxVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussFlux>(), (int)(Projectile.damage * 3f), Projectile.knockBack, Projectile.owner);
+            }
 
             // 生成粒子效果
             float[] particleAngleOffsets = { -2.3f, -1.15f, 1.15f, 2.3f };
