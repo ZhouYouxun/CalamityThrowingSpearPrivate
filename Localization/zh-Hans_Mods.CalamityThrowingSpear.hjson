@@ -23,6 +23,7 @@ Projectiles: {
 			SoulHunterJavPROJ.DisplayName: 魂狩
 			TerraLanceBEAM.DisplayName: 泰拉巨枪光束
 			TerraLancePROJ.DisplayName: 泰拉巨枪
+			// BloodstoneRIGHT.DisplayName: Bloodstone R I G H T
 		}
 
 		BPrePlantera: {
@@ -99,6 +100,8 @@ Projectiles: {
 			SoulSeekerJavPROJ.DisplayName: 终幕残翼
 			// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
 			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
+			// PrimordialStatePROJ.DisplayName: Primordial State P R O J
+			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 		}
 	}
 
@@ -109,6 +112,8 @@ Projectiles: {
 			GoldplumeJavPROJ.DisplayName: 金羽
 			SausageMakerJavPROJ.DisplayName: 香肠矛
 			YateveoBloomJavPROJ.DisplayName: 绽花毒藤
+			// GoldplumeJavWind.DisplayName: Goldplume Jav Wind
+			// GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
 		}
 
 		BPrePlantera: {
@@ -137,6 +142,7 @@ Projectiles: {
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
 			VulcaniteLanceJavTinyFlare.DisplayName: 火山之矛火焰精灵
 			// TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
+			// HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
 		}
 
 		DPreDog: {
@@ -171,7 +177,6 @@ Projectiles: {
 			StreamGougeJavPROJSPLIT.DisplayName: 宇宙暗流分裂弹幕
 			ViolenceJavLight.DisplayName: 恣睢光束
 			ViolenceJavPROJ.DisplayName: 恣睢
-			// StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
 		}
 	}
 
@@ -185,9 +190,19 @@ Projectiles: {
 	// PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
 	// PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
 	// PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
+	// PrimordialStateSlash.DisplayName: Primordial State Slash
+	// StarsofDestinySTAR.DisplayName: Starsof Destiny S T A R
+	// StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+	// StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+	// StarsofDestinyLIGHT.DisplayName: Starsof Destiny L I G H T
+	// StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+	// StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
 }
 
-// Projectile.DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+Projectile: {
+	// DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	// CPreMoodLord.HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+}
 
 ChangedWeapons: {
 	APreHardMode: {
@@ -832,6 +847,16 @@ NewWeapons: {
 			// Tooltip: ""
 			// DisplayName: The Other Revelation
 		}
+
+		PrimordialState: {
+			// DisplayName: Primordial State
+			// Tooltip: ""
+		}
+
+		StarsofDestiny: {
+			// Tooltip: ""
+			// DisplayName: Starsof Destiny
+		}
 	}
 }
 
@@ -1048,5 +1073,15 @@ Buffs: {
 	TimingBuff: {
 		// Description: Mods.CalamityThrowingSpear.Buffs.TimingBuff.Description
 		// DisplayName: Timing Buff
+	}
+
+	StarsofDestinyPBuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyPBuff.Description
+		// DisplayName: Starsof Destiny P Buff
+	}
+
+	StarsofDestinyEDebuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
+		// DisplayName: Starsof Destiny E Debuff
 	}
 }

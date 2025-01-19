@@ -13,6 +13,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Rarities;
+using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 {
@@ -43,7 +44,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe(); 
-            recipe.AddIngredient(ItemID.HallowJoustingLance, 1);
+            recipe.AddIngredient<ChaosEssenceJav>();
             recipe.AddIngredient<AuricQuantumCoolingCell>();
             recipe.AddIngredient(ItemID.Wire, 5);
             //recipe.AddIngredient<AuricBar>(5); // 已经有电池了，就不需要这个了

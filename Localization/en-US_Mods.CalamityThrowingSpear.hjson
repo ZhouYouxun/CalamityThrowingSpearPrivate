@@ -23,6 +23,7 @@ Projectiles: {
 			SoulHunterJavPROJ.DisplayName: Soul Hunter
 			TerraLanceBEAM.DisplayName: Terraternal Beam
 			TerraLancePROJ.DisplayName: Terraternal Lance
+			BloodstoneRIGHT.DisplayName: Bloodstone R I G H T
 		}
 
 		BPrePlantera: {
@@ -99,6 +100,8 @@ Projectiles: {
 			SoulSeekerJavPROJ.DisplayName: Apex Remnant
 			TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
 			TheOtherMiracleMatterJavEXP.DisplayName: Horizon Probe E X P
+			PrimordialStatePROJ.DisplayName: Primordial State P R O J
+			StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 		}
 	}
 
@@ -109,6 +112,8 @@ Projectiles: {
 			GoldplumeJavPROJ.DisplayName: Goldplume
 			SausageMakerJavPROJ.DisplayName: Sausage Maker Spear
 			YateveoBloomJavPROJ.DisplayName: Blooming Poison Vine
+			GoldplumeJavWind.DisplayName: Goldplume Jav Wind
+			GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
 		}
 
 		BPrePlantera: {
@@ -137,6 +142,7 @@ Projectiles: {
 			VulcaniteLanceJavPROJ.DisplayName: Vulcanite Lance
 			VulcaniteLanceJavTinyFlare.DisplayName: Vulcanite Lance Flare Sprite
 			TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
+			HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
 		}
 
 		DPreDog: {
@@ -169,14 +175,8 @@ Projectiles: {
 			StreamGougeJavPortal.DisplayName: Cosmic Stream Portal
 			StreamGougeJavPROJ.DisplayName: Cosmic Stream
 			StreamGougeJavPROJSPLIT.DisplayName: Cosmic Stream Split Projectile
-<<<<<<< Updated upstream
-			ViolenceJavLight.DisplayName: Violence Light Beam
-			ViolenceJavPROJ.DisplayName: Violence
-=======
 			ViolenceJavLight.DisplayName: Rampage Light Beam
 			ViolenceJavPROJ.DisplayName: Rampage
-			StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
->>>>>>> Stashed changes
 		}
 	}
 
@@ -190,9 +190,19 @@ Projectiles: {
 	PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
 	PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
 	PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
+	PrimordialStateSlash.DisplayName: Primordial State Slash
+	StarsofDestinySTAR.DisplayName: Starsof Destiny S T A R
+	StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+	StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+	StarsofDestinyLIGHT.DisplayName: Starsof Destiny L I G H T
+	StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+	StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
 }
 
-Projectile.DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+Projectile: {
+	DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	CPreMoodLord.HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+}
 
 ChangedWeapons: {
 	APreHardMode: {
@@ -835,6 +845,16 @@ NewWeapons: {
 			Tooltip: ""
 			DisplayName: The Other Revelation
 		}
+
+		PrimordialState: {
+			DisplayName: Primordial State
+			Tooltip: ""
+		}
+
+		StarsofDestiny: {
+			Tooltip: ""
+			DisplayName: Starsof Destiny
+		}
 	}
 }
 
@@ -1052,5 +1072,15 @@ Buffs: {
 	TimingBuff: {
 		Description: Mods.CalamityThrowingSpear.Buffs.TimingBuff.Description
 		DisplayName: Timing Buff
+	}
+
+	StarsofDestinyPBuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyPBuff.Description
+		DisplayName: Starsof Destiny P Buff
+	}
+
+	StarsofDestinyEDebuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
+		DisplayName: Starsof Destiny E Debuff
 	}
 }

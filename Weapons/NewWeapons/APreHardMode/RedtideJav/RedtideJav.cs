@@ -38,13 +38,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         }
 
 
-        public override void AddRecipes()
-        {
-            Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<RedtideSpear>();
-            //recipe.AddTile(TileID.Anvils);
-            recipe.Register();
-        }
+        //public override void AddRecipes()
+        //{
+        //    Recipe recipe = CreateRecipe();
+        //    recipe.AddIngredient<RedtideSpear>();
+        //    //recipe.AddTile(TileID.Anvils);
+        //    recipe.Register();
+        //}
 
 
 

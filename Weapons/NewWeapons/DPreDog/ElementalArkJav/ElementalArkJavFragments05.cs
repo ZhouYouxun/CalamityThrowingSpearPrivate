@@ -159,9 +159,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                         Vector2 genericBloomVelocity = Main.rand.NextVector2Circular(3f, 3f) * 0.33f;
                         GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, genericBloomVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
                         break;
-
-                    case 2:
-                       
+                    case 2:                       
                         Vector2 critSparkVelocity = -Projectile.velocity * Main.rand.NextFloat(0.5f, 1.5f) * 0.33f;
                         GeneralParticleHandler.SpawnParticle(new CritSpark(particlePosition, critSparkVelocity, Color.White, particleColor, particleScale * 5f, Main.rand.Next(20) + 10, 0.1f, 3));
                         break;

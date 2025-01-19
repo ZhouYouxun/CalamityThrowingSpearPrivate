@@ -62,25 +62,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             // 弹幕保持直线运动并逐渐加速
             Projectile.velocity *= 1.01f;
 
+            // 使用顶端位置作为基准
+            Vector2 tipPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1); // 使用顶端位置
 
-
+            // 在弹幕顶端生成 SparkParticle 特效
             if (Projectile.numUpdates % 3 == 0)
             {
                 Color outerSparkColor = new Color(255, 215, 0);
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
                 float outerSparkScale = 1.2f + scaleBoost;
-                SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
+                SparkParticle spark = new SparkParticle(tipPosition, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            //// 在飞行路径上留下白色的重型烟雾粒子
-            //if (Main.rand.NextBool(3)) // 每3帧生成一次粒子
-            //{
-            //    Color smokeColor = Color.Lerp(Color.Yellow, Color.Gold, 0.5f);
-            //    Particle smoke = new HeavySmokeParticle(Projectile.Center, Projectile.velocity * 0.5f, smokeColor, 30, Projectile.scale * Main.rand.NextFloat(0.7f, 1.3f), 1.0f, MathHelper.ToRadians(2f), required: true);
-            //    GeneralParticleHandler.SpawnParticle(smoke);
-            //}
+            // 在弹幕顶端生成两排平行的 AltSparkParticle
+            for (int i = -12; i <= 12; i += 24) // 偏移量相对于弹幕自身的朝向
+            {
+                // 基于弹幕旋转方向计算偏移
+                Vector2 offset = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * i;
 
+                // 粒子颜色
+                Color particleColor = Color.Lerp(Color.Yellow, Color.LightYellow, Main.rand.NextFloat(0.5f, 1.0f)); // 亮黄色或金色
+
+                // 创建并生成粒子
+                AltSparkParticle spark = new AltSparkParticle(
+                    tipPosition + offset,           // 偏移位置
+                    Projectile.velocity * 0.5f,     // 粒子速度
+                    false,
+                    15,
+                    1f,
+                    particleColor
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+
+            // 在弹幕顶端生成粒子特效
+            tipPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+            int dustType = Main.rand.Next(new int[] { DustID.YellowTorch, 19, 10 }); // 随机粒子类型
+            for (int j = 0; j < Main.rand.Next(1, 3); j++) // 每帧向左右各发射 1~2 个粒子
+            {
+                Dust dust = Dust.NewDustPerfect(tipPosition, dustType, new Vector2(Main.rand.NextFloat(-2f, 2f), 0), 150, Color.Yellow, 1.5f);
+                dust.noGravity = true;
+            }
         }
 
         
@@ -138,72 +162,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 dust.fadeIn = 1.2f; // 粒子淡入效果
             }
 
-            //// 1. 生成较小的橙黄色和淡黄色爆炸特效（超新星的那个光圈逐渐缩小的特效）
-            //Color orangeColor = Color.Orange;
-            //Color lightYellowColor = Color.LightYellow;
-            //float smallerScale = 1.5f; // 较小的扩散大小
-            //float rotationSpeed = Main.rand.NextFloat(-10f, 10f); // 随机旋转速度
+            //// 新增三条线特效
+            //Vector2 center = Projectile.Center;
+            //float initialAngle = Main.rand.NextFloat(MathHelper.TwoPi); // 随机起始角度
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    float lineAngle = initialAngle + MathHelper.TwoPi / 3f * i; // 每条线间隔 120°
+            //    for (int j = 0; j < 25; j++) // 每条线的粒子数
+            //    {
+            //        float distance = j * 5f; // 粒子之间的间距
+            //        float widthOffset = Main.rand.NextFloat(-5f, 5f); // 增加宽度偏移，随机值扩展范围
+            //        Vector2 position = center + new Vector2((float)Math.Cos(lineAngle), (float)Math.Sin(lineAngle)) * distance * 2.5f; // 线的长度增加 2.5 倍
+            //        position += new Vector2((float)Math.Cos(lineAngle + MathHelper.PiOver2), (float)Math.Sin(lineAngle + MathHelper.PiOver2)) * widthOffset; // 宽度偏移
 
-            //// 创建两个爆炸粒子，颜色为橙黄色和淡黄色
-            //Particle orangeExplosion = new CustomPulse(spawnPosition, Vector2.Zero, orangeColor, "CalamityMod/Particles/LargeBloom", new Vector2(0.8f, 0.8f), rotationSpeed, smallerScale, smallerScale - 0.5f, 15);
-            //Particle yellowExplosion = new CustomPulse(spawnPosition, Vector2.Zero, lightYellowColor, "CalamityMod/Particles/LargeBloom", new Vector2(0.8f, 0.8f), -rotationSpeed, smallerScale, smallerScale - 0.5f, 15);
-
-            //GeneralParticleHandler.SpawnParticle(orangeExplosion);
-            //GeneralParticleHandler.SpawnParticle(yellowExplosion);
-
-
-
-
-            //// 定义左右方向的速度
-            //Vector2 leftDirection = new Vector2(-1, 0);  // 绝对左方
-            //Vector2 rightDirection = new Vector2(1, 0);  // 绝对右方
-
-            //// 定义慢速和快速的速度倍率
-            //float slowSpeed = 5f;  // 慢速初始速度
-            //float fastSpeed = slowSpeed * 1.3f;  // 快速弹幕的初始速度是慢速的1.3倍
-
-            //// 生成两个向左的弹幕（一个快，一个慢）
-            //Projectile.NewProjectile(
-            //    Projectile.GetSource_FromThis(),
-            //    spawnPosition + new Vector2(0, -6 * 16),  // 向上6*16像素
-            //    leftDirection * fastSpeed,  // 快速向左
-            //    ModContent.ProjectileType<AuricJavBallPROJ>(),
-            //    (int)(Projectile.damage * 2.1f),
-            //    Projectile.knockBack,
-            //    Projectile.owner
-            //);
-
-            //Projectile.NewProjectile(
-            //    Projectile.GetSource_FromThis(),
-            //    spawnPosition + new Vector2(0, 6),  // 向下6像素
-            //    leftDirection * slowSpeed,  // 慢速向左
-            //    ModContent.ProjectileType<AuricJavBallPROJ>(),
-            //    (int)(Projectile.damage * 2.1f),
-            //    Projectile.knockBack,
-            //    Projectile.owner
-            //);
-
-            //// 生成两个向右的弹幕（一个快，一个慢）
-            //Projectile.NewProjectile(
-            //    Projectile.GetSource_FromThis(),
-            //    spawnPosition + new Vector2(0, -6 * 16),  // 向上6*16像素
-            //    rightDirection * fastSpeed,  // 快速向右
-            //    ModContent.ProjectileType<AuricJavBallPROJ>(),
-            //    (int)(Projectile.damage * 2.1f),
-            //    Projectile.knockBack,
-            //    Projectile.owner
-            //);
-
-            //Projectile.NewProjectile(
-            //    Projectile.GetSource_FromThis(),
-            //    spawnPosition + new Vector2(0, 6),  // 向下6像素
-            //    rightDirection * slowSpeed,  // 慢速向右
-            //    ModContent.ProjectileType<AuricJavBallPROJ>(),
-            //    (int)(Projectile.damage * 2.1f),
-            //    Projectile.knockBack,
-            //    Projectile.owner
-            //);
-
+            //        int dustType = Main.rand.NextFloat() < 0.4f ? DustID.UltraBrightTorch : DustID.BlueFlare; // 混合粒子
+            //        Dust dust = Dust.NewDustPerfect(position, dustType, Vector2.Zero, 150, Color.White, 1.5f);
+            //        dust.noGravity = true;
+            //        dust.velocity = Vector2.UnitY.RotatedBy(lineAngle) * Main.rand.NextFloat(1f, 3f); // 粒子向外扩散
+            //    }
+            //}
 
 
             // 定义左右方向的速度
@@ -232,10 +209,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                     }
                 }
             }
-
-
-
-
         }
 
 

@@ -71,7 +71,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/EMP"));
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/RevelationBIGEXP"));
 
             // 释放大量小型粒子组成垂直激光
             for (int i = 0; i < 25; i++)
