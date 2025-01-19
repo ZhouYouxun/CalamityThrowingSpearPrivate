@@ -38,7 +38,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 8; // 允许8次伤害
+            Projectile.penetrate = 4; // 允许8次伤害
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -204,7 +204,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));  // 随机角度
                 Vector2 velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 10f;  // 设置速度
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<MiracleMatterJavLight>(), (int)(Projectile.damage * 1.1f), Projectile.knockBack, Main.myPlayer);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<MiracleMatterJavLight>(), (int)(Projectile.damage * 1.2f), Projectile.knockBack, Main.myPlayer);
             }
 
             // 1. 生成较小的橙黄色和淡黄色爆炸特效（超新星的那个光圈逐渐缩小的特效）
