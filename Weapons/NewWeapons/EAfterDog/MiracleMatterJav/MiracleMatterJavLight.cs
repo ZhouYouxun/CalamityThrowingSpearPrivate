@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
 
         public static int MaxUpdate = 3; // 定义一个静态变量，表示弹幕每次更新的最大次数
-        private int Lifetime = 110; // 定义弹幕的生命周期为110
+        private int Lifetime = 180; // 定义弹幕的生命周期为110
 
         // 更改颜色：深绿色、黑色、另一种深绿色
         private static Color ShaderColorOne = Color.Cyan; // 着色器颜色1，设置为深绿色
