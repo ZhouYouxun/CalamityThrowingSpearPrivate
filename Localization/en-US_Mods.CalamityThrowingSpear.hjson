@@ -142,7 +142,6 @@ Projectiles: {
 			VulcaniteLanceJavPROJ.DisplayName: Vulcanite Lance
 			VulcaniteLanceJavTinyFlare.DisplayName: Vulcanite Lance Flare Sprite
 			TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
-			HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
 		}
 
 		DPreDog: {
@@ -177,6 +176,7 @@ Projectiles: {
 			StreamGougeJavPROJSPLIT.DisplayName: Cosmic Stream Split Projectile
 			ViolenceJavLight.DisplayName: Rampage Light Beam
 			ViolenceJavPROJ.DisplayName: Rampage
+			StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
 		}
 	}
 
@@ -203,6 +203,8 @@ Projectile: {
 	DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
 	CPreMoodLord.HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
 }
+
+Projectile.DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
 
 ChangedWeapons: {
 	APreHardMode: {

@@ -1,6 +1,15 @@
-
-/.vs/CalamityThrowingSpear/FileContentIndex
-/.vs/CalamityThrowingSpear/FileContentIndex
-.vs/CalamityThrowingSpear/DesignTimeBuild/.dtbcache.v2
-.vs/CalamityThrowingSpear/DesignTimeBuild/.dtbcache.v2
-/.vs
+# 忽略 .csproj 目录
+*.csproj
+# 忽略 .vs 目录
+.vs/
+# 忽略 .bin 文件
+*.bin
+# 忽略 .v2 文件
+*.v2
+# 忽略 .json 文件
+*.json
+# 忽略临时文件
+*.tmp
+*.log
+.vs/CalamityThrowingSpear/v17/.suo
+.vs/CalamityThrowingSpear/v17/fileList.bin
