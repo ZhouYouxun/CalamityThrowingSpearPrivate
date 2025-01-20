@@ -116,7 +116,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
 
                     Vector2 spawnPosition = Projectile.Center;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, featherVelocity,
-                        ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.275), Projectile.knockBack, Projectile.owner);
+                        ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.275), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
                 }
             }
 
@@ -134,13 +134,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                 float angleUp = MathHelper.ToRadians(45) * (i - 1);
                 Vector2 featherVelocityUp = new Vector2(0, -1).RotatedBy(angleUp) * Projectile.velocity.Length();
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, featherVelocityUp,
-                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
 
                 // 发射下方的羽毛弹幕，左右各45度范围内
                 float angleDown = MathHelper.ToRadians(45) * (i - 1);
                 Vector2 featherVelocityDown = new Vector2(0, 1).RotatedBy(angleDown) * Projectile.velocity.Length();
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, featherVelocityDown,
-                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
 
                 // 释放天蓝色的粒子特效（针对上方）
                 for (int d = 0; d < 10; d++)
