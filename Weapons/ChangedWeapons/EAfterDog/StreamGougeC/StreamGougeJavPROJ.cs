@@ -110,7 +110,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Projectile.velocity *= 1.005f;
 
             // 保持直线运动30帧，之后开始追踪
-            if (Projectile.ai[1] > 30)
+            if (Projectile.ai[1] > 5)
             {
                 NPC target = Projectile.Center.ClosestNPCAt(1800); // 在1800距离内查找最近敌人
                 if (target != null)
