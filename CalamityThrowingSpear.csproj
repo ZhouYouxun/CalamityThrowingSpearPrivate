@@ -86,6 +86,12 @@
 	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TerraLance\TerraLancePROJ.png" />
 	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TerraLance\泰拉长枪.txt" />
 	  <None Remove="Weapons\NewWeapons\CPreMoodLord\TidalMechanics\潮汐.txt" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\巴蛇吞像-鼓-徒.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\巴蛇吞像-鼓-杖.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\巴蛇吞像-鼓-死.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\巴蛇吞像-鼓-流.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\巴蛇吞像-鼓-笞.png" />
+	  <None Remove="Weapons\NewWeapons\CPreMoodLord\新文件夹\魔像矛贴图 (1).png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\ChaosWindJavElectromagneticBall2.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\ChaosWindJavWind.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\Projectile_465.png" />

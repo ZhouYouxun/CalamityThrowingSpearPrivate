@@ -200,11 +200,13 @@ Projectiles: {
 }
 
 Projectile: {
-	DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
-	CPreMoodLord.HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
-}
+	CPreMoodLord: {
+		HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+		SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
+	}
 
-Projectile.DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+}
 
 ChangedWeapons: {
 	APreHardMode: {
