@@ -1,0 +1,37 @@
+    //  π”√ Shader: FlameStreakShader ("CalamityMod:Flame")
+        public override bool PreDraw(ref Color lightColor)
+        {
+            GameShaders.Misc["CalamityMod:Flame"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+            );
+
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.3f;
+            int numPoints = 38; //   ≈‰ª—ÊÕœŒ≤
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    FlameWidthFunction,
+                    FlameColorFunction,
+                    (_) => overallOffset,
+                    shader: GameShaders.Misc["CalamityMod:Flame"]
+                ),
+                numPoints
+            );
+
+            return false;
+        }
+
+        private float FlameWidthFunction(float completionRatio)
+        {
+            float baseWidth = 18f;
+            float flamePulse = (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 4f) * 3f;
+            return baseWidth + flamePulse;
+        }
+
+        private Color FlameColorFunction(float completionRatio)
+        {
+            float flicker = (float)Math.Sin(completionRatio * 8f + Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f;
+            Color startColor = Color.Lerp(Color.OrangeRed, Color.Yellow, flicker);
+            return Color.Lerp(startColor, Color.Transparent, completionRatio);
+        }

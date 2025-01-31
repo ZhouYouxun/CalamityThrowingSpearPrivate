@@ -46,6 +46,7 @@ Projectiles: {
 			TheLastLanceDASH.DisplayName: The Last Lance Dash
 			TheLastLancePROJ.DisplayName: The Last Lance
 			TheLastLanceWater.DisplayName: The Last Lance Waterflow
+			SHPCKFast2.DisplayName: S H P C K Fast2
 		}
 
 		APreHardMode: {
@@ -64,9 +65,9 @@ Projectiles: {
 
 		CPreMoodLord: {
 			FestiveHalberdPROJ.DisplayName: Festive Halberd
-			StarGunSagittariusPROJ.DisplayName: Starpiercer
-			StarGunSagittariusPROJECHO.DisplayName: Starpiercer Charged Attack
-			StarGunSagittariusSPIT.DisplayName: Starpiercer Split
+			SagittariusPROJ.DisplayName: Starpiercer
+			SagittariusPROJECHO.DisplayName: Starpiercer Charged Attack
+			SagittariusSPIT.DisplayName: Starpiercer Split
 			TidalMechanicsBubbles.DisplayName: Tidal Bubbles
 			TidalMechanicsPROJ.DisplayName: Tidal
 			TidalMechanicsShark.DisplayName: Tidal Shark
@@ -631,7 +632,7 @@ NewWeapons: {
 				'''
 		}
 
-		StarGunSagittarius: {
+		Sagittarius: {
 			DisplayName: Starpiercer - Sagittarius
 			Tooltip:
 				'''
@@ -1011,7 +1012,7 @@ Items: {
 }
 
 ModBuff: {
-	StarGunSagittariusEDebuff: {
+	SagittariusEDebuff: {
 		DisplayName: Sagittarius Flare
 		Description:
 			'''

@@ -1,0 +1,54 @@
+  public override void SetStaticDefaults()
+  {
+      ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+      ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+  }
+
+  private float PrimitiveWidthFunction(float completionRatio)
+  {
+      float width = 24f;
+      float minWidth = 0.03f;
+      float maxWidth = width;
+
+      if (completionRatio <= 0.3f) // 让拖尾前段变细
+          width = MathHelper.Lerp(minWidth, maxWidth, Utils.GetLerpValue(0f, 0.3f, completionRatio, true));
+
+      return width;
+  }
+
+  private Color PrimitiveColorFunction(float completionRatio)
+  {
+      float timeFactor = Main.GlobalTimeWrappedHourly * 4.0f;
+      float flicker = (float)Math.Sin(completionRatio * 6f + timeFactor) * 0.5f + 0.5f;
+
+      Color startColor = Color.Lerp(Color.Cyan, Color.Blue, flicker);
+      return Color.Lerp(startColor, Color.Transparent, MathHelper.SmoothStep(0f, 1f, completionRatio));
+  }
+
+
+  public override bool PreDraw(ref Color lightColor)
+  {
+      // 绑定 `BasicPrimitiveShader`
+      GameShaders.Misc["CalamityMod:PrimitiveDrawer"].SetShaderTexture(
+          ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+      );
+
+      Vector2 overallOffset = Projectile.Size * 0.5f;
+      overallOffset += Projectile.velocity * 1.2f; // 稍微调整偏移
+
+      int numPoints = 30; // 拖尾采样点数量
+
+      // 调用 `PrimitiveRenderer.RenderTrail()` 渲染拖尾
+      PrimitiveRenderer.RenderTrail(
+          Projectile.oldPos,
+          new(
+              PrimitiveWidthFunction,  // 计算拖尾宽度
+              PrimitiveColorFunction,  // 计算拖尾颜色
+              (_) => overallOffset,    // 位置偏移
+              shader: GameShaders.Misc["CalamityMod:PrimitiveDrawer"] // 使用 `BasicPrimitiveShader`
+          ),
+          numPoints
+      );
+
+      return false; // 不执行默认绘制
+  }

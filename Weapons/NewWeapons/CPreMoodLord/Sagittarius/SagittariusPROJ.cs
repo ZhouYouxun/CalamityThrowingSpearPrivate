@@ -13,11 +13,11 @@ using Terraria.GameContent;
 using CalamityMod.Particles;
 using Terraria.Audio;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
-    public class StarGunSagittariusPROJ : ModProjectile, ILocalizedModType
+    public class SagittariusPROJ : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/StarGunSagittarius/StarGunSagittarius";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/Sagittarius";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
         // 声明静态计数器，所有普通长枪共享计数
         private static int shotCounter = 0;
@@ -90,7 +90,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
             if (shotCounter >= 5)
             {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * (1f / 3f),
-                    ModContent.ProjectileType<StarGunSagittariusPROJECHO>(),
+                    ModContent.ProjectileType<SagittariusPROJECHO>(),
                     (int)(Projectile.damage * 1.35f), Projectile.knockBack, Projectile.owner);
 
                 shotCounter = 0;

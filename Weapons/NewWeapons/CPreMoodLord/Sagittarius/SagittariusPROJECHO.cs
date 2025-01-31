@@ -13,11 +13,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.Audio;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
-    public class StarGunSagittariusPROJECHO : ModProjectile, ILocalizedModType
+    public class SagittariusPROJECHO : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/StarGunSagittarius/StarGunSagittarius";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/Sagittarius";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
         public ref float Time => ref Projectile.ai[1];
         public override void SetStaticDefaults()
@@ -76,7 +76,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
 
             if (!isAttached)// 蓄力阶段
             {
-                
+
                 // 减速并逐渐增大和旋转
                 Projectile.velocity *= 0.98f;
                 Projectile.rotation += 0.075f * Projectile.scale;
@@ -173,7 +173,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
                     Vector2 velocitySPIT = Vector2.Normalize(target.Center - spawnPosition) * 16;
 
                     // 生成分裂长枪，伤害为充能长枪的1/5
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<StarGunSagittariusSPIT>(), (Projectile.damage / 13), Projectile.knockBack, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<SagittariusSPIT>(), Projectile.damage / 13, Projectile.knockBack, Projectile.owner);
                 }
 
 
@@ -198,7 +198,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
                     );
 
                     GeneralParticleHandler.SpawnParticle(spark);
-                }               
+                }
             }
             else // 仅在第一次击中时触发特效
             {
@@ -206,7 +206,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
                 isAttached = true;
 
                 // 添加Debuff
-                target.AddBuff(ModContent.BuffType<StarGunSagittariusEDebuff>(), 1200);
+                target.AddBuff(ModContent.BuffType<SagittariusEDebuff>(), 1200);
                 // 生成20个旋转着逐渐消失的粒子效果
                 for (int i = 0; i < 20; i++)
                 {

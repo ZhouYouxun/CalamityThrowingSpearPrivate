@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
     public class XiaoZhiTiaoSG : ModItem
     {
@@ -29,7 +29,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
     }
     public class XiaoZhiTiaoSG2 : ModItem
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/StarGunSagittarius/XiaoZhiTiaoSG";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/XiaoZhiTiaoSG";
         public override void SetStaticDefaults()
         {
             ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<XiaoZhiTiaoSG>();

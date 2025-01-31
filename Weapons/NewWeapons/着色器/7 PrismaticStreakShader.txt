@@ -1,0 +1,37 @@
+    // สนำร Shader: PrismaticStreakShader ("CalamityMod:PrismaticStreak")
+        public override bool PreDraw(ref Color lightColor)
+        {
+            GameShaders.Misc["CalamityMod:PrismaticStreak"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+            );
+
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;
+            int numPoints = 45;
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    PrismaticWidthFunction,
+                    PrismaticColorFunction,
+                    (_) => overallOffset,
+                    shader: GameShaders.Misc["CalamityMod:PrismaticStreak"]
+                ),
+                numPoints
+            );
+
+            return false;
+        }
+
+        private float PrismaticWidthFunction(float completionRatio)
+        {
+            return 18f + (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 2f) * 3f;
+        }
+
+        private Color PrismaticColorFunction(float completionRatio)
+        {
+            Color[] spectrum = { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+            float shift = (completionRatio + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
+            return Color.Lerp(spectrum[(int)(shift * spectrum.Length)], Color.Transparent, completionRatio);
+        }
+
+

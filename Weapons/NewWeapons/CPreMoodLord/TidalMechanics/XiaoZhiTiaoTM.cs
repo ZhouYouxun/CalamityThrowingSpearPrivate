@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
-using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 {

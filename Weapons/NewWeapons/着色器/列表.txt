@@ -1,0 +1,41 @@
+Shader 名称	Shader 作用	Shader 代码变量名
+TrailStreak	泛用 UV 淡化拖尾 Shader，适用于多个武器的拖尾特效。	FadedUVMapStreakShader
+Flame	火焰拖尾 Shader，可能用于燃烧类弹幕和武器特效。	FlameStreakShader
+FadingSolidTrail	渐隐拖尾 Shader，用于某些武器特效，让拖尾在尾端逐渐消失。	FadingSolidTrailShader
+OverpoweredTouhouSpearShader	Scarlet Devil 武器的光亮拖尾（被多个武器复用）。	ScarletDevilShader
+Bordernado	Yharon 相关，可能用于火焰柱。	BordernadoFireShader
+PrismaticStreak	多彩晶体拖尾 Shader，可能用于 Photon Ripper 类光学武器。	PrismCrystalShader
+ImpFlameTrail	火焰拖尾 Shader，被多个武器（Apollo, Artemis, Cosmilamp, Gem Tech）复用。	ImpFlameTrailShader
+SupremeShield	灾厄之眼护盾 Shader，用于 Supreme Calamitas 视觉特效。	SCalShieldShader
+RancorMagicCircle	魔法阵 Shader，用于 Rancor 召唤的魔法阵。	RancorMagicCircleShader
+BasicTint	通用染色 Shader，用于多个武器和特效，如 Ares Telegraph、Biome Blade 等。	BasicTintShader
+CircularBarShader	圆形条形进度条 Shader，用于 Cooldown Rack 之类的显示条 UI。	CircularBarShader
+CircularAoETelegraph	圆形范围指示 Shader，用于 Ares 核弹等攻击范围指示器。	CircularAoETelegraph
+IntersectionClip	裁剪 Shader，用于 Stream Gouge 让矛从传送门伸出的特效。	IntersectionClipShader
+LinearTransformation	线性变换 Shader，可能用于某些武器的斩击效果，如 Bladecrest Oathsword。	LocalLinearTransformationShader
+ArtemisLaser	Artemis Ohio Beam / G-Fuel Beam Shader，用于 Nuclear Terror 相关武器。	ArtemisLaserShader
+ExobladeSlash	Exoblade 近战剑气 Shader，也被 Terratomere 使用。	ExobladeSlashShader
+ExobladePierce	Exoblade 投射物命中后斩击 Shader，也被 Terratomere 使用。	ExobladePierceShader
+ExoVortex	虚空能量涡旋 Shader，用于 Subsuming Vortex 的漩涡特效。	ExoVortexShader
+SideStreakTrail	侧面能量条纹拖尾 Shader，可能用于 Subsuming Vortex 的副拖尾。	SideStreakTrailShader
+HeavenlyGaleTrail	Heavenly Gale 追踪箭拖尾 Shader，用于 Exo Bow 类武器。	HeavenlyGaleTrailShader
+HeavenlyGaleLightningArc	Heavenly Gale 武器的雷电 Shader，用于 Stormfront Razor 雷击。	HeavenlyGaleLightningShader
+BlueStatic	蓝色静态特效 Shader，用于 Codebreaker 和 Draedon 交互 UI。	BlueStaticShader
+PrimitiveTexture	贴图覆盖 Shader，用于 Acid Eels 可能用于增强动画流畅度。	PrimTextureOverlayShader
+DoGPortal	Devourer of Gods 传送门 Shader，用于 DoG Phase 1 结束 时的逃跑特效。	DoGPortalShader
+MetaballEdge	粘性粒子 Shader，用于 Gruesome Eminence 粘性粒子。	MetaballEdgeShader
+AdditiveMetaballEdge	粘性粒子合并 Shader，用于 MetaballManager 计算合并形状。	AdditiveMetaballEdgeShader
+FluidShaders	Navier-Stokes 流体计算 Shader，用于未知流体效果。	FluidShaders
+SpreadTelegraph	发散式 UI 警告 Shader，用于 Coral Spout、Titanium Railgun 充能 UI。	SpreadTelegraph
+PixelatedSightLine	像素风激光瞄准 Shader，用于 Wulfrum Screwdriver、Titanium Railgun。	PixelatedSightLineShader
+WulfrumTilePing	瓦尔弗伦扫描仪 Shader，用于 Wulfrum Treasure Pinger 标记物品位置。	WulfrumTilePingShader
+WulfrumScaffoldSelection	瓦尔弗伦建筑放置高亮 Shader，用于 Wulfrum Scaffold Kit。	WulfrumScaffoldSelectionShader
+RoverDriveShield	Rover Drive 力场 Shader，用于 Rover Drive 饰品的护盾特效。	RoverDriveShieldShader
+SwingSprite	挥动武器 Shader，用于 Exoblade 大剑斩击动画。	SwingSpriteShader
+MiracleBlight	Miracle Blight 视觉特效 Shader，用于 Miracle Blight Debuff。	MiracleBlightShader
+CircularGradientWithEdge	渐变光晕 Shader，用于未知 UI 或技能效果。	CircularGradientWithEdgeShader
+WavyOpacity	波动透明度 Shader，用于未知视觉特效。	WavyOpacityShader
+HellBall	地狱火焰 Shader，用于未知特效。	HellBallShader
+HolyInferno	神圣火焰 Shader，可能用于 Profaned Guardians 相关技能。	HolyInfernoShader
+DeerclopsShadow	鹿角怪影子 Shader，用于 Deerclops 视觉特效。	DeerclopsShadowShader
+TeslaTrail	特斯拉雷电拖尾 Shader，用于 特斯拉风格武器。	TeslaTrailShader

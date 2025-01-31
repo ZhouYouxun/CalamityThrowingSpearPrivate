@@ -17,9 +17,9 @@ using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
-    public class StarGunSagittariusEDebuff : ModBuff, ILocalizedModType
+    public class SagittariusEDebuff : ModBuff, ILocalizedModType
     {
         public new string LocalizationCategory => "ModBuff";
         private int summonCounter = 0;

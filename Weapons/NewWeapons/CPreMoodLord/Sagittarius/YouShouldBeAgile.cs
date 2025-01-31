@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
     public class YouShouldBeAgile : GlobalNPC
     {
@@ -58,7 +58,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
                 // 根据玩家受击次数决定给予的物品
                 if (playerHitCount <= 4)
                 {
-                    player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<StarGunSagittarius>(), 1);
+                    player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<Sagittarius>(), 1);
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
                     Main.NewText("完美的战斗，这是你的奖品！", 0, 255, 0); // 奖励文字
                 }

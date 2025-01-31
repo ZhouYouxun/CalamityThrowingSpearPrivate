@@ -1,0 +1,34 @@
+   // สนำร Shader: ExobladeSlashShader ("CalamityMod:ExobladeSlash")
+        public override bool PreDraw(ref Color lightColor)
+        {
+            GameShaders.Misc["CalamityMod:ExobladeSlash"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+            );
+
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.5f;
+            int numPoints = 42;
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    ExoSlashWidthFunction,
+                    ExoSlashColorFunction,
+                    (_) => overallOffset,
+                    shader: GameShaders.Misc["CalamityMod:ExobladeSlash"]
+                ),
+                numPoints
+            );
+
+            return false;
+        }
+
+        private float ExoSlashWidthFunction(float completionRatio)
+        {
+            return 22f + (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 3f) * 4f;
+        }
+
+        private Color ExoSlashColorFunction(float completionRatio)
+        {
+            return Color.Lerp(Color.Cyan, Color.Blue, completionRatio);
+        }
+

@@ -46,6 +46,7 @@ Projectiles: {
 			TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
 			TheLastLancePROJ.DisplayName: 最后的骑枪
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
+			// SHPCKFast2.DisplayName: S H P C K Fast2
 		}
 
 		APreHardMode: {
@@ -64,9 +65,9 @@ Projectiles: {
 
 		CPreMoodLord: {
 			FestiveHalberdPROJ.DisplayName: 节日长戟
-			StarGunSagittariusPROJ.DisplayName: 贯星枪
-			StarGunSagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
-			StarGunSagittariusSPIT.DisplayName: 贯星枪分裂弹
+			SagittariusPROJ.DisplayName: 贯星枪
+			SagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
+			SagittariusSPIT.DisplayName: 贯星枪分裂弹
 			TidalMechanicsBubbles.DisplayName: 潮汐泡泡
 			TidalMechanicsPROJ.DisplayName: 潮汐
 			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
@@ -632,7 +633,7 @@ NewWeapons: {
 				'''
 		}
 
-		StarGunSagittarius: {
+		Sagittarius: {
 			DisplayName: 贯星枪-人马座
 			Tooltip:
 				'''
@@ -1012,7 +1013,7 @@ Items: {
 }
 
 ModBuff: {
-	StarGunSagittariusEDebuff: {
+	SagittariusEDebuff: {
 		DisplayName: 人马座耀光
 		Description:
 			'''

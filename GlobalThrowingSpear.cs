@@ -43,7 +43,6 @@ using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd;
-using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ChaosWindJav;
@@ -61,6 +60,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatterJav;
 using CalamityThrowingSpear.Global;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius;
 
 namespace CalamityThrowingSpear
 {
@@ -129,7 +129,7 @@ namespace CalamityThrowingSpear
             typeof(TheOtherMiracleMatterJav), // 重星流
 
             typeof(TheLastLance), // 最后的骑枪
-            typeof(StarGunSagittarius), // 人马座
+            typeof(Sagittarius), // 人马座
             typeof(TidalMechanics), // 潮汐
             typeof(ElementalArkJav), // 元素
             typeof(FinishingTouch), // 画龙点睛

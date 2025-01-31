@@ -13,11 +13,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.Audio;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
-    public class StarGunSagittariusSPIT : ModProjectile, ILocalizedModType
+    public class SagittariusSPIT : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/StarGunSagittarius/StarGunSagittarius";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/Sagittarius";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
 
         // 保存光斑数据的列表
@@ -56,7 +56,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
             Lighting.AddLight(Projectile.Center, Color.LightGoldenrodYellow.ToVector3() * 0.55f);
 
             // 造成了一次伤害之后就直接关闭伤害检测并快速降低速度，并让自己停下来
-            if (Projectile.penetrate < 200) 
+            if (Projectile.penetrate < 200)
             {
                 if (Projectile.timeLeft > 60) { Projectile.timeLeft = 60; } //The projectile start shrinking and slowing down. it can still hit for a bit during this, to allow a bit of multi-target if the enemies are really close to eachother.
                 Projectile.velocity *= 0.88f;
@@ -121,7 +121,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
         {
             // 获取 SpriteBatch 和投射物纹理
             SpriteBatch spriteBatch = Main.spriteBatch;
-            Texture2D lightTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/StarGunSagittarius/StarGunSagittarius").Value;
+            Texture2D lightTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/Sagittarius").Value;
 
             // 遍历投射物的旧位置数组，绘制光学拖尾效果
             for (int i = 0; i < Projectile.oldPos.Length; i++)

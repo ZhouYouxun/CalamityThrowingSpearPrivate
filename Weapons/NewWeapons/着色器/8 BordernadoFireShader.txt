@@ -1,0 +1,37 @@
+     // สนำร Shader: BordernadoFireShader ("CalamityMod:Bordernado")
+        public override bool PreDraw(ref Color lightColor)
+        {
+            GameShaders.Misc["CalamityMod:Bordernado"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+            );
+
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.3f;
+            int numPoints = 40;
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    BordernadoWidthFunction,
+                    BordernadoColorFunction,
+                    (_) => overallOffset,
+                    shader: GameShaders.Misc["CalamityMod:Bordernado"]
+                ),
+                numPoints
+            );
+
+            return false;
+        }
+
+        private float BordernadoWidthFunction(float completionRatio)
+        {
+            float baseWidth = 24f;
+            float waveEffect = (float)Math.Sin(completionRatio * 8f + Main.GlobalTimeWrappedHourly * 3f) * 3f;
+            return baseWidth + waveEffect;
+        }
+
+        private Color BordernadoColorFunction(float completionRatio)
+        {
+            Color baseColor = Color.Lerp(Color.Orange, Color.Gold, (float)Math.Sin(completionRatio * 6f) * 0.5f + 0.5f);
+            return Color.Lerp(baseColor, Color.Transparent, completionRatio);
+        }
+

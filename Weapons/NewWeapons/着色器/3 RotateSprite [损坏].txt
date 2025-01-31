@@ -1,0 +1,36 @@
+        public override bool PreDraw(ref Color lightColor)
+        {
+            // 绑定 `RotateSprite`
+            GameShaders.Misc["CalamityMod:RotationPass"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+            );
+
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.1f;
+            int numPoints = 35; // 拖尾略短以适配旋转效果
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    RotateWidthFunction,  // 计算拖尾宽度
+                    RotateColorFunction,  // 计算拖尾颜色
+                    (_) => overallOffset,
+                    shader: GameShaders.Misc["CalamityMod:RotationPass"] // 绑定 `RotateSprite`
+                ),
+                numPoints
+            );
+
+            return false;
+        }
+
+        private float RotateWidthFunction(float completionRatio)
+        {
+            float baseWidth = 22f;
+            float rotationEffect = (float)Math.Cos(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 2f) * 3f;
+            return baseWidth + rotationEffect; // 让拖尾宽度随旋转效果波动
+        }
+        private Color RotateColorFunction(float completionRatio)
+        {
+            float rotationIntensity = (float)Math.Sin(completionRatio * 7f + Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+            Color baseColor = Color.Lerp(Color.Orange, Color.Red, rotationIntensity);
+            return Color.Lerp(baseColor, Color.Transparent, completionRatio);
+        }

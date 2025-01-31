@@ -14,9 +14,9 @@ using CalamityMod.Rarities;
 using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
+namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
-    public class StarGunSagittarius : ModItem, ILocalizedModType
+    public class Sagittarius : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.CPreMoodLord";
         public override void SetStaticDefaults()
@@ -40,22 +40,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittari
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ModContent.RarityType<HotPink>();
             Item.Calamity().devItem = true;
-            Item.shoot = ModContent.ProjectileType<StarGunSagittariusPROJ>(); // 使用新的弹幕
+            Item.shoot = ModContent.ProjectileType<SagittariusPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
         }
         //public override bool AltFunctionUse(Player player) => true; // 启用右键功能
         //public override bool CanUseItem(Player player)
         //{
-            // 检查世界中是否存在充能长枪
-            //foreach (Projectile proj in Main.projectile)
-            //{
-                //if (proj.active && proj.type == ModContent.ProjectileType<StarGunSagittariusPROJECHO>())
-                //{
-                    //return false; // 如果存在充能长枪，返回false阻止投掷普通长枪
-                //}
-            //}
+        // 检查世界中是否存在充能长枪
+        //foreach (Projectile proj in Main.projectile)
+        //{
+        //if (proj.active && proj.type == ModContent.ProjectileType<StarGunSagittariusPROJECHO>())
+        //{
+        //return false; // 如果存在充能长枪，返回false阻止投掷普通长枪
+        //}
+        //}
 
-            //return base.CanUseItem(player); // 允许投掷普通长枪
+        //return base.CanUseItem(player); // 允许投掷普通长枪
         //}
 
         //public override void AddRecipes()
