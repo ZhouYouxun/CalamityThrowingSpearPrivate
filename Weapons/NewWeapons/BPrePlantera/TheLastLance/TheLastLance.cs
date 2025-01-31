@@ -50,55 +50,55 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
 
         private int rightClickCooldown = 0;
 
-        public override void UpdateInventory(Player player) // 给右键添加一定的冷却时间
-        {
-            if (rightClickCooldown > 0)
-            {
-                rightClickCooldown--;
-            }
-        }
-
-        //public override void UpdateInventory(Player player)
+        //public override void UpdateInventory(Player player) // 给右键添加一定的冷却时间
         //{
         //    if (rightClickCooldown > 0)
         //    {
         //        rightClickCooldown--;
-
-        //        // 冷却时间归零的一瞬间触发效果
-        //        if (rightClickCooldown == 0)
-        //        {
-        //            // 在玩家中心释放爆炸特效
-        //            Particle blastRing = new CustomPulse(
-        //                player.Center, // 以玩家为中心
-        //                Vector2.Zero,
-        //                new Color(0, 0, 139), // 深海的蓝色
-        //                "FKsCRE/texture/IonizingRadiation",
-        //                Vector2.One * 0.33f,
-        //                Main.rand.NextFloat(-10f, 10f),
-        //                0.07f,
-        //                0.53f,
-        //                30
-        //            );
-        //            GeneralParticleHandler.SpawnParticle(blastRing);
-
-        //            // 随机释放粒子特效
-        //            for (int i = 0; i < 30; i++)
-        //            {
-        //                Dust dust = Dust.NewDustDirect(
-        //                    player.Center, // 以玩家为中心
-        //                    0, 0,
-        //                    Main.rand.Next(new int[] { DustID.Water, 180 }) // 使用混合 DustID
-        //                );
-        //                dust.scale = Main.rand.NextFloat(1.25f, 1.75f); // 大小随机
-        //                dust.velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, 3f)); // 随机扩散
-        //                dust.noGravity = true; // 防止粒子受重力影响
-        //            }
-
-        //            // 播放音效
-        //            SoundEngine.PlaySound(SoundID.Item30, player.Center);
-        //        }
         //    }
         //}
+
+        public override void UpdateInventory(Player player)
+        {
+            if (rightClickCooldown > 0)
+            {
+                rightClickCooldown--;
+
+                // 冷却时间归零的一瞬间触发效果
+                if (rightClickCooldown == 0)
+                {
+                    // 在玩家中心释放爆炸特效
+                    Particle blastRing = new CustomPulse(
+                        player.Center, // 以玩家为中心
+                        Vector2.Zero,
+                        new Color(0, 0, 139), // 深海的蓝色
+                        "FKsCRE/texture/IonizingRadiation",
+                        Vector2.One * 0.33f,
+                        Main.rand.NextFloat(-10f, 10f),
+                        0.07f,
+                        0.53f,
+                        30
+                    );
+                    GeneralParticleHandler.SpawnParticle(blastRing);
+
+                    // 随机释放粒子特效
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Dust dust = Dust.NewDustDirect(
+                            player.Center, // 以玩家为中心
+                            0, 0,
+                            Main.rand.Next(new int[] { DustID.Water, 180 }) // 使用混合 DustID
+                        );
+                        dust.scale = Main.rand.NextFloat(1.25f, 1.75f); // 大小随机
+                        dust.velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, 3f)); // 随机扩散
+                        dust.noGravity = true; // 防止粒子受重力影响
+                    }
+
+                    // 播放音效
+                    SoundEngine.PlaySound(SoundID.Item30, player.Center);
+                }
+            }
+        }
 
 
         public override bool CanUseItem(Player player)
@@ -130,7 +130,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                 }
 
                 // 启动冷却视觉效果
-                TLLCoolDown.StartCooldown(rightClickCooldown);
+                //TLLCoolDown.StartCooldown(rightClickCooldown);
             }
 
 

@@ -9,72 +9,68 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.StarGunSagittarius
 {
-    public class YouShouldBeAgile : ModPlayer
+    public class YouShouldBeAgile : GlobalNPC
     {
-        private bool hasGivenItemInThisWorld = false; // 默认没给过奖品
-        private bool isTrackingEmpress = false;
-        private int playerHitCount = 0;
+        private bool isTrackingEmpress = false; // 是否正在追踪光之女皇
+        private int playerHitCount = 0; // 玩家受击次数
+        private static bool hasGivenRewardInThisWorld = false; // 确保整个世界只发放一次奖励
 
-        public override void PostUpdate()
+        public override bool InstancePerEntity => true; // 每个 NPC 独立的 GlobalNPC 实例
+
+        public override void AI(NPC npc)
         {
-            // 如果物品已经发放，不再继续检测
-            if (hasGivenItemInThisWorld)
+            // 检查是否是光之女皇
+            if (npc.type == NPCID.HallowBoss)
             {
-                return;
-            }
-
-            // 检查场上是否存在光之女皇
-            foreach (NPC npc in Main.npc)
-            {
-                if (npc.active && npc.type == NPCID.HallowBoss)
+                // 如果教徒未被击败，且世界奖励未发放，开始追踪
+                if (!NPC.downedAncientCultist && !hasGivenRewardInThisWorld)
                 {
-                    // 如果光之女皇存在且没有开始追踪，则开始追踪
                     if (!isTrackingEmpress)
                     {
-                        isTrackingEmpress = true;
+                        isTrackingEmpress = true; // 开始追踪
                         playerHitCount = 0; // 重置玩家受击次数
                     }
-                    return; // 光之女皇存在时继续追踪
                 }
             }
-            
-            if (!hasGivenItemInThisWorld)
-            {
-                if(NPC.downedEmpressOfLight) // 如果光之女皇死了
-                {
-                    // 如果光之女皇已经死亡且之前在追踪中
-                    if (isTrackingEmpress)
-                    {
-                        // 根据玩家受击次数决定给予的物品
-                        if (playerHitCount <= 4)
-                        {
-                            Player.QuickSpawnItem(null, ModContent.ItemType<StarGunSagittarius>(), 1);
-                            Player.QuickSpawnItem(null, ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                            Main.NewText("完美的战斗，这是你的奖品！", 0, 255, 0);
-                            hasGivenItemInThisWorld = true; // 设定该世界已经发放过奖励（仅此一次，给两件商品）
-                        }
-                        else
-                        {
-                            Player.QuickSpawnItem(null, ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                            Main.NewText("你似乎在敏捷程度上还需发力，如果你想获得这件奖品的话", 255, 0, 0);
-                        }
-
-                        
-                        isTrackingEmpress = false;
-                    }
-                }
-                
-            }
-                
         }
 
-        public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
+        public override void ModifyHitByProjectile(NPC npc, Projectile proj, ref NPC.HitModifiers modifiers)
         {
             // 如果正在追踪光之女皇战斗，并且是敌方弹幕造成的伤害
-            if (isTrackingEmpress && proj.hostile)
+            if (npc.type == NPCID.HallowBoss && isTrackingEmpress && proj.hostile)
             {
                 playerHitCount++; // 增加玩家受击次数
             }
         }
+
+        public override void OnKill(NPC npc)
+        {
+            // 如果不是光之女皇，直接返回
+            if (npc.type != NPCID.HallowBoss) return;
+
+            // 如果教徒未被击败，且世界奖励未发放
+            if (!NPC.downedAncientCultist && !hasGivenRewardInThisWorld)
+            {
+                hasGivenRewardInThisWorld = true; // 标记奖励已发放
+
+                Player player = Main.player[npc.target]; // 获取目标玩家
+
+                // 根据玩家受击次数决定给予的物品
+                if (playerHitCount <= 4)
+                {
+                    player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<StarGunSagittarius>(), 1);
+                    player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
+                    Main.NewText("完美的战斗，这是你的奖品！", 0, 255, 0); // 奖励文字
+                }
+                else
+                {
+                    player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
+                    Main.NewText("你似乎在敏捷程度上还需发力，如果你想获得这件奖品的话", 255, 0, 0); // 鼓励文字
+                }
+
+                isTrackingEmpress = false; // 重置追踪状态
+            }
+        }
     }
 }
+

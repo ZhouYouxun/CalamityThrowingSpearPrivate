@@ -15,6 +15,7 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 
+
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPikeC
 {
     public class DiseasedJavPROJ : ModProjectile, ILocalizedModType

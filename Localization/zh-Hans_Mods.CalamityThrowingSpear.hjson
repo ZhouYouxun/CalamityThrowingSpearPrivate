@@ -71,6 +71,11 @@ Projectiles: {
 			TidalMechanicsPROJ.DisplayName: 潮汐
 			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
 			TidalMechanicsTyphoon.DisplayName: 潮汐台风
+			// SurfeiterStonePillars.DisplayName: Surfeiter Stone Pillars
+			// SurfeiterPROJ.DisplayName: Surfeiter P R O J
+			// SurfeiterDrum.DisplayName: Surfeiter Drum
+			// SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
+			// SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
 		}
 
 		EAfterDog: {
@@ -653,6 +658,11 @@ NewWeapons: {
 				[c/689bf4:“这一击，我为你挡下”]
 				'''
 		}
+
+		Surfeiter: {
+			// Tooltip: ""
+			// DisplayName: Surfeiter
+		}
 	}
 
 	DPreDog: {
@@ -794,7 +804,7 @@ NewWeapons: {
 				左键扔出长枪
 				飞行一小段距离后在原地分列出2~4发随机长枪
 				仅包含本模组的长枪弹幕，不包含开发者武器
-				分裂长枪时无视该长枪的限制（如珍珠木矛数量限制）
+				分裂长枪时无视该长枪的限制
 				自身在分裂之后继续飞行并无限穿透
 				右键射出可以追踪并粘附在敌人身上的长枪
 				粘附过程中可以不断的从周围召唤随机长枪
@@ -1087,5 +1097,10 @@ Buffs: {
 	StarsofDestinyEDebuff: {
 		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
 		// DisplayName: Starsof Destiny E Debuff
+	}
+
+	SurfeiterDrumEDebuff: {
+		// DisplayName: Surfeiter Drum E Debuff
+		// Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
 	}
 }

@@ -105,6 +105,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                 }
             }
 
+            if (Main.player[Projectile.owner].controlUseTile) // 检测玩家是否按下右键
+            {
+                if (Projectile.ai[0] == 2f) // 只有扎入的弹幕才能被右键移除
+                {
+                    Projectile.Kill(); // 直接销毁弹幕
+                }
+            }
+
             int dustType = 171;
             if (Main.rand.NextBool(3))
             {
@@ -191,7 +199,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
             Projectile.ai[0] = 2f;
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 900;
             return false;
         }
 
