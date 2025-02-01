@@ -9,11 +9,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
-using CalamityMod.Projectiles.Melee;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
-using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {

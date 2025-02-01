@@ -43,8 +43,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
         public override void AddRecipes()
         {
-            Recipe recipe = CreateRecipe(); 
-            recipe.AddIngredient<ChaosEssenceJav>();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.HallowJoustingLance, 1);
             recipe.AddIngredient<AuricQuantumCoolingCell>();
             recipe.AddIngredient(ItemID.Wire, 5);
             //recipe.AddIngredient<AuricBar>(5); // 已经有电池了，就不需要这个了

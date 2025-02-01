@@ -31,37 +31,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 如果未进入高速旋转模式，保持原状
-            if (!isSpinning)
-            {
-                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-                return false;
-            }
 
-            // 获取纹理资源和位置
-            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-            Vector2 origin = texture.Size() * 0.5f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
 
-            // 背光效果部分 - 亮白色光晕
-            float chargeOffset = 3f; // 控制充能效果扩散的偏移量
-            float spinProgress = MathHelper.Clamp((90 - spinDuration) / 60f, 0f, 1f); // 线性增强过程，持续60帧
-            Color chargeColor = Color.White * (0.6f * spinProgress); // 根据进度调整透明度
-            chargeColor.A = 0; // 设置透明度
+            //// 如果未进入高速旋转模式，保持原状
+            //if (!isSpinning)
+            //{
+            //    CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            //    return false;
+            //}
 
-            // 修复旋转逻辑，确保与速度方向同步
-            float rotation = Projectile.rotation;
-            SpriteEffects direction = SpriteEffects.None;
+            //// 获取纹理资源和位置
+            //Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            //Vector2 origin = texture.Size() * 0.5f;
+            //Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            // 绘制充能效果 - 圆周上绘制多个充能光效
-            for (int i = 0; i < 8; i++)
-            {
-                Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
-                Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, chargeColor, rotation, origin, Projectile.scale, direction, 0f);
-            }
+            //// 背光效果部分 - 亮白色光晕
+            //float chargeOffset = 3f; // 控制充能效果扩散的偏移量
+            //float spinProgress = MathHelper.Clamp((90 - spinDuration) / 60f, 0f, 1f); // 线性增强过程，持续60帧
+            //Color chargeColor = Color.White * (0.6f * spinProgress); // 根据进度调整透明度
+            //chargeColor.A = 0; // 设置透明度
 
-            // 渲染实际的投射物本体
-            Main.spriteBatch.Draw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rotation, origin, Projectile.scale, direction, 0f);
+            //// 修复旋转逻辑，确保与速度方向同步
+            //float rotation = Projectile.rotation;
+            //SpriteEffects direction = SpriteEffects.None;
+
+            //// 绘制充能效果 - 圆周上绘制多个充能光效
+            //for (int i = 0; i < 8; i++)
+            //{
+            //    Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
+            //    Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, chargeColor, rotation, origin, Projectile.scale, direction, 0f);
+            //}
+
+            //// 渲染实际的投射物本体
+            //Main.spriteBatch.Draw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rotation, origin, Projectile.scale, direction, 0f);
 
             return false;
         }
@@ -198,15 +201,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 Vector2 velocity = (Vector2.UnitY.RotatedBy(randomAngle) * -1f) * Main.rand.NextFloat(4f, 8f) * 0.75f;
 
                 // 发射 SunEssenceJavLightPoint 弹幕
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    velocity,
-                    ModContent.ProjectileType<SunEssenceJavLightPoint>(),
-                    (int)(Projectile.damage * 1.0f), // 伤害倍率为 1.0
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
+                //Projectile.NewProjectile(
+                //    Projectile.GetSource_FromThis(),
+                //    Projectile.Center,
+                //    velocity,
+                //    ModContent.ProjectileType<SunEssenceJavLightPoint>(),
+                //    (int)(Projectile.damage * 1.0f), // 伤害倍率为 1.0
+                //    Projectile.knockBack,
+                //    Projectile.owner
+                //);
             }
 
             // 播放爆炸特效

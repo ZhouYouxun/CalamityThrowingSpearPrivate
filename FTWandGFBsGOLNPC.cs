@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader;
 using Terraria;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
 using CalamityMod.NPCs.Bumblebirb;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
@@ -20,6 +19,8 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
 using CalamityMod.NPCs.DevourerofGods;
 using Terraria.ID;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav;
+//using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
+
 
 namespace CalamityThrowingSpear
 {
@@ -34,13 +35,13 @@ namespace CalamityThrowingSpear
                 Main.zenithWorld)
             {
                 // 检查弹幕类型是否为 画龙点睛 系列
-                if (projectile.type == ModContent.ProjectileType<FinishingTouchPROJ>() ||
-                    projectile.type == ModContent.ProjectileType<FinishingTouchDASH>() ||
-                    projectile.type == ModContent.ProjectileType<FinishingTouchBALL>())
-                {
-                    // 伤害 × 50
-                    modifiers.SourceDamage *= 50f;
-                }
+                //if (projectile.type == ModContent.ProjectileType<FinishingTouchPROJ>() ||
+                //    projectile.type == ModContent.ProjectileType<FinishingTouchDASH>() ||
+                //    projectile.type == ModContent.ProjectileType<FinishingTouchBALL>())
+                //{
+                //    // 伤害 × 50
+                //    modifiers.SourceDamage *= 50f;
+                //}
             }
 
 
@@ -58,10 +59,10 @@ namespace CalamityThrowingSpear
                     // 将伤害降低为 60%
                     modifiers.FinalDamage *= 0.4f;
                 }
-                if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
-                {
-                    modifiers.SourceDamage *= 0.05f;
-                }
+                //if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
+                //{
+                //    modifiers.SourceDamage *= 0.05f;
+                //}
             }
 
             if (npc.type == ModContent.NPCType<AresBody>() ||
@@ -70,10 +71,10 @@ namespace CalamityThrowingSpear
                 npc.type == ModContent.NPCType<AresPlasmaFlamethrower>() ||
                 npc.type == ModContent.NPCType<AresTeslaCannon>())
             {
-                if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
-                {
-                    modifiers.SourceDamage *= 0.5f;
-                }
+                //if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
+                //{
+                //    modifiers.SourceDamage *= 0.5f;
+                //}
                 if (projectile.type == ModContent.ProjectileType<DragonRageJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>())
                 {

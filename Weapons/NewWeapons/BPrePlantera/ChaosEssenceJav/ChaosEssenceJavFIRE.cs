@@ -59,7 +59,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 dust.fadeIn = 1f;
                 dust.noGravity = true;
             }
-
             // 检测是否到达屏幕边缘并反弹
             Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
             Vector2 screenPosition = Projectile.Center - Main.screenPosition;
@@ -72,6 +71,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 if (screenPosition.Y <= 0 || screenPosition.Y >= Main.screenHeight)
                     Projectile.velocity.Y *= -1;
             }
+
         }
 
         public override void OnKill(int timeLeft)

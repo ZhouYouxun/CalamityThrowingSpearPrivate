@@ -47,6 +47,7 @@ Projectiles: {
 			TheLastLancePROJ.DisplayName: 最后的骑枪
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
 			// SHPCKFast2.DisplayName: S H P C K Fast2
+			// PearlwoodJavPROJINV.DisplayName: Pearlwood Jav P R O J I N V
 		}
 
 		APreHardMode: {
@@ -203,6 +204,7 @@ Projectiles: {
 	// StarsofDestinyLIGHT.DisplayName: Starsof Destiny L I G H T
 	// StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
 	// StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
+	// ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
 }
 
 Projectile: {
@@ -212,6 +214,11 @@ Projectile: {
 	}
 
 	// DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+
+	EAfterDog: {
+		// PrimordialStateNight.DisplayName: Primordial State Night
+		// PrimordialStateLight.DisplayName: Primordial State Light
+	}
 }
 
 ChangedWeapons: {

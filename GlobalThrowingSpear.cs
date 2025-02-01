@@ -41,26 +41,27 @@ using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd;
-using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ChaosWindJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatterJav;
 using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius;
+using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
+
 
 namespace CalamityThrowingSpear
 {
@@ -124,7 +125,6 @@ namespace CalamityThrowingSpear
 
             typeof(AuricJav), // 电池
             typeof(MiracleMatterJav), // 轻星流
-            typeof(ShadowJav), // 无极
             typeof(SoulSeekerJav), // 残翼
             typeof(TheOtherMiracleMatterJav), // 重星流
 
@@ -135,6 +135,7 @@ namespace CalamityThrowingSpear
             typeof(FinishingTouch), // 画龙点睛
             typeof(Revelation), // 启示录
             typeof(SawBladeForkHornJav), // SBFHJ
+            typeof(ShadowJav), // 无极
         };
 
         public override void SetStaticDefaults()

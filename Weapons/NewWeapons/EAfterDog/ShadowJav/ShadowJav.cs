@@ -52,16 +52,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
         public override bool CanUseItem(Player player)
         {
             // 无论左键还是右键，首先检查场上是否有 PearlwoodJavRainbowFront 和 PearlwoodJavRainbowTrail
-            for (int i = 0; i < Main.maxProjectiles; i++)
-            {
-                Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI &&
-                    (proj.type == ModContent.ProjectileType<PearlwoodJavRainbowFront>() ||
-                     proj.type == ModContent.ProjectileType<PearlwoodJavRainbowTrail>()))
-                {
-                    proj.Kill(); // 清除 PearlwoodJavRainbowFront 和 PearlwoodJavRainbowTrail 弹幕
-                }
-            }
+            //for (int i = 0; i < Main.maxProjectiles; i++)
+            //{
+            //    Projectile proj = Main.projectile[i];
+            //    if (proj.active && proj.owner == player.whoAmI &&
+            //        (proj.type == ModContent.ProjectileType<PearlwoodJavRainbowFront>() ||
+            //         proj.type == ModContent.ProjectileType<PearlwoodJavRainbowTrail>()))
+            //    {
+            //        proj.Kill(); // 清除 PearlwoodJavRainbowFront 和 PearlwoodJavRainbowTrail 弹幕
+            //    }
+            //}
 
             if (player.altFunctionUse == 2) // 右键点击
             {

@@ -20,7 +20,6 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.StarnightLanceC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
-using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius;
 using CalamityMod.Items.Weapons.DraedonsArsenal;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPiercerC;
