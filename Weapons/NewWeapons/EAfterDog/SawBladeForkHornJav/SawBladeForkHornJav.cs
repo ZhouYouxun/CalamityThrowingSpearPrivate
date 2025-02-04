@@ -124,14 +124,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
             }
 
 
-            // 左键攻击保护机制 - 检测是否已经存在指定类型的弹幕
+            // 遍历当前世界中的所有弹幕
             foreach (Projectile proj in Main.projectile)
             {
-                if (proj.active && proj.owner == player.whoAmI && proj.type == type) // 检查是否已经存在左键攻击的弹幕
+                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
                 {
-                    return false; // 如果已存在，则阻止生成新的弹幕
+                    // 检查是否为 Aim 状态
+                    if (proj.ModProjectile is SawBladeForkHornJavPROJ SBFHJ && SBFHJ.CurrentState == SawBladeForkHornJavPROJ.BehaviorState.Aim)
+                    {
+                        return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
+                                      // Fire 阶段的弹幕不会影响这个判断
+                    }
                 }
             }
+
 
             // 左键攻击逻辑 - 创建新的弹幕
             int projIndex = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);

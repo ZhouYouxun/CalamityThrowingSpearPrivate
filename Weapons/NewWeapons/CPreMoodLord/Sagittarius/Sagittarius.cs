@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
         public new string LocalizationCategory => "NewWeapons.CPreMoodLord";
         public override void SetStaticDefaults()
         {
-            //ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
         public override void SetDefaults()
         {
@@ -43,20 +43,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             Item.shoot = ModContent.ProjectileType<SagittariusPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
         }
-        //public override bool AltFunctionUse(Player player) => true; // 启用右键功能
-        //public override bool CanUseItem(Player player)
-        //{
-        // 检查世界中是否存在充能长枪
-        //foreach (Projectile proj in Main.projectile)
-        //{
-        //if (proj.active && proj.type == ModContent.ProjectileType<StarGunSagittariusPROJECHO>())
-        //{
-        //return false; // 如果存在充能长枪，返回false阻止投掷普通长枪
-        //}
-        //}
+        public override bool AltFunctionUse(Player player) => true; // 启用右键功能
 
-        //return base.CanUseItem(player); // 允许投掷普通长枪
-        //}
+
+
+
+
+
+
 
         //public override void AddRecipes()
         //{

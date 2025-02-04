@@ -149,6 +149,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Weapons\NewWeapons\AAA这下面是新的武器-----------------\" />
+	  <Folder Include="Weapons\NewWeapons\EAfterDog\PrimeMeridian\Zenith\" />
 	</ItemGroup>
 
 	<!-- References -->

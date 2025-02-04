@@ -109,6 +109,7 @@ Projectiles: {
 			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
 			// PrimordialStatePROJ.DisplayName: Primordial State P R O J
 			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
+			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 		}
 	}
 
@@ -1016,6 +1017,11 @@ Items: {
 				// DisplayName: Phantom Shuriken
 			}
 		}
+	}
+
+	PrimeMeridian: {
+		// Tooltip: ""
+		// DisplayName: Prime Meridian
 	}
 }
 

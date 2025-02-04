@@ -83,6 +83,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
                         Projectile.Center = target.Center;
                         // 保持原有的旋转角度
                         Projectile.rotation += 0.33f; // 粘在敌人身上时会开始不断的旋转
+                        Projectile.alpha = 255; // 以后让他不可见
                         if (Main.zenithWorld)
                         {
                             Projectile.timeLeft = 600; // 一旦咬住就不会松口，除非手动取消
