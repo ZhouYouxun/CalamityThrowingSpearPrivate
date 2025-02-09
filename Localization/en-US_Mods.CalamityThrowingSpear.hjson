@@ -111,6 +111,7 @@ Projectiles: {
 			StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 			PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 			AuricJavLighting.DisplayName: Auric Jav Lighting
+			FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 		}
 	}
 
@@ -1136,3 +1137,5 @@ Buffs: {
 		Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
 	}
 }
+
+TheSpecialText.ElementalArkJav2: ingested too many pigments

@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using Terraria.DataStructures;
 using CalamityMod.Rarities;
 using CalamityMod.CalPlayer;
+using Terraria.Localization;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
 {
@@ -46,7 +47,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                     if (calamityPlayer.bOrange || calamityPlayer.eBerry || calamityPlayer.dFruit || calamityPlayer.mFruit)
                     {
                         // 如果玩家吃过任意一种水果，拒绝右键攻击并显示提示
-                        CombatText.NewText(player.getRect(), Microsoft.Xna.Framework.Color.Pink, "你没有资格");
+                        CombatText.NewText(player.getRect(), Microsoft.Xna.Framework.Color.Pink, Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav1"));
                         return false; // 禁止右键攻击
                     }
                 }
@@ -81,7 +82,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 
                 if (fruitCount == 4)
                 {
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " 摄入了过量的色素."), player.statLifeMax2, 0);
+                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav2")), player.statLifeMax2, 0);
                     return false;
                 }
 
@@ -92,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 player.statLife -= totalHealthLoss;
                 if (player.statLife <= 0)
                 {
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " 透支了生命."), totalHealthLoss, 0);
+                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav3")), totalHealthLoss, 0);
                     return false;
                 }
 
