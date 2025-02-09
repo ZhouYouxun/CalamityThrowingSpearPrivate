@@ -27,9 +27,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/NadirC/NadirJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
 
-        private static Color ShaderColorOne = Color.Black;
-        private static Color ShaderColorTwo = Color.DarkGray;
-        private static Color ShaderEndColor = Color.DarkBlue;
 
         private Vector2 altSpawn;
 
@@ -38,6 +35,11 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
+
+
+        private static Color ShaderColorOne = Color.Black;
+        private static Color ShaderColorTwo = Color.DarkGray;
+        private static Color ShaderEndColor = Color.DarkBlue;
 
         private float PrimitiveWidthFunction(float completionRatio)
         {
@@ -144,11 +146,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                 );
                 GeneralParticleHandler.SpawnParticle(bolt);
             }
-
-
-
-
-
         }
 
         private void CreatePurpleDustCircle()

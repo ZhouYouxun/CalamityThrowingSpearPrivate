@@ -9,6 +9,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {
@@ -54,6 +56,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 
         public override bool PreDraw(ref Color lightColor)
         {
+            //SpriteBatch spriteBatch = Main.spriteBatch;
+            //Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+
+            //// 获取弹幕绘制位置
+            //Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            //Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
+
+            //// 设定 Shader 着色器（原本用于拖尾的，现在应用到弹幕本体）
+            //GameShaders.Misc["CalamityMod:TrailStreak"].Apply();
+
+            //// 直接绘制弹幕本体，Shader 现在会影响这个 Sprite
+            //Main.EntitySpriteDraw(texture, drawPosition, null, lightColor,
+            //    Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+
+            //return false;
+
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }

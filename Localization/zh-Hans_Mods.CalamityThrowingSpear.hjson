@@ -110,6 +110,7 @@ Projectiles: {
 			// PrimordialStatePROJ.DisplayName: Primordial State P R O J
 			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
+			// AuricJavLighting.DisplayName: Auric Jav Lighting
 		}
 	}
 
@@ -206,6 +207,23 @@ Projectiles: {
 	// StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
 	// StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
 	// ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
+	// PM9Cat.DisplayName: P M9 Cat
+	// PM8Crazy.DisplayName: P M8 Crazy
+	// PM7Wave.DisplayName: P M7 Wave
+	// PM6Headless.DisplayName: P M6 Headless
+	// PM5Seed.DisplayName: P M5 Seed
+	// PM4Beekeeper.DisplayName: P M4 Beekeeper
+	// PM3StarFury.DisplayName: P M3 Star Fury
+	// PM2Enchanted.DisplayName: P M2 Enchanted
+	// PM1CopperDaggerSlash.DisplayName: P M1 Copper Dagger Slash
+	// PM1CopperDagger.DisplayName: P M1 Copper Dagger
+	// PM10Terra.DisplayName: P M10 Terra
+	// PrimeMeridianRIGHTPROJ.DisplayName: Prime Meridian R I G H T P R O J
+	// PrimeMeridianRIGHT.DisplayName: Prime Meridian R I G H T
+	// PrimeMeridianLaser.DisplayName: Prime Meridian Laser
+	// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
+	// ExampleCustomSwingProjectile.DisplayName: Example Custom Swing Projectile
+	// ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
 }
 
 Projectile: {
@@ -1095,6 +1113,7 @@ Configs: {
 Keybinds: {
 	更改长枪形态.DisplayName: 更改长枪形态
 	// 技能.DisplayName: 技能
+	// 武器技能.DisplayName: 武器技能
 }
 
 Buffs: {

@@ -217,7 +217,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 Projectile.Center,
                 Vector2.Zero,
                 Color.Gold, // 亮黄色
-                "CalamityThrowingSpear/Texture/ThebigExplosion1",
+                "CalamityThrowingSpear/texture/ThebigExplosion1",
                 Vector2.One * 0.33f,
                 Main.rand.NextFloat(-10f, 10f),
                 0.078f,

@@ -16,13 +16,14 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian.Zenith;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
 {
-    internal class PrimeMeridianHouldOut : ModProjectile, ILocalizedModType
+    internal class PrimeMeridianHouldOut : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";
-
+        private int chargeCounter = 0; // 计数器
+        private bool isAttacking = false; // 是否正在攻击
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/PrimeMeridian/PrimeMeridian";
 
 
@@ -34,17 +35,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle frame = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
-            Vector2 origin = frame.Size() * 0.5f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            SpriteEffects direction = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            // 计算充能强度（0 ~ 1）
+            float intensity = isAttacking ? 1f : (chargeCounter / 50f);
 
-            Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+            // 读取武器贴图
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() * 0.5f;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+
+            // **白色包边**
+            float chargeOffset = 2f * intensity; // 充能越高，包边越强
+            Color chargeColor = Color.White * intensity * 0.8f; // **随充能增强**
+            chargeColor.A = 0; // **透明度处理，避免过亮**
+
+            // **旋转逻辑**
+            float rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            SpriteEffects direction = SpriteEffects.None;
+
+            // **绘制白色包边**
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
+                Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, chargeColor, rotation, origin, Projectile.scale, direction, 0f);
+            }
+
+            // **绘制本体**
+            Main.spriteBatch.Draw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rotation, origin, Projectile.scale, direction, 0f);
+
             return false;
         }
 
-
+        private readonly List<int> projectileTypes = new List<int>
+        {
+            ModContent.ProjectileType<PM1CopperDagger>(),
+            ModContent.ProjectileType<PM2Enchanted>(),
+            ModContent.ProjectileType<PM3StarFury>(),
+            ModContent.ProjectileType<PM4Beekeeper>(),
+            ModContent.ProjectileType<PM5Seed>(),
+            ModContent.ProjectileType<PM6Headless>(),
+            ModContent.ProjectileType<PM7Wave>(),
+            ModContent.ProjectileType<PM8Crazy>(),
+            ModContent.ProjectileType<PM9Cat>(),
+            ModContent.ProjectileType<PM10Terra>()
+        };
 
         public override void SetDefaults()
         {
@@ -53,7 +86,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 1;
+            Projectile.timeLeft = 300;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true;
             Projectile.extraUpdates = 1;
@@ -72,7 +105,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
             // 不断的重置剩余时间
-            Projectile.timeLeft = 1;
+            Projectile.timeLeft = 300;
 
             // 设置穿透次数为 -1
             Projectile.penetrate = -1;
@@ -88,14 +121,64 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
             }
 
             // 将投射物位置与玩家中心对齐，模拟持握效果
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.05f);
+            //Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.05f);
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 0.5f);
             Owner.heldProj = Projectile.whoAmI;
 
+            // 枪头位置定义
+            //Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(10f, 10f);
 
+            if (!isAttacking)
+            {
+                chargeCounter++;
+                GenerateChargingParticles(); // **保持充能特效**
 
+                if (chargeCounter >= 180)
+                {
+                    StartAttackSequence();
+                    Projectile.ai[0] = 10; // **初始化等待时间**
+                    Projectile.ai[1] = 0; // **初始化小弹幕发射计时器**
+                }
+            }
 
+            if (isAttacking)
+            {
+                // **等待 10 帧后开始发射小弹幕**
+                if (Projectile.ai[0] > 0)
+                {
+                    Projectile.ai[0]--; // 每帧减少 1
+                    return;
+                }
 
+                // **小弹幕逐步发射**
+                if (Projectile.ai[1] % 5 == 0 && Projectile.ai[1] / 5 < projectileTypes.Count)
+                {
+                    int i = (int)(Projectile.ai[1] / 5); // 计算当前要发射的弹幕索引
 
+                    float angleOffset = 20f + i;
+                    float spacingMultiplier = (i + 2) * 4f;
+                    Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f + Main.rand.NextVector2Circular(10f, 10f);
+                    Vector2 spawnPos = gunTip - Projectile.velocity.SafeNormalize(Vector2.Zero) * spacingMultiplier;
+                    Vector2 velocityRight = Projectile.velocity.RotatedBy(MathHelper.ToRadians(angleOffset)) * 8f;
+                    Vector2 velocityLeft = Projectile.velocity.RotatedBy(MathHelper.ToRadians(-angleOffset)) * 8f;
+
+                    // **发射左右对称小弹幕**
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos, velocityRight, projectileTypes[i], Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos, velocityLeft, projectileTypes[i], Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+                    SoundEngine.PlaySound(SoundID.Item113, Projectile.Center);
+                }
+
+                // **更新小弹幕发射计时器**
+                Projectile.ai[1]++;
+
+                // **所有弹幕发射完毕，结束攻击**
+                if (Projectile.ai[1] >= projectileTypes.Count * 5)
+                {
+                    isAttacking = false;
+                    Projectile.ai[1] = 0; // 重置小弹幕计时器
+                }
+            }
 
 
             // 让玩家的双手一直朝向投射物方向，模拟握持长枪
@@ -104,8 +187,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimeMeridian
             // 检查玩家是否松开鼠标
             if (!Owner.channel)
             {
-                Projectile.timeLeft = 1;
+                Projectile.timeLeft = 50;
+                Projectile.Kill(); // 立即销毁投射物
                 Projectile.netUpdate = true;
+            }
+        }
+        private void StartAttackSequence()
+        {
+            isAttacking = true;
+            chargeCounter = 0;
+            SoundEngine.PlaySound(SoundID.Item68, Projectile.Center);
+
+            // 获取枪口位置
+            Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f + Main.rand.NextVector2Circular(10f, 10f);
+
+            // 先发射主激光
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), gunTip, Projectile.velocity * 10f, ModContent.ProjectileType<PrimeMeridianLaser>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+            // **等待 10 帧后再开始发射小弹幕**
+            Projectile.ai[0] = 10; // 先等待 10 帧
+        }
+
+      
+        private void GenerateChargingParticles()
+        {
+            Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(10f, 10f);
+            for (int i = 0; i < Main.rand.Next(2, 4); i++)
+            {
+                Vector2 spawnPosition = gunTip + Main.rand.NextVector2Circular(3 * 16, 3 * 16);
+                SquishyLightParticle exoEnergy = new SquishyLightParticle(spawnPosition, (gunTip - spawnPosition).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.4f, 1.6f), 0.28f, Color.LimeGreen, 25);
+                GeneralParticleHandler.SpawnParticle(exoEnergy);
             }
         }
 

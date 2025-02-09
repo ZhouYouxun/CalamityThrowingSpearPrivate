@@ -280,13 +280,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 
         }
 
-        // 在屏幕外围召唤一系列TerraBeam弹幕，类似于PetalStorm的效果
         private void TerraBeamStorm(Vector2 targetPos)
         {
             // 播放攻击音效
             SoundEngine.PlaySound(SoundID.Item105, targetPos);
 
-            // 设置弹幕类型为TerraBeam（132号）
             int type = ModContent.ProjectileType<TerraLanceBEAM>();
             int numBeams = 8;  // 生成8个TerraBeam弹幕
             var source = Projectile.GetSource_FromThis();

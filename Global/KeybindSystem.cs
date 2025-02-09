@@ -14,18 +14,18 @@ namespace CalamityThrowingSpear.Global
     public class KeybindSystem : ModSystem
     {
         public static ModKeybind ChangeSpetoJav { get; private set; }
-        public static ModKeybind Skill { get; private set; }
+        public static ModKeybind WeaponSkill { get; private set; }
 
         public override void Load()
         {
             ChangeSpetoJav = KeybindLoader.RegisterKeybind(Mod, "更改长枪形态", "P");
-            Skill = KeybindLoader.RegisterKeybind(Mod, "技能", "X");
+            WeaponSkill = KeybindLoader.RegisterKeybind(Mod, "武器技能", "X");
         }
 
         public override void Unload()
         {
             ChangeSpetoJav = null;
-            Skill = null;
+            WeaponSkill = null;
         }
 
 

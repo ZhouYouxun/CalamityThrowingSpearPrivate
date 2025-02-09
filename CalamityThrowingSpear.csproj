@@ -108,6 +108,8 @@
 	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\龙魂方舟.txt" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\AuricJav\AuricJavBallPROJ456456.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\DragonRageStaff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimeMeridian\PrimeMeridianLaser.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimeMeridian\PrimeMeridianRIGHTPROJ.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimordialState\AuricJav.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimordialState\PrimordialState.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimordialState\PrimordialStateLight.png" />
@@ -149,7 +151,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Weapons\NewWeapons\AAA这下面是新的武器-----------------\" />
-	  <Folder Include="Weapons\NewWeapons\EAfterDog\PrimeMeridian\Zenith\" />
 	</ItemGroup>
 
 	<!-- References -->

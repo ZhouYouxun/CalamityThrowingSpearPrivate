@@ -54,7 +54,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             Item.knockBack = 8.5f;
             //Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.channel = true; // 允许持续按住左键
+            Item.channel = true;
             Item.shoot = ModContent.ProjectileType<RevelationPROJ>();
             Item.shootSpeed = 20f;
 

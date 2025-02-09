@@ -125,15 +125,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                 hasBounced = true;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
 
-
-                // 寻找正前方左右10度的敌人
-                //NPC closestNPC = FindTargetInFront();
-                //if (closestNPC != null)
-                //{
-                //    // 冲向第二个敌人
-                //    Projectile.velocity = (closestNPC.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 15f; // 冲向目标
-                //}
-
                 // 瞄准最近的敌人并调整弹幕方向
                 NPC closestNPC = Main.npc
                     .Where(npc => npc.active && !npc.friendly && npc.life > 0 && npc.whoAmI != target.whoAmI)
@@ -145,21 +136,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     Vector2 direction = closestNPC.Center - Projectile.Center;
                     Projectile.velocity = Vector2.Normalize(direction) * Projectile.velocity.Length();
                 }
-
-
-                // 直接砸向超大范围内最近的敌人不再进行角度筛选
-                //// 查找最近目标
-                //NPC closestNPC = FindClosestTarget();
-                //if (closestNPC != null)
-                //{
-                //    // 超大幅度加速冲向目标
-                //    Vector2 direction = (closestNPC.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                //    float newSpeed = Projectile.velocity.Length() * 5f; // 当前速度的5倍
-                //    Projectile.velocity = direction * newSpeed;
-
-                //    // 更新网络状态
-                //    Projectile.netUpdate = true;
-                //}
             }
             else
             {
@@ -178,62 +154,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
         {
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 0f), Projectile.knockBack, Projectile.owner);
         }
-
-
-
-        // 寻找在前方左右30度内的敌人
-        private NPC FindTargetInFront()
-        {
-            NPC closestNPC = null;
-            float maxDistance = 1000f;
-            foreach (NPC npc in Main.npc)
-            {
-                if (npc.CanBeChasedBy(this))
-                {
-                    Vector2 directionToNPC = npc.Center - Projectile.Center;
-                    directionToNPC.Normalize();
-
-                    // 计算弹幕方向与敌人之间的夹角
-                    float angleToNPC = MathHelper.ToDegrees((float)Math.Acos(Vector2.Dot(Projectile.velocity.SafeNormalize(Vector2.Zero), directionToNPC)));
-
-                    // 这句话决定了核心的角度控制，180度
-                    if (angleToNPC <= 180f)
-                    {
-                        float distance = Vector2.Distance(npc.Center, Projectile.Center);
-                        if (distance < maxDistance)
-                        {
-                            maxDistance = distance;
-                            closestNPC = npc;
-                        }
-                    }
-                }
-            }
-            return closestNPC;
-        }
-
-
-        // 直接查询大范围内最近的敌人，而不是有角度筛选
-        private NPC FindClosestTarget()
-        {
-            NPC closestNPC = null;
-            float closestDistance = 5000f; // 设置搜索半径为5000
-
-            foreach (NPC npc in Main.npc)
-            {
-                if (npc.active && !npc.friendly && npc.lifeMax > 5) // 确保目标是敌人且有效
-                {
-                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestNPC = npc;
-                    }
-                }
-            }
-
-            return closestNPC; // 返回最近的 NPC
-        }
-
 
 
         // 从天上降下BrimlanceStandingFire弹幕
