@@ -112,6 +112,7 @@ Projectiles: {
 			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 			// AuricJavLighting.DisplayName: Auric Jav Lighting
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
+			// SoulSeekerJavBRIDFire.DisplayName: Soul Seeker Jav B R I D Fire
 		}
 	}
 
@@ -846,9 +847,9 @@ NewWeapons: {
 			Tooltip:
 				'''
 				丢出缓慢的长枪，命中时产生爆炸同时从上方召唤多条激光与火焰
-				飞行一段时间后还未击中敌人则会往玩家处回收
-				回收阶段可以无限穿透
-				[c/757575:“比起隔壁，有亿点重”]
+				            飞行一段时间后还未击中敌人则会往玩家处回收
+				            回收阶段可以无限穿透
+				            [c/757575:“比起隔壁，有亿点重”]
 				'''
 		}
 
