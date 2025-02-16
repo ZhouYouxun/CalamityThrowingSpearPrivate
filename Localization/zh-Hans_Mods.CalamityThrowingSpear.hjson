@@ -24,6 +24,21 @@ Projectiles: {
 			TerraLanceBEAM.DisplayName: 泰拉巨枪光束
 			TerraLancePROJ.DisplayName: 泰拉巨枪
 			// BloodstoneRIGHT.DisplayName: Bloodstone R I G H T
+			// SunsetBForgetRightCut.DisplayName: Sunset B Forget Right Cut
+			// SunsetBForgetRight.DisplayName: Sunset B Forget Right
+			// SunsetBForgetLeft.DisplayName: Sunset B Forget Left
+			// SunsetASunsetRightEXP.DisplayName: Sunset A Sunset Right E X P
+			// SunsetASunsetRight.DisplayName: Sunset A Sunset Right
+			// SunsetASunsetLeft.DisplayName: Sunset A Sunset Left
+			// SunsetCConceptLeft.DisplayName: Sunset C Concept Left
+			// SunsetCConceptLeftEXP.DisplayName: Sunset C Concept Left E X P
+			// SunsetCConceptRight.DisplayName: Sunset C Concept Right
+			// SunsetCConceptRightCut.DisplayName: Sunset C Concept Right Cut
+			// SunsetCConceptLeftListener.DisplayName: Sunset C Concept Left Listener
+			// SunsetCConceptLeftBlack.DisplayName: Sunset C Concept Left Black
+			// SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
+			// SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
+			// SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
 		}
 
 		BPrePlantera: {
@@ -62,6 +77,10 @@ Projectiles: {
 			RedtideJavEXP.DisplayName: 赤潮爆炸
 			TheBrokenPROJ.DisplayName: 破旧的长枪
 			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
+			// DLOASSnake3Tail.DisplayName: D L O A S Snake3 Tail
+			// DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
+			// DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
+			// DLOASPROJ.DisplayName: D L O A S P R O J
 		}
 
 		CPreMoodLord: {
@@ -188,6 +207,7 @@ Projectiles: {
 			ViolenceJavLight.DisplayName: 恣睢光束
 			ViolenceJavPROJ.DisplayName: 恣睢
 			// StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
+			// DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
 		}
 	}
 
@@ -226,6 +246,8 @@ Projectiles: {
 	// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 	// ExampleCustomSwingProjectile.DisplayName: Example Custom Swing Projectile
 	// ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
+	// TeachingProjectile.DisplayName: Teaching Projectile
+	// SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
 }
 
 Projectile: {
@@ -559,6 +581,11 @@ NewWeapons: {
 				'''
 			DisplayName: 破旧的长枪
 		}
+
+		DLOAS: {
+			// Tooltip: ""
+			// DisplayName: D L O A S
+		}
 	}
 
 	BPrePlantera: {
@@ -775,6 +802,11 @@ NewWeapons: {
 				并从周围召唤数条无限穿透的泰拉激光
 				[c/89ff69:“它配了，终于”]
 				'''
+		}
+
+		Sunset: {
+			// Tooltip: ""
+			// DisplayName: Sunset
 		}
 	}
 
@@ -1043,6 +1075,11 @@ Items: {
 		// Tooltip: ""
 		// DisplayName: Prime Meridian
 	}
+
+	Sunset2: {
+		// Tooltip: ""
+		// DisplayName: Sunset2
+	}
 }
 
 ModBuff: {
@@ -1137,6 +1174,26 @@ Buffs: {
 	SurfeiterDrumEDebuff: {
 		// DisplayName: Surfeiter Drum E Debuff
 		// Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
+	}
+
+	SunsetCConceptPBuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetCConceptPBuff.Description
+		// DisplayName: Sunset C Concept P Buff
+	}
+
+	SunsetBForgetPBuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetPBuff.Description
+		// DisplayName: Sunset B Forget P Buff
+	}
+
+	SunsetBForgetEDebuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetEDebuff.Description
+		// DisplayName: Sunset B Forget E Debuff
+	}
+
+	SunsetASunsetEDebuff: {
+		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
+		// DisplayName: Sunset A Sunset E Debuff
 	}
 }
 

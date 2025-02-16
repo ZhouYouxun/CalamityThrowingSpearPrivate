@@ -60,12 +60,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<Sagittarius>(), 1);
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                    Main.NewText("完美的战斗，这是你的奖品！", 0, 255, 0); // 奖励文字
+                    Main.NewText("我去，纽币！", 0, 255, 0); // 成功
                 }
                 else
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                    Main.NewText("你似乎在敏捷程度上还需发力，如果你想获得这件奖品的话", 255, 0, 0); // 鼓励文字
+                    Main.NewText("回去重练", 255, 0, 0); // 失败
                 }
 
                 isTrackingEmpress = false; // 重置追踪状态

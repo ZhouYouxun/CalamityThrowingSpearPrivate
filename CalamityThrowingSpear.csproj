@@ -47,6 +47,9 @@
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\StreamGougeC\宇宙暗流.txt" />
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\恣睢投矛.txt" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\BraisedPorkJav\BraisedPorkJavCloud.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\DLOAS\DLOASSnake1Head.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\DLOAS\DLOASSnake2Body.png" />
+	  <None Remove="Weapons\NewWeapons\APreHardMode\DLOAS\DLOASSnake3Tail.png" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\DLOAS\画蛇添足[draw legs on a snake DLOAS].txt" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\ElectrocoagulationTenmonJav\ElectrocoagulationTenmonJav.png" />
 	  <None Remove="Weapons\NewWeapons\APreHardMode\GraniteJav\1.png" />
@@ -103,6 +106,7 @@
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\BlackSLASH.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\InfiniteDarknessJav.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\SoulHunterJav\SoulHunterJavSHARK.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\Sunset2.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\TerraLance\1.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\ADSStar.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\ArkofTheDragonSoul.png" />

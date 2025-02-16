@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                 player.QuickSpawnItem(null, ModContent.ItemType<XiaoZhiTiaoRE>(), 1);
 
                 // 在左下角显示提示信息
-                Main.NewText("只有掌握机械的奥秘，才能领悟生命的真谛", Color.LightGreen);
+                //Main.NewText("只有掌握机械的奥秘，才能领悟生命的真谛", Color.LightGreen);
             }
         }
 

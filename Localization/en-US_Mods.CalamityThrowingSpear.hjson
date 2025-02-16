@@ -24,6 +24,21 @@ Projectiles: {
 			TerraLanceBEAM.DisplayName: Terraternal Beam
 			TerraLancePROJ.DisplayName: Terraternal Lance
 			BloodstoneRIGHT.DisplayName: Bloodstone R I G H T
+			SunsetBForgetRightCut.DisplayName: Sunset B Forget Right Cut
+			SunsetBForgetRight.DisplayName: Sunset B Forget Right
+			SunsetBForgetLeft.DisplayName: Sunset B Forget Left
+			SunsetASunsetRightEXP.DisplayName: Sunset A Sunset Right E X P
+			SunsetASunsetRight.DisplayName: Sunset A Sunset Right
+			SunsetASunsetLeft.DisplayName: Sunset A Sunset Left
+			SunsetCConceptLeft.DisplayName: Sunset C Concept Left
+			SunsetCConceptLeftEXP.DisplayName: Sunset C Concept Left E X P
+			SunsetCConceptRight.DisplayName: Sunset C Concept Right
+			SunsetCConceptRightCut.DisplayName: Sunset C Concept Right Cut
+			SunsetCConceptLeftListener.DisplayName: Sunset C Concept Left Listener
+			SunsetCConceptLeftBlack.DisplayName: Sunset C Concept Left Black
+			SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
+			SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
+			SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
 		}
 
 		BPrePlantera: {
@@ -62,6 +77,10 @@ Projectiles: {
 			RedtideJavEXP.DisplayName: Redtide Explosion
 			TheBrokenPROJ.DisplayName: The Broken Spear
 			TheBrokenSPIT.DisplayName: The Broken Spits
+			DLOASSnake3Tail.DisplayName: D L O A S Snake3 Tail
+			DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
+			DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
+			DLOASPROJ.DisplayName: D L O A S P R O J
 		}
 
 		CPreMoodLord: {
@@ -188,6 +207,7 @@ Projectiles: {
 			ViolenceJavLight.DisplayName: Rampage Light Beam
 			ViolenceJavPROJ.DisplayName: Rampage
 			StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
+			DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
 		}
 	}
 
@@ -226,6 +246,8 @@ Projectiles: {
 	PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 	ExampleCustomSwingProjectile.DisplayName: Example Custom Swing Projectile
 	ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
+	TeachingProjectile.DisplayName: Teaching Projectile
+	SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
 }
 
 Projectile: {
@@ -558,6 +580,11 @@ NewWeapons: {
 				'''
 			DisplayName: The Broken Spear
 		}
+
+		DLOAS: {
+			Tooltip: ""
+			DisplayName: D L O A S
+		}
 	}
 
 	BPrePlantera: {
@@ -774,6 +801,11 @@ NewWeapons: {
 				and summons multiple infinitely piercing Terra lasers from the surroundings.
 				[c/89ff69:"It’s worthy of it, Finally."]
 				'''
+		}
+
+		Sunset: {
+			Tooltip: ""
+			DisplayName: Sunset
 		}
 	}
 
@@ -1042,6 +1074,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Prime Meridian
 	}
+
+	Sunset2: {
+		Tooltip: ""
+		DisplayName: Sunset2
+	}
 }
 
 ModBuff: {
@@ -1136,6 +1173,26 @@ Buffs: {
 	SurfeiterDrumEDebuff: {
 		DisplayName: Surfeiter Drum E Debuff
 		Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
+	}
+
+	SunsetCConceptPBuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.SunsetCConceptPBuff.Description
+		DisplayName: Sunset C Concept P Buff
+	}
+
+	SunsetBForgetPBuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetPBuff.Description
+		DisplayName: Sunset B Forget P Buff
+	}
+
+	SunsetBForgetEDebuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetEDebuff.Description
+		DisplayName: Sunset B Forget E Debuff
+	}
+
+	SunsetASunsetEDebuff: {
+		Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
+		DisplayName: Sunset A Sunset E Debuff
 	}
 }
 
