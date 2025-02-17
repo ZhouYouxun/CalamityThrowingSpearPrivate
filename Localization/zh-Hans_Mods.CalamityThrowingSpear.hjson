@@ -248,6 +248,9 @@ Projectiles: {
 	// ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
 	// TeachingProjectile.DisplayName: Teaching Projectile
 	// SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
+	// GlobalStormRightMagic.DisplayName: Global Storm Right Magic
+	// GlobalStormRightHoldOut.DisplayName: Global Storm Right Hold Out
+	// GlobalStormCloud.DisplayName: Global Storm Cloud
 }
 
 Projectile: {
@@ -261,6 +264,7 @@ Projectile: {
 	EAfterDog: {
 		// PrimordialStateNight.DisplayName: Primordial State Night
 		// PrimordialStateLight.DisplayName: Primordial State Light
+		// GlobalStormLightBall.DisplayName: Global Storm Light Ball
 	}
 }
 
@@ -1080,6 +1084,11 @@ Items: {
 		// Tooltip: ""
 		// DisplayName: Sunset2
 	}
+
+	GlobalStorm: {
+		// Tooltip: ""
+		// DisplayName: Global Storm
+	}
 }
 
 ModBuff: {
@@ -1145,6 +1154,11 @@ Configs: {
 				开启此选项后，将使本模组所有武器不受攻速加成影响
 				反之亦然
 				'''
+		}
+
+		EnableRogue: {
+			Label: 启用盗贼
+			Tooltip: 将所有武器和弹幕的职业类型改为盗贼
 		}
 	}
 }

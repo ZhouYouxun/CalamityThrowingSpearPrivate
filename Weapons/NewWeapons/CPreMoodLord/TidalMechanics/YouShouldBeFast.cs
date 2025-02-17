@@ -56,12 +56,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<TidalMechanics>(), 1);
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoTM>(), 1);
-                    Main.NewText("你战胜了海洋，这是你的奖品！", 0, 255, 0); // 奖励文字
+                    //Main.NewText("你战胜了海洋，这是你的奖品！", 0, 255, 0); // 奖励文字
                 }
                 else
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoTM>(), 1);
-                    Main.NewText("速度还有待提升，如果想获得更多奖励的话，就看看给你的这个东西吧！", 255, 0, 0); // 鼓励文字
+                    //Main.NewText("速度还有待提升，如果想获得更多奖励的话，就看看给你的这个东西吧！", 255, 0, 0); // 鼓励文字
                 }
 
                 isCountingTime = false; // 重置计时状态

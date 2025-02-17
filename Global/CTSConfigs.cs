@@ -35,6 +35,10 @@ namespace CalamityThrowingSpear.Global
         public bool EnableMeleeSpeed { get; set; }
 
 
+        // 专门开关盗贼武器
+        [DefaultValue(false)]
+        [ReloadRequired]
+        public bool EnableRogue { get; set; }
 
 
 

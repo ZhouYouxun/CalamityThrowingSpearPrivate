@@ -131,6 +131,8 @@
 	  <None Remove="Weapons\NewWeapons\EAfterDog\StarsofDestiny\StarsofDestiny.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\StarsofDestiny\StarsofDestinyPBuff.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\TheOtherRevelation\TheOtherRevelation.png" />
+	  <None Remove="Weapons\NewWeapons\ZOthers\GlobalStorm\GlobalStorm.png" />
+	  <None Remove="Weapons\NewWeapons\ZOthers\GlobalStorm\GlobalStormCloud.png" />
 	  <None Remove="Weapons\NewWeapons\ZOthers\PhantomShuriken.png" />
 	  <None Remove="Weapons\NewWeapons\着色器\10 IntersectionClipShader [损坏].txt" />
 	  <None Remove="Weapons\NewWeapons\着色器\11 ExobladeSlashShader.png" />

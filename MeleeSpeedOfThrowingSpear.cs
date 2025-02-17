@@ -65,10 +65,10 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
 
 namespace CalamityThrowingSpear
 {
-    internal class GlobalThrowingSpear : GlobalItem
+    internal class MeleeSpeedOfThrowingSpear : GlobalItem
     {
         // 定义一个静态的武器容器
-        private static readonly List<Type> WeaponSetA = new List<Type>
+        public static readonly List<Type> WeaponSetA = new List<Type>
         {
             typeof(AmidiasTridentJav), // 海王三叉戟
             typeof(GoldplumeJav), // 金羽
@@ -156,12 +156,11 @@ namespace CalamityThrowingSpear
                 }
                 else
                 {
-                    // 禁用状态下恢复正常
+                    // 禁用状态下恢复正常    
                     ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 1.000f;
                 }
             }
         }
-
 
 
 

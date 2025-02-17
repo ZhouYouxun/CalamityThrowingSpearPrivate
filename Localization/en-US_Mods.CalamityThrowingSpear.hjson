@@ -248,6 +248,9 @@ Projectiles: {
 	ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
 	TeachingProjectile.DisplayName: Teaching Projectile
 	SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
+	GlobalStormRightMagic.DisplayName: Global Storm Right Magic
+	GlobalStormRightHoldOut.DisplayName: Global Storm Right Hold Out
+	GlobalStormCloud.DisplayName: Global Storm Cloud
 }
 
 Projectile: {
@@ -261,6 +264,7 @@ Projectile: {
 	EAfterDog: {
 		PrimordialStateNight.DisplayName: Primordial State Night
 		PrimordialStateLight.DisplayName: Primordial State Light
+		GlobalStormLightBall.DisplayName: Global Storm Light Ball
 	}
 }
 
@@ -1079,6 +1083,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Sunset2
 	}
+
+	GlobalStorm: {
+		Tooltip: ""
+		DisplayName: Global Storm
+	}
 }
 
 ModBuff: {
@@ -1144,6 +1153,11 @@ Configs: {
 				After turning on this option, all weapons in this mod will NOT be affected by the melee attack speed bonus. 
 				Vice versa
 				'''
+		}
+
+		EnableRogue: {
+			Label: EnableRogue
+			Tooltip: Changed all weapons class type to Rogue
 		}
 	}
 }
