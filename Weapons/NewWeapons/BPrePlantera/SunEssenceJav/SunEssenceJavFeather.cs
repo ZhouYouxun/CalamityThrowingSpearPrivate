@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
         public override void AI()
         {
             // 逐渐加速，每帧乘以
-            Projectile.velocity *= 1.025f;
+            //Projectile.velocity *= 1.025f;
 
             //// 每三帧执行一次追踪逻辑
             //if (Projectile.timeLeft % 3 == 0)

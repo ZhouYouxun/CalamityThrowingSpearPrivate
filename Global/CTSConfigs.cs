@@ -37,7 +37,7 @@ namespace CalamityThrowingSpear.Global
 
         // 专门开关盗贼武器
         [DefaultValue(false)]
-        [ReloadRequired]
+        //[ReloadRequired]
         public bool EnableRogue { get; set; }
 
 

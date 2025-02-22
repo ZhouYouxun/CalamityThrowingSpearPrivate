@@ -251,6 +251,10 @@ Projectiles: {
 	GlobalStormRightMagic.DisplayName: Global Storm Right Magic
 	GlobalStormRightHoldOut.DisplayName: Global Storm Right Hold Out
 	GlobalStormCloud.DisplayName: Global Storm Cloud
+	SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
+	SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
+	ElectrocutionHalberdSpearPROJ.DisplayName: Electrocution Halberd Spear P R O J
+	WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
 }
 
 Projectile: {
@@ -626,7 +630,6 @@ NewWeapons: {
 			Tooltip:
 				'''
 				Releases three rainbows upon disappearing.
-				Only one Pearlwood Spear can exist on the field at a time.
 				[c/bcb696:"Mercy and hatred coexist."]
 				'''
 		}
@@ -1088,6 +1091,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Global Storm
 	}
+
+	ElectrocutionHalberdSpear: {
+		DisplayName: Electrocution Halberd Spear
+		Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1211,3 +1219,12 @@ Buffs: {
 }
 
 TheSpecialText.ElementalArkJav2: ingested too many pigments
+
+NewSpears: {
+	APreHardMode: {
+		WulfrimSpear: {
+			Tooltip: ""
+			DisplayName: Wulfrim Spear
+		}
+	}
+}

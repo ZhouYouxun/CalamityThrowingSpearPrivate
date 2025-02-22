@@ -251,6 +251,10 @@ Projectiles: {
 	// GlobalStormRightMagic.DisplayName: Global Storm Right Magic
 	// GlobalStormRightHoldOut.DisplayName: Global Storm Right Hold Out
 	// GlobalStormCloud.DisplayName: Global Storm Cloud
+	// SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
+	// SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
+	// ElectrocutionHalberdSpearPROJ.DisplayName: Electrocution Halberd Spear P R O J
+	// WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
 }
 
 Projectile: {
@@ -627,7 +631,6 @@ NewWeapons: {
 			Tooltip:
 				'''
 				消失时释放三道彩虹
-				场上的珍珠木矛被限制在一个
 				[c/bcb696:“仁慈与仇恨并存”]
 				'''
 		}
@@ -883,9 +886,9 @@ NewWeapons: {
 			Tooltip:
 				'''
 				丢出缓慢的长枪，命中时产生爆炸同时从上方召唤多条激光与火焰
-				            飞行一段时间后还未击中敌人则会往玩家处回收
-				            回收阶段可以无限穿透
-				            [c/757575:“比起隔壁，有亿点重”]
+				飞行一段时间后还未击中敌人则会往玩家处回收
+				回收阶段可以无限穿透
+				[c/757575:“比起隔壁，有亿点重”]
 				'''
 		}
 
@@ -1089,6 +1092,11 @@ Items: {
 		// Tooltip: ""
 		// DisplayName: Global Storm
 	}
+
+	ElectrocutionHalberdSpear: {
+		// DisplayName: Electrocution Halberd Spear
+		// Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1158,7 +1166,11 @@ Configs: {
 
 		EnableRogue: {
 			Label: 启用盗贼
-			Tooltip: 将所有武器和弹幕的职业类型改为盗贼
+			Tooltip:
+				'''
+				将所有武器和弹幕的职业类型改为盗贼
+				注：开启后不会获得全新的潜伏攻击
+				'''
 		}
 	}
 }
@@ -1212,3 +1224,12 @@ Buffs: {
 }
 
 TheSpecialText.ElementalArkJav2: 摄入了过量的色素
+
+NewSpears: {
+	APreHardMode: {
+		WulfrimSpear: {
+			// Tooltip: ""
+			// DisplayName: Wulfrim Spear
+		}
+	}
+}
