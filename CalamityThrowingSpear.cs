@@ -149,6 +149,18 @@ namespace CalamityThrowingSpear
             // 生成十字星粒子
             GeneralParticleHandler.SpawnParticle(sparker);
 
+            Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitX); // 使用正前方方向
+            Vector2 sparkVelocity = direction.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4)) * 6f; // 随机旋转方向
+            CritSpark spark = new CritSpark(
+                Projectile.Center, // 粒子生成位置
+                sparkVelocity + Main.player[Projectile.owner].velocity, // 粒子初始速度
+                Color.White, // 粒子起始颜色
+                Color.LightBlue, // 粒子结束颜色
+                1f, // 粒子缩放
+                16 // 粒子寿命
+            );
+            GeneralParticleHandler.SpawnParticle(spark);
+
             // 7.骷髅头💀💀💀---------------------------------
             // 原灾示范：重做后的憎恨左键，沙漠巡游者套装
             // 适用于幽灵效果、亡灵能量、恐怖气息等
@@ -215,7 +227,7 @@ namespace CalamityThrowingSpear
             // 10.细长线性粒子---------------------------------
             // 原灾示范：NE猎枪
             // 适用于能量流动、光束轨迹、尾迹等效果
-            AltSparkParticle spark = new AltSparkParticle(
+            AltSparkParticle spark5 = new AltSparkParticle(
                 Projectile.Center - Projectile.velocity * 1.5f, // 生成位置，略微延迟以形成轨迹
                 Projectile.velocity * 0.01f, // 速度极低，几乎静止
                 false, // ❌ 不受重力影响
@@ -224,7 +236,7 @@ namespace CalamityThrowingSpear
                 Color.Cyan * 0.135f // 颜色较淡的效果
             );
             // 生成细长星尘粒子
-            GeneralParticleHandler.SpawnParticle(spark);
+            GeneralParticleHandler.SpawnParticle(spark5);
 
             // 11.刀盘刀光---------------------------------
             // 原灾示范：宇宙暗流前奏，海神之馈赠线，环境之刃转盘模式
@@ -301,20 +313,23 @@ namespace CalamityThrowingSpear
 
 
             // 原版内置了很多很多的特效【它们可以通过 ParticleOrchestrator.RequestParticleSpawn() 进行调用】，你可以直接检查相关文件来获得相关信息，包括但不限于：
-            // Keybrand 圣钥剑特效 金色光束
-            // NightsEdge 永夜之刃特效 紫黑色剑气
-            // TrueNightsEdge 真·永夜之刃特效 绿色混沌能量爆炸
+            // 可以看一下这一段：https://gist.github.com/Rijam/971b5252707860b65b582093580aa49c
+            // 想去学习的话可以去这里：namespace Terraria.GameContent.Drawing; public class ParticleOrchestrator
+
+            // Keybrand 圣钥剑特效 三棱刺
+            // NightsEdge 永夜之刃特效 对于后者只剩下紫色
+            // TrueNightsEdge 真·永夜之刃特效 绿色和紫色的双倾斜交叉
             // Excalibur 圣剑特效 光芒四射的剑气粒子
-            // TrueExcalibur 真·圣剑特效 更强的光剑爆炸效果，带有耀眼黄色光束
-            // TerraBlade 泰拉之刃特效 绿色剑气爆炸，具有泰拉粒子
+            // TrueExcalibur 真·圣剑特效 更强的光剑爆炸效果，黄色和粉色混合
+            // TerraBlade 泰拉之刃特效 十字星但是会与玩家的方向相关
             // PaladinsHammer 圣骑士战锤特效 生成圣光粒子，带有锤子旋转轨迹
             // SlapHand 巨手特效 产生击打音效和轻微冲击波
-            // WaffleIron 华夫饼熨斗特效 生成华夫饼粒子，带有金属光效
+            // WaffleIron 华夫饼熨斗特效 生成华夫饼的各种黄色粒子特效
             // FlyMeal 飞蝇拍特效 生成苍蝇飞散粒子
 
-            // RainbowRodHit 彩虹魔杖击中特效 彩虹色光束爆炸，带有彩色光环
-            // SilverBulletSparkle 银弹火花 银色弹道爆炸，带有火花粒子
-            // ShimmerArrow 闪耀箭特效 生成闪耀粒子和光点，带有魔法波动
+            // RainbowRodHit 彩虹魔杖击中特效 各种彩虹色的十字星往周围集体扩散，慢慢消失
+            // SilverBulletSparkle 银弹火花 银色十字闪光
+            // ShimmerArrow 微光箭特效 闪耀粒子和光点，带有魔法波动
             // StellarTune 星律魔杖特效 生成星云色光斑，带有音乐符号
             // StardustPunch 星尘拳特效 星尘颜色的能量波动，类似星尘龙冲击
             // ShimmerBlock 闪耀方块特效 生成闪烁的光点，类似幻象

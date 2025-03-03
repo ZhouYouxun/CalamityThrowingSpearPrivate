@@ -43,7 +43,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
             Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
-
         }
 
         public override void AI()

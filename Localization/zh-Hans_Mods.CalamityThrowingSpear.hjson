@@ -39,6 +39,9 @@ Projectiles: {
 			// SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
 			// SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
 			// SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
+			// ChaosWindSpearWind.DisplayName: Chaos Wind Spear Wind
+			// TerraLanceSpearBEAM.DisplayName: Terra Lance Spear B E A M
+			// AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
 		}
 
 		BPrePlantera: {
@@ -81,6 +84,9 @@ Projectiles: {
 			// DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
 			// DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
 			// DLOASPROJ.DisplayName: D L O A S P R O J
+			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
+			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
+			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
 		}
 
 		CPreMoodLord: {
@@ -255,6 +261,39 @@ Projectiles: {
 	// SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
 	// ElectrocutionHalberdSpearPROJ.DisplayName: Electrocution Halberd Spear P R O J
 	// WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
+
+	NewSpears: {
+		APreHardMode: {
+			// WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
+			// BraisedPorkSpearCloud.DisplayName: Braised Pork Spear Cloud
+		}
+
+		// BPrePlantera.ChaosEssenceSpearFire.DisplayName: Chaos Essence Spear Fire
+		// EAfterDog.AuricSpearCell.DisplayName: Auric Spear Cell
+	}
+
+	// GraniteSpearPROJ.DisplayName: Granite Spear P R O J
+	// TidalMechanicsSpearHoldOut.DisplayName: Tidal Mechanics Spear Hold Out
+	// TidalMechanicsSpearPROJ.DisplayName: Tidal Mechanics Spear P R O J
+	// TheLastLanceSpearHoldOut.DisplayName: The Last Lance Spear Hold Out
+	// TheBrokenSpearHoldOut.DisplayName: The Broken Spear Hold Out
+	// TheLastLanceSpearSwing.DisplayName: The Last Lance Spear Swing
+	// HeartSwordSpearHoldOut.DisplayName: Heart Sword Spear Hold Out
+
+	Melee: {
+		// BraisedPorkSpearPROJ.DisplayName: Braised Pork Spear P R O J
+		// ElectrocoagulationTenmonSpearPROJ.DisplayName: Electrocoagulation Tenmon Spear P R O J
+		// PolarEssenceSpearPROJ.DisplayName: Polar Essence Spear P R O J
+		// ChaosEssenceSpearPROJ.DisplayName: Chaos Essence Spear P R O J
+		// DLOASSpearPROJ.DisplayName: D L O A S Spear P R O J
+		// TerraLanceSpearPROJ.DisplayName: Terra Lance Spear P R O J
+		// BloodstoneSpearPROJ.DisplayName: Bloodstone Spear P R O J
+	}
+
+	// PolarEssenceSpearExtra.DisplayName: Polar Essence Spear Extra
+	// SunEssenceSpearPROJ.DisplayName: Sun Essence Spear P R O J
+	// ChaosWindSpearPROJ.DisplayName: Chaos Wind Spear P R O J
+	// TidalMechanicsSpearHoldOutSP.DisplayName: Tidal Mechanics Spear Hold Out S P
 }
 
 Projectile: {
@@ -263,13 +302,19 @@ Projectile: {
 		// SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
 	}
 
-	// DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	DPreDog: {
+		// SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+		// InfiniteDarknessSpearPROJ.DisplayName: Infinite Darkness Spear P R O J
+	}
 
 	EAfterDog: {
 		// PrimordialStateNight.DisplayName: Primordial State Night
 		// PrimordialStateLight.DisplayName: Primordial State Light
 		// GlobalStormLightBall.DisplayName: Global Storm Light Ball
+		// BloodstoneSpearBloodProj.DisplayName: Bloodstone Spear Blood Proj
 	}
+
+	// APreHardMode.WulfrimSpearLight.DisplayName: Wulfrim Spear Light
 }
 
 ChangedWeapons: {
@@ -939,6 +984,11 @@ NewWeapons: {
 			// Tooltip: ""
 			// DisplayName: Starsof Destiny
 		}
+
+		AuricSpear: {
+			// DisplayName: Auric Spear
+			// Tooltip: ""
+		}
 	}
 }
 
@@ -1097,6 +1147,26 @@ Items: {
 		// DisplayName: Electrocution Halberd Spear
 		// Tooltip: ""
 	}
+
+	TidalMechanicsSpear: {
+		// DisplayName: Tidal Mechanics Spear
+		// Tooltip: ""
+	}
+
+	TheLastLanceSpear: {
+		// Tooltip: ""
+		// DisplayName: The Last Lance Spear
+	}
+
+	TheBrokenSpear: {
+		// Tooltip: ""
+		// DisplayName: The Broken Spear
+	}
+
+	HeartSwordSpear: {
+		// DisplayName: Heart Sword Spear
+		// Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1230,6 +1300,75 @@ NewSpears: {
 		WulfrimSpear: {
 			// Tooltip: ""
 			// DisplayName: Wulfrim Spear
+		}
+
+		GraniteSpear: {
+			// Tooltip: ""
+			// DisplayName: Granite Spear
+		}
+
+		BraisedPorkSpear: {
+			// Tooltip: ""
+			// DisplayName: Braised Pork Spear
+		}
+
+		ElectrocoagulationTenmonSpear: {
+			// DisplayName: Electrocoagulation Tenmon Spear
+			// Tooltip: ""
+		}
+
+		DLOASSpear: {
+			// Tooltip: ""
+			// DisplayName: D L O A S Spear
+		}
+
+		BloodstoneSpear: {
+			// DisplayName: Bloodstone Spear
+			// Tooltip: ""
+		}
+
+		TerraLanceSpear: {
+			// DisplayName: Terra Lance Spear
+			// Tooltip: ""
+		}
+	}
+
+	DPreDog: {
+		InfiniteDarknessSpear: {
+			// DisplayName: Infinite Darkness Spear
+			// Tooltip: ""
+		}
+
+		ChaosWindSpear: {
+			// DisplayName: Chaos Wind Spear
+			// Tooltip: ""
+		}
+
+		BloodstoneSpear: {
+			// DisplayName: Bloodstone Spear
+			// Tooltip: ""
+		}
+
+		TerraLanceSpear: {
+			// DisplayName: Terra Lance Spear
+			// Tooltip: ""
+		}
+	}
+
+	BPrePlantera: {
+		PolarEssenceSpear: {
+			// DisplayName: Polar Essence Spear
+			// Tooltip: ""
+		}
+
+		SunEssenceSpear: {
+			// DisplayName: Sun Essence Spear
+			// Tooltip: ""
+		}
+
+		ChaosEssenceSpear: {
+			// DisplayName: Chaos Essence Spear
+			// Tooltip: ""
 		}
 	}
 }
