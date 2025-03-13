@@ -1166,6 +1166,11 @@ Items: {
 		DisplayName: Heart Sword Spear
 		Tooltip: ""
 	}
+
+	MirrorWater: {
+		DisplayName: Mirror Water
+		Tooltip: ""
+	}
 }
 
 ModBuff: {
