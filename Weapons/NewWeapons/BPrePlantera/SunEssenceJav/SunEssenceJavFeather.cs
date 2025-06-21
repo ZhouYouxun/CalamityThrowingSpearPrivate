@@ -36,24 +36,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             // 逐渐加速，每帧乘以
             //Projectile.velocity *= 1.025f;
 
-            //// 每三帧执行一次追踪逻辑
-            //if (Projectile.timeLeft % 3 == 0)
-            //{
-            //    // 查找范围内最近的敌人
-            //    NPC target = Projectile.Center.ClosestNPCAt(1800);
-            //    if (target != null)
-            //    {
-            //        // 计算目标方向和当前方向之间的夹角
-            //        Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-            //        float targetAngle = directionToTarget.ToRotation();
-            //        float currentAngle = Projectile.velocity.ToRotation();
-            //        float maxTurnAngle = MathHelper.ToRadians(1f); // 最大拐角为X度
+            // 每三帧执行一次追踪逻辑
+            if (Projectile.timeLeft % 3 == 0)
+            {
+                // 查找范围内最近的敌人
+                NPC target = Projectile.Center.ClosestNPCAt(1800);
+                if (target != null)
+                {
+                    // 计算目标方向和当前方向之间的夹角
+                    Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                    float targetAngle = directionToTarget.ToRotation();
+                    float currentAngle = Projectile.velocity.ToRotation();
+                    float maxTurnAngle = MathHelper.ToRadians(1f); // 最大拐角为X度
 
-            //        // 限制转向角度
-            //        float newAngle = MathHelper.Lerp(currentAngle, targetAngle, maxTurnAngle / Math.Abs(targetAngle - currentAngle));
-            //        Projectile.velocity = newAngle.ToRotationVector2() * Projectile.velocity.Length(); // 更新速度向量
-            //    }
-            //}
+                    // 限制转向角度
+                    float newAngle = MathHelper.Lerp(currentAngle, targetAngle, maxTurnAngle / Math.Abs(targetAngle - currentAngle));
+                    Projectile.velocity = newAngle.ToRotationVector2() * Projectile.velocity.Length(); // 更新速度向量
+                }
+            }
 
             if (Main.rand.NextBool(6))
             {

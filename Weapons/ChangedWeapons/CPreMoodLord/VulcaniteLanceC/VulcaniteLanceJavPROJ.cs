@@ -15,6 +15,8 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
 {
@@ -41,7 +43,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 3;
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -49,8 +51,34 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.aiStyle = ProjAIStyleID.Arrow; // 受重力影响
         }
+        public override void OnSpawn(IEntitySource source)
+        {
+            // 定义范围和发射逻辑
+            float baseAngle = Projectile.velocity.ToRotation(); // 当前弹幕的正前方
+            float spreadAngle = MathHelper.ToRadians(20); // 总扩散角度为 20 度
 
+            for (int i = 0; i < 3; i++) // 随机选择 3 个方向
+            {
+                float randomOffset = Main.rand.NextFloat(-spreadAngle / 2, spreadAngle / 2); // 随机角度偏移
+                Vector2 direction = baseAngle.ToRotationVector2().RotatedBy(randomOffset); // 计算方向
+
+                float speedMultiplier = Main.rand.NextFloat(0.75f, 1.75f); // 初速度倍率
+                Vector2 velocity = direction * (Projectile.velocity.Length() * speedMultiplier); // 计算初始速度
+
+                // 发射 VulcaniteLanceJavTinyFlare 弹幕
+                Projectile.NewProjectile(
+                    source,
+                    Projectile.Center,
+                    velocity,
+                    ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(),
+                    (int)(Projectile.damage * 0.45f), // 伤害倍率为 0.45
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+        }
         public override void AI()
         {
             // 保持弹幕旋转
@@ -85,26 +113,76 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
         }
 
         // 击中敌人时的逻辑
+        private static int hitCounter = 0; // 追踪命中次数
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.OnFire3, 300);
 
-            // 生成FuckYou爆炸弹幕，伤害倍率为1.25，大小为2倍
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 1.25f), Projectile.knockBack, Projectile.owner, ai0: 2f);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+            // 增加命中计数
+            hitCounter++;
 
-            // 10% 概率召唤 TinyFlare 弹幕
-            if (Main.rand.NextFloat() < 1f)
-            {
-                // 攻击后在玩家位置生成TinyFlare弹幕，速度为0.7倍，伤害为0.33倍
-                Vector2 flareDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Main.player[Projectile.owner].Center, flareDirection * 0.7f * 10f,
-                    ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(), (int)(Projectile.damage * 1.25f), Projectile.knockBack, Projectile.owner);
-            }
+            // 计算爆炸弹幕的伤害倍率和大小
+            float damageMultiplier = Math.Min(0.5f + 0.25f * (hitCounter - 1), 1f); // 每次提升0.25倍，最大1.0
+            float sizeMultiplier = damageMultiplier; // 大小与伤害倍率一致
+
+            // 生成爆炸弹幕
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<FuckYou>(),
+                (int)(Projectile.damage * damageMultiplier),
+                Projectile.knockBack,
+                Projectile.owner
+            );
+
+            //// 10% 概率召唤 TinyFlare 弹幕
+            //if (Main.rand.NextFloat() < 1f)
+            //{
+            //    // 攻击后在玩家位置生成TinyFlare弹幕，速度为0.7倍，伤害为0.33倍
+            //    Vector2 flareDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+            //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Main.player[Projectile.owner].Center, flareDirection * 0.7f * 10f,
+            //        ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(), (int)(Projectile.damage * 1.25f), Projectile.knockBack, Projectile.owner);
+            //}
         }
 
+
+        private static int killCounter = 0; // 专用计数器用于触发特效
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(SoundID.Item73, Projectile.Center);
+
+            // 生成一个伤害倍率为 1.0 的 VulcaniteLanceJavSuperFlame
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<VulcaniteLanceJavSuperFlame>(),
+                Projectile.damage,
+                Projectile.knockBack,
+                Projectile.owner
+            );
+
+            // 增加计数器
+            killCounter++;
+
+            // 如果计数器达到 20，生成一个伤害倍率为 15 的 VulcaniteLanceJavFlame
+            if (killCounter >= 20)
+            {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<VulcaniteLanceJavFlame>(),
+                    (int)(Projectile.damage * 15f),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+
+                // 重置计数器
+                killCounter = 0;
+            }
+
             // 生成橙红色的椭圆形粒子特效，往8个方向发射
             for (int i = 0; i < 8; i++)
             {
@@ -114,6 +192,57 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 // 调整方向向量的大小，将原来的 0.75f 增加到 2f，使粒子飞得更远
                 Particle pulse = new DirectionalPulseRing(Projectile.Center, direction * 2f, Color.OrangeRed, new Vector2(1f, 2.5f), 0f, 0.2f, 0.03f, 20);
                 GeneralParticleHandler.SpawnParticle(pulse);
+            }
+
+
+
+
+
+
+            // “火”的位置与结构定义
+            Vector2 center = Projectile.Center; // 弹幕死亡的中心点
+            float baseSpeed = 2.0f; // 粒子基础初速度
+            float acceleration = 0.1f; // 粒子加速度
+            int particleLifetime = 60; // 粒子生命周期
+
+            // 使用相对坐标绘制“火”字
+            List<Vector2> strokePoints = new List<Vector2>
+    {
+        // 一撇
+        new Vector2(-10, -20),
+        new Vector2(-15, -10),
+        new Vector2(-20, 0),
+
+        // 一捺
+        new Vector2(10, -20),
+        new Vector2(15, -10),
+        new Vector2(20, 0),
+
+        // 两点
+        new Vector2(-5, 10),
+        new Vector2(5, 10)
+    };
+
+            // 遍历每个点生成粒子
+            foreach (var point in strokePoints)
+            {
+                for (int i = 0; i < 8; i++) // 每个点生成多个粒子
+                {
+                    Vector2 particlePosition = center + point + Main.rand.NextVector2Circular(2f, 2f); // 基于点位置生成粒子
+                    Vector2 velocity = (particlePosition - center).SafeNormalize(Vector2.Zero) * baseSpeed;
+
+                    Dust dust = Dust.NewDustPerfect(
+                        particlePosition,
+                        Main.rand.Next(new int[] { 55, 35, 174 }), // 混合使用粒子类型
+                        velocity
+                    );
+                    dust.scale = Main.rand.NextFloat(1.85f, 2.35f); // 设置粒子大小
+                    dust.alpha = 217; // 设置透明度
+                    dust.noGravity = true; // 粒子不受重力影响
+                    dust.velocity += velocity * Main.rand.NextFloat(0.1f, 0.3f); // 加速粒子
+                    dust.rotation = Main.rand.NextFloat(0, MathHelper.TwoPi); // 随机初始旋转
+                    dust.customData = new object[] { acceleration, particleLifetime }; // 存储加速度和生命周期
+                }
             }
         }
 

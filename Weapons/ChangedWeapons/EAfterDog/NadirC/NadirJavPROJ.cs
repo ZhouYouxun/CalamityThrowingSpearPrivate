@@ -27,6 +27,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/NadirC/NadirJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
 
+        private static Color ShaderColorOne = Color.Black;
+        private static Color ShaderColorTwo = Color.DarkGray;
+        private static Color ShaderEndColor = Color.DarkBlue;
 
         private Vector2 altSpawn;
 
@@ -35,11 +38,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-
-
-        private static Color ShaderColorOne = Color.Black;
-        private static Color ShaderColorTwo = Color.DarkGray;
-        private static Color ShaderEndColor = Color.DarkBlue;
 
         private float PrimitiveWidthFunction(float completionRatio)
         {
@@ -73,7 +71,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             //CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
 
             // 绘制黑色着色效果
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak"));
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak"));
             Vector2 overallOffset = Projectile.Size * 0.5f;
             overallOffset += Projectile.velocity * 1.4f;
             int numPoints = 96;
@@ -107,7 +105,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         }
 
         private int particleTimer = 0; // 计时器
-
+        private int spawnedProjectiles = 0;
 
         public override void AI()
         {
@@ -146,6 +144,38 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                 );
                 GeneralParticleHandler.SpawnParticle(bolt);
             }
+
+
+
+            // 计时器增加
+            Projectile.ai[0]++;
+
+            // 从飞行后的第 15 帧开始，每 6 帧触发一次
+            if (Projectile.ai[0] >= 15 && Projectile.ai[0] % 6 == 0 && spawnedProjectiles < 25)
+            {
+                // 计算圆圈中心（绝对正下方 50~60 格）
+                Vector2 spawnCenter = Projectile.Center + new Vector2(0, Main.rand.NextFloat(50 * 16, 60 * 16));
+
+                // 在 13 格半径范围内随机选择一个点
+                Vector2 spawnPosition = spawnCenter + Main.rand.NextVector2Circular(13 * 16, 13 * 16);
+
+                // 计算朝向自身的初始速度（自身速度的 1 倍）
+                Vector2 velocity = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.Zero) * (Projectile.velocity.Length() * 1f);
+
+                // 生成新的 `NadirJavVoidEssence` 弹幕
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPosition,
+                    velocity,
+                    ModContent.ProjectileType<NadirJavVoidEssence>(),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+
+                // 释放计数增加
+                spawnedProjectiles++;
+            }
         }
 
         private void CreatePurpleDustCircle()
@@ -167,35 +197,18 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 随机释放1-3个VoidTentacle，伤害为50%
-            int tentacleCount = Main.rand.Next(1, 2);
-            for (int i = 0; i < tentacleCount; i++)
-            {
-                Vector2 spawnVelocity = Projectile.velocity.RotatedByRandom(MathHelper.TwoPi) * 2f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<VoidTentacle>(), (int)(Projectile.damage * 0.25f), Projectile.knockBack, Projectile.owner);
-            }
+            //// 随机释放1-3个VoidTentacle，伤害为50%
+            //int tentacleCount = Main.rand.Next(1, 2);
+            //for (int i = 0; i < tentacleCount; i++)
+            //{
+            //    Vector2 spawnVelocity = Projectile.velocity.RotatedByRandom(MathHelper.TwoPi) * 2f;
+            //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<NadirJavVoidEssence>(), (int)(Projectile.damage * 0.25f), Projectile.knockBack, Projectile.owner);
+            //}
         }
 
         public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.Item104, Projectile.Center);
-
-            //// 生成3个VoidEssence，伤害为75%，从随机位置砸向当前目标
-            //Vector2 targetPosition = Main.MouseWorld;
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-            //    float radius = Main.rand.NextFloat(10 * 16, 30 * 16);
-            //    Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
-            //    Vector2 spawnPosition = targetPosition + offset;
-            //    Vector2 velocity = Vector2.Normalize(targetPosition - spawnPosition) * 16;
-
-            //    // 生成VoidEssence弹幕
-            //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, ModContent.ProjectileType<NadirJavVoidEssence>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner);
-
-            //    // 在生成VoidEssence的位置释放紫色粒子特效
-            //    CreatePurpleDustCircleAtPosition(spawnPosition);
-            //}
 
             // 1. 生成重型烟雾粒子，颜色为紫色和黑色，左右 30 度范围内随机
             int smokeParticleCount = 20; // 粒子数量可根据需求调整
@@ -221,38 +234,25 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
 
-            // 2. 生成 VoidTentacle 弹幕，在死亡位置正后方左右各 45 度随机选择 4 个位置
-            int tentacleCount = 4;
-            for (int i = 0; i < tentacleCount; i++)
-            {
-                // 随机在正后方左右 45 度范围内选择方向
-                float tentacleAngleOffset = Main.rand.NextFloat(-MathHelper.ToRadians(45), MathHelper.ToRadians(45));
-                Vector2 tentacleVelocity = Projectile.velocity.RotatedBy(MathHelper.Pi + tentacleAngleOffset) * 10f;
+            // 计算圆圈中心（绝对正下方 50~60 格）
+            Vector2 spawnCenter = Projectile.Center + new Vector2(0, Main.rand.NextFloat(50 * 16, 60 * 16));
 
+            for (int i = 0; i < 6; i++)
+            {
+                // 在 25 格半径范围内随机选择一个点
+                Vector2 spawnPosition = spawnCenter + Main.rand.NextVector2Circular(25 * 16, 25 * 16);
+
+                // 计算朝向自身的初始速度，并在 -10 到 10 度内随机偏移
+                float angleOffset = Main.rand.NextFloat(-MathHelper.ToRadians(10), MathHelper.ToRadians(10));
+                Vector2 velocity = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.Zero).RotatedBy(angleOffset) * (Projectile.velocity.Length() * 1f);
+
+                // 生成新的 `NadirJavVoidEssence` 弹幕
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    tentacleVelocity,
-                    ModContent.ProjectileType<VoidTentacle>(),
-                    (int)(Projectile.damage * 0.7f), // 1.0倍伤害
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-            }
-
-            // 3. 生成 NadirJavVoidEssence 弹幕，在弹幕位置周围生成 6 个，朝死亡位置飞行
-            int essenceCount = 3;
-            for (int i = 0; i < essenceCount; i++)
-            {
-                Vector2 essenceSpawnOffset = Main.rand.NextVector2Circular(30, 30); // 在 30 像素范围内生成位置偏移
-                Vector2 essenceDirection = (Projectile.Center - (Projectile.Center + essenceSpawnOffset)).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 12f);
-
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center + essenceSpawnOffset,
-                    essenceDirection,
+                    spawnPosition,
+                    velocity,
                     ModContent.ProjectileType<NadirJavVoidEssence>(),
-                    (int)(Projectile.damage * 0.8f),
+                    Projectile.damage,
                     Projectile.knockBack,
                     Projectile.owner
                 );

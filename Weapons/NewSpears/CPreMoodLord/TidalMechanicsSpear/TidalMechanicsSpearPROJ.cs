@@ -90,7 +90,7 @@ namespace CalamityThrowingSpear.Weapons.NewSpears.CPreMoodLord.TidalMechanicsSpe
         public override bool PreDraw(ref Color lightColor)
         {
             GameShaders.Misc["CalamityMod:PrismaticStreak"].SetShaderTexture(
-                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
             );
 
             // **修改 overallOffset，让着色器起始点往后推 16 像素**

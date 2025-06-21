@@ -4,6 +4,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityMod;
 using System;
+using CalamityMod.Particles;
+using Terraria.Audio;
 
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
@@ -22,7 +24,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.DamageType = DamageClass.Melee;
             Projectile.alpha = 255;
             Projectile.penetrate = 1;
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = 350;
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
@@ -40,26 +42,82 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 rotationAngle -= MathHelper.TwoPi;
             }
 
-            // 计算三个粒子的位置（上左下和右下），互为120度夹角
-            float[] angles = { 0f, MathHelper.TwoPi / 3f, MathHelper.TwoPi * 2f / 3f }; // 粒子间隔120度
-            float radius = 2 * 16f; // 公转半径为2格（2*16像素）
-
-            foreach (float initialAngle in angles)
+            // 在 `timeLeft <= 325` 时开始生成粒子
+            if (Projectile.timeLeft <= 325)
             {
-                // 计算粒子的当前角度和位置
-                float angle = initialAngle + rotationAngle;
-                Vector2 position = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+                // 生成两条对称的粒子
+                float[] angles = { 0f, MathHelper.Pi }; // 夹角为180度
+                float radius = 0.7765f * 16f; // 粒子轨迹半径
 
-                // 创建粒子特效
-                int fiery = Dust.NewDust(position, 0, 0, DustID.InfernoFork, 0f, 0f, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
-                Main.dust[fiery].noGravity = true;
-                Main.dust[fiery].velocity = Vector2.Zero; // 粒子初始速度为零
+                foreach (float initialAngle in angles)
+                {
+                    float angle = initialAngle + rotationAngle; // 计算粒子的当前角度
+                    Vector2 position = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+
+                    // 创建粒子特效
+                    int fiery = Dust.NewDust(
+                        position,
+                        0,
+                        0,
+                        DustID.InfernoFork, // 使用的粒子类型
+                        0f,
+                        0f,
+                        100,
+                        default,
+                        Main.rand.NextFloat(1.85f, 2.35f) // 粒子大小
+                    );
+                    Main.dust[fiery].noGravity = true;
+                    Main.dust[fiery].velocity = Vector2.Zero; // 粒子初始速度为零
+                }
             }
 
-            if (Projectile.timeLeft < 150)
+            // 追踪逻辑
+            if (Projectile.timeLeft < 275)
                 CalamityUtils.HomeInOnNPC(Projectile, true, 1800f, 10f, 20f);
         }
+        public override void OnKill(int timeLeft)
+        {
+            // 播放音效
+            SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
 
+            // 创建正八边形粒子特效
+            float radius = 5 * 16f; // 八边形半径
+            int numSides = 8; // 八边形的边数
+            for (int i = 0; i < numSides; i++)
+            {
+                float angle = MathHelper.TwoPi / numSides * i; // 每条边的角度
+                Vector2 position = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+
+                // 创建粒子
+                int fiery = Dust.NewDust(
+                    position,
+                    0,
+                    0,
+                    DustID.InfernoFork, // 使用同样的粒子类型
+                    0f,
+                    0f,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.85f, 2.35f) // 粒子大小
+                );
+                Main.dust[fiery].noGravity = true;
+                Main.dust[fiery].velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f); // 粒子往外扩散
+            }
+
+            // 播放额外的爆炸特效
+            Particle blastRing = new CustomPulse(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.Yellow, // 熔岩的亮黄色
+                "CalamityThrowingSpear/Texture/ThebigExplosion1",
+                Vector2.One * 0.33f,
+                Main.rand.NextFloat(-10f, 10f),
+                0.078f,
+                0.450f,
+                30
+            );
+            GeneralParticleHandler.SpawnParticle(blastRing);
+        }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.OnFire3, 90); 

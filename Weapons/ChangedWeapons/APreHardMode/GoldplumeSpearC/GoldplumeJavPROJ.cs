@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework;
 using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Projectiles.Melee;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpearC
 {
@@ -41,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1; // 只允许一次伤害
+            Projectile.penetrate = 3;
             Projectile.timeLeft = 400;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -52,6 +53,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
 
         }
+        private bool collided = false; // 标记是否发生碰撞
 
         public override void AI()
         {
@@ -61,105 +63,132 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             // Lighting - 添加白色光源
             Lighting.AddLight(Projectile.Center, Color.WhiteSmoke.ToVector3() * 0.55f);
 
-            // 弹幕逐渐加速
-            Projectile.velocity.X *= 1.005f;
-            Projectile.velocity.Y -= 0.15f;
+            // 每帧将速度乘以1.001
+            Projectile.velocity *= 1.001f;
 
-            // 释放天蓝色烟雾特效
-            Projectile.ai[0] += 1f; // 主要用于烟雾效果的计时器
-            if (Projectile.ai[0] > 6f)
+            // 粒子特效（Cloud、34、57 混合使用）
+            int particleCount = Main.rand.Next(4, 10); // 随机生成 4 到 9 个粒子
+            for (int i = 0; i < particleCount; i++)
             {
-                for (int d = 0; d < 5; d++)
-                {
-                    Dust dust = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.YellowStarfish, Projectile.velocity.X, Projectile.velocity.Y, 100, default, 1f)];
-                    dust.velocity = Vector2.Zero;
-                    dust.position -= Projectile.velocity / 5f * d;
-                    dust.noGravity = true;
-                    dust.scale = 0.65f;
-                    dust.noLight = true;
-                }
+                int dustType = Main.rand.Next(new int[] { DustID.Cloud, 34, 57 }); // 随机选择粒子类型
+                Vector2 dustPosition = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f); // 稍微扩散的粒子生成位置
+                Dust dust = Dust.NewDustPerfect(
+                    dustPosition,       // 粒子生成位置
+                    dustType,           // 粒子类型
+                    null,               // 初始速度为空
+                    100,                // 不透明度
+                    default,            // 粒子颜色
+                    Main.rand.NextFloat(1.25f, 1.75f) // 粒子大小随机化
+                );
+
+                dust.velocity = Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f); // 粒子速度：基于弹幕速度和随机扩散
+                dust.noGravity = true; // 禁用重力
             }
 
-            // 新增单独的计时器用于召唤Feather弹幕
-            if (Projectile.ai[1] % 20 == 0 && Main.myPlayer == Projectile.owner)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    NPC target = null;
-                    float maxDistance = 2400f; // 半径150个方块范围
 
-                    // 寻找最近的敌人
-                    foreach (NPC npc in Main.npc)
+            { 
+                // 如果未碰撞，检测与 GoldplumeJavWind 的碰撞
+                if (!collided)
+                {
+                    for (int i = 0; i < Main.maxProjectiles; i++)
                     {
-                        if (npc.CanBeChasedBy() && !npc.friendly)
+                        Projectile otherProj = Main.projectile[i];
+                        if (otherProj.active && otherProj.type == ModContent.ProjectileType<GoldplumeJavWind>())
                         {
-                            float distanceToNPC = Vector2.Distance(Projectile.Center, npc.Center);
-                            if (distanceToNPC < maxDistance)
+                            float distance = Vector2.Distance(Projectile.Center, otherProj.Center);
+
+                            // 如果距离小于弹幕宽度，则视为碰撞
+                            if (distance < (Projectile.width + otherProj.width) / 2f)
                             {
-                                maxDistance = distanceToNPC;
-                                target = npc;
+                                collided = true; // 标记为已碰撞
+                                Projectile.timeLeft = 80; // 设置持续时间
+                                Projectile.velocity = Vector2.Zero; // 初始速度归零
+
+                                // 开始围绕 GoldplumeJavWind 做圆周运动
+                                Projectile.ai[0] = distance; // 初始半径
+                                Projectile.ai[1] = 0f; // 重置角度
+                                break; // 防止多次判定
                             }
                         }
                     }
+                }
 
-                    // 发射Feather弹幕
-                    Vector2 featherVelocity;
-                    if (target != null)
+                // 处理圆周运动逻辑
+                if (collided)
+                {
+                    // 找到当前场景中的 GoldplumeJavWind 实例
+                    Projectile targetWind = null;
+                    for (int i = 0; i < Main.maxProjectiles; i++)
                     {
-                        Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                        featherVelocity = direction * Projectile.velocity.Length() * 2.5f; // 速度为本体的两倍
-                    }
-                    else
-                    {
-                        featherVelocity = Projectile.velocity * 2f;
+                        Projectile otherProj = Main.projectile[i];
+                        if (otherProj.active && otherProj.type == ModContent.ProjectileType<GoldplumeJavWind>())
+                        {
+                            targetWind = otherProj;
+                            break;
+                        }
                     }
 
-                    Vector2 spawnPosition = Projectile.Center;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, featherVelocity,
-                        ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.275), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
+                    // 如果未找到目标实例，直接返回以避免错误
+                    if (targetWind == null)
+                    {
+                        Projectile.Kill(); // 如果目标已经消失，则销毁主弹幕
+                        return;
+                    }
+
+                    // 处理圆周运动
+                    float speedIncrease = 0.1f; // 半径缩小速度
+                    float angularSpeed = 0.3f; // 初始角速度
+
+                    Projectile.ai[0] -= speedIncrease; // 半径逐渐缩小
+                    float angle = Projectile.ai[1] += angularSpeed; // 累加角度
+
+                    // 计算新的位置
+                    Projectile.Center = targetWind.Center + new Vector2(Projectile.ai[0], 0f).RotatedBy(angle);
+                    Projectile.rotation = (Projectile.Center - targetWind.Center).ToRotation() + MathHelper.PiOver2;
                 }
             }
-
-            // 增加计时器，用于控制Feather弹幕生成频率
-            Projectile.ai[1] += 1f;
         }
 
 
         public override void OnKill(int timeLeft)
         {
-            // 在弹幕死亡时往上方和下方随机三个方向发射Feather弹幕
-            for (int i = 0; i < 3; i++)
+            // 播放音效
+            SoundEngine.PlaySound(SoundID.Item39, Projectile.Center);
+
+            if (collided)
             {
-                // 发射上方的羽毛弹幕，左右各45度范围内
-                float angleUp = MathHelper.ToRadians(45) * (i - 1);
-                Vector2 featherVelocityUp = new Vector2(0, -1).RotatedBy(angleUp) * Projectile.velocity.Length();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, featherVelocityUp,
-                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
-
-                // 发射下方的羽毛弹幕，左右各45度范围内
-                float angleDown = MathHelper.ToRadians(45) * (i - 1);
-                Vector2 featherVelocityDown = new Vector2(0, 1).RotatedBy(angleDown) * Projectile.velocity.Length();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, featherVelocityDown,
-                    ModContent.ProjectileType<Feather>(), (int)(Projectile.damage * 0.33), Projectile.knockBack, Projectile.owner, Projectile.ArmorPenetration = 10);
-
-                // 释放天蓝色的粒子特效（针对上方）
-                for (int d = 0; d < 10; d++)
+                // 已碰撞：360度随机发射5发羽毛
+                for (int i = 0; i < 5; i++)
                 {
-                    Vector2 dustVelocityUp = featherVelocityUp * 0.2f; // 粒子速度较慢
-                    Dust dustUp = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.StarRoyale, dustVelocityUp.X, dustVelocityUp.Y, 100, default, 1f)];
-                    dustUp.noGravity = true;
-                    dustUp.scale = 0.65f;
-                    dustUp.noLight = true;
+                    Vector2 velocity = Main.rand.NextVector2Circular(1f, 1f) * 10f; // 随机方向
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
+                        ModContent.ProjectileType<GoldplumeJavFeather>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
                 }
 
-                // 释放天蓝色的粒子特效（针对下方）
-                for (int d = 0; d < 10; d++)
+                // 释放破旧的特效（仅使用 DustID.YellowStarfish）
+                for (int i = 0; i < 20; i++)
                 {
-                    Vector2 dustVelocityDown = featherVelocityDown * 0.2f; // 粒子速度较慢
-                    Dust dustDown = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.StarRoyale, dustVelocityDown.X, dustVelocityDown.Y, 100, default, 1f)];
-                    dustDown.noGravity = true;
-                    dustDown.scale = 0.65f;
-                    dustDown.noLight = true;
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarfish, Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.5f);
+                    dust.noGravity = true; // 禁用重力
+                }
+            }
+            else
+            {
+                // 未碰撞：正前方、左右各5度发射羽毛
+                for (int i = -1; i <= 1; i++)
+                {
+                    Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(5f) * i) * 10f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
+                        ModContent.ProjectileType<GoldplumeJavFeather>(), (int)(Projectile.damage * 0.45f), Projectile.knockBack, Projectile.owner);
+                }
+
+                // 前方散射大量特效（Cloud、34、57 混合）
+                for (int i = 0; i < 30; i++)
+                {
+                    int dustType = Main.rand.Next(new int[] { DustID.Cloud, 34, 57 });
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, Main.rand.NextVector2Circular(5f, 5f), 100, default, Main.rand.NextFloat(1.25f, 1.75f));
+                    dust.velocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(0.8f, 1.2f);
+                    dust.noGravity = true; // 禁用重力
                 }
             }
         }
@@ -167,13 +196,31 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
 
 
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (!collided)
+            {
+                // 未碰撞时触发：释放反方向左右扩散 15 度的羽毛
+                for (int i = -1; i <= 1; i += 2) // 左右两侧（-1 和 1）
+                {
+                    // 反方向为当前速度反转
+                    Vector2 reverseDirection = -Projectile.velocity.SafeNormalize(Vector2.Zero);
+                    Vector2 featherVelocity = reverseDirection.RotatedBy(MathHelper.ToRadians(15f) * i) * 10f; // 左右扩散 15 度
 
-
-
-
-
-
-
+                    // 生成羽毛弹幕
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        featherVelocity,
+                        ModContent.ProjectileType<GoldplumeJavFeather>(),
+                        (int)(Projectile.damage * 0.25f), // 羽毛伤害
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+                }
+            }
+            // 已碰撞时，不触发任何逻辑
+        }
 
     }
 }

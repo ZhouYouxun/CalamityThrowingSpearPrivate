@@ -66,6 +66,9 @@ Projectiles: {
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
 			// SHPCKFast2.DisplayName: S H P C K Fast2
 			// PearlwoodJavPROJINV.DisplayName: Pearlwood Jav P R O J I N V
+			// ElectrocutionHalberdField.DisplayName: Electrocution Halberd Field
+			// ElectrocutionHalberdRIGHT.DisplayName: Electrocution Halberd R I G H T
+			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
 		}
 
 		APreHardMode: {
@@ -103,6 +106,7 @@ Projectiles: {
 			// SurfeiterDrum.DisplayName: Surfeiter Drum
 			// SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
 			// SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
+			// FestiveHalberdSTAR.DisplayName: Festive Halberd S T A R
 		}
 
 		EAfterDog: {
@@ -178,6 +182,7 @@ Projectiles: {
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
 			VulcaniteLanceJavTinyFlare.DisplayName: 火山之矛火焰精灵
 			// TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
+			// HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
 		}
 
 		DPreDog: {
@@ -294,12 +299,16 @@ Projectiles: {
 	// SunEssenceSpearPROJ.DisplayName: Sun Essence Spear P R O J
 	// ChaosWindSpearPROJ.DisplayName: Chaos Wind Spear P R O J
 	// TidalMechanicsSpearHoldOutSP.DisplayName: Tidal Mechanics Spear Hold Out S P
+	// BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
 }
 
 Projectile: {
 	CPreMoodLord: {
 		// HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
 		// SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
+		// DiseasedJavEXP.DisplayName: Diseased Jav E X P
+		// VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+		// VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
 	}
 
 	DPreDog: {

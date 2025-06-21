@@ -61,6 +61,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             ModContent.ItemType<Gelpick>(), // 凝胶⛏
             ModContent.ItemType<InsidiousImpaler>(), // 老猪矛
             ModContent.ItemType<Spadefish>(), // 铲子鱼
+
             
             ModContent.ItemType<AmidiasTridentJav>(), // 海王三叉戟-投掷
             ModContent.ItemType<TyphonsGreedJav>(), // 提丰之贪婪-投掷

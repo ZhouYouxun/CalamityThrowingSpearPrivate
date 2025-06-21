@@ -27,12 +27,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
             Item.useTime = Item.useAnimation = 24; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = SoundID.Item66;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<GoldplumeJavPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 7.5f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
 
         }

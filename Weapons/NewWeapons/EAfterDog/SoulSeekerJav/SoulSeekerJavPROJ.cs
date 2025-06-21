@@ -11,6 +11,9 @@ using Terraria;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Graphics.Metaballs;
+using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 {
@@ -27,8 +30,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
         public override bool PreDraw(ref Color lightColor)
         {
+            // 原有的拖尾效果
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-            return false;
+
+            // 获取 Sparkle2 贴图
+            Texture2D sparkleTex = ModContent.Request<Texture2D>("CalamityMod/Particles/HealingPlus").Value;
+
+            // 枪头与枪尾位置
+            Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
+            Vector2 gunTail = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
+
+            // 设定粒子数量（8 ~ 12）
+            int particleCount = 10;
+
+            // 逐步在枪身上生成粒子
+            for (int i = 0; i < particleCount; i++)
+            {
+                // 计算插值位置，使粒子均匀分布在枪头和枪尾之间
+                float t = i / (float)(particleCount - 1);
+                Vector2 position = Vector2.Lerp(gunTail, gunTip, t);
+
+                // **增加左右随机摆动**
+                float wiggleOffset = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + i) * 4f; // 左右摆动幅度
+                position += Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * wiggleOffset;
+
+                // **设置颜色**（血红色+透明度）
+                float alphaFactor = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f + i) * 0.2f + 0.8f; // 呼吸灯透明度
+                Color sparkleColor = Color.Red * alphaFactor;
+                sparkleColor.A = (byte)(sparkleColor.A * 0.6f); // 透明度降低
+
+                // **呼吸灯缩放**
+                float scaleFactor = 1f + 0.2f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + i);
+
+                // **绘制粒子**
+                Main.EntitySpriteDraw(
+                    sparkleTex,
+                    position - Main.screenPosition,
+                    null,
+                    sparkleColor,
+                    0f, // 不需要旋转
+                    sparkleTex.Size() * 0.5f,
+                    scaleFactor * 0.5f, // 适当缩小
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            return false; // 由于已经手动绘制，不需要默认绘制
+        }
+        public override void OnSpawn(IEntitySource source)
+        {
+            base.OnSpawn(source);
+
+            // 遍历所有小鸟，发送开火通知
+            foreach (Projectile proj in Main.projectile)
+            {
+                if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<SoulSeekerJavBRID>())
+                {
+                    // 调用小鸟的接收命令函数
+                    (proj.ModProjectile as SoulSeekerJavBRID)?.ReceiveFireOrder(Projectile.damage);
+                }
+            }
         }
 
         public override void SetDefaults()
@@ -37,7 +99,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1; // 只允许一次伤害
+            Projectile.penetrate = 3; // 只允许一次伤害
             Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -55,44 +117,64 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             // Lighting - 添加红色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.55f);
 
-            // 添加自定义烟雾效果，每隔x帧释放一个粒子
-            if (Projectile.timeLeft % 1 == 0) // 每隔x帧触发一次
+            // 递减计时器
+            if (triangleTimer > 0) triangleTimer--;
+            if (squareTimer > 0) squareTimer--;
+            if (arrowTimer > 0) arrowTimer--;
+
+            // 触发特效：三角形（90 帧）
+            if (triangleTimer <= 0)
             {
-                // 生成粒子的随机位置，相对于当前弹幕位置稍微向后偏移
-                Vector2 randomOffset = Main.rand.NextVector2Circular(5f, 5f); // 控制偏移的范围，可以根据需要调整
-                Vector2 spawnPosition = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitY) * 10f + randomOffset;
-
-                // 生成粒子
-                float radius = Main.rand.NextFloat(24f, 48f); // 随机设置粒子的大小
-                Vector2 particleVelocity = Main.rand.NextVector2Circular(3f, 3f); // 随机生成粒子的初始速度方向
-
-                // 调用生成粒子的方法（异端僭越同款）
-                GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
+                CreateShapeEffect(Projectile.Center, DustID.RedTorch, Color.Red, 12f, "Triangle");
+                triangleTimer = 90;
             }
 
-            // 前x帧不追踪，之后开始追踪敌人或与方块碰撞后开始追踪
-            if (Projectile.ai[1] > 40 || !Projectile.tileCollide)
+            // 触发特效：方形（60 帧）
+            if (squareTimer <= 0)
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1200); // 查找范围内最近的敌人
-                if (target != null)
-                {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 15f, 0.08f); // 追踪速度为xf
-                }
+                CreateShapeEffect(Projectile.Center, 105, Color.Orange, 16f, "Square");
+                squareTimer = 60;
             }
-            else
+
+            // 触发特效：箭头（30 帧）
+            if (arrowTimer <= 0)
             {
-                Projectile.velocity *= 1.001f;
-                Projectile.ai[1]++;
+                CreateShapeEffect(Projectile.Center, DustID.HealingPlus, Color.Yellow, 18f, "Arrow");
+                arrowTimer = 30;
             }
         }
+        // 计时器变量
+        private int triangleTimer = 0;
+        private int squareTimer = 0;
+        private int arrowTimer = 0;
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
+        private void CreateShapeEffect(Vector2 center, int dustType, Color color, float size, string shape)
         {
-            // 发生碰撞后禁用与方块的进一步碰撞
-            Projectile.tileCollide = false;
-            return false; // 不销毁弹幕
+            int numParticles = 8; // 形状的点数
+            for (int i = 0; i < numParticles; i++)
+            {
+                float angle = 0;
+                switch (shape)
+                {
+                    case "Triangle":
+                        angle = MathHelper.PiOver2 + i * MathHelper.TwoPi / 3f; // 120°间隔
+                        break;
+                    case "Square":
+                        angle = i * MathHelper.PiOver2; // 90°间隔
+                        break;
+                    case "Arrow":
+                        angle = i == 0 ? 0 : (i % 2 == 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4); // 箭头形
+                        break;
+                }
+
+                Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * size;
+                Dust dust = Dust.NewDustPerfect(center + offset, dustType, Vector2.Zero, 0, color);
+                dust.noGravity = true;
+                dust.scale = Main.rand.NextFloat(0.95f, 1.35f);
+                dust.velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+            }
         }
+
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
@@ -108,131 +190,96 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (Main.myPlayer == Projectile.owner)
+            // 目标切换：寻找最近敌人
+            NPC closestNPC = Main.npc
+                .Where(npc => npc.active && !npc.friendly && npc.life > 0 && npc.whoAmI != target.whoAmI)
+                .Where(npc => Vector2.Distance(npc.Center, Projectile.Center) > 15 * 16 && Vector2.Distance(npc.Center, Projectile.Center) < 150 * 16)
+                .OrderBy(npc => Vector2.Distance(npc.Center, Projectile.Center))
+                .FirstOrDefault();
+
+            if (closestNPC != null)
             {
-                // 检查场上当前存在的小鸟数量
-                int existingBirdCount = 0;
-                for (int i = 0; i < Main.maxProjectiles; i++)
+                Vector2 direction = closestNPC.Center - Projectile.Center;
+                Projectile.velocity = Vector2.Normalize(direction) * Projectile.velocity.Length();
+            }
+
+            // 计算小鸟数量
+            int existingBirdCount = Main.projectile.Count(p => p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<SoulSeekerJavBRID>());
+
+            if (existingBirdCount < 10)
+            {
+                Vector2 spawnPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (3 * 16);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, -Projectile.velocity * 1f, ModContent.ProjectileType<SoulSeekerJavBRID>(), Projectile.damage, 0f, Projectile.owner);
+            }
+            else
+            {
+                //hit.damage *= 2.22f;
+            }
+
+            // 正/倒三角形特效
+            CreateTriangleMetaballEffect(target.Center, existingBirdCount < 10);
+            CreateTriangleParticleEffect(target.Center, existingBirdCount < 10);
+        }
+        private void CreateTriangleParticleEffect(Vector2 center, bool isNormalTriangle)
+        {
+            int numParticles = 3; // 三角形的顶点数
+            float baseAngle = isNormalTriangle ? MathHelper.PiOver2 : -MathHelper.PiOver2;
+
+            for (int i = 0; i < numParticles; i++)
+            {
+                float angle = baseAngle + i * MathHelper.TwoPi / 3f;
+                Vector2 start = angle.ToRotationVector2();
+                Vector2 next = (angle + MathHelper.TwoPi / 3f).ToRotationVector2();
+
+                for (int j = 0; j < 40; j++)
                 {
-                    Projectile proj = Main.projectile[i];
-                    if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<SoulSeekerJavBRID>())
-                    {
-                        existingBirdCount++;
-                    }
-                }
-
-                // 生成等边三角形粒子效果
-                for (int i = 0; i < 6; i++)
-                {
-                    float angle;
-                    float nextAngle;
-
-                    if (existingBirdCount < 10)
-                    {
-                        // 小鸟数量少于10，生成正向三角形
-                        angle = MathHelper.PiOver2 + i * MathHelper.TwoPi / 3f; // 正向三角形角度
-                        nextAngle = MathHelper.PiOver2 + (i + 1) * MathHelper.TwoPi / 3f;
-                    }
-                    else
-                    {
-                        // 小鸟数量达到或超过10，生成反向三角形
-                        angle = -MathHelper.PiOver2 + i * MathHelper.TwoPi / 3f;
-                        nextAngle = -MathHelper.PiOver2 + (i + 1) * MathHelper.TwoPi / 3f;
-
-                    }
-
-                    Vector2 start = angle.ToRotationVector2();
-                    Vector2 end = nextAngle.ToRotationVector2();
-
-                    for (int j = 0; j < 40; j++)
-                    {
-                        Dust triangleDust = Dust.NewDustPerfect(Projectile.Center, 267);
-                        triangleDust.scale = 2.5f;
-                        triangleDust.velocity = Vector2.Lerp(start, end, j / 40f) * 16f;
-                        triangleDust.color = Color.Crimson;
-                        triangleDust.noGravity = true;
-                    }
-                }
-
-                // 如果数量达到10个，额外生成独特的自定义烟雾粒子
-                if (existingBirdCount >= 10)
-                {
-                    // 额外生成10到20个粒子，以当前弹幕为中心向外发射
-                    int extraParticles = Main.rand.Next(10, 21); // 随机生成10到20个粒子
-                    for (int i = 0; i < extraParticles; i++)
-                    {
-                        float angle = Main.rand.NextFloat(MathHelper.TwoPi); // 随机生成角度
-                        Vector2 particleVelocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * Main.rand.NextFloat(2f, 5f); // 随机速度方向和大小
-                        float radius = Main.rand.NextFloat(24f, 48f); // 粒子的大小范围
-                        Vector2 spawnPosition = Projectile.Center; // 以当前弹幕为中心
-                        GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
-                    }
-                }
-
-                // 如果数量少于10个，则生成新的小鸟
-                if (existingBirdCount < 10)
-                {
-                    // 在玩家周围随机位置生成 SoulSeekerJavBRID
-                    Vector2 spawnPosition = Main.player[Projectile.owner].Center + Main.rand.NextVector2Circular(200f, 200f);
-                    int birdDamage = (int)(Projectile.damage * 1.133f); // 将小鸟的伤害设置为本体的两倍
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<SoulSeekerJavBRID>(), birdDamage, 0f, Projectile.owner);
-
-                    // 生成7到10个烟雾粒子，围绕小鸟生成位置
-                    int smokeParticleCount = Main.rand.Next(7, 11); // 随机生成烟雾粒子数量（7到10个）
-                    for (int i = 0; i < smokeParticleCount; i++)
-                    {
-                        Vector2 randomOffset = Main.rand.NextVector2Circular(10f, 10f); // 偏移范围
-                        Vector2 smokePosition = spawnPosition + randomOffset;
-                        float radius = Main.rand.NextFloat(24f, 48f); // 粒子的大小范围
-                        Vector2 particleVelocity = Main.rand.NextVector2Circular(3f, 3f); // 随机速度方向
-                        GruesomeMetaball.SpawnParticle(smokePosition, particleVelocity, radius);
-                    }
+                    Dust triangleDust = Dust.NewDustPerfect(center, 267);
+                    triangleDust.scale = 2.5f;
+                    triangleDust.velocity = Vector2.Lerp(start, next, j / 40f) * 16f;
+                    triangleDust.color = Color.Crimson;
+                    triangleDust.noGravity = true;
                 }
             }
         }
+        private void CreateTriangleMetaballEffect(Vector2 center, bool isNormalTriangle)
+        {
+            int numParticlesPerEdge = 15; // 每条边 15 个粒子
+            float baseAngle = isNormalTriangle ? MathHelper.PiOver2 : -MathHelper.PiOver2;
 
+            for (int i = 0; i < 3; i++)
+            {
+                float angle1 = baseAngle + i * MathHelper.TwoPi / 3f;
+                float angle2 = baseAngle + (i + 1) * MathHelper.TwoPi / 3f;
+
+                Vector2 start = angle1.ToRotationVector2() * 30f;
+                Vector2 end = angle2.ToRotationVector2() * 30f;
+
+                for (int j = 0; j < numParticlesPerEdge; j++)
+                {
+                    Vector2 position = Vector2.Lerp(start, end, j / (float)(numParticlesPerEdge - 1)) + center;
+                    Vector2 velocity = (position - center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
+                    float radius = Main.rand.NextFloat(20f, 40f);
+
+                    GruesomeMetaball.SpawnParticle(position, velocity, radius);
+                }
+            }
+        }
 
         public override void OnKill(int timeLeft)
         {
-            // 生成粒子射向正前方、左30度和右30度
-            int particleCount = 30; // 每个方向发射的粒子数量
-            float baseAngle = Projectile.velocity.ToRotation(); // 基础角度为弹幕的当前方向
-            float offsetAngle = MathHelper.ToRadians(30f); // 角度偏移为30度
+            int particleCount = 40;
+            float baseAngle = Projectile.velocity.ToRotation();
+            float spreadAngle = MathHelper.ToRadians(45f); // 45度扇形
 
-            // 发射正前方的粒子
             for (int i = 0; i < particleCount; i++)
             {
-                float randomAngle = Main.rand.NextFloat(-offsetAngle / 2, offsetAngle / 2); // 在正前方略微随机偏移角度
-                Vector2 particleVelocity = (baseAngle + randomAngle).ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-                float radius = Main.rand.NextFloat(24f, 48f); // 粒子的大小范围
-                Vector2 spawnPosition = Projectile.Center;
-                GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
-            }
-
-            // 发射左偏30度的粒子
-            for (int i = 0; i < particleCount; i++)
-            {
-                float randomAngle = Main.rand.NextFloat(-offsetAngle / 2, offsetAngle / 2); // 在左30度略微随机偏移角度
-                Vector2 particleVelocity = (baseAngle - offsetAngle + randomAngle).ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-                float radius = Main.rand.NextFloat(24f, 48f); // 粒子的大小范围
-                Vector2 spawnPosition = Projectile.Center;
-                GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
-            }
-
-            // 发射右偏30度的粒子
-            for (int i = 0; i < particleCount; i++)
-            {
-                float randomAngle = Main.rand.NextFloat(-offsetAngle / 2, offsetAngle / 2); // 在右30度略微随机偏移角度
-                Vector2 particleVelocity = (baseAngle + offsetAngle + randomAngle).ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-                float radius = Main.rand.NextFloat(24f, 48f); // 粒子的大小范围
-                Vector2 spawnPosition = Projectile.Center;
-                GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
+                float randomAngle = Main.rand.NextFloat(-spreadAngle, spreadAngle);
+                Vector2 direction = (baseAngle + randomAngle).ToRotationVector2();
+                Vector2 velocity = -direction * Main.rand.NextFloat(2f, 6f); // 朝向自己
+                Vector2 spawnPosition = Projectile.Center + direction * Main.rand.NextFloat(20f, 60f);
+                float radius = Main.rand.NextFloat(40f, 80f);
+                GruesomeMetaball.SpawnParticle(spawnPosition, velocity, radius);
             }
         }
-
-
-
-
-
     }
 }

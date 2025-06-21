@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityMod;
 using CalamityMod.Projectiles.Melee;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
 {
@@ -31,7 +32,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             Projectile.height = 24;
             Projectile.width = 24;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = 350;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
@@ -81,10 +82,49 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             //if (Projectile.ai[1] == 0f)
             //    HomingAI();
 
-            // 前30帧不追踪，之后开始追踪敌人
-            if (Projectile.ai[1] > 30)
+            // 持续生成轻型烟雾和重型烟雾
+            Vector2 velocityOffset = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(0.8f, 1.2f);
+
+            // 颜色随机（黑色、深灰色、紫色）
+            Color smokeColor = Main.rand.Next(3) switch
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找范围内最近的敌人
+                0 => Color.Black,
+                1 => Color.DarkGray,
+                _ => Color.Purple
+            };
+
+            float scale = Main.rand.NextFloat(0.25f, 0.45f);
+
+            //// 生成轻型烟雾
+            //Particle lightSmoke = new HeavySmokeParticle(
+            //    Projectile.Center,
+            //    velocityOffset * Main.rand.NextFloat(1f, 2.6f),
+            //    smokeColor,
+            //    18,
+            //    scale,
+            //    0.35f,
+            //    Main.rand.NextFloat(-1f, 1f),
+            //    true
+            //);
+            //GeneralParticleHandler.SpawnParticle(lightSmoke);
+
+            //// 生成重型烟雾
+            //Particle heavySmoke = new HeavySmokeParticle(
+            //    Projectile.Center,
+            //    velocityOffset,
+            //    smokeColor,
+            //    Main.rand.Next(30, 60),
+            //    scale,
+            //    1.0f,
+            //    MathHelper.ToRadians(2f),
+            //    required: true
+            //);
+            //GeneralParticleHandler.SpawnParticle(heavySmoke);
+
+            // 前X帧不追踪，之后开始追踪敌人
+            if (Projectile.ai[1] > 50)
+            {
+                NPC target = Projectile.Center.ClosestNPCAt(500); // 查找范围内最近的敌人
                 if (target != null)
                 {
                     Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -102,6 +142,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
 
             Time++;
         }
+
+        public override bool? CanDamage() => Time >= 20f; // 初始的时候不会造成伤害，直到15为止
+
 
         private void HomingAI()
         {
@@ -215,7 +258,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         }
 
 
-        public override bool? CanDamage() => Time >= 15f; // 初始的时候不会造成伤害，直到15为止
 
     }
 }

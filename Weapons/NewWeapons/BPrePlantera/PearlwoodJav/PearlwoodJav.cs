@@ -18,7 +18,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 80; // 设置伤害值
+            Item.damage = 160; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Item.value = CalamityGlobalItem.RarityLightRedBuyPrice;
             Item.rare = ItemRarityID.LightRed;
             Item.shoot = ModContent.ProjectileType<PearlwoodJavPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 8f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
 

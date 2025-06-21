@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using CalamityMod.Graphics.Primitives;
 using Terraria.Audio;
+using CalamityMod.Projectiles.Melee;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
 {
@@ -22,23 +23,25 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/StreamGougeC/StreamGougeJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
+
         private static Color ShaderColorOne = Color.Purple;      // 紫色
         private static Color ShaderColorTwo = Color.Gray;        // 灰色
         private static Color ShaderEndColor = Color.MediumPurple;// 中紫色
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 65;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 保留现有的拖尾效果
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            // **在命中敌人后 (phase == 2)，不绘制**
+            if (phase == 2)
+                return false;
 
             // 启用拖尾着色效果
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak"));
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak"));
 
             // 渲染带有紫色渐变效果的光学尾迹
             Vector2 overallOffset = Projectile.Size * 0.5f;
@@ -51,7 +54,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value; // 获取弹幕的纹理
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2); // 计算纹理中心
 
-            // 使用 Projectile.Center 作为绘制位置，确保弹幕在正确位置绘制
+            //使用 Projectile.Center 作为绘制位置，确保弹幕在正确位置绘制
             Main.EntitySpriteDraw(
                 texture,
                 Projectile.Center - Main.screenPosition,  // 修正偏移量，确保弹幕在正确位置
@@ -81,6 +84,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Color startingColor = Color.Lerp(ShaderColorOne, ShaderColorTwo, startingInterpolant * colorLerpFactor);
             return Color.Lerp(startingColor, ShaderEndColor, MathHelper.SmoothStep(0f, 1f, completionRatio));
         }
+        private int phase = 1; // 阶段 1: 普通飞行，阶段 2: 命中后特效
+        private int shootTimer = 0; // 控制 6 帧间隔发射弹幕
+        private int directionIndex = 0; // 用于循环选择四个方向
+        private Vector2[] shootOffsets = new Vector2[]
+        {
+    new Vector2(1, -1),  // 右前
+    new Vector2(-1, -1), // 左前
+    new Vector2(-1, 1),  // 左后
+    new Vector2(1, 1)    // 右后
+        };
 
         public override void SetDefaults()
         {
@@ -88,14 +101,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 5;
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 360;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
-            Projectile.extraUpdates = 1; // 额外更新次数
+            Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 20; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 10; // 无敌帧冷却时间为14帧
         }
 
         public override void AI()
@@ -107,108 +120,242 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * 0.55f);
 
             // 每帧加速
-            Projectile.velocity *= 1.005f;
-
-            // 保持直线运动30帧，之后开始追踪
-            if (Projectile.ai[1] > 5)
-            {
-                NPC target = Projectile.Center.ClosestNPCAt(1800); // 在1800距离内查找最近敌人
-                if (target != null)
-                {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 20f, 0.08f);
-                }
-
-                if (Projectile.localAI[0] == 0f)
-                {
-                    // 三角形的半径，控制传送门与中心的距离
-                    float radius = 50f; // 可根据需要调整
-
-                    // 计算三个传送门随机角度的位置
-                    Vector2[] portalPositions = new Vector2[3];
-                    for (int i = 0; i < 3; i++)
-                    {
-                        // 每个传送门的随机角度
-                        float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi); // 0 到 360 度的随机角度
-                        portalPositions[i] = Projectile.Center + new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * radius;
-                    }
-
-                    // 生成三个传送门弹幕
-                    foreach (Vector2 position in portalPositions)
-                    {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavPortal>(), (int)(Projectile.damage * 1), Projectile.knockBack, Projectile.owner);
-                    }
-
-
-                    // 在原地生成2到6发随机分裂弹幕
-                    int numSplits = Main.rand.Next(3, 4); // 固定生成3发弹幕
-                    for (int i = 0; i < numSplits; i++)
-                    {
-                        // 随机角度在 -10 度到 10 度之间
-                        float randomAngle = Main.rand.NextFloat(-10f, 10f);
-
-                        // 计算旋转后的方向
-                        Vector2 splitDirection = Projectile.velocity.RotatedBy(MathHelper.ToRadians(randomAngle));
-
-                        // 生成分裂弹幕
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, splitDirection * 0.5f, ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(), (int)(Projectile.damage * 0.4), Projectile.knockBack, Projectile.owner);
-                    }
-
-
-                    // 生成紫色小型冲击波
-                    Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Purple, new Vector2(1f, 1f), Main.rand.NextFloat(6f, 10f), 0.15f, 3f, 10);
-                    GeneralParticleHandler.SpawnParticle(pulse);
-
-                    // 设置标志位为1，确保只触发一次
-                    Projectile.localAI[0] = 1f;
-                }
-            }
-            else
-            {
-                Projectile.ai[1]++;
-            }
+            Projectile.velocity *= 1.011f;
 
             // 每帧留下简单的紫色粒子特效
             Dust.NewDustPerfect(Projectile.Center, DustID.PurpleTorch, Vector2.Zero).noGravity = true;
+
+            if (phase == 1)
+            {
+                if (shootTimer <= 0)
+                {
+                    // 计算发射位置
+                    Vector2 offset = shootOffsets[directionIndex] * (16f * 3f);
+                    Vector2 spawnPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(offset.ToRotation()) * 3 * 16;
+
+                    // **计算朝向主弹幕的速度**
+                    Vector2 portalVelocity = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.Zero) * 10f; // 让 Portal 速度指向主弹幕
+
+                    // 生成 StreamGougePortal
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, portalVelocity, ModContent.ProjectileType<StreamGougePortal>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+                    // 更新方向索引
+                    directionIndex = (directionIndex + 1) % shootOffsets.Length;
+
+                    // 重置计时器
+                    shootTimer = 6;
+                }
+                else
+                {
+                    shootTimer--;
+                }
+
+                // 生成特效
+                GenerateSpiralEffects();
+            }
+
+        }
+        private void GenerateSpiralEffects()
+        {
+            // FireworkFountain_Pink 和 FireworkFountain_Blue 进行螺旋运动
+            float spiralRadius = 1.5f * 16f;
+            float spiralAngle = Main.GlobalTimeWrappedHourly * 4f;
+
+            for (int i = 0; i < 2; i++)
+            {
+                float angleOffset = (i == 0) ? 0f : MathHelper.Pi;
+                float angle = spiralAngle + angleOffset;
+
+                Vector2 dustPos = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * spiralRadius;
+                Dust dust = Dust.NewDustPerfect(dustPos, i == 0 ? DustID.FireworkFountain_Pink : DustID.FireworkFountain_Blue);
+                dust.noGravity = true;
+                dust.scale = 1.2f;
+            }
+
+            // Electric 进行双螺旋运动
+            float electricAngle = Main.GlobalTimeWrappedHourly * 6f;
+            for (int i = -1; i <= 1; i += 2)
+            {
+                float angle = electricAngle * i;
+                Vector2 electricPos = Projectile.Center + new Vector2((float)Math.Cos(angle), 0) * 8f;
+                Dust electricDust = Dust.NewDustPerfect(electricPos, DustID.Electric);
+                electricDust.noGravity = true;
+                electricDust.scale = 1.0f;
+            }
         }
 
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (Projectile.ai[1] >= 30)
-            {
-                // 在追踪阶段之后，将穿透次数设置为 1
-                Projectile.penetrate = 1;
-            }
-
-            // 添加弑神者火焰buff，持续300帧
-            target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
-
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item74, target.Center);
 
-            // ImpactParticle 特效
-            if (Main.netMode != NetmodeID.Server)
+            if (phase == 1) // 仅在第一阶段触发
             {
-                Color impactColor = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                Vector2 impactPoint = Vector2.Lerp(Projectile.Center, target.Center, 0.65f);
-                ImpactParticle impactParticle = new ImpactParticle(impactPoint, 0.1f, 20, Main.rand.NextFloat(0.4f, 0.5f), impactColor);
-                GeneralParticleHandler.SpawnParticle(impactParticle);
-            }
+                phase = 2; // 切换至第二阶段
+                Projectile.timeLeft = 120; // 保持存活时间用于特效
+                //Projectile.velocity = Vector2.Zero; // 停止移动
+                Projectile.alpha = 255;
 
-            // 生成宇宙能量光球粒子效果
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2 spawnPosition = target.Center + Main.rand.NextVector2Circular(30f, 30f);
-                StreamGougeMetaball.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 60f);
+                // 关闭伤害
+                Projectile.friendly = false;
 
-                float scale = MathHelper.Lerp(24f, 64f, CalamityUtils.Convert01To010(i / 19f));
-                spawnPosition = target.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * MathHelper.Lerp(-40f, 90f, i / 19f);
-                Vector2 particleVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(0.23f) * Main.rand.NextFloat(2.5f, 9f);
-                StreamGougeMetaball.SpawnParticle(spawnPosition, particleVelocity, scale);
+                // 生成超级特效
+                GenerateImpactEffects(target.Center);
+
+                // 生成爆炸
+                //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+                // 搜索 15 名最近敌人
+                SpawnSplitProjectiles(target.Center);
             }
         }
 
+        private void GenerateImpactEffects(Vector2 center)
+        {
+            // 原版 CreateGalaxyEffect 基础上加强
+            int armCount = 6;
+            int particlesPerArm = 15;
+            float armRotation = MathHelper.TwoPi / armCount;
+
+            for (int arm = 0; arm < armCount; arm++)
+            {
+                float angleOffset = arm * armRotation;
+                for (int i = 0; i < particlesPerArm; i++)
+                {
+                    float progress = i / (float)particlesPerArm;
+                    float spiralRadius = progress * 160f;
+                    float particleAngle = angleOffset + progress * MathHelper.TwoPi;
+
+                    Vector2 spawnPosition = center + new Vector2((float)Math.Cos(particleAngle), (float)Math.Sin(particleAngle)) * spiralRadius;
+                    Vector2 velocity = Vector2.Normalize(spawnPosition - center) * Main.rand.NextFloat(3f, 7f);
+                    StreamGougeMetaball.SpawnParticle(spawnPosition, velocity, Main.rand.NextFloat(50f, 100f));
+                }
+            }
+        }
+
+        private void SpawnSplitProjectiles(Vector2 center)
+        {
+            var enemies = Main.npc
+                .Where(npc => npc.active && !npc.friendly && npc.life > 0)
+                .OrderBy(npc => Vector2.Distance(npc.Center, center))
+                .Take(15) // 取前 15 个
+                .ToList();
+
+            foreach (var enemy in enemies)
+            {
+                float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi); // 随机角度
+                Vector2 spawnPos = enemy.Center + new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * (3 * 16);
+
+                // **确保小弹幕初始速度为零**
+                Vector2 velocity = Vector2.Zero;
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    velocity, // 速度设为零，确保其开始旋转动画
+                    ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+        }
+
+
+
+
+        private void CreateGalaxyEffect(Vector2 center)
+        {
+            // 生成银河系悬臂
+            int armCount = 4;
+            int particlesPerArm = 50;
+            float armRotation = MathHelper.TwoPi / armCount;
+
+            for (int arm = 0; arm < armCount; arm++)
+            {
+                float angleOffset = arm * armRotation;
+
+                for (int i = 0; i < particlesPerArm; i++)
+                {
+                    float progress = i / (float)particlesPerArm;
+                    float spiralRadius = progress * 100f;
+                    float particleAngle = angleOffset + progress * MathHelper.TwoPi;
+
+                    Vector2 spawnPosition = center + new Vector2((float)Math.Cos(particleAngle), (float)Math.Sin(particleAngle)) * spiralRadius;
+                    Vector2 velocity = Vector2.Normalize(spawnPosition - center) * Main.rand.NextFloat(2f, 5f);
+
+                    StreamGougeMetaball.SpawnParticle(spawnPosition, velocity, Main.rand.NextFloat(20f, 40f));
+                }
+            }
+
+            //// 在命中点生成两个同心圆的 ImpactParticle
+            //for (int circle = 0; circle < 2; circle++)
+            //{
+            //    float radius = (circle + 1) * 30f;
+            //    int impactParticleCount = 12;
+            //    for (int i = 0; i < impactParticleCount; i++)
+            //    {
+            //        float angle = MathHelper.TwoPi / impactParticleCount * i;
+            //        Vector2 position = center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+            //        ImpactParticle impactParticle = new ImpactParticle(position, 0.1f, 20, 0.5f, Color.Cyan);
+            //        GeneralParticleHandler.SpawnParticle(impactParticle);
+            //    }
+            //}
+
+            ImpactParticle impactParticle = new ImpactParticle(center, 0.1f, 20, 0.5f, Color.Cyan);
+            GeneralParticleHandler.SpawnParticle(impactParticle);
+        }
+        public override bool? CanDamage()
+        {
+            return base.CanDamage();
+        }
+        public override void OnKill(int timeLeft)
+        {
+            // 生成超级爆炸冲击波
+            //Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Purple, new Vector2(5f, 5f), 20f, 0.3f, 6f, 30);
+            //GeneralParticleHandler.SpawnParticle(largePulse);
+
+            // 生成超级银河系特效
+            CreateGalaxyEffect(Projectile.Center, true);
+
+            // 释放伤害倍率为1.0的 StreamGougeJavEXP 弹幕
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+        }
+
+        private void CreateGalaxyEffect(Vector2 center, bool enhanced)
+        {
+            int armCount = enhanced ? 8 : 4;
+            int particlesPerArm = enhanced ? 100 : 50;
+            float armRotation = MathHelper.TwoPi / armCount;
+
+            for (int arm = 0; arm < armCount; arm++)
+            {
+                float angleOffset = arm * armRotation;
+
+                for (int i = 0; i < particlesPerArm; i++)
+                {
+                    float progress = i / (float)particlesPerArm;
+                    float spiralRadius = progress * (enhanced ? 200f : 100f);
+                    float particleAngle = angleOffset + progress * MathHelper.TwoPi;
+
+                    Vector2 spawnPosition = center + new Vector2((float)Math.Cos(particleAngle), (float)Math.Sin(particleAngle)) * spiralRadius;
+                    Vector2 velocity = Vector2.Normalize(spawnPosition - center) * Main.rand.NextFloat(2f, 5f);
+
+                    StreamGougeMetaball.SpawnParticle(spawnPosition, velocity, Main.rand.NextFloat(20f, enhanced ? 80f : 40f));
+                }
+            }
+
+            if (enhanced)
+            {
+                // 增强模式下额外增加粒子效果
+                for (int i = 0; i < 50; i++)
+                {
+                    Vector2 randomOffset = Main.rand.NextVector2Circular(300f, 300f);
+                    StreamGougeMetaball.SpawnParticle(center + randomOffset, -randomOffset * 0.1f, Main.rand.NextFloat(40f, 100f));
+                }
+            }
+        }
 
 
 

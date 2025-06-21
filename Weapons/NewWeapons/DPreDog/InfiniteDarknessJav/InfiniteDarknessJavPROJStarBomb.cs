@@ -11,6 +11,8 @@ using Terraria;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using CalamityMod.Graphics.Primitives;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
 {
@@ -26,17 +28,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-
-        public override bool PreDraw(ref Color lightColor) // 确保贴图的中心点为绘制的中心点
+        internal Color ColorFunction(float completionRatio)
         {
+            // 末端渐隐效果
+            float fadeToEnd = MathHelper.Lerp(0.65f, 1f, (float)Math.Cos(-Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f);
+
+            // 不透明度随位置变化
+            float fadeOpacity = Utils.GetLerpValue(1f, 0.64f, completionRatio, true) * Projectile.Opacity;
+
+            // 拖尾颜色动态渐变（从深灰色到黑色）
+            Color colorHue = Color.Lerp(Color.DarkSlateGray, Color.Black, 0.5f); // 设置主色调为深灰色和黑色的中间值
+            Color endColor = Color.Lerp(colorHue, Color.DarkGray, (float)Math.Sin(completionRatio * MathHelper.Pi * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
+
+            return Color.Lerp(Color.Black, endColor, fadeToEnd) * fadeOpacity;
+        }
+        internal float WidthFunction(float completionRatio)
+        {
+            // 拖尾宽度动态衰减
+            float expansionCompletion = (float)Math.Pow(1 - completionRatio, 3);
+            return MathHelper.Lerp(0f, 22 * Projectile.scale * Projectile.Opacity, expansionCompletion);
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            // 贴图绘制
             SpriteBatch spriteBatch = Main.spriteBatch;
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
 
             spriteBatch.Draw(texture, drawPosition, null, lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+
+            // 拖尾特效绘制
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(WidthFunction, ColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:TrailStreak"]),
+                30
+            );
+
             return false;
         }
+
 
 
         public override void SetDefaults()
@@ -70,14 +103,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             Projectile.scale = scaleFactor;
             Projectile.velocity *= scaleFactor > 1.15f || scaleFactor < 0.85f ? 0.97f : 1f; // 在最大和最小时减速
 
-            // 漂浮一段时间后开始寻找敌人
-            if (time > 60 && !isApproaching) // 漂浮 60 帧后才锁定敌人
+            // 减速逻辑
+            if (time <= 60)
+            {
+                Projectile.velocity *= 0.98f; // 每帧减速
+            }
+            else if (!isApproaching) // 追踪逻辑
             {
                 NPC target = Projectile.Center.ClosestNPCAt(1000); // 检查 1000 范围内的敌人
                 if (target != null)
                 {
                     isApproaching = true;
-                    Projectile.velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 10f; // 设置初始冲刺速度
+                    Projectile.velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 10f; // 初始冲刺速度
                 }
             }
 
@@ -107,16 +144,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
         private void Explode()
         {
             Projectile.Kill();
-            int particleAmount = 15;
-            for (int i = 0; i < particleAmount; i++)
+
+            // 生成粒子特效
+            int particleCount = Main.rand.Next(20, 56); // 粒子数量随机在20~55之间
+            for (int i = 0; i < particleCount; i++)
             {
-                float radians = MathHelper.TwoPi / particleAmount;
-                Vector2 spinningPoint = new Vector2(1f, 0f).RotatedBy(radians * i);
-                Vector2 velocity = spinningPoint.RotatedByRandom(0.15f) * (15f / 7f); // 将速度减少到原来的 1/7
-                LineParticle subTrail = new LineParticle(Projectile.Center + velocity * 20.5f, velocity, false, 30, 0.75f, Color.White);
-                GeneralParticleHandler.SpawnParticle(subTrail);
+                Vector2 offset = Main.rand.NextVector2Circular(50f, 50f); // 在半径50的圆内随机生成
+                Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 2f); // 随机扩散速度
+                int dustType = Main.rand.Next(new int[] { 175, 191 }); // 随机粒子类型
+
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, dustType, velocity, 100, default, Main.rand.NextFloat(1.5f, 1.9f));
+                dust.noGravity = true; // 禁用重力
             }
         }
+
 
 
         public override bool? CanDamage() => time >= 12;

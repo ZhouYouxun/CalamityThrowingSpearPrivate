@@ -39,7 +39,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Projectile.alpha = 255;
             Projectile.ignoreWater = true;
             Projectile.scale = 0.25f;
-            Projectile.usesIDStaticNPCImmunity = true;            
+            Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
         }
 

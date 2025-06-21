@@ -98,10 +98,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
         {
             target.AddBuff(BuffID.Daybreak, 240); // 原版的破晓效果
             target.AddBuff(BuffID.Frostburn, 240); // 原版的霜火效果
-            //target.AddBuff(ModContent.BuffType<GlacialState>(), 240); // 冰河时代
 
             if (Projectile.timeLeft > 12)
                 Projectile.timeLeft = 12;
+
             Projectile.velocity *= 0.2f;
             Projectile.damage = 0;
             Projectile.netUpdate = true;

@@ -55,8 +55,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             if (player.altFunctionUse == 2) // 右键
             {
                 Item.damage = 35; // 设置伤害值
-                Item.useTime = 14; // 右键攻击速度更快
-                Item.useAnimation = 15;
+                Item.useTime = 13; // 右键攻击速度更快
+                Item.useAnimation = 13;
                 Item.shoot = ModContent.ProjectileType<SHPCKFast>(); // 右键使用SHPCKFast弹幕
                 Item.shootSpeed = 30f; // 更改使用时的武器弹幕飞行速度
                 //Item.UseSound = SoundID.Item92;
@@ -80,14 +80,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                // 发射 3 发 SHPCKFast 弹幕，每个弹幕的伤害倍率为 0.8
-                //for (int shootAmt = 0; shootAmt < 3; shootAmt++)
-                //{
-                //    float SpeedX = velocity.X + (float)Main.rand.Next(-20, 21) * 0.05f;
-                //    float SpeedY = velocity.Y + (float)Main.rand.Next(-20, 21) * 0.05f;
-                //    Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, ModContent.ProjectileType<SHPCKFast>(), (int)(damage * 1.25f), knockback * 0.5f, player.whoAmI, 0f, 0f);
-                //}
-                Projectile.NewProjectile(source, position.X, position.Y, velocity.X, velocity.Y, ModContent.ProjectileType<SHPCKFast>(), (int)(damage * 1.35 *3f), knockback, player.whoAmI);
+                int projectileCount = 2; // 一次发射X发
+
+                for (int i = 0; i < projectileCount; i++)
+                {
+                    // 在 -X° ~ X° 之间随机偏移发射方向
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-150f, 150f));
+
+                    // 计算新的方向
+                    Vector2 modifiedVelocity = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.9f, 1.1f); // 速度稍微随机化
+
+                    // 修正后的 `NewProjectile` 调用
+                    Projectile.NewProjectile(
+                        source,
+                        position,
+                        modifiedVelocity,  // 正确传递 Vector2 类型的速度
+                        ModContent.ProjectileType<SHPCKFast>(),
+                        (int)(damage * 1.35 * 3f),
+                        knockback,
+                        player.whoAmI
+                    );
+                }
+
                 return false;
             }
             else // 左键

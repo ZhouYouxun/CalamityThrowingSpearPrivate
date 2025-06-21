@@ -48,9 +48,5 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             recipe.Register();
         }
 
-
-
-
-
     }
 }

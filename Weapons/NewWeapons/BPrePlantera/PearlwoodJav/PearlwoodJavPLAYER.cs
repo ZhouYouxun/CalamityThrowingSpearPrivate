@@ -28,8 +28,8 @@ public class PearlwoodJavPLAYER : ModPlayer
     {
         hitCounter++; // 增加击中计数
 
-        // 如果击中次数达到 350，清除所有相关弹幕
-        if (hitCounter >= 350)
+        // 如果击中次数达到 X，清除所有相关弹幕
+        if (hitCounter >= 600)
         {
             hitCounter = 0; // 重置计数器
             ClearAllProjectiles(); // 清除相关弹幕
@@ -45,10 +45,13 @@ public class PearlwoodJavPLAYER : ModPlayer
         {
             Projectile proj = Main.projectile[i];
             if (proj.active && proj.owner == Player.whoAmI &&
-                (proj.type == ModContent.ProjectileType<PearlwoodJavRainbowFront>() ||
+                (proj.type == ModContent.ProjectileType<PearlwoodJavPROJINV>() ||
+                 proj.type == ModContent.ProjectileType<PearlwoodJavPROJ>() ||
+                 proj.type == ModContent.ProjectileType<PearlwoodJavRainbowFront>() ||
                  proj.type == ModContent.ProjectileType<PearlwoodJavRainbowTrail>()))
             {
-                proj.Kill(); // 清除弹幕
+                //proj.Kill(); // 不执行清除弹幕的逻辑，因为现在的效果可以让他不产生大量的弹幕
+                // 如果之后重新启用三段彩虹的话，可以考虑启用这一段
             }
         }
     }

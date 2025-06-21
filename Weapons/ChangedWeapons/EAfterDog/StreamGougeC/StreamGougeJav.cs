@@ -23,20 +23,20 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 120; // 设置伤害值
+            Item.damage = 350; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 10; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 55; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item20;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.shoot = ModContent.ProjectileType<StreamGougeJavPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 19f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
         }
 
         //public override void AddRecipes()

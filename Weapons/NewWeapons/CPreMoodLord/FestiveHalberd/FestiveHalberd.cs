@@ -19,13 +19,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 105; // 设置伤害值
+            Item.damage = 150; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 22; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 60; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
@@ -40,7 +40,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.ChristmasTreeSword, 1);
+            recipe.AddIngredient(ItemID.ChristmasTreeSword, 1); // 圣诞树剑
+            recipe.AddIngredient(ItemID.NorthPole, 1); // 北极
+            recipe.AddIngredient(ItemID.Razorpine, 1); // 剃刀松
             recipe.AddIngredient(ItemID.Present, 10);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();

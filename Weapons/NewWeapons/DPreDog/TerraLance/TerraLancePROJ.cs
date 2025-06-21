@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
         }
         public override bool PreDraw(ref Color lightColor)
         {
-            // 获取纹理
+            // 获取纹理资源
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
             // 计算每帧的高度
@@ -44,42 +44,61 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Vector2 origin = rectangle.Size() / 2f;
 
             // 当前弹幕的翻转状态
-            SpriteEffects effects = SpriteEffects.None;
-            if (Projectile.spriteDirection == -1)
-            {
-                // 如果 spriteDirection 为 -1，则水平和垂直翻转图像
-                effects = SpriteEffects.FlipHorizontally;
-                //effects = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
-            }
+            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            // 残影特效
-            Vector2 drawOffset = Projectile.Size / 2f; // 居中偏移
+            // 居中偏移
+            Vector2 drawOffset = Projectile.Size / 2f;
             Color alpha = Projectile.GetAlpha(lightColor);
 
-            for (int i = 0; i < Projectile.oldPos.Length; i++)
+            // 第一阶段：普通拖尾效果
+            if (Projectile.ai[0] < 25)
             {
-                // 获取历史位置、旋转和翻转状态
-                Vector2 position = Projectile.oldPos[i] + drawOffset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                float rotation2 = Projectile.oldRot[i];
-                SpriteEffects effects2 = (Projectile.oldSpriteDirection[i] == -1)
-                    ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically
-                    : SpriteEffects.None;
+                for (int i = 0; i < Projectile.oldPos.Length; i++)
+                {
+                    // 获取历史位置、旋转和翻转状态
+                    Vector2 position = Projectile.oldPos[i] + drawOffset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+                    float rotation2 = Projectile.oldRot[i];
+                    SpriteEffects effects2 = Projectile.oldSpriteDirection[i] == -1
+                        ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically
+                        : SpriteEffects.None;
 
-                // 根据历史位置调整颜色透明度
-                Color color = alpha * ((float)(Projectile.oldPos.Length - i) / Projectile.oldPos.Length);
+                    // 根据历史位置调整颜色透明度
+                    Color color = alpha * ((float)(Projectile.oldPos.Length - i) / Projectile.oldPos.Length);
 
-                // 绘制残影
-                Main.spriteBatch.Draw(texture, position, rectangle, color, rotation2, origin, scale, effects2, 0f);
+                    // 绘制残影
+                    Main.spriteBatch.Draw(texture, position, rectangle, color, rotation2, origin, scale, effects2, 0f);
+                }
+
+                // 绘制弹幕本体
+                Vector2 currentPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+                Main.spriteBatch.Draw(texture, currentPosition, rectangle, lightColor, Projectile.rotation, origin, scale, effects, 0f);
+
+                return false;
             }
 
-            // 绘制弹幕本体
-            Vector2 currentPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Main.spriteBatch.Draw(texture, currentPosition, rectangle, lightColor, Projectile.rotation, origin, scale, effects, 0f);
+            // 第二阶段：背光效果
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            return false; // 阻止原始投射物图像的默认绘制
+            // 背光效果部分 - 亮绿色光晕
+            float chargeOffset = 5f; // 控制背光效果扩散的偏移量
+            Color chargeColor = Color.Lime * 0.6f; // 设置为亮绿色
+            chargeColor.A = 0; // 设置透明度
+
+            // 修复旋转逻辑，确保与速度方向同步
+            float rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+            // 绘制背光效果 - 圆周上绘制多个光效
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 offset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
+                Main.spriteBatch.Draw(texture, drawPosition + offset, rectangle, chargeColor, rotation, origin, scale, effects, 0f);
+            }
+
+            // 渲染实际的投射物本体
+            Main.spriteBatch.Draw(texture, drawPosition, rectangle, Projectile.GetAlpha(lightColor), rotation, origin, scale, effects, 0f);
+
+            return false;
         }
-
-
 
         public override void SetDefaults()
         {
@@ -96,6 +115,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
+        public override bool? CanDamage()
+        {
+            // 如果在第一阶段（加速阶段），返回 false，表示不造成伤害
+            if (Projectile.ai[0] < 25)
+            {
+                return false;
+            }
+
+            // 其他阶段允许造成伤害
+            return base.CanDamage();
+        }
 
         public override void AI()
         {
@@ -105,46 +135,173 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             // 添加绿色光源
             Lighting.AddLight(Projectile.Center, Color.Green.ToVector3() * 0.55f);
 
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.01f;
-
-            // 每10帧生成翠绿色椭圆形粒子特效
-            if (Projectile.ai[0] % 10 == 0)
+            // 阶段控制
+            if (Projectile.ai[0] < 25) // 第一阶段：加速阶段
             {
-                for (int i = 0; i < 3; i++)
+                float accelerationFactor = Main.rand.NextFloat(1.01f, 1.08f); // 随机加速度
+                Projectile.velocity *= accelerationFactor; // 增加速度
+                Projectile.penetrate = -1; // 无限穿透
+                
+                // 加速期间超大型粒子特效
+                if (Projectile.numUpdates % 3 == 0)
                 {
-                    Particle pulse = new DirectionalPulseRing(Projectile.Center, Projectile.velocity * 0.75f, Color.Green, new Vector2(1f, 2.5f), Projectile.rotation - MathHelper.PiOver4, 0.2f, 0.03f, 20);
-                    GeneralParticleHandler.SpawnParticle(pulse);
+                    Color brightWhite = Color.DarkOliveGreen;
+                    float outerSparkScale = 2.6f; // 放大？%
+                    SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, brightWhite);
+                    GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
-
-            // 前30帧不追踪，之后开始追踪敌人
-            if (Projectile.ai[1] > 24)
+            else if (Projectile.ai[0] == 25) // 阶段转换时释放特殊特效
             {
-                NPC target = Projectile.Center.ClosestNPCAt(2400); // 查找范围内最近的敌人
+                // 吸引特效：生成两个向中心汇聚的圆圈
+                for (int i = 0; i < 2; i++) // 生成两个吸引特效
+                {
+                    // 设置不同的颜色，每次随机选择
+                    Color pulseColor = (i == 0) ? Color.LimeGreen : Color.LightGreen;
+
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center,          // 特效生成位置
+                        Vector2.Zero,               // 无初始速度（吸引效果）
+                        pulseColor,                 // 颜色
+                        new Vector2(2f + i * 0.5f), // 大小依次增加
+                        Projectile.rotation,        // 旋转角度
+                        1.2f,                       // 初始缩放
+                        0.15f,                      // 缩放减小速率
+                        40                          // 特效存活时间
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(pulse); // 生成特效
+                }
+
+                // 特效：生成抽象小树图标
+                {
+                    Vector2 center = Projectile.Center; // 弹幕中心对齐树干正中间
+                    float trunkHeight = 120f; // 树干高度扩大两倍
+                    float foliageRadius = 40f; // 树冠扩大两倍
+                    float expansionSpeed = 1.5f; // 粒子扩散速度增大
+
+                    // 左右树枝的长度和高度调整
+                    float leftBranchLength = 60f; // 左侧树枝长度加倍
+                    float rightBranchLength = 100f; // 右侧树枝长度加倍
+                    float leftBranchHeight = trunkHeight * 0.4f; // 左侧树枝偏低
+                    float rightBranchHeight = trunkHeight * 0.7f; // 右侧树枝偏高
+
+                    // 生成树干部分（竖直粒子列）
+                    for (float y = 0; y <= trunkHeight; y += 10f) // 每隔10像素生成一个粒子
+                    {
+                        Vector2 position = center + new Vector2(0, -y); // 树干向上生长
+                        Dust treeTrunkDust = Dust.NewDustPerfect(
+                            position,
+                            DustID.WoodFurniture,
+                            Vector2.Zero,
+                            0,
+                            Color.SaddleBrown,
+                            1.2f
+                        );
+                        treeTrunkDust.noGravity = true; // 禁用重力
+                        treeTrunkDust.fadeIn = 0.8f;    // 添加淡入效果
+                    }
+
+                    // 生成左侧树枝
+                    for (float t = 0; t <= 1; t += 0.05f) // 线性插值生成树枝，密度增加
+                    {
+                        Vector2 branchStart = center + new Vector2(0, -leftBranchHeight);
+                        Vector2 branchEnd = branchStart + new Vector2(-leftBranchLength, -leftBranchLength * 0.5f);
+                        Vector2 position = Vector2.Lerp(branchStart, branchEnd, t);
+
+                        Dust.NewDustPerfect(position, DustID.PureSpray, Main.rand.NextVector2Circular(0.8f, 0.8f) * expansionSpeed, 0, Color.Lime, 1.5f);
+                    }
+
+                    // 生成右侧树枝
+                    for (float t = 0; t <= 1; t += 0.05f)
+                    {
+                        Vector2 branchStart = center + new Vector2(0, -rightBranchHeight);
+                        Vector2 branchEnd = branchStart + new Vector2(rightBranchLength, -rightBranchLength * 0.5f);
+                        Vector2 position = Vector2.Lerp(branchStart, branchEnd, t);
+
+                        Dust.NewDustPerfect(position, DustID.PureSpray, Main.rand.NextVector2Circular(0.8f, 0.8f) * expansionSpeed, 0, Color.Lime, 1.5f);
+                    }
+
+                    // 生成树冠（顶部圆形）
+                    for (int j = 0; j < 36; j++)
+                    {
+                        float angle = MathHelper.TwoPi / 36 * j;
+                        Vector2 position = center + new Vector2(0, -trunkHeight) + angle.ToRotationVector2() * foliageRadius;
+
+                        Dust.NewDustPerfect(position, DustID.Terra, Main.rand.NextVector2Circular(1f, 1f) * expansionSpeed, 0, Color.LimeGreen, 1.8f);
+                    }
+
+                    // 生成树枝末端的圆形装饰
+                    for (int i = -1; i <= 1; i += 2) // 左右树枝
+                    {
+                        float branchHeight = (i == -1) ? leftBranchHeight : rightBranchHeight;
+                        float branchLength = (i == -1) ? leftBranchLength : rightBranchLength;
+                        Vector2 branchEnd = center + new Vector2(0, -branchHeight) + new Vector2(branchLength * i, -branchLength * 0.5f);
+                        for (int j = 0; j < 24; j++)
+                        {
+                            float angle = MathHelper.TwoPi / 24 * j;
+                            Vector2 position = branchEnd + angle.ToRotationVector2() * foliageRadius * 0.5f;
+
+                            Dust.NewDustPerfect(position, DustID.PureSpray, Main.rand.NextVector2Circular(0.8f, 0.8f) * expansionSpeed, 0, Color.White, 1.2f);
+                        }
+                    }
+                }
+            }
+            else // 第二阶段：追踪敌人
+            {
+                // 切换为单体穿透
+                Projectile.penetrate = 1;
+
+                // 开始追踪最近的敌人
+                NPC target = Projectile.Center.ClosestNPCAt(6400); // 查找范围内最近的敌人
                 if (target != null)
                 {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 18f, 0.08f); // 追踪速度为12f
+                    // 计算目标方向并追踪
+                    Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero); // 目标方向
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, directionToTarget * 18f, 0.08f); // 平滑追踪目标
                 }
             }
-            else
-            {
-                Projectile.ai[1]++;
-            }
+
+            // 更新计数器
+            Projectile.ai[0]++;
 
             Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
             Projectile.rotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
         }
 
-        public override void OnKill(int timeLeft)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            Vector2 center = Projectile.Center;
+            //{
+            //    // 生成单层圆形浅红色扩散特效
+            //    int circleRadius = 8 * 16; // 圆的半径为 128 像素
+            //    int particleCount = 36; // 每隔10度生成一个点
 
-            // 更复杂的同心圆法阵
-            int numCircles = 5; // 圆的数量增加
-            int numPointsPerCircle = 18; // 每个圆的粒子数量增加
-            float radiusIncrement = 40f; // 圆之间的半径缩小，使整体更加紧凑
+            //    for (int i = 0; i < particleCount; i++)
+            //    {
+            //        float angle = MathHelper.TwoPi / particleCount * i; // 计算每个粒子的角度
+            //        Vector2 position = target.Center + angle.ToRotationVector2() * circleRadius; // 粒子生成位置
+            //        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(0.5f, 1.5f); // 粒子向外扩散的速度
+
+            //        // 使用 DustID.Torch 或类似浅红色效果的 Dust
+            //        Dust dust = Dust.NewDustPerfect(
+            //            position,            // 粒子位置
+            //            DustID.Torch,        // 浅红色 Dust 类型
+            //            velocity,            // 扩散速度
+            //            100,                 // 透明度（0 - 255，值越低越透明）
+            //            new Color(255, 100, 100), // 浅红色
+            //            1.5f                 // 缩放比例
+            //        );
+            //        dust.noGravity = true; // 禁用重力，确保粒子飘散
+            //        dust.fadeIn = 1.0f;    // 增加粒子动态感
+            //    }
+            //}
+
+            Vector2 center = target.Center; // 使用敌人的中心作为特效的中心
+
+            // 生成更复杂的同心圆法阵特效
+            int numCircles = 5; // 圆的数量
+            int numPointsPerCircle = 18; // 每个圆的粒子数量
+            float radiusIncrement = 40f; // 圆之间的半径递增
 
             for (int circle = 0; circle < numCircles; circle++)
             {
@@ -157,26 +314,26 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                     for (int j = 0; j < 10; j++) // 每个点释放更多粒子
                     {
                         float speed = MathHelper.Lerp(3f, 10f, j / 10f); // 更宽范围的速度
-                        Color particleColor = Color.Lerp(Color.White, Color.LimeGreen, j / 10f); // 保持原有颜色渐变
-                        float scale = MathHelper.Lerp(1.8f, 0.6f, j / 10f); // 更强的缩放对比
+                        Color particleColor = Color.Lerp(Color.White, Color.LimeGreen, j / 10f); // 粒子颜色渐变
+                        float scale = MathHelper.Lerp(1.8f, 0.6f, j / 10f); // 粒子缩放渐变
 
                         Dust magicDust = Dust.NewDustPerfect(position, 107);
                         magicDust.velocity = angle.ToRotationVector2() * speed;
                         magicDust.color = particleColor;
                         magicDust.scale = scale;
-                        magicDust.noGravity = true;
+                        magicDust.noGravity = true; // 粒子无重力
                     }
                 }
             }
 
-            // 添加更复杂的旋转法阵
-            for (int i = 0; i < 72; i++) // 粒子数量翻倍
+            // 生成更复杂的旋转法阵
+            for (int i = 0; i < 72; i++) // 粒子数量
             {
                 float angle = MathHelper.TwoPi * i / 72f;
                 Vector2 position = center + angle.ToRotationVector2() * 25f;
 
                 Dust spinningDust = Dust.NewDustPerfect(position, 107);
-                spinningDust.velocity = angle.ToRotationVector2() * 6f; // 更高的旋转速度
+                spinningDust.velocity = angle.ToRotationVector2() * 6f; // 高速旋转
                 spinningDust.color = Color.GreenYellow;
                 spinningDust.scale = 1.5f; // 更大粒子
                 spinningDust.noGravity = true;
@@ -186,7 +343,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             int numRings = 3; // 魔法阵的环数
             for (int ring = 0; ring < numRings; ring++)
             {
-                float ringRadius = 50f + ring * 30f; // 每个环的半径增加
+                float ringRadius = 50f + ring * 30f; // 每个环的半径递增
                 int particlesPerRing = 24; // 每个环的粒子数量
                 for (int i = 0; i < particlesPerRing; i++)
                 {
@@ -198,95 +355,101 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                     GeneralParticleHandler.SpawnParticle(trail);
                 }
             }
+
+            // 调用 TerraBeamStorm 方法，生成激光弹幕
+            TerraBeamStorm(center);
+
+            // 在敌人中心生成 TerratomereExplosion 弹幕
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                center,
+                Vector2.Zero,
+                ModContent.ProjectileType<TerratomereExplosion>(),
+                (int)(Projectile.damage * 1.05f),
+                Projectile.knockBack,
+                Projectile.owner
+            );
         }
 
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            // 造成debuff
-            //target.AddBuff(ModContent.BuffType<GlacialState>(), 90); // 冰河时代
+        //public override void OnKill(int timeLeft)
+        //{
+        //    Vector2 center = Projectile.Center;
 
-            // 在原地生成TerratomereExplosion弹幕，倍率为1.25
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<TerratomereExplosion>(), (int)(Projectile.damage * 1.05f), Projectile.knockBack, Projectile.owner);
+        //    // 更复杂的同心圆法阵
+        //    int numCircles = 5; // 圆的数量增加
+        //    int numPointsPerCircle = 18; // 每个圆的粒子数量增加
+        //    float radiusIncrement = 40f; // 圆之间的半径缩小，使整体更加紧凑
 
-            //// 在屏幕外围召唤2个TerraBeam弹幕，伤害为1.25倍，速度为1.5倍
-            //for (int i = 0; i < 2; i++)
-            //{
-            //    Vector2 spawnPosition = Main.rand.NextVector2FromRectangle(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-            //    Vector2 beamDirection = (target.Center - spawnPosition).SafeNormalize(Vector2.UnitX) * 1.5f * 10f;
-            //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, beamDirection, 132, (int)(Projectile.damage * 1.25f), Projectile.knockBack, Projectile.owner);
-            //}
+        //    for (int circle = 0; circle < numCircles; circle++)
+        //    {
+        //        float radius = (circle + 1) * radiusIncrement;
+        //        for (int i = 0; i < numPointsPerCircle; i++)
+        //        {
+        //            float angle = MathHelper.TwoPi * i / numPointsPerCircle;
+        //            Vector2 position = center + angle.ToRotationVector2() * radius;
 
-            // 触发TerraBeamStorm，生成一系列TerraBeam弹幕攻击目标
-            TerraBeamStorm(target.Center);
+        //            for (int j = 0; j < 10; j++) // 每个点释放更多粒子
+        //            {
+        //                float speed = MathHelper.Lerp(3f, 10f, j / 10f); // 更宽范围的速度
+        //                Color particleColor = Color.Lerp(Color.White, Color.LimeGreen, j / 10f); // 保持原有颜色渐变
+        //                float scale = MathHelper.Lerp(1.8f, 0.6f, j / 10f); // 更强的缩放对比
 
+        //                Dust magicDust = Dust.NewDustPerfect(position, 107);
+        //                magicDust.velocity = angle.ToRotationVector2() * speed;
+        //                magicDust.color = particleColor;
+        //                magicDust.scale = scale;
+        //                magicDust.noGravity = true;
+        //            }
+        //        }
+        //    }
 
-            // 生成15到20个线性翠绿色粒子
-            //int particleCount = Main.rand.Next(15, 21);
-            //for (int i = 0; i < particleCount; i++)
-            //{
-            //    Vector2 velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, -6f)).RotatedByRandom(MathHelper.PiOver4);
-            //    Particle trail = new SparkParticle(Projectile.Center, velocity, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.Green);
-            //    GeneralParticleHandler.SpawnParticle(trail);
-            //}
+        //    // 添加更复杂的旋转法阵
+        //    for (int i = 0; i < 72; i++) // 粒子数量翻倍
+        //    {
+        //        float angle = MathHelper.TwoPi * i / 72f;
+        //        Vector2 position = center + angle.ToRotationVector2() * 25f;
 
-            {
-                //// 生成特殊的三角形粒子特效
-                //// 定义等边三角形的边长
-                //float triangleSideLength = 50f;
+        //        Dust spinningDust = Dust.NewDustPerfect(position, 107);
+        //        spinningDust.velocity = angle.ToRotationVector2() * 6f; // 更高的旋转速度
+        //        spinningDust.color = Color.GreenYellow;
+        //        spinningDust.scale = 1.5f; // 更大粒子
+        //        spinningDust.noGravity = true;
+        //    }
 
-                //// 计算等边三角形的三个顶点
-                //Vector2 vertex1 = Projectile.Center + new Vector2(0, -triangleSideLength / (float)Math.Sqrt(3)); // 顶部顶点
-                //Vector2 vertex2 = Projectile.Center + new Vector2(-triangleSideLength / 2f, triangleSideLength / (2f * (float)Math.Sqrt(3))); // 左下顶点
-                //Vector2 vertex3 = Projectile.Center + new Vector2(triangleSideLength / 2f, triangleSideLength / (2f * (float)Math.Sqrt(3))); // 右下顶点
+        //    // 魔法阵式 SparkParticle 特效
+        //    int numRings = 3; // 魔法阵的环数
+        //    for (int ring = 0; ring < numRings; ring++)
+        //    {
+        //        float ringRadius = 50f + ring * 30f; // 每个环的半径增加
+        //        int particlesPerRing = 24; // 每个环的粒子数量
+        //        for (int i = 0; i < particlesPerRing; i++)
+        //        {
+        //            float angle = MathHelper.TwoPi * i / particlesPerRing;
+        //            Vector2 position = center + angle.ToRotationVector2() * ringRadius;
+        //            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f); // 随机速度
 
-                //// 在三角形的每条边上生成粒子
-                //int particlesPerEdge = 20; // 每条边上生成的粒子数
-
-                //// 顶点1到顶点2的边
-                //for (int i = 0; i < particlesPerEdge; i++)
-                //{
-                //    float t = i / (float)particlesPerEdge;
-                //    Vector2 pointOnEdge = Vector2.Lerp(vertex1, vertex2, t); // 线性插值获取边上的点
-                //    Vector2 velocity = (vertex2 - vertex1).RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 6f); // 垂直边的速度
-                //    Particle trail = new SparkParticle(pointOnEdge, velocity, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.Green);
-                //    GeneralParticleHandler.SpawnParticle(trail);
-                //}
-
-                //// 顶点2到顶点3的边
-                //for (int i = 0; i < particlesPerEdge; i++)
-                //{
-                //    float t = i / (float)particlesPerEdge;
-                //    Vector2 pointOnEdge = Vector2.Lerp(vertex2, vertex3, t);
-                //    Vector2 velocity = (vertex3 - vertex2).RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 6f);
-                //    Particle trail = new SparkParticle(pointOnEdge, velocity, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.Green);
-                //    GeneralParticleHandler.SpawnParticle(trail);
-                //}
-
-                //// 顶点3到顶点1的边
-                //for (int i = 0; i < particlesPerEdge; i++)
-                //{
-                //    float t = i / (float)particlesPerEdge;
-                //    Vector2 pointOnEdge = Vector2.Lerp(vertex3, vertex1, t);
-                //    Vector2 velocity = (vertex1 - vertex3).RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 6f);
-                //    Particle trail = new SparkParticle(pointOnEdge, velocity, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.Green);
-                //    GeneralParticleHandler.SpawnParticle(trail);
-                //}
-            }
+        //            Particle trail = new SparkParticle(position, velocity, false, 60, Main.rand.NextFloat(1.0f, 1.5f), Color.Green);
+        //            GeneralParticleHandler.SpawnParticle(trail);
+        //        }
+        //    }
 
 
+        //    // 在原地生成TerratomereExplosion弹幕，倍率为1.25
+        //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TerratomereExplosion>(), (int)(Projectile.damage * 1.05f), Projectile.knockBack, Projectile.owner);
 
 
+        //}
 
-        }
-
+        // 在屏幕外围召唤一系列TerraBeam弹幕，类似于PetalStorm的效果
         private void TerraBeamStorm(Vector2 targetPos)
         {
             // 播放攻击音效
             SoundEngine.PlaySound(SoundID.Item105, targetPos);
 
+            // 设置弹幕类型为TerraBeam（132号）
             int type = ModContent.ProjectileType<TerraLanceBEAM>();
-            int numBeams = 8;  // 生成8个TerraBeam弹幕
+            int numBeams = 12;  // 生成8个TerraBeam弹幕
             var source = Projectile.GetSource_FromThis();
             int beamDamage = (int)(Projectile.damage * 0.9f);  // 伤害调整为1.05倍
             float beamKB = Projectile.knockBack;

@@ -81,7 +81,7 @@ namespace CalamityThrowingSpear.Weapons.NewSpears.BPrePlantera.TheLastLanceSpear
         {
             // **保持我们的着色拖尾**
             GameShaders.Misc["CalamityMod:PrismaticStreak"].SetShaderTexture(
-                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
             );
 
             Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;

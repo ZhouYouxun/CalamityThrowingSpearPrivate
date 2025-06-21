@@ -32,9 +32,47 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         public override bool PreDraw(ref Color lightColor)
         {
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+
+            // 如果弹幕时间小于 12 帧，不执行螺旋线段绘制
+            if (Projectile.timeLeft > 588) // 600 - 12 = 588，确保弹幕出生后 12 帧才绘制
+                return false;
+
+            // 计算绘制起点
+            Vector2 startPosition = Projectile.oldPos[0] + Projectile.Size * 0.5f; // 旧位置
+            Vector2 previousEnd = startPosition; // 记录上一条线段的终点（初始为第一帧的位置）
+
+            // 线段颜色变化参数
+            float colorShift = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+            Color lineColor = Color.Lerp(Color.Gold, Color.White, colorShift); // 在金色和白色之间变化
+
+            // 螺旋偏移参数
+            float spiralOffset = 10f + Main.rand.NextFloat(-2f, 2f); // 让偏移量稍微随机
+            bool spiralRight = true; // 控制左右交替
+            float segmentLength = 16f + Main.rand.NextFloat(-2f, 2f); // 让线段长度有小幅随机变化
+
+            // 遍历弹幕的旧位置，生成螺旋线段
+            for (int i = 1; i < Projectile.oldPos.Length; i++)
+            {
+                Vector2 currentPosition = Projectile.oldPos[i] + Projectile.Size * 0.5f;
+
+                // 计算螺旋偏移（在 -spiralOffset 和 +spiralOffset 之间波动）
+                float offsetAmount = spiralOffset * (spiralRight ? 1f : -1f) + Main.rand.NextFloat(-2f, 2f); // 让每次偏移稍微不一样
+                Vector2 offset = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * offsetAmount;
+
+                Vector2 newEnd = currentPosition + offset; // 计算新的终点
+
+                // 绘制线段
+                Main.spriteBatch.DrawLineBetter(previousEnd, newEnd, lineColor, 2f);
+
+                // 更新状态
+                previousEnd = newEnd;
+                spiralRight = !spiralRight; // 每次切换方向
+            }
+
             return false;
         }
-
+        private float spiralOffset = 12f; // 初始偏移量
+        private bool spiralRight = true; // 方向控制
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 32;
@@ -75,32 +113,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            // 在弹幕顶端生成两排平行的 AltSparkParticle
-            for (int i = -12; i <= 12; i += 24) // 偏移量相对于弹幕自身的朝向
-            {
-                // 基于弹幕旋转方向计算偏移
-                Vector2 offset = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * i;
 
-                // 粒子颜色
-                Color particleColor = Color.Lerp(Color.Yellow, Color.LightYellow, Main.rand.NextFloat(0.5f, 1.0f)); // 亮黄色或金色
 
-                // 创建并生成粒子
-                AltSparkParticle spark = new AltSparkParticle(
-                    tipPosition + offset,           // 偏移位置
-                    Projectile.velocity * 0.5f,     // 粒子速度
-                    false,
-                    15,
-                    1f,
-                    particleColor
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
+            //// 生成螺旋粒子
+            //spiralOffset += (spiralRight ? 3.5f : -3.5f); // 每帧偏移
+            //if (spiralOffset > 12f || spiralOffset < -12f)
+            //    spiralRight = !spiralRight; // 当偏移到最大值时反向
+
+            //Vector2 spiralOffsetVector = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * spiralOffset;
+
+            //// 创建并生成粒子
+            //AltSparkParticle spark2 = new AltSparkParticle(
+            //    tipPosition + spiralOffsetVector, // 偏移位置
+            //    Projectile.velocity * 0.5f, // 粒子速度
+            //    false,
+            //    15,
+            //    1f,
+            //    new Color(255, 215, 0)
+            //);
+            //GeneralParticleHandler.SpawnParticle(spark2);
+
 
 
             // 在弹幕顶端生成粒子特效
             tipPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
             int dustType = Main.rand.Next(new int[] { DustID.YellowTorch, 19, 10 }); // 随机粒子类型
-            for (int j = 0; j < Main.rand.Next(1, 3); j++) // 每帧向左右各发射 1~2 个粒子
+            for (int j = 0; j < Main.rand.Next(1, 5); j++) // 每帧向左右各发射 1~X 个粒子
             {
                 Dust dust = Dust.NewDustPerfect(tipPosition, dustType, new Vector2(Main.rand.NextFloat(-2f, 2f), 0), 150, Color.Yellow, 1.5f);
                 dust.noGravity = true;
@@ -162,27 +200,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 dust.fadeIn = 1.2f; // 粒子淡入效果
             }
 
-            //// 新增三条线特效
-            //Vector2 center = Projectile.Center;
-            //float initialAngle = Main.rand.NextFloat(MathHelper.TwoPi); // 随机起始角度
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    float lineAngle = initialAngle + MathHelper.TwoPi / 3f * i; // 每条线间隔 120°
-            //    for (int j = 0; j < 25; j++) // 每条线的粒子数
-            //    {
-            //        float distance = j * 5f; // 粒子之间的间距
-            //        float widthOffset = Main.rand.NextFloat(-5f, 5f); // 增加宽度偏移，随机值扩展范围
-            //        Vector2 position = center + new Vector2((float)Math.Cos(lineAngle), (float)Math.Sin(lineAngle)) * distance * 2.5f; // 线的长度增加 2.5 倍
-            //        position += new Vector2((float)Math.Cos(lineAngle + MathHelper.PiOver2), (float)Math.Sin(lineAngle + MathHelper.PiOver2)) * widthOffset; // 宽度偏移
-
-            //        int dustType = Main.rand.NextFloat() < 0.4f ? DustID.UltraBrightTorch : DustID.BlueFlare; // 混合粒子
-            //        Dust dust = Dust.NewDustPerfect(position, dustType, Vector2.Zero, 150, Color.White, 1.5f);
-            //        dust.noGravity = true;
-            //        dust.velocity = Vector2.UnitY.RotatedBy(lineAngle) * Main.rand.NextFloat(1f, 3f); // 粒子向外扩散
-            //    }
-            //}
-
-
             // 定义左右方向的速度
             Vector2[] directions = { new Vector2(-1, 0), new Vector2(1, 0) }; // 左方和右方方向
             float[] speeds = { 5f, 5f * 1.3f }; // 慢速和快速的速度倍率
@@ -212,11 +229,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         }
 
 
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
             target.AddBuff(ModContent.BuffType<GalvanicCorrosion>(), 300); // 电偶腐蚀
             target.AddBuff(ModContent.BuffType<HolyFlames>(), 300); // 神圣之火
+
+            Player player = Main.player[Projectile.owner];
+            if (player.HeldItem.ModItem is AuricJav weapon)
+            {
+                weapon.AngerMeter += Main.rand.NextFloat(3f, 5f);
+                if (weapon.AngerMeter > weapon.MaxAnger) weapon.AngerMeter = weapon.MaxAnger;
+            }
         }
     }
 }

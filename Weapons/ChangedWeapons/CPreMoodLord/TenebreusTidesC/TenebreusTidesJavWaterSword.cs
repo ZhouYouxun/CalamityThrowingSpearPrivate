@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,7 +32,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             Projectile.penetrate = penetrationAmt;
             Projectile.timeLeft = 600;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.extraUpdates = 2;
+            Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 5 * Projectile.MaxUpdates;
             Projectile.tileCollide = false;
@@ -47,10 +49,62 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             penetrationAmt = reader.ReadInt32();
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            base.OnSpawn(source);
+
+            //// 创建小型冲击波粒子效果
+            //Particle pulse = new DirectionalPulseRing(
+            //    Projectile.Center, // 冲击波的中心位置
+            //    Projectile.velocity * 0.75f, // 冲击波的速度，略低于弹幕的速度
+            //    Color.Lerp(Color.DarkBlue, Color.CadetBlue, 0.5f), // 使用深蓝到浅蓝的主题颜色渐变
+            //    new Vector2(1f, 2.5f), // 冲击波的大小范围
+            //    Projectile.rotation - MathHelper.PiOver4, // 冲击波的旋转角度
+            //    0.2f, // 初始透明度
+            //    0.03f, // 透明度的衰减速度
+            //    20 // 粒子寿命
+            //);
+            //GeneralParticleHandler.SpawnParticle(pulse);
+        }
+
         public override void AI()
         {
             // 弹幕的速度每帧乘以 1.01，逐渐加速
             Projectile.velocity *= 1.01f;
+
+            {
+                //// 添加小型烟雾粒子
+                //Color smokeColor = Color.Lerp(Color.DarkBlue, Color.CadetBlue, 0.5f); // 使用之前定义的颜色渐变
+                //Particle smoke = new HeavySmokeParticle(
+                //    Projectile.Center,
+                //    Projectile.velocity * Main.rand.NextFloat(-0.2f, -0.6f),
+                //    smokeColor,
+                //    30, // 粒子存活时间
+                //    Main.rand.NextFloat(0.45f, 0.6f), // 粒子缩放大小
+                //    0.3f,
+                //    Main.rand.NextFloat(-0.2f, 0.2f),
+                //    false,
+                //    required: true
+                //);
+                //GeneralParticleHandler.SpawnParticle(smoke);
+
+                // 添加双螺旋粒子特效
+                float progress = (Projectile.localAI[0] % 60) / 60f; // 粒子进度控制
+                float angle1 = MathHelper.TwoPi * progress; // 第一条螺旋
+                float angle2 = MathHelper.TwoPi * (progress + 0.5f); // 第二条螺旋，相差 180 度
+                Vector2 offset1 = new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * 10f; // 第一条螺旋的偏移
+                Vector2 offset2 = new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * 10f; // 第二条螺旋的偏移
+
+                // 第一条螺旋的粒子
+                Dust dust1 = Dust.NewDustPerfect(Projectile.Center + offset1, DustID.Water, Projectile.velocity * 0.2f, 0, Color.DarkBlue, 1.2f);
+                dust1.noGravity = true;
+
+                // 第二条螺旋的粒子
+                Dust dust2 = Dust.NewDustPerfect(Projectile.Center + offset2, DustID.Water, Projectile.velocity * 0.2f, 0, Color.CadetBlue, 1.2f);
+                dust2.noGravity = true;
+
+            }
+
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(45f);
 

@@ -294,7 +294,7 @@ namespace CalamityThrowingSpear.Weapons.NewSpears.DPreDog.ChaosWindSpear
 
             // 下面是着色器的调用和绘制
             {
-                GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak"));
+                GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak"));
 
                 Texture2D projectileTexture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
 
@@ -344,7 +344,7 @@ namespace CalamityThrowingSpear.Weapons.NewSpears.DPreDog.ChaosWindSpear
         //    Main.EntitySpriteDraw(tex, drawPos, new Microsoft.Xna.Framework.Rectangle?(rectangle), lightColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 
         //    // 添加紫色和蓝色混合的着色器特效
-        //    GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak"));
+        //    GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak"));
         //    Color blendColor = Color.Lerp(Color.Purple, Color.Blue, 0.5f);
         //    Lighting.AddLight(Projectile.Center + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * Projectile.height * 0.45f, blendColor.ToVector3() * 0.4f);
 

@@ -13,6 +13,9 @@ using CalamityMod.Projectiles.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Items.Weapons.Magic;
 using Terraria.GameContent;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTidesC;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 {
@@ -27,72 +30,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;
         }
 
-        //public override bool PreDraw(ref Color lightColor)
-        //{
-        //    // 绘制拖尾
-        //    //CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-
-        //    // 包裹自身的红色光晕效果
-        //    Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-        //    Vector2 origin = texture.Size() * 0.5f;
-        //    Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-        //    Color wrapColor = Color.WhiteSmoke * 0.15f; // 半透明x色包裹效果
-
-        //    // 绘制光晕效果
-        //    for (int i = 0; i < 3; i++)
-        //    {
-        //        Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * 1.5f;
-        //        Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, wrapColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
-        //    }
-
-        //    return false;
-        //}
-
-
-        public override bool PreDraw(ref Color lightColor)
+        public enum BehaviorState
         {
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Vector2 origin = texture.Size() * 0.5f;
-            for (int i = 0; i < Projectile.oldPos.Length; ++i)
-            {
-                float afterimageRot = Projectile.oldRot[i];
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                Color afterimageColor = Color.MediumVioletRed * ((Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length);
-                Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
-
-                if (i > 0)
-                {
-                    for (float j = 0.2f; j < 0.8f; j += 0.2f)
-                    {
-                        drawPos = Vector2.Lerp(Projectile.oldPos[i - 1], Projectile.oldPos[i], j) +
-                            Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                        Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
-                    }
-                }
-            }
-
-            Color color = Color.Red * 0.5f;
-            color.A = 0;
-
-            Main.spriteBatch.Draw(texture, drawPosition, null, color, Projectile.rotation, origin, Projectile.scale * 0.9f, 0, 0);
-            Color bigGleamColor = color;
-            Color smallGleamColor = color * 0.5f;
-            float opacity = (float)(Utils.GetLerpValue(15f, 30f, Projectile.timeLeft, true) *
-                Utils.GetLerpValue(240f, 200f, Projectile.timeLeft, true) *
-                (1f + 0.2f * Math.Cos(Main.GlobalTimeWrappedHourly % 30f / 0.5f * MathHelper.Pi * 6f)) * 0.8f);
-            Vector2 bigGleamScale = new Vector2(0.5f, 5f) * opacity;
-            Vector2 smallGleamScale = new Vector2(0.5f, 2f) * opacity;
-            bigGleamColor *= opacity;
-            smallGleamColor *= opacity;
-
-            Main.spriteBatch.Draw(texture, drawPosition, null, bigGleamColor, 1.57079637f, origin, bigGleamScale, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, bigGleamColor, 0f, origin, smallGleamScale, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, smallGleamColor, 1.57079637f, origin, bigGleamScale * 0.6f, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, smallGleamColor, 0f, origin, smallGleamScale * 0.6f, 0, 0);
-            return false;
+            Aim,
+            Dash
         }
 
+        public BehaviorState CurrentState
+        {
+            get => (BehaviorState)Projectile.ai[0];
+            set => Projectile.ai[0] = (int)value;
+        }
+
+        private int chargeLevel = 0; // 当前蓄力等级
+        private int hitCounter = 0; // 命中计数器
+        private const int MaxChargeLevel = 15;
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 32;
@@ -108,95 +60,180 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
-
-        private Vector2[] triangleVertices = new Vector2[3]; // 存储三角形顶点的位置
-        private float rotationAngle = 0f; // 当前旋转角度
+        public Player Owner => Main.player[Projectile.owner];
 
         public override void AI()
         {
-            // 保持弹幕旋转
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
             // 添加深红色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.DarkRed.ToVector3() * 0.55f);
-
-            // 弹幕逐渐加速
-            //Projectile.velocity *= 1.01f;
-
-            // 初始化等边三角形顶点的相对位置（半径为20像素，可以根据需要调整）
-            float triangleRadius = 20f;
-            if (triangleVertices[0] == Vector2.Zero)
+            switch (CurrentState)
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    float angle = MathHelper.TwoPi / 3 * i; // 等分的三个顶点
-                    triangleVertices[i] = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * triangleRadius;
-                }
-            }
-
-            // 更新旋转角度，每帧旋转更大的角度以增加旋转速度
-            rotationAngle += MathHelper.ToRadians(2); // 每帧旋转2度
-
-            // 计算旋转后的顶点位置
-            for (int i = 0; i < 3; i++)
-            {
-                // 旋转顶点位置
-                Vector2 rotatedPosition = triangleVertices[i].RotatedBy(rotationAngle) + Projectile.Center;
-
-                // 增加粒子生成频率，并调整粒子大小和数量
-                if (Main.rand.NextFloat() < 0.999f) // 生成概率
-                {
-                    for (int j = 0; j < 3; j++) // 每帧生成3个粒子
-                    {
-                        Vector2 dustVelocity = (rotatedPosition - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.2f, 2.0f);
-                        Dust bloodDust = Dust.NewDustPerfect(rotatedPosition, DustID.Blood, dustVelocity, 100, Color.Red, 1.6f);
-                        bloodDust.noGravity = true;
-                    }
-
-                }
+                case BehaviorState.Aim:
+                    DoBehavior_Aim();
+                    break;
+                case BehaviorState.Dash:
+                    DoBehavior_Dash();
+                    break;
             }
         }
 
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
+        private void DoBehavior_Aim()
         {
-            // 反弹效果
-            if (Projectile.velocity.X != oldVelocity.X)
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.timeLeft = 300;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+
+            // 使投射物与玩家保持一致并瞄准鼠标位置
+            if (Main.myPlayer == Projectile.owner)
             {
-                Projectile.velocity.X = -oldVelocity.X;
+                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
             }
-            if (Projectile.velocity.Y != oldVelocity.Y)
+
+            // 对齐到玩家中心
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
+            Owner.heldProj = Projectile.whoAmI;
+
+            // 每45帧提升蓄力等级
+            if (Projectile.localAI[0] % 45 == 0 && chargeLevel < MaxChargeLevel)
             {
-                Projectile.velocity.Y = -oldVelocity.Y;
+                chargeLevel++;
+                CreateChargeEffect();
+                InflictChargePenalty();
             }
-            return false;
+
+            // 检测松手
+            if (!Owner.channel)
+            {
+                CurrentState = BehaviorState.Dash;
+                Projectile.netUpdate = true;
+                Projectile.penetrate = 1 + chargeLevel; // 根据等级设置穿透次数
+                float speedBoost = 14f + chargeLevel * 0.2f; // 飞行速度提升
+                Projectile.velocity *= speedBoost;
+            }
+
+            Projectile.localAI[0]++;
+        }
+
+        private void CreateChargeEffect()
+        {
+            Vector2 center = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 2f;
+            Color electricColor = Color.Red;
+
+            for (int i = 0; i < 6; i++)
+            {
+                float angle = MathHelper.ToRadians(60 * i);
+                Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+
+                Particle electricParticle = new SparkParticle(
+                    center,
+                    direction * 2f,
+                    false,
+                    60,
+                    Main.rand.NextFloat(1.5f, 2.0f),
+                    electricColor
+                );
+
+                GeneralParticleHandler.SpawnParticle(electricParticle);
+            }
+            SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
+        }
+
+        private void InflictChargePenalty()
+        {
+            int damagePenalty = 8; // 每级扣除X点血量
+            Owner.statLife -= damagePenalty;
+            CombatText.NewText(Owner.getRect(), Color.Lime, -damagePenalty); // 显示绿色负值
+
+            if (Owner.statLife <= 0)
+            {
+                Owner.KillMe(PlayerDeathReason.ByCustomReason($"{Owner.name} 把自己榨干了"), damagePenalty, 0);
+            }
+        }
+
+        private void DoBehavior_Dash()
+        {
+
+            // 重置速度的逻辑
+            {
+                float initialSpeed = 18f; // 设定初始速度值，可根据需求替换具体值
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
+            }
+
+
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.tileCollide = true;
+
+            // 飞行期间的粒子效果
+            Color bloodColor = Color.Red;
+            float scaleBoost = MathHelper.Clamp(chargeLevel * 0.005f, 0f, 2f);
+            float outerSparkScale = 1.5f + scaleBoost;
+            SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, bloodColor);
+            GeneralParticleHandler.SpawnParticle(spark);
+
+            // 每10帧生成血红色圆圈
+            if (Projectile.localAI[0] % 5 == 0)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Particle pulse = new DirectionalPulseRing(Projectile.Center, Projectile.velocity * 0.75f, bloodColor, new Vector2(1f, 2.5f), Projectile.rotation - MathHelper.PiOver4, 0.2f, 0.03f, 20);
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                }
+            }
+
+            // 添加线性粒子特效
+            if (Projectile.localAI[0] % 5 == 0) // 每隔 5 帧生成一次
+            {
+                Vector2 particleVelocity = Projectile.velocity * 0.8f; // 粒子速度基于弹幕速度
+                Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f); // 粒子生成位置略有随机偏移
+
+                // 生成粒子
+                LineParticle bloodTrail = new LineParticle(
+                    particlePosition,
+                    particleVelocity,
+                    false,
+                    30, // 粒子存活时间
+                    0.5f, // 粒子缩放大小
+                    Color.DarkRed // 粒子颜色为血红色
+                );
+
+                GeneralParticleHandler.SpawnParticle(bloodTrail);
+            }
+
+
+            Projectile.localAI[0]++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             // 恢复玩家生命值
             Player player = Main.player[Projectile.owner];
-            float healMultiplier = Main.zenithWorld ? 100f : 0.025f; // 根据是否启用 zenithWorld 设置恢复倍率
+            float healMultiplier = 0.025f + chargeLevel * 0.001f; // 每级多增加0.1%回复
             int healAmount = (int)(damageDone * healMultiplier);
             player.statLife += healAmount;
             player.HealEffect(healAmount);
 
-            // 生成血雾效果
-            int dustCount = 3;
-            float radians = MathHelper.Pi / dustCount;
-            Vector2 smokePoint = Vector2.Normalize(new Vector2(-1f, -1f));
-            for (int i = 0; i < dustCount; i++)
+            // 每命中4次触发特效
+            hitCounter++;
+            if (hitCounter % 4 == 0 && chargeLevel > 0)
             {
-                Vector2 dustVelocity = smokePoint.RotatedBy(radians * i - MathHelper.ToRadians(15)) * Main.rand.NextFloat(1f, 2.6f);
-                Color smokeColor = Color.Red;
-                Particle bloodFog = new HeavySmokeParticle(Projectile.Center, dustVelocity, smokeColor, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
+                CreateImpactEffects();
+            }
+        }
+
+        private void CreateImpactEffects()
+        {
+            // 血雾
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 velocity = Main.rand.NextVector2Circular(2f, 2f);
+                Particle bloodFog = new HeavySmokeParticle(Projectile.Center, velocity, Color.Red, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
                 GeneralParticleHandler.SpawnParticle(bloodFog);
             }
 
-            // 生成类似 Visceral 爆炸效果
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<VisceraBoom>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack * 4, Projectile.owner);
-            // 生成弹幕
-            int projectileIndex = Projectile.NewProjectile(
+            // Visceral爆炸
+            Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center,
                 Vector2.Zero,
@@ -206,19 +243,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 Projectile.owner
             );
 
-            // 设置属性
-            Projectile proj = Main.projectile[projectileIndex]; 
-            proj.DamageType = DamageClass.Ranged;
-
-
-            Particle bloodsplosion = new CustomPulse(Projectile.Center, Vector2.Zero, Color.DarkRed, "CalamityMod/Particles/DetailedExplosion", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.16f, 0.87f, (int)(40 * 0.38f), false);
+            // 血液爆炸冲击波
+            Particle bloodsplosion = new CustomPulse(Projectile.Center, Vector2.Zero, Color.DarkRed, "CalamityMod/Particles/DetailedExplosion", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.16f, 0.87f, 40, false);
             GeneralParticleHandler.SpawnParticle(bloodsplosion);
             Particle bloodsplosion2 = new CustomPulse(Projectile.Center, Vector2.Zero, new Color(255, 32, 32), "CalamityMod/Particles/DustyCircleHardEdge", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.03f, 0.155f, 40);
             GeneralParticleHandler.SpawnParticle(bloodsplosion2);
         }
+        public override bool? CanDamage()
+        {
+            // 如果是 Zenith World 天顶世界，无论何时都允许造成伤害
+            if (Main.zenithWorld)
+            {
+                return true;
+            }
 
+            // 如果是正常世界，那么蓄力状态下不造成伤害
+            if (CurrentState == BehaviorState.Aim)
+            {
+                return false;
+            }
 
+            // 如果当前状态是冲刺状态，允许造成伤害
+            return true;
+        }
 
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle frame = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
+            Vector2 origin = frame.Size() * 0.5f;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            SpriteEffects direction = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            if (CurrentState == BehaviorState.Dash)
+            {
+                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            }
+            else
+            {
+                Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+            }
+            return false;
+        }
+      
     }
 }
 

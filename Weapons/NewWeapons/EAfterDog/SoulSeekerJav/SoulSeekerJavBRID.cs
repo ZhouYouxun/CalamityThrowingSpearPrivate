@@ -24,8 +24,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
         private bool isDashing = false;
         private Vector2 dashTarget;
         private bool canDealDamage = false;
-
-
+        private bool canDash = false;
+        private float orbitAngle = 0f;
+        private Vector2 orbitOffset;
         public override void SetStaticDefaults()
         {
             Main.projFrames[Projectile.type] = 6;
@@ -66,207 +67,259 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 80; // 无敌帧冷却时间为x帧
+            Projectile.alpha = 255;
         }
+        //public void DashToPosition(Vector2 targetPosition)
+        //{
+        //    if (!isDashing)
+        //    {
+        //        dashTarget = targetPosition; // 保存初次冲刺的目标位置
+        //        Vector2 dashDirection = (dashTarget - Projectile.Center).SafeNormalize(Vector2.Zero) * 25f;
+        //        Projectile.velocity = dashDirection;
+        //        isDashing = true; // 设置为冲刺状态
+        //        canDealDamage = true; // 允许造成伤害
+        //        Projectile.timeLeft = 600; // 设置冲刺后的存活时间为 600 帧
+        //        SoundEngine.PlaySound(SupremeCalamitas.BrimstoneShotSound, Projectile.Center);
+
+        //        // 生成正方形粒子效果
+        //        //for (int i = 0; i < 4; i++)
+        //        //{
+        //        //    // 计算正方形的四个顶点角度，每个顶点相隔90度
+        //        //    float angle = MathHelper.PiOver4 + i * MathHelper.PiOver2; // 45度起始角，每90度一个顶点
+        //        //    float nextAngle = MathHelper.PiOver4 + (i + 1) * MathHelper.PiOver2;
+
+        //        //    // 缩小正方形的边长为原等边三角形边长的一半
+        //        //    Vector2 start = angle.ToRotationVector2() * (16f / 2f); // 缩小到一半大小，原始16f长度调整
+        //        //    Vector2 end = nextAngle.ToRotationVector2() * (16f / 2f);
+
+        //        //    for (int j = 0; j < 40; j++)
+        //        //    {
+        //        //        Dust squareDust = Dust.NewDustPerfect(Projectile.Center, 267);
+        //        //        squareDust.scale = 2.5f;
+        //        //        squareDust.velocity = Vector2.Lerp(start, end, j / 40f) * 2f;
+        //        //        squareDust.color = Color.Crimson;
+        //        //        squareDust.noGravity = true;
+        //        //    }
+        //        //}
+
+        //        // 生成完整圆形粒子效果
+        //        int totalPoints = 160; // 圆上的总粒子数量，可根据需要调整
+        //        float radius = 16f / 2f; // 圆的半径，与原正方形的半径一致
+        //        for (int i = 0; i < totalPoints; i++)
+        //        {
+        //            // 按角度均匀分布粒子
+        //            float angle = MathHelper.TwoPi * (i / (float)totalPoints); // 计算粒子的角度
+        //            Vector2 direction = angle.ToRotationVector2(); // 将角度转换为方向向量
+        //            Vector2 position = Projectile.Center + direction * radius; // 粒子位置在圆周上
+
+        //            // 创建粒子
+        //            Dust circleDust = Dust.NewDustPerfect(position, 267);
+        //            circleDust.scale = 2.5f;
+        //            circleDust.velocity = direction * 2f; // 粒子的初始速度沿着圆周的切线方向
+        //            circleDust.color = Color.Crimson;
+        //            circleDust.noGravity = true;
+        //        }
+
+
+        //    }
+        //}
+        private bool isTracking = false;
         public void DashToPosition(Vector2 targetPosition)
         {
             if (!isDashing)
             {
-                dashTarget = targetPosition; // 保存初次冲刺的目标位置
+                dashTarget = targetPosition;
                 Vector2 dashDirection = (dashTarget - Projectile.Center).SafeNormalize(Vector2.Zero) * 25f;
                 Projectile.velocity = dashDirection;
-                isDashing = true; // 设置为冲刺状态
-                canDealDamage = true; // 允许造成伤害
-                Projectile.timeLeft = 600; // 设置冲刺后的存活时间为 600 帧
+                isDashing = true;
+                isTracking = true; // 进入追踪模式
+                canDealDamage = true;
+                Projectile.timeLeft = 600; // 设定冲刺存活时间
                 SoundEngine.PlaySound(SupremeCalamitas.BrimstoneShotSound, Projectile.Center);
 
-                // 生成正方形粒子效果
-                //for (int i = 0; i < 4; i++)
-                //{
-                //    // 计算正方形的四个顶点角度，每个顶点相隔90度
-                //    float angle = MathHelper.PiOver4 + i * MathHelper.PiOver2; // 45度起始角，每90度一个顶点
-                //    float nextAngle = MathHelper.PiOver4 + (i + 1) * MathHelper.PiOver2;
+                GenerateDashEffects();
+            }
+        }
+        private bool hasFired = false; // 记录是否已经开火
+        private int fireCooldown = 0; // 开火冷却时间
 
-                //    // 缩小正方形的边长为原等边三角形边长的一半
-                //    Vector2 start = angle.ToRotationVector2() * (16f / 2f); // 缩小到一半大小，原始16f长度调整
-                //    Vector2 end = nextAngle.ToRotationVector2() * (16f / 2f);
-
-                //    for (int j = 0; j < 40; j++)
-                //    {
-                //        Dust squareDust = Dust.NewDustPerfect(Projectile.Center, 267);
-                //        squareDust.scale = 2.5f;
-                //        squareDust.velocity = Vector2.Lerp(start, end, j / 40f) * 2f;
-                //        squareDust.color = Color.Crimson;
-                //        squareDust.noGravity = true;
-                //    }
-                //}
-
-
-                // 生成完整圆形粒子效果
-                int totalPoints = 160; // 圆上的总粒子数量，可根据需要调整
-                float radius = 16f / 2f; // 圆的半径，与原正方形的半径一致
-                for (int i = 0; i < totalPoints; i++)
-                {
-                    // 按角度均匀分布粒子
-                    float angle = MathHelper.TwoPi * (i / (float)totalPoints); // 计算粒子的角度
-                    Vector2 direction = angle.ToRotationVector2(); // 将角度转换为方向向量
-                    Vector2 position = Projectile.Center + direction * radius; // 粒子位置在圆周上
-
-                    // 创建粒子
-                    Dust circleDust = Dust.NewDustPerfect(position, 267);
-                    circleDust.scale = 2.5f;
-                    circleDust.velocity = direction * 2f; // 粒子的初始速度沿着圆周的切线方向
-                    circleDust.color = Color.Crimson;
-                    circleDust.noGravity = true;
-                }
-
-
+        // 在小鸟接收到开火命令时调用
+        public void ReceiveFireOrder(int damage)
+        {
+            if (Projectile.ai[0] >= 40 && fireCooldown <= 0) // 仅在椭圆运动期间允许开火，且冷却时间结束
+            {
+                FireProjectile(damage); // 执行发射逻辑
+                fireCooldown = 30; // 设置冷却时间为 30 帧
             }
         }
 
+        // 具体的开火逻辑
+        private void FireProjectile(int damage)
+        {
+            Vector2 fireDirection = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
+            Vector2 fireVelocity = fireDirection * 12f; // 设定弹幕的初速度
+
+            // 生成 SoulSeekerJavBRIDFire，伤害倍率 1.0x
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVelocity, ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), damage, 0f, Projectile.owner);
+        }
         public override void AI()
         {
-            if (!isDashing)
+            if (fireCooldown > 0)
             {
+                fireCooldown--; // 每帧减少冷却时间
+            }
 
-                Projectile.penetrate = -1; // 不断的设置自己为无限穿透
+            Player player = Main.player[Projectile.owner];
 
-                Player player = Main.player[Projectile.owner];
-                Vector2 idlePosition = player.Center;
+            if (Projectile.ai[0] < 40) // 第一阶段
+            {
+                if (Projectile.ai[0] < 20)
+                    Projectile.alpha = Math.Max(Projectile.alpha - 10, 0); // 透明度降低
+                else
+                    Projectile.alpha = Math.Min(Projectile.alpha + 10, 255); // 透明度增加
 
-                // 给弹幕添加一个随机的偏移量，使其在玩家周围自由移动
-                idlePosition.X += Main.rand.NextFloat(-2000f, 2000f);
-                idlePosition.Y += Main.rand.NextFloat(-2000f, 2000f);
+                Projectile.ai[0]++;
+            }
+            else // 第二阶段
+            {
+                if (Projectile.alpha > 1)
+                    Projectile.alpha = Math.Max(Projectile.alpha - 4, 1); // 透明度逐步降低
 
-                Vector2 directionToIdlePosition = idlePosition - Projectile.Center;
-                float distanceToIdlePosition = directionToIdlePosition.Length();
-
-                // 如果距离过大，逐步加速朝向玩家移动
-                if (distanceToIdlePosition > 1200f)
+                // 确保小鸟的椭圆轨迹只初始化一次
+                if (Projectile.localAI[0] == 0)
                 {
-                    // 归一化方向向量
-                    directionToIdlePosition.Normalize();
-                    float maxSpeed = 20f; // 设定一个上限速度
-                    float accelerationFactor = 0.5f; // 控制加速度的因子，可以调整以使其更平滑
-                    Vector2 acceleration = directionToIdlePosition * accelerationFactor;
-
-                    // 逐步增加速度，限制最大速度
-                    Projectile.velocity += acceleration;
-                    if (Projectile.velocity.Length() > maxSpeed)
-                    {
-                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
-                    }
+                    orbitOffset = new Vector2(Main.rand.NextFloat(20 * 16, 25 * 16), Main.rand.NextFloat(8 * 16, 10 * 16));
+                    Projectile.localAI[0] = 1; // 设为非 0 值，确保仅初始化一次
                 }
-                else if (distanceToIdlePosition > 20f)
+
+                // 如果未开启追踪模式，继续围绕玩家运行
+                if (!isTracking)
                 {
-                    // 轻微调整位置，模拟绕玩家自由运动
-                    directionToIdlePosition.Normalize();
-                    Projectile.velocity = (Projectile.velocity * (30f - 1) + directionToIdlePosition * 8f) / 30f;
+                    // 角速度恒定，绝对速度不恒定来平衡
+                    //orbitAngle += 0.02f;
+                    //Vector2 ellipticalPosition = player.Center + new Vector2((float)Math.Cos(orbitAngle) * orbitOffset.X, (float)Math.Sin(orbitAngle) * orbitOffset.Y);
+
+                    //Vector2 directionToPosition = ellipticalPosition - Projectile.Center;
+                    //float distance = directionToPosition.Length();
+                    //if (distance > 2f)
+                    //{
+                    //    directionToPosition.Normalize();
+                    //    Projectile.velocity = directionToPosition * 8f;
+                    //}
+                    //else
+                    //{
+                    //    Projectile.velocity *= 0.95f;
+                    //}
+
+                    // 绝对速度恒定
+                    // 计算当前角度的瞬时半径
+                    float a = orbitOffset.X; // 长轴
+                    float b = orbitOffset.Y; // 短轴
+                    float instantaneousRadius = (a * b) / MathF.Sqrt((b * b * MathF.Cos(orbitAngle) * MathF.Cos(orbitAngle)) + (a * a * MathF.Sin(orbitAngle) * MathF.Sin(orbitAngle)));
+
+                    // 计算角度增量，使得小鸟在椭圆上运动的弧长保持恒定
+                    float stepSize = 8f / instantaneousRadius; // 8f 是目标线速度
+
+                    // 角度变化
+                    orbitAngle += stepSize;
+
+                    // 计算新的椭圆位置
+                    Vector2 ellipticalPosition = player.Center + new Vector2((float)Math.Cos(orbitAngle) * a, (float)Math.Sin(orbitAngle) * b);
+                    Vector2 directionToPosition = ellipticalPosition - Projectile.Center;
+                    float distance = directionToPosition.Length();
+
+                    if (distance > 2f)
+                    {
+                        directionToPosition.Normalize();
+                        Projectile.velocity = directionToPosition * 8f; // 保持恒定速度
+                    }
+                    else
+                    {
+                        Projectile.velocity *= 0.95f;
+                    }
                 }
                 else
                 {
-                    // 保持位置不动，但稍微调整运动，防止完全静止
-                    Projectile.velocity *= 0.96f;
-                    Projectile.velocity += new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.5f, 0.5f));
+                    // **开启追踪模式后，小鸟会自动锁定最近的敌人**
+                    NPC target = Projectile.Center.ClosestNPCAt(2800);
+                    if (target != null)
+                    {
+                        Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                        Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 20f, 0.08f);
+                    }
                 }
 
-                // 在盘旋状态下，不允许造成伤害
-                canDealDamage = false;
+                canDash = true; // 只有第二阶段才能冲刺
             }
 
-            else
+
+            // 右键冲刺逻辑（仅限第二阶段）
+            if (canDash && Main.mouseRight && Main.myPlayer == Projectile.owner)
             {
-                Projectile.penetrate = 1; // 一旦开始冲刺，那么就只能穿透一次了
-
-                // 在冲刺期间追踪敌人
-                NPC target = Projectile.Center.ClosestNPCAt(1200); // 查找范围内最近的敌人
-                if (target != null)
-                {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 25f, 0.08f); // 追踪速度为25f
-                }
-
+                DashToPosition(Main.MouseWorld);
             }
 
-            // 修改后的帧切换逻辑，适用于六帧动图
+
+            UpdateAnimation();
+        }
+
+        private void UpdateAnimation()
+        {
             Projectile.frameCounter++;
-            if (Projectile.frameCounter > 4) // 调整这个值可以控制帧切换的速度
+            if (Projectile.frameCounter > 4)
             {
                 Projectile.frame++;
                 Projectile.frameCounter = 0;
             }
-            if (Projectile.frame > 5) // 六帧动图时，最大帧数为 5
+            if (Projectile.frame > 5)
             {
                 Projectile.frame = 0;
             }
-
-            if (isDashing && Projectile.timeLeft % 60 == 0)
-            {
-                // 获取反向的方向向量（与冲刺方向相反）
-                Vector2 oppositeDirection = -Projectile.velocity.SafeNormalize(Vector2.UnitY);
-
-                // 设置扇形角度范围（以弧度表示，例如30度）
-                float coneAngle = MathHelper.ToRadians(30f);
-                int particleCount = 40; // 粒子数量
-
-                //// 生成粒子形成扇形
-                //for (int i = 0; i < particleCount; i++)
-                //{
-                //    // 计算粒子的随机角度偏移
-                //    float randomAngle = MathHelper.Lerp(-coneAngle / 2, coneAngle / 2, i / (float)particleCount);
-                //    Vector2 particleDirection = oppositeDirection.RotatedBy(randomAngle); // 旋转方向形成扇形分布
-                //    Vector2 particleVelocity = particleDirection * Main.rand.NextFloat(4f, 8f); // 设置粒子的速度，带一定的随机性
-
-                //    // 生成粒子并设置属性
-                //    Dust starDust = Dust.NewDustPerfect(Projectile.Center, 267); // 替换为合适的粒子类型
-                //    starDust.scale = Main.rand.NextFloat(1.5f, 2.5f); // 控制粒子缩放
-                //    starDust.velocity = particleVelocity; // 设置粒子的速度方向
-                //    starDust.color = Color.Crimson; // 设置颜色，可以根据需要调整
-                //    starDust.noGravity = true; // 取消重力影响
-                //}
-            }
-
         }
 
-        // 只有冲刺期间才能造成伤害
-        public override bool? CanDamage() => canDealDamage;
 
+
+
+        private void GenerateDashEffects()
+        {
+            int totalPoints = 160;
+            float radius = 16f;
+            for (int i = 0; i < totalPoints; i++)
+            {
+                float angle = MathHelper.TwoPi * (i / (float)totalPoints);
+                Vector2 direction = angle.ToRotationVector2();
+                Vector2 position = Projectile.Center + direction * radius;
+
+                Dust circleDust = Dust.NewDustPerfect(position, 267);
+                circleDust.scale = 2.5f;
+                circleDust.velocity = direction * 2f;
+                circleDust.color = Color.Crimson;
+                circleDust.noGravity = true;
+            }
+        }
+
+        public override bool? CanDamage() => canDealDamage;
 
         public override void OnKill(int timeLeft)
         {
-            // 随机生成2到3个方向
-            int particleCount = Main.rand.Next(5, 8); // 随机生成5到7个粒子
+            int particleCount = Main.rand.Next(5, 8);
             for (int i = 0; i < particleCount; i++)
             {
-                // 随机角度生成粒子运动方向
-                float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi); // 0到2π范围内的随机角度
-                Vector2 particleDirection = randomAngle.ToRotationVector2(); // 转换为单位向量方向
+                float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 particleDirection = randomAngle.ToRotationVector2();
+                float speed = Main.rand.NextFloat(2f, 4f);
+                Vector2 particleVelocity = particleDirection * speed;
 
-                // 设置粒子的速度和随机化
-                float speed = Main.rand.NextFloat(2f, 4f); // 速度范围在2到4之间
-                Vector2 particleVelocity = particleDirection * speed; // 计算粒子速度
+                Vector2 spawnPosition = Projectile.Center;
+                float radius = Main.rand.NextFloat(24f, 48f);
 
-                // 生成自定义烟雾粒子
-                Vector2 spawnPosition = Projectile.Center; // 粒子生成位置
-                float radius = Main.rand.NextFloat(24f, 48f); // 随机设置粒子大小
-
-                // 使用 GruesomeMetaball 生成粒子
                 GruesomeMetaball.SpawnParticle(spawnPosition, particleVelocity, radius);
             }
-
-            // 保持原来的音效
-            //SoundEngine.PlaySound(SoundID.NPCDeath2, Projectile.Center);
-
-
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 60); // 孱弱巫咒
+            target.AddBuff(ModContent.BuffType<VulnerabilityHex>(), 60);
         }
-
-
-
-
-
     }
 }

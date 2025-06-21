@@ -23,6 +23,7 @@ using CalamityMod.Projectiles.Typeless;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using CalamityMod.Buffs.DamageOverTime;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 {
@@ -32,22 +33,82 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
         private int hitCounter = 0;
         public int Time = 0;
 
+        public enum Mode
+        {
+            Return,  // 回归模式
+            Charge,  // 冲刺模式
+            Attract  // 吸引模式
+        }
+
+        public Mode currentMode = Mode.Return;
+        private int attractEffectTimer = 0; // 用于吸引模式光学效果过渡
+
+        public void SetMode(Mode mode)
+        {
+            if (currentMode != mode)
+            {
+                currentMode = mode;
+                if (mode == Mode.Attract)
+                    attractEffectTimer = 0; // 进入吸引模式时重置光学效果渐变
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             SpriteBatch spriteBatch = Main.spriteBatch;
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
-            // 确保以贴图中心为旋转中心
+            // 原始绘制
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-
-            // 计算绘制位置，考虑gfxOffY偏移
             Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-
-            // 进行绘制，使用正确的旋转中心
             spriteBatch.Draw(texture, drawPosition, null, lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
 
-            return false; // 返回false，防止游戏默认的绘制
+            //// 吸引模式额外绘制光学拖尾
+            //if (currentMode == Mode.Attract)
+            //{
+            //    Texture2D lightTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/DragonRageC/DragonRageJavPROJ").Value;
+            //    Color[] colors = { Color.OrangeRed, Color.Red, Color.DarkOrange };
+            //    float timeFactor = Main.GlobalTimeWrappedHourly * 3f;
+            //    int colorIndex = (int)(timeFactor % colors.Length);
+            //    Color currentColor = Color.Lerp(colors[colorIndex], colors[(colorIndex + 1) % colors.Length], timeFactor % 1f);
+
+            //    float glowAlpha = MathHelper.Lerp(0.3f, 1f, attractEffectTimer / 20f);
+            //    Color glowColor = currentColor * glowAlpha;
+
+            //    for (int i = 0; i < Projectile.oldPos.Length; i++)
+            //    {
+            //        float colorInterpolation = (float)Math.Cos(Projectile.timeLeft / 32f + Main.GlobalTimeWrappedHourly / 20f + i / (float)Projectile.oldPos.Length * MathHelper.Pi) * 0.5f + 0.5f;
+            //        Color color = Color.Lerp(currentColor, colors[(colorIndex + 2) % colors.Length], colorInterpolation) * glowAlpha;
+
+            //        Vector2 trailPosition = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            //        Vector2 fixedScale = new Vector2(1.5f);
+
+            //        Main.EntitySpriteDraw(lightTexture, trailPosition, null, color, Projectile.rotation, lightTexture.Size() * 0.5f, fixedScale, SpriteEffects.None, 0);
+            //        Main.EntitySpriteDraw(lightTexture, trailPosition, null, color * 0.7f, Projectile.rotation, lightTexture.Size() * 0.5f, fixedScale * 0.7f, SpriteEffects.None, 0);
+            //    }
+            //}
+
+            // 逐渐增强的橙色光晕（仅在 `Attract` 模式下生效）
+            if (currentMode == Mode.Attract)
+            {
+                float glowAlpha = MathHelper.Lerp(0.3f, 1f, attractEffectTimer / 120f);
+                Color glowColor = Color.Orange * glowAlpha;
+                glowColor.A = 0;
+
+                float glowOffset = 3f;
+
+                // 绘制光晕
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * glowOffset;
+                    Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, glowColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
+                }
+            }
+
+            return false; // 允许默认绘制
         }
+
+
 
         public override void SetDefaults()
         {
@@ -62,125 +123,354 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 9;
+            Projectile.localNPCHitCooldown = 15;
         }
+        private int nextFireTime = 0; // 记录下一次生成火焰的时间
+        private float smearRotationTracker = 0f; // 记录当前刀盘特效的旋转角度
+        private int smearCounter = 0; // 记录特效释放次数
 
         public override void AI()
         {
+            Player player = Main.player[Projectile.owner];
+
             // 保持飞行方向不变
-            Projectile.velocity *= 1.006f;
+            //Projectile.velocity *= 1.006f;
 
             // 添加橙色光效
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 添加高速旋转效果
-            Projectile.rotation += 0.45f; // 你可以根据需求调整旋转速度，增加或减少该值
+            Projectile.timeLeft = 120; // 不断的刷新剩余时间，让它不要消失
+
+            // 旋转长枪时，调整玩家手臂姿态
+            ManipulatePlayerArmPositions();
 
             // 粒子效果随机化释放
-            if (Time % 3 == 0)
-            {
-                Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-                particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
-                Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+            //if (Time % 3 == 0)
+            //{
+            //    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+            //    particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
+            //    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
 
-                // 应用 2.1 倍缩放到光环特效
-                float scaleMultiplier = 2.1f;
-                Particle Smear = new CircularSmearVFX(
-                    particlePosition,
-                    Color.OrangeRed * Main.rand.NextFloat(0.78f, 0.85f),
-                    Main.rand.NextFloat(-8, 8),
-                    Main.rand.NextFloat(1.2f, 1.3f) * scaleMultiplier // 应用缩放
-                );
-                GeneralParticleHandler.SpawnParticle(Smear);
+            //    // 应用 2.1 倍缩放到光环特效
+            //    float scaleMultiplier = 2.1f;
+            //    Particle Smear = new CircularSmearVFX(
+            //        particlePosition,
+            //        Color.OrangeRed * Main.rand.NextFloat(0.78f, 0.85f),
+            //        Main.rand.NextFloat(-8, 8),
+            //        Main.rand.NextFloat(1.2f, 1.3f) * scaleMultiplier // 应用缩放
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(Smear);
+            //}
+
+            // 刀盘特效的处理
+            if (currentMode == Mode.Attract)
+            {
+                if (Time % 8 == 0)
+                {
+                    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+                    particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
+                    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+
+                    // 应用 2.1 倍缩放到光环特效
+                    float scaleMultiplier = 2.1f;
+
+                    // 🔥 让特效按照 `30°` 递增，而不是完全随机
+                    float fixedRotation = smearRotationTracker;
+
+                    // **释放刀盘特效**
+                    Particle Smear = new CircularSmearVFX(
+                        particlePosition,
+                        Color.OrangeRed * Main.rand.NextFloat(0.78f, 0.85f),
+                        fixedRotation, // 让特效的旋转角度固定变化
+                        Main.rand.NextFloat(1.2f, 1.3f) * scaleMultiplier // 应用缩放
+                    )
+                    {
+                        Lifetime = 4 // 持续时间改为 X 帧
+                    };
+
+                    GeneralParticleHandler.SpawnParticle(Smear);
+
+                    // **每两次释放后，旋转 `30°`**
+                    smearCounter++;
+                    if (smearCounter >= 2)
+                    {
+                        smearRotationTracker += MathHelper.ToRadians(30f); // **固定增加 `30°`**
+                        smearCounter = 0; // 重置计数
+                    }
+                }
+            }
+            else
+            {
+                // 其他模式下保持原来的 3 帧特效
+                if (Time % 3 == 0)
+                {
+                    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+                    particleOffset.X += Main.rand.NextFloat(-3f, 3f);
+                    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+
+                    float scaleMultiplier = 2.1f;
+                    Particle Smear = new CircularSmearVFX(
+                        particlePosition,
+                        Color.OrangeRed * Main.rand.NextFloat(0.78f, 0.85f),
+                        Main.rand.NextFloat(-8, 8),
+                        Main.rand.NextFloat(1.2f, 1.3f) * scaleMultiplier
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(Smear);
+                }
+            }
+
+
+            // 处理不同模式的行为
+            switch (currentMode)
+            {
+                case Mode.Return:
+                    Projectile.rotation += 0.25f;
+                    // 计算旋转中心，使弹幕位于玩家前方 16 像素处
+                    //Vector2 offsetDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
+                    //Vector2 newCenter = player.Center + offsetDirection * 16f;
+                    //Projectile.velocity = (newCenter - Projectile.Center).SafeNormalize(Vector2.Zero) * 10f;
+
+                    // 旋转中心固定在玩家中心
+                    Vector2 newCenter = player.Center;
+                    Projectile.velocity = (newCenter - Projectile.Center).SafeNormalize(Vector2.Zero) * 10f;
+
+                    break;
+
+                case Mode.Charge:
+                    Projectile.rotation += 0.25f;
+                    // 冲刺模式：朝向鼠标移动，远快近慢
+                    Vector2 targetPos = Main.MouseWorld;
+                    float distance = Vector2.Distance(Projectile.Center, targetPos);
+                    float speed = MathHelper.Lerp(3f, 20f, distance / 500f);
+                    Projectile.velocity = (targetPos - Projectile.Center).SafeNormalize(Vector2.Zero) * speed;
+                    break;
+
+
+                case Mode.Attract:
+                    Projectile.rotation -= 0.1f;
+
+                    // 吸引模式：从周围制造吸收向玩家并旋转的龙火弹幕
+                    //Vector2 attractOffset = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
+                    //Projectile.Center = player.Center + attractOffset * 16f;
+                    Projectile.Center = player.Center;
+
+                    // 生成火焰弹幕，每隔 8~15 帧
+                    if (Time >= nextFireTime)
+                    {
+                        nextFireTime = Time + Main.rand.Next(8, 16); // 设定下次生成时间
+
+                        // 生成随机角度（围绕玩家）
+                        float randomAngle = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+
+                        // 生成随机半径 (50~70 方块)
+                        float randomDistance = Main.rand.NextFloat(50f, 70f) * 16f;
+
+                        // 计算生成位置
+                        Vector2 spawnOffset = new Vector2(randomDistance, 0).RotatedBy(randomAngle);
+                        Vector2 spawnPos = player.Center + spawnOffset;
+
+                        // 计算初始方向（朝向玩家），并随机旋转 ±10°
+                        Vector2 initialVelocity = (player.Center - spawnPos).SafeNormalize(Vector2.Zero) * 3.5f;
+                        Vector2 newVel = initialVelocity.RotatedByRandom(MathHelper.ToRadians(10f));
+
+                        // 生成龙火弹幕
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos, newVel,
+                            ModContent.ProjectileType<DragonRageJavFire>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                    }
+
+                    // 获取枪头和枪尾的位置（随机化）
+                    Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 12f * 16f + Main.rand.NextVector2Circular(2 * 16f, 2 * 16f);
+                    Vector2 gunTail = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 12f * 16f + Main.rand.NextVector2Circular(2 * 16f, 2 * 16f);
+
+                    // **直接基于 `Projectile.rotation` 计算枪头和枪尾**
+                    gunTip = Projectile.Center +
+                        new Vector2(12f * 16f, 0).RotatedBy(Projectile.rotation) + Main.rand.NextVector2Circular(2 * 16f, 2 * 16f);
+
+                    gunTail = Projectile.Center -
+                        new Vector2(12f * 16f, 0).RotatedBy(Projectile.rotation) + Main.rand.NextVector2Circular(2 * 16f, 2 * 16f);
+
+
+                    // **🔥 在枪头和枪尾生成火焰粒子，每帧 `3` 个**
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Vector2 particlePos = (i % 2 == 0) ? gunTip : gunTail;
+
+                        // **火焰粒子**
+                        int dustType = Main.rand.Next(new int[] { 35, 174, 158 }); // 随机选一个 Dust
+                        Dust dust = Dust.NewDustPerfect(particlePos, dustType, Vector2.Zero, 100, Color.OrangeRed, Main.rand.NextFloat(1.5f, 1.75f));
+                        dust.noGravity = true;
+
+                        // **设置火焰的初始速度为辐射状向外**
+                        dust.velocity = (dust.position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
+                    }
+
+                    // **🌀 在枪头和枪尾生成烟雾，每帧 `4` 个**
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Vector2 smokePos = (i % 2 == 0) ? gunTip : gunTail;
+
+                        // **烟雾不会移动，留在原地**
+                        Particle smoke = new HeavySmokeParticle(
+                            smokePos,
+                            Vector2.Zero, // **不具备初始速度**
+                            Color.Orange, // 改成橙色烟雾
+                            18, // 生命周期
+                            Main.rand.NextFloat(0.9f, 1.6f), // 缩放
+                            0.35f, // 透明度
+                            Main.rand.NextFloat(-1, 1), // 旋转速度
+                            false // 关闭发光
+                        );
+                        GeneralParticleHandler.SpawnParticle(smoke);
+                    }
+
+                    // 处理光学效果渐变
+                    if (attractEffectTimer < 120)
+                        attractEffectTimer++;
+                    break;
             }
 
 
             Time++;
         }
 
+        public void ManipulatePlayerArmPositions()
+        {
+            Player Owner = Main.player[Projectile.owner];
 
+            // 计算手臂应指向的角度，使其始终指向鼠标位置
+            Vector2 armDirection = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
+            float armRotation = armDirection.ToRotation() - MathHelper.PiOver2;
+
+            // 让玩家的手臂方向始终朝向鼠标
+            Owner.ChangeDir(Main.MouseWorld.X > Owner.Center.X ? 1 : -1);
+            Owner.heldProj = Projectile.whoAmI;
+
+            // 设置玩家前臂（主手）和后臂（副手）的角度，使其平行前伸
+            // 第1个参数设置为正确，意味着它将会使用自定义手臂，设置为错误，则不进行更改
+            // 第2个参数决定了伸手臂的长度：【也就是伸出了多少，并不是指的角度】
+            // Full（完全伸展，适用于拿长枪、拉弓等）
+            // None（不伸展，手臂保持贴近身体）
+            // Quarter（25 % 伸展，适用于轻微举起手臂）
+            // ThreeQuarters（75 % 伸展，适用于半握持状态）
+            // 第3个参数armRotation决定了手臂的弯曲角度，你要想让他平行向前？高举45度？还是往下放？
+
+            // 设置玩家前臂（主手）和后臂（副手）的角度，使其完全伸展并指向鼠标位置
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
+        }
+
+        public override bool? CanDamage()
+        {
+            return currentMode == Mode.Attract ? false : base.CanDamage();
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            float finalDamageMultiplier = 1f; // 伤害倍率
+
+            switch (currentMode)
+            {
+                case Mode.Return:
+                    finalDamageMultiplier = 1.1f; // 回归模式 1.1 倍伤害
+                    break;
+
+                case Mode.Charge:
+                    // 计算玩家到弹幕的距离
+                    float distanceToPlayer = Vector2.Distance(Main.player[Projectile.owner].Center, Projectile.Center);
+                    float distanceInTiles = distanceToPlayer / 16f; // 转换为 "方块单位"
+
+                    if (distanceInTiles > 6f)
+                    {
+                        float damageReduction = (distanceInTiles - 6f) * 0.01f; // 每增加 1 方块，减少 1% 伤害
+                        finalDamageMultiplier = MathHelper.Clamp(1f - damageReduction, 0.7f, 1f); // 最低伤害为 70%
+                    }
+                    break;
+
+                case Mode.Attract:
+                    finalDamageMultiplier = 0.5f; // 吸引模式伤害降低至 0.5 倍
+                    break;
+            }
+
+            // **应用最终伤害倍率**
+            modifiers.FinalDamage *= finalDamageMultiplier;
+        }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<Dragonfire>(), 300); // 龙焰
 
-            hitCounter++;
-
-            // 5%概率释放SparkInfernal（地狱龙卷）弹幕，但如果存在指定的弹幕则不触发
-            //int numWandBolts = Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<DRSparkInfernal>()];
-            //int numTornadoStarters = Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<InfernadoMarkFriendly>()];
-            //int numTornadoPieces = Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<InfernadoFriendly>()];
-
-            //if (numWandBolts + numTornadoStarters + numTornadoPieces < 1 && Main.rand.NextFloat() <= 0.05f)
-            //{
-                //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<DRSparkInfernal>(), (int)(Projectile.damage * 0.95f), Projectile.knockBack, Projectile.owner);
-            //}
-
-            // 每击中5次敌人，召唤4个火球，火球从玩家屏幕边缘的随机位置召唤
-            //if (hitCounter >= 5)
-            //{
-            //    hitCounter = 0;
-            //    for (int i = 0; i < 4; i++)
-            //    {
-            //        // 从屏幕边缘随机生成位置
-            //        Vector2 spawnPosition = Main.rand.NextVector2FromRectangle(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-            //        Vector2 fireballDirection = (Main.player[Projectile.owner].Center - spawnPosition).SafeNormalize(Vector2.UnitX) * 10f;
-
-            //        // 召唤火球弹幕
-            //        Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, fireballDirection, ModContent.ProjectileType<DragonRageFireball>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
-            //    }
-            //}
-
-            // 在原地释放FuckYou弹幕，伤害倍率为100%
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<DragonRageFuckYou>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner);
-
-            // 生成2到4个橙红色的斩击特效，并随机生成方向
-            int slashCount = Main.rand.Next(4, 5); // 生成2到4个斩击特效
-            for (int i = 0; i < slashCount; i++)
+            switch (currentMode)
             {
-                // 随机生成方向
-                Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-                int slashID = ModContent.ProjectileType<OrangeSLASH>();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID,(int)( Projectile.damage * 0.25f), Projectile.knockBack, Projectile.owner);
+                case Mode.Return:
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero,
+                        ModContent.ProjectileType<DragonRageFuckYou>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                    break;
+
+                case Mode.Charge:
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero,
+                        ModContent.ProjectileType<OrangeSLASH>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                    SoundEngine.PlaySound(CommonCalamitySounds.SwiftSliceSound with { Volume = 0.5f }, Projectile.Center);
+
+                    // 在敌人身上释放橙色火花特效
+                    for (int i = 0; i < 18; i++)
+                    {
+                        int sparkLifetime = Main.rand.Next(22, 36);
+                        float sparkScale = Main.rand.NextFloat(0.8f, 1f);
+                        Color sparkColor = Color.Lerp(Color.Orange, Color.OrangeRed, Main.rand.NextFloat(0.5f, 1f));
+
+                        if (Main.rand.NextBool(10))
+                            sparkScale *= 2f;
+
+                        // **固定方向：向上 + 左右随机扩散**
+                        float angleOffset = Main.rand.NextFloat(-25f, 25f);
+                        Vector2 sparkVelocity = new Vector2(0, -1).RotatedBy(MathHelper.ToRadians(angleOffset)) * Main.rand.NextFloat(10f, 25f);
+
+                        SparkParticle spark = new SparkParticle(target.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    break;
+
+                case Mode.Attract:
+                    // 吸引模式不释放斩杀弹幕
+                    break;
             }
-            SoundEngine.PlaySound(CommonCalamitySounds.SwiftSliceSound with { Volume = CommonCalamitySounds.SwiftSliceSound.Volume * 0.5f }, Projectile.Center);
-
         }
-
+     
         public override void OnKill(int timeLeft)
         {
-            // 发射 14 个 DragonRageFireball 弹幕
-            int fireballCount = 12;
+            //// 发射 X 个 DragonRageFireball 弹幕
+            //int fireballCount = 12;
 
-            for (int i = 0; i < fireballCount; i++)
-            {
-                // 生成一个随机的角度（0 到 360 度之间）
-                float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
+            //for (int i = 0; i < fireballCount; i++)
+            //{
+            //    // 生成一个随机的角度（0 到 360 度之间）
+            //    float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
 
-                // 计算每个弹幕的方向向量
-                Vector2 direction = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle));
+            //    // 计算每个弹幕的方向向量
+            //    Vector2 direction = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle));
 
-                // 设定弹幕的速度和伤害
-                float fireballSpeed = 10f; // 可以调整此值设置弹幕的速度
-                Vector2 fireballVelocity = direction * fireballSpeed;
+            //    // 设定弹幕的速度和伤害
+            //    float fireballSpeed = 10f; // 可以调整此值设置弹幕的速度
+            //    Vector2 fireballVelocity = direction * fireballSpeed;
 
-                // 生成 DragonRageFireball 弹幕，伤害倍率设为 0.1
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    fireballVelocity,
-                    ModContent.ProjectileType<DragonRageFireball>(),
-                    (int)(Projectile.damage * 0.2f),
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-            }
+            //    // 生成 DragonRageFireball 弹幕，伤害倍率设为 0.1
+            //    Projectile.NewProjectile(
+            //        Projectile.GetSource_FromThis(),
+            //        Projectile.Center,
+            //        fireballVelocity,
+            //        ModContent.ProjectileType<DragonRageFireball>(),
+            //        (int)(Projectile.damage * 0.2f),
+            //        Projectile.knockBack,
+            //        Projectile.owner
+            //    );
+            //}
 
-            // 播放销毁音效或其他效果（可选）
             SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
         }
-
-
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            SoundEngine.PlaySound(SoundID.Item113, Projectile.Center);
+        }
 
     }
 }

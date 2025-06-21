@@ -36,6 +36,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
         }
 
+        // 禁用左键攻击
+        public override bool CanUseItem(Player player)
+        {
+            return false;
+        }
+
         //public override void AddRecipes()
         //{
         //    Recipe recipe = CreateRecipe();

@@ -37,7 +37,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.shoot = ModContent.ProjectileType<TerraLancePROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 18f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
 
@@ -46,8 +46,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient<BotanicPiercerJav>(); // 翠芒
-            recipe.AddIngredient<TyphonsGreedJav>(); // 提风贪婪
-            recipe.AddIngredient<VulcaniteLanceJav>(); // 火山
             recipe.AddIngredient<UelibloomBar>(7);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();

@@ -37,6 +37,7 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Magic;
 
 namespace CalamityThrowingSpear
 {

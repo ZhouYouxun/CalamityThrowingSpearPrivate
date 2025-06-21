@@ -115,7 +115,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
 
         public override bool PreDraw(ref Color lightColor) // 在绘制前的操作
         {
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak")); // 设置着色器的纹理
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")); // 设置着色器的纹理
             Vector2 overallOffset = Projectile.Size * 0.5f; // 计算整体偏移量
             overallOffset += Projectile.velocity * 1.4f; // 调整偏移量
             int numPoints = 46; // 点的数量

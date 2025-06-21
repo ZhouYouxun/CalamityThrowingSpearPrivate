@@ -12,23 +12,77 @@ using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using Terraria.Audio;
+using CalamityMod.Graphics.Primitives;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
     public class ElectrocutionHalberdPROJ : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/ElectrocutionHalberd/ElectrocutionHalberd";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/ElectrocutionHalberd/ElectrocutionHalberdJav";
 
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+        internal Color ColorFunction(float completionRatio)
+        {
+            // 计算末端的淡化效果
+            float fadeToEnd = MathHelper.Lerp(0.65f, 1f, (float)Math.Cos(-Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f);
+
+            // 控制拖尾的不透明度，越接近末尾越透明
+            float fadeOpacity = Utils.GetLerpValue(1f, 0.64f, completionRatio, true) * Projectile.Opacity;
+
+            // 拖尾颜色以 HSL 渐变
+            Color colorHue = Main.hslToRgb(0.1f, 1, 0.8f); // 色相设置为金色
+
+            // 动态颜色效果
+            Color endColor = Color.Lerp(colorHue, Color.PaleTurquoise, (float)Math.Sin(completionRatio * MathHelper.Pi * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
+
+            return Color.Lerp(Color.White, endColor, fadeToEnd) * fadeOpacity;
+        }
+
+        internal float WidthFunction(float completionRatio)
+        {
+            // 拖尾宽度随位置衰减，越靠近末端越窄
+            float expansionCompletion = (float)Math.Pow(1 - completionRatio, 3); // 位置越远，衰减越快
+            return MathHelper.Lerp(0f, 22 * Projectile.scale * Projectile.Opacity, expansionCompletion);
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            // 获取纹理资源和位置
+            Texture2D textureGlow = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 originGlow = textureGlow.Size() * 0.5f;
+            Vector2 drawPositionGlow = Projectile.Center - Main.screenPosition;
+
+            // 计算蓄力比例，范围为 0~1
+            float chargeProgress = chargeTimer / 60f;
+
+            // 蓝色光晕，根据 chargeProgress 动态变化
+            float chargeOffset = 3f * chargeProgress; // 光晕的偏移量随蓄力增长
+            Color chargeColorBlue = Color.Blue * chargeProgress; // 蓝色光晕强度
+            chargeColorBlue.A = 0;
+
+            // 渲染动态蓝色光晕
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
+                Main.spriteBatch.Draw(textureGlow, drawPositionGlow + drawOffset, null, chargeColorBlue, Projectile.rotation, originGlow, Projectile.scale, SpriteEffects.None, 0f);
+            }
+
+            // 渲染实际的投射物本体
+            Main.EntitySpriteDraw(textureGlow, drawPositionGlow, null, Projectile.GetAlpha(lightColor), Projectile.rotation, originGlow, Projectile.scale, SpriteEffects.None, 0f);
+
+            // 冲刺阶段启用拖尾特效
+            if (CurrentState == BehaviorState.Dash)
+            {
+                GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+                PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(WidthFunction, ColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
+            }
+
             return false;
         }
 
@@ -38,77 +92,209 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1; // 只允许一次伤害
-            Projectile.timeLeft = 600;
+            Projectile.penetrate = -1; // 只允许一次伤害
+            Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
-
+            Projectile.alpha = 1;
         }
+        private bool hasHitTarget = false; // 标志位，记录是否已经击中目标
+
+        public enum BehaviorState
+        {
+            Aim,
+            Dash
+        }
+
+        public BehaviorState CurrentState
+        {
+            get => (BehaviorState)Projectile.ai[0];
+            set => Projectile.ai[0] = (int)value;
+        }
+
+        public Player Owner => Main.player[Projectile.owner];
+        private float chargeTimer; // 蓄力计时器
 
         public override void AI()
         {
-            // 保持弹幕旋转 (在这基础上再增加一点角度，为了适配这个特殊的贴图)
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
-
-
-            // Lighting - 添加深橙色光源，光照强度为 0.55
-            Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
-
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.01f;
-
-            // 为箭矢本体后面添加光束特效
-            if (Projectile.numUpdates % 3 == 0)
+            switch (CurrentState)
             {
-                Color outerSparkColor = new Color(255, 0, 0); // 改为鲜红色
-                float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
-                float outerSparkScale = 1.2f + scaleBoost;
-                SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-                GeneralParticleHandler.SpawnParticle(spark);
+                case BehaviorState.Aim:
+                    DoBehavior_Aim();
+                    break;
+                case BehaviorState.Dash:
+                    DoBehavior_Dash();
+                    break;
+            }
+        }
+        private bool soundPlayed = false; // 确保音效只播放一次
+
+        private void DoBehavior_Aim()
+        {
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
+            Projectile.timeLeft = 300;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+
+
+            // 使投射物与玩家保持一致并瞄准鼠标位置
+            if (Main.myPlayer == Projectile.owner)
+            {
+                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
             }
 
+            // 对齐到玩家中心
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
+            //Projectile.Center = Owner.Center;
+            Owner.heldProj = Projectile.whoAmI;
+
+            // 枪头的位置
+            Vector2 HeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+
+
+            // 计时器递增，限制最大值为60
+            chargeTimer = MathHelper.Clamp(chargeTimer + 1, 0, 60);
+            // 生成粒子和音效（达到最大蓄力时）
+            if (chargeTimer == 60)
+            {
+                // 确保音效只播放一次
+                if (!soundPlayed)
+                {
+                    SoundEngine.PlaySound(SoundID.Item91, Projectile.Center); // 播放音效
+                    soundPlayed = true; // 标记音效已播放
+                }
+
+                // 每帧生成蓝色粒子特效
+                Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.25f);
+                Color startColor = Color.Blue;
+                Color endColor = Color.LightBlue;
+
+                // 获取鼠标位置方向
+                Vector2 targetDirection = Main.MouseWorld - Projectile.Center;
+                targetDirection.Normalize(); // 归一化为方向向量
+
+                // 粒子生成逻辑
+                for (int i = 0; i < 1; i++) // 每帧生成1个粒子
+                {
+                    // 在目标方向左右各扩散10度的范围内随机选取一个角度
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f));
+                    Vector2 velocity = targetDirection.RotatedBy(angleOffset); // 旋转角度
+
+                    // 设置粒子的速度（调整此值控制速度范围）
+                    float speed = Main.rand.NextFloat(8f, 12f); // 速度范围8f~12f
+                    Vector2 particleVelocity = velocity * speed;
+
+                    // 创建粒子
+                    CritSpark spark = new CritSpark(
+                        headPosition,
+                        particleVelocity, // 使用计算后的速度
+                        startColor,
+                        endColor,
+                        Main.rand.NextFloat(1f, 1.5f), // 随机放大粒子
+                        Main.rand.Next(15, 25) // 粒子寿命
+                    );
+
+                    // 生成粒子
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+            // 检测松手
+            if (!Owner.channel)
+            {
+                Projectile.netUpdate = true;
+                Projectile.timeLeft = 300; // 冲刺阶段持续时间
+                Projectile.penetrate = 1; // 设置冲刺阶段的穿透次数
+
+                // 根据蓄力时间调整伤害倍率
+                float damageMultiplier = MathHelper.Lerp(0.58f, 1f, chargeTimer / 60f);
+                Projectile.damage = (int)(Projectile.damage * damageMultiplier);
+
+                CurrentState = BehaviorState.Dash;
+            }
         }
+
+        private void DoBehavior_Dash()
+        {
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
+            Projectile.tileCollide = true;
+
+            // 重置速度的逻辑
+            {
+                float initialSpeed = 15f; // 设定初始速度值，可根据需求替换具体值
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
+            }
+
+            // 生成摆动特效
+            float swingAngle = (float)Math.Sin(Main.GameUpdateCount * 0.5f) * MathHelper.ToRadians(30); // 左右摆动
+            Vector2 swingVelocity = Projectile.velocity.RotatedBy(swingAngle) * 0.5f;
+            PointParticle spark = new PointParticle(Projectile.Center - Projectile.velocity, swingVelocity, false, 15, 1.1f, Color.Red);
+            GeneralParticleHandler.SpawnParticle(spark);
+
+            //// 为箭矢本体后面添加光束特效
+            //if (Projectile.numUpdates % 3 == 0)
+            //{
+            //    Color outerSparkColor = new Color(255, 0, 0); // 改为鲜红色
+            //    float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
+            //    float outerSparkScale = 1.2f + scaleBoost;
+            //    SparkParticle spark2 = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
+            //    GeneralParticleHandler.SpawnParticle(spark2);
+            //}
+
+            // 弹幕保持旋转并持续加速
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
+            Projectile.velocity *= 1.01f;
+
+            // 添加X色光源
+            Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.55f);        
+        }
+
+
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
-        }
 
-
-        public override void OnKill(int timeLeft)
-        {
-            // 播放音效
-            SoundEngine.PlaySound(SoundID.Item91, Projectile.position);
-
-            //// 在命中时生成4个天蓝色的椭圆形粒子特效，向8个方向扩散
-            //for (int i = 0; i < 4; i++)
+            //if (!hasHitTarget)
             //{
-            //    float angle = MathHelper.TwoPi / 4 * i; // 每个粒子的角度
-            //    Vector2 velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 14f;
-
-            //    Particle pulse = new DirectionalPulseRing(Projectile.Center, velocity, Color.LightSkyBlue, new Vector2(1f, 2.5f), Projectile.rotation - MathHelper.PiOver4, 0.2f, 0.03f, 20);
-            //    GeneralParticleHandler.SpawnParticle(pulse);
+            //    hasHitTarget = true; // 设置已击中标志位
+            //    Projectile.friendly = false; // 关闭弹幕的伤害渠道
             //}
 
-            //SoundStyle fire = new("CalamityMod/Sounds/Item/AuricBulletHit");
-            //SoundEngine.PlaySound(fire with { Volume = 0.4f, Pitch = 0f }, Projectile.Center);
+            // 在当前位置生成 ElectrocutionHalberdField
+            if (Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<ElectrocutionHalberdField>()) >= 2)
+            {
+                // 删除场上的一个现有 ElectrocutionHalberdField
+                var existingFields = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<ElectrocutionHalberdField>()).ToList();
+                if (existingFields.Count > 0)
+                {
+                    int randomIndex = Main.rand.Next(existingFields.Count);
+                    existingFields[randomIndex].Kill();
+                }
+            }
 
-            // 在正前方的左右各 60 度范围内生成4个随机角度的CrackParticle粒子特效
+            // 生成新的 ElectrocutionHalberdField
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center,
+                Vector2.Zero, // 初始速度为0
+                ModContent.ProjectileType<ElectrocutionHalberdField>(),
+                (int)(Projectile.damage * 2.0f), // 伤害倍率为2.0倍
+                Projectile.knockBack,
+                Projectile.owner
+            );
+
+            // 保留 CrackParticle 效果
             for (int i = 0; i < 4; i++)
             {
-                // 随机选择角度范围内的一个角度
                 float randomAngle = Projectile.velocity.ToRotation() + MathHelper.ToRadians(Main.rand.NextFloat(-60f, 60f));
-
-                // 随机生成大小和速度
                 float randomSpeed = Main.rand.NextFloat(5f, 8f);
                 float randomScale = Main.rand.NextFloat(0.6f, 1.1f);
-
-                // 设置粒子的速度方向和随机化参数
                 Vector2 particleVelocity = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * randomSpeed;
 
                 Particle bolt = new CrackParticle(
@@ -123,25 +309,90 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 );
                 GeneralParticleHandler.SpawnParticle(bolt);
             }
+        }
 
 
-            // 10%的概率生成443号Electrosphere弹幕，伤害倍率为0.9
-            // 这玩意儿骗伤挺严重的，看情况吧
-            if (Main.rand.NextFloat() < 0.1f) // 10%的概率
+        public override void OnKill(int timeLeft)
+        {
+            // 播放音效
+            SoundEngine.PlaySound(SoundID.Item94, Projectile.position);
+
+
+            // 第一圈（小圈） - 以自身为原点
+            int smallCircleCount = Main.rand.Next(5, 9); // 随机生成5~8个粒子
+            for (int i = 0; i < smallCircleCount; i++)
             {
-                //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 443, (int)(Projectile.damage * 0.9f), Projectile.knockBack, Projectile.owner);
+                // 随机生成角度
+                float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(360f));
+
+                // 随机生成大小和速度
+                float randomSpeed = Main.rand.NextFloat(2f, 5f); // 小圈速度稍低
+                float randomScale = Main.rand.NextFloat(0.8f, 1.5f);
+
+                // 设置粒子的速度方向
+                Vector2 particleVelocity = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * randomSpeed;
+
+                // 创建并生成粒子
+                Particle smallCircleParticle = new CrackParticle(
+                    Projectile.Center,
+                    particleVelocity,
+                    Color.Aqua * 0.65f,
+                    Vector2.One * randomScale,
+                    0,
+                    0,
+                    randomScale,
+                    11
+                );
+                GeneralParticleHandler.SpawnParticle(smallCircleParticle);
             }
 
-            // 随机生成5~7个Spark弹幕，向上抛射，随机方向在30度范围内
-            int sparkCount = Main.rand.Next(5, 8); // 随机生成5到7个
-            for (int i = 0; i < sparkCount; i++)
-            {
-                // 随机选择一个向上方向，左右30度范围
-                float angle = MathHelper.ToRadians(Main.rand.NextFloat(-30f, 30f));
-                Vector2 sparkVelocity = new Vector2(0f, -1f).RotatedBy(angle) * Main.rand.NextFloat(2f, 4f); // 随机速度
+            // 第二圈（大圈） - 半径为2*16的圆环
+            int largeCircleCount = Main.rand.Next(15, 19); // 随机生成15~18个粒子
+            float circleRadius = 2 * 16; // 圆环半径
 
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, sparkVelocity, ModContent.ProjectileType<Spark>(), (int)(Projectile.damage * 0.2f), Projectile.knockBack, Projectile.owner);
+            for (int i = 0; i < largeCircleCount; i++)
+            {
+                // 随机生成角度
+                float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(360f));
+
+                // 计算粒子的初始位置（圆环上的随机点）
+                Vector2 initialPosition = Projectile.Center + new Vector2(
+                    (float)Math.Cos(randomAngle),
+                    (float)Math.Sin(randomAngle)
+                ) * circleRadius;
+
+                // 随机生成大小和速度
+                float randomSpeed = Main.rand.NextFloat(4f, 6f); // 大圈速度稍高
+                float randomScale = Main.rand.NextFloat(1.2f, 1.55f);
+
+                // 设置粒子的速度方向
+                Vector2 particleVelocity = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * randomSpeed;
+
+                // 创建并生成粒子
+                Particle largeCircleParticle = new CrackParticle(
+                    initialPosition,
+                    particleVelocity,
+                    Color.Aqua * 0.65f,
+                    Vector2.One * randomScale,
+                    0,
+                    0,
+                    randomScale,
+                    11
+                );
+                GeneralParticleHandler.SpawnParticle(largeCircleParticle);
             }
+        }
+
+        public override bool? CanDamage()
+        {
+            // 如果是正常世界，那么蓄力状态下不造成伤害
+            if (CurrentState == BehaviorState.Aim)
+            {
+                return false;
+            }
+
+            // 如果当前状态是冲刺状态，允许造成伤害
+            return true;
         }
 
 

@@ -66,6 +66,18 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
                 }
             }
 
+            // 粒子效果生成逻辑
+            if (Main.rand.NextBool(3)) // 约 1/3 的概率生成粒子
+            {
+                Vector2 randomOffset = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f)) * 3f; // 随机扩散偏移
+                Vector2 particlePosition = Projectile.Center + randomOffset; // 粒子生成位置
+                Vector2 particleVelocity = randomOffset * 0.2f; // 粒子初始速度较弱
+
+                Dust dust = Dust.NewDustPerfect(particlePosition, DustID.Water, particleVelocity, 150, new Color(0, 255, 255), 1.2f);
+                dust.noGravity = true; // 粒子无重力
+                dust.velocity *= 0.5f; // 粒子速度进一步减弱
+            }
+
             // 如果找到目标，则追踪
             if (hasLockedOn && target != null && target.active)
             {

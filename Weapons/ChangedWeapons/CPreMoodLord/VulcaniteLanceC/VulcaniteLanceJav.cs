@@ -31,14 +31,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 15; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 25; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.shoot = ModContent.ProjectileType<VulcaniteLanceJavPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
         //public override void AddRecipes()

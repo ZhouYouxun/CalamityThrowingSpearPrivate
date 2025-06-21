@@ -16,6 +16,7 @@ using Terraria.Graphics.Shaders;
 using Microsoft.Xna.Framework;
 using Terraria.Audio;
 using CalamityMod.Buffs.DamageOverTime;
+using Terraria.DataStructures;
 
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCosmosC
@@ -31,36 +32,86 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8; // 保持原有拖尾缓存
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;    // 保持原有拖尾模式
         }
+        private int shaderDisabledFrames = 0; // 记录传送后关闭着色器的帧数
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 保留现有的拖尾效果
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            // 获取玩家的 X 值
+            int x = Main.player[Projectile.owner].GetModPlayer<ScourgeoftheCosmosJavPlayer>().X;
 
-            // 添加新的拖尾着色器效果
-            //GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/FabstaffStreak"));
-            //Vector2 overallOffset = Projectile.Size * 0.5f;
-            //overallOffset += Projectile.velocity * 1.6f; // 使长度更长
-            //int numPoints = 100; // 增加拖尾的长度
-            //PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => overallOffset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), numPoints);
+            // 使用 Shader: ImpFlameTrailShader ("CalamityMod:ImpFlameTrail")
+            GameShaders.Misc["CalamityMod:ImpFlameTrail"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
+            );
+
+            // 计算拖尾长度
+            int numPoints = 55 + x * 8; // 默认长度 ?，每个 X 增加 ?
+
+            // 偏移设置
+            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.2f;
+
+            // **如果处于传送后的 12 帧内，不渲染着色器**
+            if (shaderDisabledFrames <= 0)
+            {
+                // 使用 Shader: ImpFlameTrailShader ("CalamityMod:ImpFlameTrail")
+                GameShaders.Misc["CalamityMod:ImpFlameTrail"].SetShaderTexture(
+                    ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
+                );
+
+                // 定义一个额外的偏移量，让拖尾往后移
+                Vector2 trailOffset = -Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f; // 方向为弹幕的反方向，距离为 X 像素
+
+                // 使用拖尾渲染器
+                PrimitiveRenderer.RenderTrail(
+                    Projectile.oldPos.Select(pos => pos + trailOffset).ToArray(), // 对每个旧位置增加偏移量
+                    new(
+                        CosmicWidthFunction,  // 拖尾宽度函数
+                        CosmicColorFunction,  // 拖尾颜色函数
+                        (_) => overallOffset,
+                        shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
+                    ),
+                    numPoints
+                );
+            }
+            else
+            {
+                shaderDisabledFrames--; // **每帧减少 1**
+            }
+
+            // 绘制弹幕本体
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            Rectangle? frame = null;
+            Vector2 origin = texture.Size() * 0.5f;
+            SpriteEffects direction = SpriteEffects.None;
+
+            Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+
             return false;
         }
 
-        private float PrimitiveWidthFunction(float completionRatio)
+        // 拖尾宽度函数
+        private float CosmicWidthFunction(float completionRatio)
         {
-            return 24f; // 保持固定宽度
+            float baseWidth = 45f;
+            float flicker = (float)Math.Sin(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 3f) * 2f;
+            return baseWidth + flicker; // 拖尾末端波动
         }
 
-        private Color PrimitiveColorFunction(float completionRatio)
+        // 拖尾颜色函数
+        private Color CosmicColorFunction(float completionRatio)
         {
-            float endFadeRatio = 0.41f;
-            Color startingColor = Color.Lerp(ShaderColorOne, ShaderColorTwo, completionRatio);
-            return Color.Lerp(startingColor, ShaderEndColor, MathHelper.SmoothStep(0f, 1f, completionRatio));
+            float intensity = (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
+            Color baseColor = Color.Lerp(Color.MediumPurple, Color.HotPink, intensity); // 紫色到粉色渐变
+            return Color.Lerp(baseColor, Color.Transparent, completionRatio); // 拖尾末端逐渐透明
         }
 
+        private bool hasTeleported = false; // 判断是否已经完成屏幕穿越
+        private bool trackingMode = false; // 判断是否启用四向追踪模式
+        private bool hasConsumedApple = false; // **记录是否已经触发过苹果效果**
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 32;
@@ -76,7 +127,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 14;
         }
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            shaderDisabledFrames = 3; // 在刚开始时也一样禁用着色器
+        }
         public override void AI()
         {
             // 保持弹幕旋转
@@ -85,62 +139,194 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             // 添加浅紫色光照，光照强度不变
             Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * 0.55f);
 
-            // 弹幕逐渐加速
-            Projectile.velocity *= 1.01f;
-
-            // 每5帧添加尖刺型粒子特效
-            if (Projectile.timeLeft % 5 == 0)
+            // **在第一次反弹前，继续加速**
+            if (!hasTeleported)
             {
-                PointParticle spark = new PointParticle(Projectile.Center - Projectile.velocity + Projectile.velocity.RotatedBy(2.3f), Projectile.velocity.RotatedBy(2.3f) * 0.5f, false, 15, 1.1f, Color.Purple);
-                GeneralParticleHandler.SpawnParticle(spark);
-                PointParticle spark2 = new PointParticle(Projectile.Center - Projectile.velocity + Projectile.velocity.RotatedBy(-2.3f), Projectile.velocity.RotatedBy(-2.3f) * 0.5f, false, 15, 1.1f, Color.Purple);
-                GeneralParticleHandler.SpawnParticle(spark2);
+                Projectile.velocity *= 1.01f;
+            }
+
+            // 计算屏幕范围
+            Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+            Vector2 screenPosition = Projectile.Center - Main.screenPosition;
+
+            // **检测是否超出屏幕边界**
+            if (!screenRect.Contains(screenPosition.ToPoint()) && !hasTeleported)
+            {
+                TeleportToOtherSide(screenPosition);
+                hasTeleported = true; // 仅允许一次反弹
+            }
+
+            // **四向追踪模式**
+            if (trackingMode)
+            {
+                FollowEnemyInFourDirections();
+            }
+
+            // **检测与苹果弹幕的碰撞**
+            foreach (Projectile otherProj in Main.projectile)
+            {
+                if (otherProj.active && otherProj.type == ModContent.ProjectileType<ScourgeoftheCosmosJavApple>() && otherProj.Hitbox.Intersects(Projectile.Hitbox))
+                {
+                    // **如果已经触发过苹果效果，后续的碰撞不会生效**
+                    if (hasConsumedApple)
+                        continue;
+
+                    hasConsumedApple = true; // **记录第一次碰撞**
+                    trackingMode = true; // 开启四向追踪模式
+                    SoundEngine.PlaySound(SoundID.Item2, Projectile.Center); // 追踪模式开启音效
+                    //CreateAppleExplosionEffect(); // 释放苹果形状粒子 在苹果的死亡特效里实现
+
+                    Main.player[Projectile.owner].GetModPlayer<ScourgeoftheCosmosJavPlayer>().IncreaseX();
+                    otherProj.Kill(); // **删除苹果**
+                    break;
+                }
+            }
+
+            // **双螺旋粒子：每两帧生成一次**
+            particleTimer++;
+            if (particleTimer >= 2)
+            {
+                GenerateDoubleHelixParticles();
+                particleTimer = 0; // 重置计时器
+            }
+        }
+        private int particleTimer = 0; // 用于控制粒子生成的计时器
+                                       // **双螺旋粒子生成**
+        private void GenerateDoubleHelixParticles()
+        {
+            // 计算“枪头”位置
+            Vector2 muzzlePosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+
+            // 计算双螺旋的偏移角度
+            float swingAngle1 = (float)Math.Sin(Main.GameUpdateCount * 0.3f) * MathHelper.ToRadians(10);
+            float swingAngle2 = (float)Math.Sin(Main.GameUpdateCount * 0.3f + MathHelper.Pi) * MathHelper.ToRadians(10);
+
+            // 计算旋转后的粒子速度
+            Vector2 swingVelocity1 = Projectile.velocity.RotatedBy(swingAngle1) * 0.5f;
+            Vector2 swingVelocity2 = Projectile.velocity.RotatedBy(swingAngle2) * 0.5f;
+
+            // 颜色渐变
+            Color[] cosmicColors = { Color.MediumPurple, Color.HotPink, Color.Violet };
+            Color particleColor1 = cosmicColors[Main.GameUpdateCount % cosmicColors.Length];
+            Color particleColor2 = cosmicColors[(Main.GameUpdateCount + 1) % cosmicColors.Length];
+
+            // 在枪头位置生成粒子
+            PointParticle particle1 = new PointParticle(muzzlePosition, swingVelocity1, false, 15, 1.1f, particleColor1);
+            PointParticle particle2 = new PointParticle(muzzlePosition, swingVelocity2, false, 15, 1.1f, particleColor2);
+
+            GeneralParticleHandler.SpawnParticle(particle1);
+            GeneralParticleHandler.SpawnParticle(particle2);
+        }
+
+        // 传送到屏幕的对侧位置
+        private void TeleportToOtherSide(Vector2 screenPosition)
+        {
+            // 计算新位置
+            float newX = screenPosition.X <= 0 ? Main.screenWidth : (screenPosition.X >= Main.screenWidth ? 0 : screenPosition.X);
+            float newY = screenPosition.Y <= 0 ? Main.screenHeight : (screenPosition.Y >= Main.screenHeight ? 0 : screenPosition.Y);
+
+            // 计算弹幕在世界坐标中的新位置
+            Projectile.position = new Vector2(newX, newY) + Main.screenPosition;
+
+            shaderDisabledFrames = 12; // **在传送后 12 帧内禁用着色器**
+        }
+        private bool prioritizingX = true; // 初始时随机决定优先对齐哪个方向
+        private void FollowEnemyInFourDirections()
+        {
+            NPC target = Projectile.Center.ClosestNPCAt(3800);
+            if (target == null) return;
+
+            Vector2 direction = Vector2.Zero;
+            float distanceX = Math.Abs(target.Center.X - Projectile.Center.X);
+            float distanceY = Math.Abs(target.Center.Y - Projectile.Center.Y);
+
+            // 如果当前优先水平对齐（X 轴）
+            if (prioritizingX)
+            {
+                if (distanceX > 8) // 还未完成水平对齐
+                {
+                    direction = target.Center.X > Projectile.Center.X ? Vector2.UnitX : -Vector2.UnitX;
+                }
+                else // 完成水平对齐，切换为垂直对齐
+                {
+                    prioritizingX = false; // 切换到优先垂直对齐
+                }
+            }
+
+            // 如果当前优先垂直对齐（Y 轴）
+            if (!prioritizingX)
+            {
+                if (distanceY > 8) // 还未完成垂直对齐
+                {
+                    direction = target.Center.Y > Projectile.Center.Y ? Vector2.UnitY : -Vector2.UnitY;
+                }
+                else // 完成垂直对齐，目标追踪完成
+                {
+                    direction = Vector2.Zero; // 停止移动或执行其他逻辑
+                }
+            }
+
+            // 如果已经决定了方向，则更新弹幕速度
+            if (direction != Vector2.Zero)
+            {
+                Projectile.velocity = direction * 10f; // 确保弹幕只朝当前对齐的方向前进
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+
             // 添加弑神者火焰buff，持续300帧
             target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
 
-            int numProjectiles = Main.rand.Next(4, 9); // 生成3到5个迷你小吞噬者弹幕
+            int x = Main.player[Projectile.owner].GetModPlayer<ScourgeoftheCosmosJavPlayer>().X;
+
+            // **触发额外追踪弹幕**
+            int numProjectiles = 3 + x / 2; // 调整数量为 3 + x/2
             for (int i = 0; i < numProjectiles; i++)
             {
-                Vector2 spawnPosition = Projectile.Center;
-                Vector2 spawnVelocity = Projectile.velocity.RotatedByRandom(MathHelper.TwoPi) * 0.85f * 0.5f; // 随机方向，伤害倍率0.7倍
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, spawnVelocity, ModContent.ProjectileType<ScourgeoftheCosmosJavMini>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                // **生成位置：目标周围 100 像素范围内**
+                Vector2 spawnOffset = new Vector2(Main.rand.NextFloat(-50f, 50f), Main.rand.NextFloat(-50f, 50f));
+                Vector2 spawnPosition = target.Center + spawnOffset;
+
+                // **初始速度：只能是上、下、左、右**
+                Vector2[] possibleVelocities = new Vector2[]
+                {
+            Vector2.UnitX * Projectile.velocity.Length(),  // 向右
+            -Vector2.UnitX * Projectile.velocity.Length(), // 向左
+            Vector2.UnitY * Projectile.velocity.Length(),  // 向下
+            -Vector2.UnitY * Projectile.velocity.Length()  // 向上
+                };
+                Vector2 spawnVelocity = possibleVelocities[Main.rand.Next(4)]; // 随机选择一个方向
+
+                // **生成小吞噬者**
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, spawnVelocity,
+                    ModContent.ProjectileType<ScourgeoftheCosmosJavMini>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
 
-            // 生成浅紫色冲击波
-            //Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Purple, new Vector2(1.5f, 1.5f), Main.rand.NextFloat(8f, 12f), 0.15f, 3f, 10);
-            //GeneralParticleHandler.SpawnParticle(pulse);
+            // 不要回复生命，因为回复生命在吃苹果的时候就会有了，多回不合理
+            //int healAmount = 1 + (x / 3);
+            //Main.player[Projectile.owner].statLife += healAmount;
+            //Main.player[Projectile.owner].HealEffect(healAmount);
 
-            // 生成浅灰色菱形粒子，数量7到9个
-            int numParticles = Main.rand.Next(7, 10);
+            // **生成浅灰色菱形粒子**
+            int numParticles = Main.rand.Next(x + 7, x + 10);
             for (int i = 0; i < numParticles; i++)
             {
-                Vector2 randomDirection = Projectile.velocity.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.8f, 1.2f); // 随机方向和速度
-                float particleScale = Main.rand.NextFloat(0.6f, 1.0f); // 随机大小
+                Vector2 randomDirection = Projectile.velocity.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.8f, 1.2f);
+                float particleScale = Main.rand.NextFloat(0.6f, 1.0f);
                 SparkParticle spark = new SparkParticle(Projectile.Center, randomDirection, false, Main.rand.Next(35, 50), particleScale, Color.LightGray);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
-
-            // 生成EssenceFlame2
-            int numProjectiles2 = Main.rand.Next(7, 12); // 生成7到12个投射物
-            for (int i = 0; i < numProjectiles2; i++)
+            // **生成 EssenceFlame2**
+            int numEssence = 1 + x;
+            for (int i = 0; i < numEssence; i++)
             {
-                Vector2 spawnPosition = Projectile.Center; // 弹幕消失位置为生成位置
-                Vector2 spawnVelocity = Vector2.Zero; // 初始速度为0
-                int essenceDamage = (int)(Projectile.damage * 0.5f); // 伤害倍率为0.75
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, spawnVelocity, ModContent.ProjectileType<EssenceFlame2>(), essenceDamage, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
+                    ModContent.ProjectileType<EssenceFlame2>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
-
-            // 为玩家回复生命
-            Main.player[Projectile.owner].statLife += 3;
-            Main.player[Projectile.owner].HealEffect(3);
         }
-
         public override void OnKill(int timeLeft)
         {
             // 播放音效
@@ -162,8 +348,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
                 Particle smoke = new HeavySmokeParticle(Projectile.Center, dustVelocity, smokeColor, 18, Main.rand.NextFloat(1.2f, 1.8f), 0.45f, Main.rand.NextFloat(-1, 1), true);
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
-
-
         }
 
 
