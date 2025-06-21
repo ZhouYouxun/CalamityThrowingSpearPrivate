@@ -169,7 +169,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             }
 
             // ✦ 灵魂星光：调用你自定义强化版
-            LightingBoltsSystem.Spawn_AstralSoulLightsB(Projectile.Center + Main.rand.NextVector2Circular(16f, 16f));
+            CTSLightingBoltsSystem.Apple_OnKill(Projectile.Center + Main.rand.NextVector2Circular(16f, 16f));
 
             // ✦ 中心详细爆炸圆环（慢速扩张）
             Particle explosion = new DetailedExplosion(

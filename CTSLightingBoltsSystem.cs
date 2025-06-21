@@ -8,7 +8,7 @@ using Terraria.GameContent;
 
 namespace CalamityRangerExpansion.LightingBolts
 {
-    internal class LightingBoltsSystem
+    internal class CTSLightingBoltsSystem
     {
         private static ParticlePool<PrettySparkleParticle> _poolPrettySparkle = new ParticlePool<PrettySparkleParticle>(200, () => new PrettySparkleParticle());
 
@@ -413,7 +413,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
         // 这个是唯一一个用到的，上面的都是cre模组的
-        public static void Spawn_AstralSoulLightsB(Vector2 position)
+        public static void Apple_OnKill(Vector2 position)
         {
             float lifespan = 36f; // 粒子存活时间
             float fadeTime = lifespan / 2f; // 淡入淡出过渡时间

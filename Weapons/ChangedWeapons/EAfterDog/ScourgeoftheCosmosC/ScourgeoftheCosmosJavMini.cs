@@ -34,6 +34,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         public override void OnSpawn(IEntitySource source)
         {
             Projectile.velocity *= 0.85f;
+            // 生成时决定追踪延迟时间（45~80 帧）
+            Projectile.localAI[1] = Main.rand.Next(45, 81);
+
         }
         public override void AI()
         {
@@ -77,8 +80,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             // 旋转朝向与速度一致
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            // **前 60 帧进行非追踪模式**
-            if (Projectile.ai[1] < 60)
+            // **前 X[45~80 帧] 帧进行非追踪模式**
+            if (Projectile.ai[1] < Projectile.localAI[1])
             {
                 // **每 15 帧进行一次 90° 转弯**
                 if (Projectile.ai[1] % 15 == 0)
