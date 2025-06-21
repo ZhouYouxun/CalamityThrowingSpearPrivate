@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
-using CalamityMod;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
 using CalamityMod.Projectiles.Ranged;
 using Terraria.Audio;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Buffs.StatDebuffs;
+using Terraria.GameContent;
+using Terraria.Graphics.Renderers;
+using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 {
@@ -66,7 +63,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             // 模拟重力效果
             if (Projectile.velocity.Y < 24f)
             {
-                Projectile.velocity.Y += 0.1f; // Y 轴速度逐渐增加
+                //Projectile.velocity.Y += 0.1f; // Y 轴速度逐渐增加
             }
 
             // 飞行时留下卡其色的烟雾特效
@@ -83,44 +80,127 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                     dust.noLight = true;
                 }
             }
+
+            // 冷却计时器递减
+            if (Projectile.localAI[1] > 0)
+                Projectile.localAI[1]--;
+            // 穿墙计时器递减
+            if (Projectile.localAI[0] > 0)
+            {
+                Projectile.localAI[0]--;
+                if (Projectile.localAI[0] == 0)
+                {
+                    Projectile.tileCollide = true; // 穿墙结束，恢复碰撞
+                }
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            Projectile.penetrate--; // 每次反弹减少一次穿透次数
+            // 使用钥匙大剑的特效【不必外包，因为没这必要】【搞错了，这个是一个圈，不是那个】
+            //{
+            //    // ✦ Keybrand 光环特效（在圆内随机位置）
+            //    Vector2 keybrandPosition = Projectile.Center + Main.rand.NextVector2Circular(35f, 35f);
+
+            //    FadingParticle ringParticle = new FadingParticle();
+            //    ringParticle.SetBasicInfo(TextureAssets.Extra[174], null, Vector2.Zero, keybrandPosition);
+            //    ringParticle.SetTypeInfo(40); // 生命周期：40帧
+
+            //    // 颜色：橙黄光环
+            //    Color orangeColor = new Color(1f, 0.6f, 0.2f, 1f);
+            //    ringParticle.ColorTint = orangeColor;
+            //    ringParticle.ColorTint.A = 200;
+
+            //    // 大小与扩散
+            //    ringParticle.Scale = Vector2.One * Main.rand.NextFloat(0.6f, 1.0f);
+            //    ringParticle.ScaleVelocity = Vector2.One * 0.1f;
+            //    ringParticle.ScaleAcceleration = -ringParticle.ScaleVelocity / 40f; // 让扩散逐渐减缓
+
+            //    // 淡入淡出时间
+            //    ringParticle.FadeInNormalizedTime = 0.1f;
+            //    ringParticle.FadeOutNormalizedTime = 0.9f;
+
+            //    // 加入粒子系统
+            //    Main.ParticleSystem_World_OverPlayers.Add(ringParticle);
+            //}
+
+            {
+                // ✦ Keybrand 原版粒子特效：在以弹幕中心为圆心、半径35的范围内随机一个点
+                Vector2 randomOffset = Main.rand.NextVector2Circular(35f, 35f);
+                Vector2 keybrandPosition = Projectile.Center + randomOffset;
+
+                ParticleOrchestrator.RequestParticleSpawn(
+                    clientOnly: false,
+                    ParticleOrchestraType.Keybrand,
+                    new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = keybrandPosition
+                    },
+                    Projectile.owner
+                );
+            }
+
+
+            // 如果在冷却中，忽略
+            if (Projectile.localAI[1] > 0)
+                return false;
+
+            // 设置穿墙状态：只持续X帧
+            Projectile.tileCollide = false;
+            Projectile.localAI[0] = 50;
+
+
+
+            // 如果还在冷却中，则忽略本次碰撞
+            if (Projectile.localAI[1] > 0)
+                return false;
+
+            // 设置碰撞冷却为10帧
+            Projectile.localAI[1] = 10;
+
+            // 减少穿透次数
+            Projectile.penetrate--;
             if (Projectile.penetrate <= 0)
             {
                 Projectile.Kill();
+                return false;
             }
-            else
+
+            // 播放爆炸音效
+            SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+
+            // ✦ 发射 FossilShard 弹片（照旧）
+            for (int i = 0; i < Main.rand.Next(5, 7); i++)
             {
-                if (Projectile.velocity.Y != oldVelocity.Y)
-                {
-                    Projectile.velocity.Y = -oldVelocity.Y; // 反弹效果
-                }
-
-                // 发射 FossilShard
-                for (int i = 0; i < Main.rand.Next(5, 7); i++)
-                {
-                    float rotation = MathHelper.ToRadians(45);
-                    Vector2 velocity = Projectile.velocity.RotatedByRandom(rotation) * Main.rand.NextFloat(0.8f, 1.2f) * 1.4f; // 增加速度到 1.4 倍
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, velocity,
-                        ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
-                }
-
-
-                // 生成卡其色和泥土颜色粒子
-                for (int i = 0; i < 10; i++)
-                {
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0, 0, 150, default, 1.2f);
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0, 0, 150, default, 1.2f);
-                }
-
-                // 播放音效
-                SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+                float rotationRange = MathHelper.ToRadians(45);
+                Vector2 shardVelocity = Projectile.velocity.RotatedByRandom(rotationRange) * Main.rand.NextFloat(0.8f, 1.2f) * 1.4f;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, shardVelocity,
+                    ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
+
+            // ✦ 撞击特效粒子
+            for (int i = 0; i < 10; i++)
+            {
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0, 0, 150, default, 1.2f);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0, 0, 150, default, 1.2f);
+            }
+
+            // ✦ 屏幕震动效果
+            float shakePower = 1.5f;
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
+            // ✦ 以绝对正上方为基准偏转 ±30°
+            float randomAngle = MathHelper.ToRadians(Main.rand.Next(-60, 61));
+            Vector2 baseDirection = -Vector2.UnitY; // 正上方方向（注意Y轴向下为正）
+            Vector2 newDirection = baseDirection.RotatedBy(randomAngle);
+
+            // 保持原有速度大小，只改变方向
+            Projectile.velocity = newDirection * Projectile.velocity.Length();
+
             return false;
         }
+
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

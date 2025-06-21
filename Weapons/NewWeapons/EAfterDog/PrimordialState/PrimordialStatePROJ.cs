@@ -240,7 +240,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     Projectile.Center,
                     Vector2.Zero,
                     Color.Black,
-                    "CalamityThrowingSpear/texture/YingYang",
+                    "CalamityThrowingSpear/Texture/YingYang",
                     Vector2.One * 0.33f,
                     Main.rand.NextFloat(-10f, 10f),
                     0.07f,
@@ -279,6 +279,162 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 
         public override void OnKill(int timeLeft)
         {
+            {
+                // 随机角度释放X个太极纹理
+                for (int i = 0; i < 1; i++)
+                {
+                    Particle blastRing = new CustomPulse(
+                        Projectile.Center,
+                        Vector2.Zero,
+                        Color.Black,
+                        "CalamityThrowingSpear/Texture/YingYang",
+                        Vector2.One * 0.33f,
+                        Main.rand.NextFloat(-10f, 10f),
+                        0.17f,
+                        0.53f,
+                        30
+                    );
+                    GeneralParticleHandler.SpawnParticle(blastRing);
+                }
+
+                // 🔴 对称爆圈 Dust（黑+白/灰）
+                for (int i = 0; i < 36; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 36f;
+                    Vector2 unit = angle.ToRotationVector2();
+
+                    Dust dust1 = Dust.NewDustPerfect(
+                        Projectile.Center + unit * 64f,
+                        DustID.Shadowflame,
+                        unit * 2f,
+                        100,
+                        Color.Black,
+                        Main.rand.NextFloat(1.5f, 2.2f)
+                    );
+                    dust1.noGravity = true;
+
+                    Dust dust2 = Dust.NewDustPerfect(
+                        Projectile.Center + unit * 96f,
+                        DustID.SilverFlame,
+                        unit * 1.5f,
+                        100,
+                        Color.White,
+                        Main.rand.NextFloat(1.2f, 1.8f)
+                    );
+                    dust2.noGravity = true;
+                }
+
+                // 🔥 中心烟雾爆发
+                for (int i = 0; i < 20; i++)
+                {
+                    Vector2 smokeDir = Main.rand.NextVector2CircularEdge(1f, 1f);
+                    Dust smoke = Dust.NewDustPerfect(
+                        Projectile.Center + smokeDir * 8f,
+                        DustID.Smoke,
+                        smokeDir * Main.rand.NextFloat(2f, 5f),
+                        120,
+                        Color.DarkGray,
+                        Main.rand.NextFloat(1.3f, 2.2f)
+                    );
+                    smoke.noGravity = true;
+                }
+
+                // 🌪 旋转流转粒子（阴阳之舞）
+                for (int i = 0; i < 18; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 18f + Main.rand.NextFloat(-0.1f, 0.1f);
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * 48f;
+                    Vector2 vel = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 3f;
+
+                    Dust swirl = Dust.NewDustPerfect(
+                        pos,
+                        DustID.Torch,
+                        vel,
+                        100,
+                        Color.Lerp(Color.Red, Color.White, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(1.2f, 1.8f)
+                    );
+                    swirl.noGravity = true;
+                }
+            }
+
+            {
+                for (int i = 0; i < 40; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 40f;
+                    Vector2 dir = angle.ToRotationVector2();
+
+                    // 外环：白色火焰流星感
+                    Dust white = Dust.NewDustPerfect(
+                        Projectile.Center + dir * 90f,
+                        DustID.SilverFlame,
+                        dir * 4f,
+                        100,
+                        Color.White,
+                        Main.rand.NextFloat(1.8f, 2.5f)
+                    );
+                    white.noGravity = true;
+
+                    // 内环：黑紫混合烟雾
+                    Dust black = Dust.NewDustPerfect(
+                        Projectile.Center + dir * 60f,
+                        DustID.Shadowflame,
+                        dir * 2.5f,
+                        100,
+                        Color.Lerp(Color.Black, Color.DarkViolet, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(1.4f, 2.0f)
+                    );
+                    black.noGravity = true;
+                }
+
+                for (int i = 0; i < 30; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2CircularEdge(1f, 1f);
+                    Dust smoke = Dust.NewDustPerfect(
+                        Projectile.Center + offset * 8f,
+                        DustID.Smoke,
+                        offset * Main.rand.NextFloat(4f, 7f),
+                        120,
+                        Color.DarkGray,
+                        Main.rand.NextFloat(1.5f, 2.8f)
+                    );
+                    smoke.noGravity = true;
+                }
+
+                for (int i = 0; i < 24; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 24f + Main.rand.NextFloat(-0.15f, 0.15f);
+                    float radius = Main.rand.NextFloat(40f, 70f);
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * radius;
+                    Vector2 vel = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 2.5f;
+
+                    Dust swirl = Dust.NewDustPerfect(
+                        pos,
+                        DustID.Torch,
+                        vel,
+                        100,
+                        Color.Lerp(Color.White, Color.Red, Main.rand.NextFloat(0.3f, 0.7f)),
+                        Main.rand.NextFloat(1.5f, 2.2f)
+                    );
+                    swirl.noGravity = true;
+                }
+
+                for (int i = 0; i < 12; i++)
+                {
+                    Dust arc = Dust.NewDustPerfect(
+                        Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
+                        DustID.RainbowTorch,
+                        Main.rand.NextVector2Circular(2f, 2f),
+                        100,
+                        Color.Cyan,
+                        Main.rand.NextFloat(1.3f, 1.9f)
+                    );
+                    arc.noGravity = true;
+                }
+            }
+
+
+
             int slashID = (int)(Projectile.localAI[0] - 1);
             if (Main.projectile.IndexInRange(slashID) && Main.projectile[slashID].type == ModContent.ProjectileType<PrimordialStateSlash>())
             {
@@ -327,7 +483,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     Projectile.Center,
                     Vector2.Zero,
                     Color.Black,
-                    "CalamityThrowingSpear/texture/YingYang",
+                    "CalamityThrowingSpear/Texture/YingYang",
                     Vector2.One * 0.33f,
                     Main.rand.NextFloat(-10f, 10f),
                     0.17f,
@@ -342,5 +498,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             target.AddBuff(ModContent.BuffType<HolyFlames>(), 300); 
             target.AddBuff(31, 300);
         }
+
+
+
+
+
+
+
     }
 }

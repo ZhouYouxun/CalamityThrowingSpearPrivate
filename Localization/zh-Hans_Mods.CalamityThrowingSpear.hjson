@@ -161,6 +161,7 @@ Projectiles: {
 			StarnightLanceJavBeam.DisplayName: 星夜长枪光束
 			StarnightLanceJavPROJ.DisplayName: 星夜长枪
 			EarthenJavPROJ.DisplayName: 磐石地元叉
+			// BrimlanceJavFireWall.DisplayName: Brimlance Jav Fire Wall
 		}
 
 		CPreMoodLord: {

@@ -52,9 +52,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
 
             // 偏移设置
             Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.2f;
-
-            // **如果处于传送后的 12 帧内，不渲染着色器**
-            if (shaderDisabledFrames <= 0)
+             
+            // **如果处于传送后的 12 帧内，不渲染着色器** 
+            if (shaderDisabledFrames >= 12)
             {
                 // 使用 Shader: ImpFlameTrailShader ("CalamityMod:ImpFlameTrail")
                 GameShaders.Misc["CalamityMod:ImpFlameTrail"].SetShaderTexture(
@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             }
             else
             {
-                shaderDisabledFrames--; // **每帧减少 1**
+                shaderDisabledFrames++;
             }
 
             // 绘制弹幕本体
@@ -228,7 +228,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             // 计算弹幕在世界坐标中的新位置
             Projectile.position = new Vector2(newX, newY) + Main.screenPosition;
 
-            shaderDisabledFrames = 12; // **在传送后 12 帧内禁用着色器**
+            shaderDisabledFrames = 0; // **在传送后 12 帧内禁用着色器**
         }
         private bool prioritizingX = true; // 初始时随机决定优先对齐哪个方向
         private void FollowEnemyInFourDirections()

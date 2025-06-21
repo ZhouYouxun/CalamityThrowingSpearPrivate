@@ -37,9 +37,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                 if (potentialTarget != null)
                     HomeInOnTarget(potentialTarget);
 
-                float accelerationFactor = MathHelper.SmoothStep(1.025f, 1.015f, Utils.GetLerpValue(6f, 24f, Projectile.velocity.Length(), true));
+                //float accelerationFactor = MathHelper.SmoothStep(1.025f, 1.015f, Utils.GetLerpValue(6f, 24f, Projectile.velocity.Length(), true));
+                //if (Projectile.velocity.Length() < 24f)
+                //    Projectile.velocity *= accelerationFactor;
+                // 始终线性加速，直到最大速度
                 if (Projectile.velocity.Length() < 24f)
-                    Projectile.velocity *= accelerationFactor;
+                {
+                    Projectile.velocity *= 1.02f; // 固定每帧加速 2%
+                }
             }
             EmitDust();
             Time++;

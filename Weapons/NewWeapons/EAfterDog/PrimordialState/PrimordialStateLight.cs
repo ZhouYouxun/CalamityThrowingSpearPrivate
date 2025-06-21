@@ -145,7 +145,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     Projectile.Center,
                     Vector2.Zero,
                     Color.White,
-                    "CalamityThrowingSpear/texture/YingYang",
+                    "CalamityThrowingSpear/Texture/YingYang",
                     Vector2.One * 0.33f,
                     Main.rand.NextFloat(-10f, 10f),
                     0.17f,

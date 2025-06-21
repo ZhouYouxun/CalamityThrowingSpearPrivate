@@ -58,19 +58,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
 
         public override void AI()
         {
-            // 保持弹幕旋转
+            // 保持旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            // Lighting - 添加深橙色光源
+            // 添加橙色光
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.01f;
-
-            // 产生DNA形状的粒子特效（颜色改为红色）
-            float frequency = 30f;  // 30帧一个回合
-            float amplitude = 20f;  // 振动幅度
-
+            // 生成DNA结构粒子（红色）
+            float frequency = 30f;
+            float amplitude = 20f;
             Vector2 leftOffset = new Vector2(-amplitude * (float)Math.Sin(Projectile.ai[0] * MathHelper.TwoPi / frequency), 0);
             Vector2 rightOffset = new Vector2(amplitude * (float)Math.Sin(Projectile.ai[0] * MathHelper.TwoPi / frequency), 0);
 
@@ -80,79 +76,95 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                 Dust.NewDustPerfect(Projectile.Center + rightOffset, DustID.RedTorch, Vector2.Zero, 0, Color.Red, 1.2f).noGravity = true;
             }
 
-            Projectile.ai[0] += 2f;  // 更新ai，两倍的绘制速度
+            Projectile.ai[0] += 2f;
 
-            // 生成粉色线性粒子效果
+            // 橙红色火星尾迹
             if (Main.rand.NextBool(5))
             {
-                // 直接在弹幕中心生成粒子，没有左右偏移
-                Vector2 trailPos = Projectile.Center;
-
-                float trailScale = Main.rand.NextFloat(0.8f, 1.2f); // 维持粒子的缩放效果
-                Color trailColor = Color.OrangeRed;
-
-                // 创建粒子
-                Particle trail = new SparkParticle(trailPos, Projectile.velocity * 0.2f, false, 60, trailScale, trailColor);
+                Particle trail = new SparkParticle(Projectile.Center, Projectile.velocity * 0.2f, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.OrangeRed);
                 GeneralParticleHandler.SpawnParticle(trail);
             }
 
-
-            // 每帧增加 ai[x] 计数
+            // 前5帧禁用地形碰撞
             Projectile.ai[1]++;
+            Projectile.tileCollide = Projectile.ai[1] >= 5;
 
-            // 前x帧禁用方块碰撞（防止在平地上某些角度射不出来）
-            if (Projectile.ai[1] < 5)
+            // 💥 击中后进入减速阶段
+            if (Projectile.ai[2] == 1f)
             {
-                Projectile.tileCollide = false; // 禁用碰撞
-            }
-            else
-            {
-                Projectile.tileCollide = true; // 启用碰撞
+                Projectile.velocity *= 0.97f;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2Circular(12f, 12f);
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Torch, Vector2.Zero, 0, Color.OrangeRed, 1.5f);
+                    dust.noGravity = true;
+                }
+
+                Projectile.localAI[0]++;
+                if (Projectile.localAI[0] >= 30f)
+                {
+                    // 生成火墙
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<BrimlanceJavFireWall>(),
+                        Projectile.damage,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+
+                    Projectile.Kill();
+                }
+
+                return;
             }
 
+            // 🚀 初始飞行时才执行加速
+            Projectile.velocity *= 1.01f;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300); // 上硫磺火
 
-            //SoundEngine.PlaySound(SoundID.Item68, Projectile.Center);
-
-            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300); // 硫磺火
-
-            // 第1次击中敌人后，释放爆炸弹幕 "FuckYou"
-            if (!hasBounced)
+            // 仅在首次命中时进入减速阶段
+            if (Projectile.ai[2] == 0f)
             {
-                hasBounced = true;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
-
-                // 瞄准最近的敌人并调整弹幕方向
-                NPC closestNPC = Main.npc
-                    .Where(npc => npc.active && !npc.friendly && npc.life > 0 && npc.whoAmI != target.whoAmI)
-                    .OrderBy(npc => Vector2.Distance(npc.Center, Projectile.Center))
-                    .FirstOrDefault();
-
-                if (closestNPC != null)
-                {
-                    Vector2 direction = closestNPC.Center - Projectile.Center;
-                    Projectile.velocity = Vector2.Normalize(direction) * Projectile.velocity.Length();
-                }
-            }
-            else
-            {
-                // 第2次击中敌人后，触发BrimlanceHellfireExplosion
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BrimlanceHellfireExplosion>(), (int)(Projectile.damage * 1.5f), Projectile.knockBack, Projectile.owner);
-
-                // 从天上降下1发BrimlanceStandingFire弹幕
-                for (int i = 0; i < 1; i++)
-                {
-                    SummonBrimlanceFire(target);
-                }
+                Projectile.ai[2] = 1f;      // 标记进入减速
+                Projectile.localAI[0] = 0f; // 重置计时器
+                Projectile.friendly = false; // 禁止再继续伤害敌人
             }
         }
 
+
         public override void OnKill(int timeLeft)
         {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 0f), Projectile.knockBack, Projectile.owner);
+            // 视觉爆炸特效弹幕
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<FuckYou>(),
+                (int)(Projectile.damage * 0f), // 伤害为 0，仅视觉用途
+                Projectile.knockBack,
+                Projectile.owner
+            );
+
+            // 火墙：双保险，若前面没触发，这里确保生成
+            if (Projectile.ai[2] == 0f)
+            {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<BrimlanceJavFireWall>(),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
         }
 
 

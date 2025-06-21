@@ -161,6 +161,7 @@ Projectiles: {
 			StarnightLanceJavBeam.DisplayName: Starnight Lance Beam
 			StarnightLanceJavPROJ.DisplayName: Starnight Lance
 			EarthenJavPROJ.DisplayName: Earthen Geofork
+			BrimlanceJavFireWall.DisplayName: Brimlance Jav Fire Wall
 		}
 
 		CPreMoodLord: {

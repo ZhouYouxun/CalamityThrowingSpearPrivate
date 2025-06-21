@@ -72,7 +72,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                         player.Center, // 以玩家为中心
                         Vector2.Zero,
                         new Color(0, 0, 139), // 深海的蓝色
-                        "CalamityThrowingSpear/texture/IonizingRadiation",
+                        "CalamityThrowingSpear/Texture/IonizingRadiation",
                         Vector2.One * 0.33f,
                         Main.rand.NextFloat(-10f, 10f),
                         0.07f,
