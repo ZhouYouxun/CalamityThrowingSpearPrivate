@@ -29,7 +29,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 16;
+            Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
