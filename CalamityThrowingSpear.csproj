@@ -13,6 +13,7 @@
 	  <None Remove="TheSkillAcc.png" />
 	  <None Remove="Weapons\ChangedWeapons\APreHardMode\AmidiasTridentC\AmidiasTridentJavWhirlpool.png" />
 	  <None Remove="Weapons\ChangedWeapons\APreHardMode\GoldplumeSpearC\GoldplumeJavWind.png" />
+	  <None Remove="Weapons\ChangedWeapons\BPrePlantera\EarthenC\EarthenJavSHARD.png" />
 	  <None Remove="Weapons\ChangedWeapons\BPrePlantera\StarnightLanceC\StarnightLanceJavBeam.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\AstralPikeC\AstralPikeJav.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\AstralPikeC\AstralPikeSTAR.png" />

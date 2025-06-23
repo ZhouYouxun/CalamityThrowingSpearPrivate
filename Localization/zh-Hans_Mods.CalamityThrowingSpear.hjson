@@ -162,6 +162,7 @@ Projectiles: {
 			StarnightLanceJavPROJ.DisplayName: 星夜长枪
 			EarthenJavPROJ.DisplayName: 磐石地元叉
 			// BrimlanceJavFireWall.DisplayName: Brimlance Jav Fire Wall
+			// EarthenJavSHARD.DisplayName: Earthen Jav S H A R D
 		}
 
 		CPreMoodLord: {

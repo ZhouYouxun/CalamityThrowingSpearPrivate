@@ -283,17 +283,33 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
 
             {
-                // 计算小鸟数量
+                // 计算当前小鸟数量
                 int existingBirdCount = Main.projectile.Count(p => p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<SoulSeekerJavBRID>());
 
                 if (existingBirdCount < 10)
                 {
+                    // 生成新小鸟
                     Vector2 spawnPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (3 * 16);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, -Projectile.velocity * 1f, ModContent.ProjectileType<SoulSeekerJavBRID>(), Projectile.damage, 0f, Projectile.owner);
+
                 }
+                // ✦ 保留的 else 分支，未来扩展用
                 else
                 {
-                    //hit.damage *= 2.22f;
+                    // hit.damage *= 2.22f;
+                }
+
+
+
+                // ✦ 屏幕震动效果，根据当前已有小鸟数量线性增强（不管有没有生成新的）
+                {
+                    float baseShake = 2f; // 最低震动
+                    float shakePower = baseShake + existingBirdCount * 0.6f;
+                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(
+                        Main.LocalPlayer.Calamity().GeneralScreenShakePower,
+                        shakePower * distanceFactor
+                    );
                 }
 
                 // 正/倒三角形特效

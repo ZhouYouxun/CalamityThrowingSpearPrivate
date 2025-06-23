@@ -169,14 +169,22 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             // 播放爆炸音效
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
 
-            // ✦ 发射 FossilShard 弹片（照旧）
+            // ✦ 发射 FossilShard 弹片（固定方向：正上方 ±45°）
             for (int i = 0; i < Main.rand.Next(5, 7); i++)
             {
-                float rotationRange = MathHelper.ToRadians(45);
-                Vector2 shardVelocity = Projectile.velocity.RotatedByRandom(rotationRange) * Main.rand.NextFloat(0.8f, 1.2f) * 1.4f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, shardVelocity,
-                    ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                // 以正上为中心 ±45°
+                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
+                Vector2 shardDirection = -Vector2.UnitY.RotatedBy(angleOffset);
+
+                // 随机速度与抖动
+                float speed = Main.rand.NextFloat(6f, 9f);
+                Vector2 shardVelocity = shardDirection * speed;
+
+                // 发射弹片
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, shardVelocity,
+                    ModContent.ProjectileType<EarthenJavSHARD>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
+
 
             // ✦ 撞击特效粒子
             for (int i = 0; i < 10; i++)
