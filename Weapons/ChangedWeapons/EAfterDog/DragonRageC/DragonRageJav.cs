@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 575; // 设置伤害值
+            Item.damage = 3075; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
