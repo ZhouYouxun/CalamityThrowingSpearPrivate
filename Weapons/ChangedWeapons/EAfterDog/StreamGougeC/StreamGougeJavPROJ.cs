@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -101,14 +101,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 360;
+            Projectile.penetrate = 8;
+            Projectile.timeLeft = 60;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 10; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 3; // 无敌帧冷却时间为14帧
         }
 
         public override void AI()
@@ -190,7 +190,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item74, target.Center);
 
-            if (phase == 1) // 仅在第一阶段触发
+            /*if (phase == 1) // 仅在第一阶段触发
             {
                 phase = 2; // 切换至第二阶段
                 Projectile.timeLeft = 120; // 保持存活时间用于特效
@@ -198,7 +198,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                 Projectile.alpha = 255;
 
                 // 关闭伤害
-                Projectile.friendly = false;
+                Projectile.friendly = false;*/
 
                 // 生成超级特效
                 GenerateImpactEffects(target.Center);
@@ -207,8 +207,28 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                 //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 
                 // 搜索 15 名最近敌人
-                SpawnSplitProjectiles(target.Center);
-            }
+               /* SpawnSplitProjectiles(target.Center);
+            }*/
+        }
+        public override void OnKill(int timeLeft)
+        {
+            // 生成超级爆炸冲击波
+            //Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Purple, new Vector2(5f, 5f), 20f, 0.3f, 6f, 30);
+            //GeneralParticleHandler.SpawnParticle(largePulse);
+            // 生成超级特效
+            GenerateImpactEffects(Projectile.Center);
+
+            // 生成爆炸
+            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+            // 生成超级银河系特效
+            CreateGalaxyEffect(Projectile.Center, true);
+
+            // 释放伤害倍率为1.0的 StreamGougeJavEXP 弹幕
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+            
+            // 搜索 15 名最近敌人
+            SpawnSplitProjectiles(Projectile.Center);
         }
 
         private void GenerateImpactEffects(Vector2 center)
@@ -239,7 +259,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             var enemies = Main.npc
                 .Where(npc => npc.active && !npc.friendly && npc.life > 0)
                 .OrderBy(npc => Vector2.Distance(npc.Center, center))
-                .Take(15) // 取前 15 个
+                .Take(6) // 取前 15 个
                 .ToList();
 
             foreach (var enemy in enemies)
@@ -255,7 +275,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
                     spawnPos,
                     velocity, // 速度设为零，确保其开始旋转动画
                     ModContent.ProjectileType<StreamGougeJavPROJSPLIT>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.4),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -310,19 +330,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
         {
             return base.CanDamage();
         }
-        public override void OnKill(int timeLeft)
-        {
-            // 生成超级爆炸冲击波
-            //Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Purple, new Vector2(5f, 5f), 20f, 0.3f, 6f, 30);
-            //GeneralParticleHandler.SpawnParticle(largePulse);
-
-            // 生成超级银河系特效
-            CreateGalaxyEffect(Projectile.Center, true);
-
-            // 释放伤害倍率为1.0的 StreamGougeJavEXP 弹幕
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<StreamGougeJavEXP>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-        }
-
+        
         private void CreateGalaxyEffect(Vector2 center, bool enhanced)
         {
             int armCount = enhanced ? 8 : 4;
