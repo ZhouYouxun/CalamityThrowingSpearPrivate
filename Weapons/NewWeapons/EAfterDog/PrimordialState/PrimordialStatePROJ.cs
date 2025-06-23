@@ -37,7 +37,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 72;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     spawnPos,
                     Vector2.Zero,
                     ModContent.ProjectileType<PrimordialStateNight>(),
-                    (int)(Projectile.damage * 1.0f), // 伤害倍率 1.0
+                    (int)(Projectile.damage * 0.75f), // 伤害倍率 1.0
                     Projectile.knockBack,
                     Projectile.owner
                 );
