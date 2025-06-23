@@ -107,7 +107,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             // Projectile.ai[0] = 2f; // 设置粘附状态
-            Projectile.timeLeft = 90; // 粘附时间为 90 帧
+            Projectile.timeLeft = 180; // 时间为 X 帧
             // Projectile.velocity = Vector2.Zero; // 停止弹幕移动
             target.AddBuff(BuffID.Venom, 180); // 给敌人施加毒液效果
             target.AddBuff(ModContent.BuffType<Plague>(), 180);

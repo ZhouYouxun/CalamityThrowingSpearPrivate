@@ -184,8 +184,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             player.statLife += healAmount;
             player.HealEffect(healAmount);
 
-            // 添加治疗魔法阵特效
-            CreateHealingCircle(target.Center);
+      
 
             // 根据生命值百分比触发超级效果
             float healthPercent = (float)player.statLife / player.statLifeMax2;
@@ -234,6 +233,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
         public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
+            // 添加治疗魔法阵特效
+            CreateHealingCircle(Projectile.Center);
         }
     }
 }

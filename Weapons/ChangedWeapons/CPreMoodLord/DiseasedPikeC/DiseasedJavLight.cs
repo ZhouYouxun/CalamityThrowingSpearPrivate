@@ -68,36 +68,26 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 获取弹幕贴图及其绘制信息
-            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY); // 屏幕中心位置
-            Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2); // 中心点作为绘制原点
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
+            );
 
-            // 启用着色器区域
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak"));
-            GameShaders.Misc["CalamityMod:TrailStreak"].Apply();
+            Vector2 offset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;
 
-            // 绘制拖尾轨迹
-            Vector2 offset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f; // 拖尾的偏移量
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
                 new(
-                    PrimitiveWidthFunction, // 拖尾宽度
-                    PrimitiveColorFunction, // 拖尾颜色
-                    (_) => offset, // 偏移量函数
-                    shader: GameShaders.Misc["CalamityMod:TrailStreak"] // 使用的着色器
+                    PrimitiveWidthFunction,
+                    PrimitiveColorFunction,
+                    (_) => offset,
+                    shader: GameShaders.Misc["CalamityMod:TrailStreak"]
                 ),
-                46 // 拖尾点数
+                46
             );
 
-            // 绘制弹幕本体
-            Main.EntitySpriteDraw(texture, drawPosition, null, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
-
-            Main.spriteBatch.End();
-
-            return false;
+            return false; // 不绘制默认贴图
         }
+
 
         private Vector2 altSpawn; // 定义一个备用生成位置向量
 

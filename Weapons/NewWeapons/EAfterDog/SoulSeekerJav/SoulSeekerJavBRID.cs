@@ -142,6 +142,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
         }
         private bool hasFired = false; // 记录是否已经开火
         private int fireCooldown = 0; // 开火冷却时间
+        private float normalSpeed = 8f;
+
 
         // 在小鸟接收到开火命令时调用
         public void ReceiveFireOrder(int damage)
@@ -153,6 +155,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             }
         }
 
+        private int slowTime = 0;          // 减速计时器，>0 时表示在减速中
+        private float lastVelocity = 8f;   // 保存原始速度，用于恢复
         // 具体的开火逻辑
         private void FireProjectile(int damage)
         {
@@ -161,7 +165,53 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
             // 生成 SoulSeekerJavBRIDFire，伤害倍率 1.0x
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVelocity, ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), damage, 0f, Projectile.owner);
+
+            // 触发减速效果
+            slowTime = 10; // 持续 10 帧
+            lastVelocity = 8f; // 保存当前速度值
+
+            // 特效部分
+            {
+                Vector2 fireDir = fireVelocity.SafeNormalize(Vector2.Zero);
+                for (int i = 0; i < 300; i++)
+                {
+                    // 位置抖动：以弹幕反方向为中心，随机半径喷发
+                    float radialOffset = Main.rand.NextFloat(6f, 20f);
+                    float angleOffset = Main.rand.NextFloat(-0.4f, 0.4f); // 微旋偏差
+                    Vector2 spawnOffset = fireDir.RotatedBy(angleOffset) * -radialOffset;
+
+                    Vector2 spawnPos = Projectile.Center + spawnOffset;
+
+                    Dust dust = Dust.NewDustPerfect(spawnPos, 267);
+                    dust.scale = Main.rand.NextFloat(1.0f, 2.8f);
+                    dust.velocity = fireDir.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * -Main.rand.NextFloat(1f, 6f); // 向后喷
+                    dust.color = Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat()); // 红-橙间波动
+                    dust.noGravity = true;
+
+                    // 少部分粒子扩散 + 缓慢升空
+                    if (Main.rand.NextBool(6))
+                    {
+                        dust.velocity += Main.rand.NextVector2Circular(2f, 2f);
+                        dust.scale += 0.5f;
+                    }
+                }
+
+
+                //for (int i = 0; i < 40; i++)
+                //{
+                //    float angle = MathHelper.TwoPi * i / 40f;
+                //    Vector2 ringOffset = angle.ToRotationVector2() * 12f;
+                //    Dust d = Dust.NewDustPerfect(Projectile.Center + ringOffset, 267);
+                //    d.noGravity = true;
+                //    d.velocity = ringOffset * 0.3f;
+                //    d.scale = 2.2f;
+                //    d.color = Color.DarkRed;
+                //}
+
+            }
+
         }
+
         public override void AI()
         {
             if (fireCooldown > 0)
@@ -195,7 +245,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                 // 如果未开启追踪模式，继续围绕玩家运行
                 if (!isTracking)
                 {
-                    // 角速度恒定，绝对速度不恒定来平衡
+                    // 角速度恒定，线速度自动调整
                     //orbitAngle += 0.02f;
                     //Vector2 ellipticalPosition = player.Center + new Vector2((float)Math.Cos(orbitAngle) * orbitOffset.X, (float)Math.Sin(orbitAngle) * orbitOffset.Y);
 
@@ -211,32 +261,44 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                     //    Projectile.velocity *= 0.95f;
                     //}
 
-                    // 绝对速度恒定
-                    // 计算当前角度的瞬时半径
-                    float a = orbitOffset.X; // 长轴
-                    float b = orbitOffset.Y; // 短轴
-                    float instantaneousRadius = (a * b) / MathF.Sqrt((b * b * MathF.Cos(orbitAngle) * MathF.Cos(orbitAngle)) + (a * a * MathF.Sin(orbitAngle) * MathF.Sin(orbitAngle)));
 
-                    // 计算角度增量，使得小鸟在椭圆上运动的弧长保持恒定
-                    float stepSize = 8f / instantaneousRadius; // 8f 是目标线速度
-
-                    // 角度变化
-                    orbitAngle += stepSize;
-
-                    // 计算新的椭圆位置
-                    Vector2 ellipticalPosition = player.Center + new Vector2((float)Math.Cos(orbitAngle) * a, (float)Math.Sin(orbitAngle) * b);
-                    Vector2 directionToPosition = ellipticalPosition - Projectile.Center;
-                    float distance = directionToPosition.Length();
-
-                    if (distance > 2f)
+                    // 线速度恒定，角速度自动调整
                     {
-                        directionToPosition.Normalize();
-                        Projectile.velocity = directionToPosition * 8f; // 保持恒定速度
+                        // 计算当前角度的瞬时半径
+                        float a = orbitOffset.X; // 长轴
+                        float b = orbitOffset.Y; // 短轴
+                        float instantaneousRadius = (a * b) / MathF.Sqrt((b * b * MathF.Cos(orbitAngle) * MathF.Cos(orbitAngle)) + (a * a * MathF.Sin(orbitAngle) * MathF.Sin(orbitAngle)));
+
+                        // 计算角度增量，使得小鸟在椭圆上运动的弧长保持恒定
+                        float stepSize = 8f / instantaneousRadius; // 8f 是目标线速度
+
+                        // 角度变化
+                        orbitAngle += stepSize;
+
+                        // 计算新的椭圆位置
+                        Vector2 ellipticalPosition = player.Center + new Vector2((float)Math.Cos(orbitAngle) * a, (float)Math.Sin(orbitAngle) * b);
+                        Vector2 directionToPosition = ellipticalPosition - Projectile.Center;
+                        float distance = directionToPosition.Length();
+
+                        if (distance > 2f)
+                        {
+                            directionToPosition.Normalize();
+                            //Projectile.velocity = directionToPosition * 8f; // 保持恒定速度
+
+                            // 每次开火的时候瞬间降低移速
+                            float currentSpeed = (slowTime > 0) ? normalSpeed * 0.1f : normalSpeed;
+                            Projectile.velocity = directionToPosition * currentSpeed;
+
+                            if (slowTime > 0)
+                                slowTime--;
+
+                        }
+                        else
+                        {
+                            Projectile.velocity *= 0.95f;
+                        }
                     }
-                    else
-                    {
-                        Projectile.velocity *= 0.95f;
-                    }
+                 
                 }
                 else
                 {

@@ -225,14 +225,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 生成血雾特效
-            for (int i = 0; i < 20; i++)
-            {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, Main.rand.Next(-3, 3), Main.rand.Next(-3, 3), 100, default, 1.5f);
-            }
 
-            // 生成粒子特效（三角形形状）
-            CreateTriangleParticles(target.Center, Projectile.velocity);
         }
 
         // 创建三角形粒子特效
@@ -283,7 +276,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 
         public override void OnKill(int timeLeft)
         {
+            // 生成血雾特效
+            for (int i = 0; i < 20; i++)
+            {
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, Main.rand.Next(-3, 3), Main.rand.Next(-3, 3), 100, default, 1.5f);
+            }
 
+            // 生成粒子特效（三角形形状）
+            CreateTriangleParticles(Projectile.Center, Projectile.velocity);
         }
 
         //public override bool PreDraw(ref Color lightColor)

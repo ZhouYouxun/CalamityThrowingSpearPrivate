@@ -112,41 +112,106 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
         public override void AI()
         {
             // 保持弹幕旋转（对于倾斜走向的弹幕而言）
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            if (isInSpiralMode)
+            {
+                // 蚊香状态，按公转方向 + 90度旋转
+                Vector2 offset = spiralAngle.ToRotationVector2() * spiralRadius;
+                Projectile.rotation = offset.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4 + MathHelper.PiOver4;
+            }
+            else
+            {
+                // 正常状态，按速度方向旋转
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            }
 
             // Lighting - 添加红色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.55f);
 
-            // 递减计时器
-            if (triangleTimer > 0) triangleTimer--;
-            if (squareTimer > 0) squareTimer--;
-            if (arrowTimer > 0) arrowTimer--;
 
-            // 触发特效：三角形（90 帧）
-            if (triangleTimer <= 0)
+            // 飞行过程中的粒子特效
             {
-                CreateShapeEffect(Projectile.Center, DustID.RedTorch, Color.Red, 12f, "Triangle");
-                triangleTimer = 90;
+
+                // 递减计时器
+                if (triangleTimer > 0) triangleTimer--;
+                if (squareTimer > 0) squareTimer--;
+                if (arrowTimer > 0) arrowTimer--;
+
+                // 触发特效：三角形（90 帧）
+                if (triangleTimer <= 0)
+                {
+                    CreateShapeEffect(Projectile.Center, DustID.RedTorch, Color.Red, 12f, "Triangle");
+                    triangleTimer = 9;
+                }
+
+                // 触发特效：方形（60 帧）
+                if (squareTimer <= 0)
+                {
+                    CreateShapeEffect(Projectile.Center, 105, Color.Orange, 16f, "Square");
+                    squareTimer = 6;
+                }
+
+                // 触发特效：箭头（30 帧）
+                if (arrowTimer <= 0)
+                {
+                    CreateShapeEffect(Projectile.Center, DustID.HealingPlus, Color.Yellow, 18f, "Arrow");
+                    arrowTimer = 3;
+                }
             }
 
-            // 触发特效：方形（60 帧）
-            if (squareTimer <= 0)
+
+
+            // 触发蚊香型扩散
+            if (isInSpiralMode && trackedNPC >= 0 && Main.npc[trackedNPC].active && !Main.npc[trackedNPC].dontTakeDamage)
             {
-                CreateShapeEffect(Projectile.Center, 105, Color.Orange, 16f, "Square");
-                squareTimer = 60;
+                NPC target = Main.npc[trackedNPC];
+
+                // 蚊香角度递增（加速旋转）
+                spiralAngle += 0.1f + spiralAngle * 0.002f;
+
+                // 蚊香半径扩大（缓慢外扩）
+                spiralRadius += 2.15f;
+
+                // 计算位置
+                Vector2 offset = spiralAngle.ToRotationVector2() * spiralRadius;
+                Projectile.Center = target.Center + offset;
+
+                // 保持不动
+                Projectile.velocity = Vector2.Zero;
+
+                // 发射弹幕计时器逻辑
+                fireTimer++;
+                if (fireTimer >= fireInterval)
+                {
+                    fireTimer = 0;
+
+                    // 发射子弹
+                    Vector2 fireVel = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVel,
+                        ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), Projectile.damage, 0f, Projectile.owner);
+
+                    // 冷却时间逐步缩短，最短为6帧
+                    fireInterval = Math.Max(fireInterval - fireIntervalDecrement, 6);
+                }
+
             }
 
-            // 触发特效：箭头（30 帧）
-            if (arrowTimer <= 0)
-            {
-                CreateShapeEffect(Projectile.Center, DustID.HealingPlus, Color.Yellow, 18f, "Arrow");
-                arrowTimer = 30;
-            }
         }
         // 计时器变量
         private int triangleTimer = 0;
         private int squareTimer = 0;
         private int arrowTimer = 0;
+
+        // 形态切换变量
+        private bool isInSpiralMode = false;
+        private int trackedNPC = -1;
+        private float spiralAngle = 0f;
+        private float spiralRadius = 24f;
+        private int fireTimer = 0;
+
+        // 蚊香形态攻击的参数
+        private int fireInterval = 30; // 初始冷却时间（可调整）
+        private int fireIntervalDecrement = 4; // 每次减少的冷却时间（可调整）
+
 
         private void CreateShapeEffect(Vector2 center, int dustType, Color color, float size, string shape)
         {
@@ -190,35 +255,51 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 目标切换：寻找最近敌人
-            NPC closestNPC = Main.npc
-                .Where(npc => npc.active && !npc.friendly && npc.life > 0 && npc.whoAmI != target.whoAmI)
-                .Where(npc => Vector2.Distance(npc.Center, Projectile.Center) > 15 * 16 && Vector2.Distance(npc.Center, Projectile.Center) < 150 * 16)
-                .OrderBy(npc => Vector2.Distance(npc.Center, Projectile.Center))
-                .FirstOrDefault();
-
-            if (closestNPC != null)
             {
-                Vector2 direction = closestNPC.Center - Projectile.Center;
-                Projectile.velocity = Vector2.Normalize(direction) * Projectile.velocity.Length();
+                //// 目标切换：寻找最近敌人
+                //NPC closestNPC = Main.npc
+                //    .Where(npc => npc.active && !npc.friendly && npc.life > 0 && npc.whoAmI != target.whoAmI)
+                //    .Where(npc => Vector2.Distance(npc.Center, Projectile.Center) > 15 * 16 && Vector2.Distance(npc.Center, Projectile.Center) < 150 * 16)
+                //    .OrderBy(npc => Vector2.Distance(npc.Center, Projectile.Center))
+                //    .FirstOrDefault();
+
+                //if (closestNPC != null)
+                //{
+                //    Vector2 direction = closestNPC.Center - Projectile.Center;
+                //    Projectile.velocity = Vector2.Normalize(direction) * Projectile.velocity.Length();
+                //}
             }
 
-            // 计算小鸟数量
-            int existingBirdCount = Main.projectile.Count(p => p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<SoulSeekerJavBRID>());
+            // 在首次命中敌人的时候触发蚊香形状
+            Projectile.friendly = false; // 禁用伤害
+            Projectile.timeLeft = 200; // 设定一个倒计时
 
-            if (existingBirdCount < 10)
-            {
-                Vector2 spawnPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (3 * 16);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, -Projectile.velocity * 1f, ModContent.ProjectileType<SoulSeekerJavBRID>(), Projectile.damage, 0f, Projectile.owner);
-            }
-            else
-            {
-                //hit.damage *= 2.22f;
-            }
+            trackedNPC = target.whoAmI; // 自定义字段记录目标
+            spiralAngle = 0f;
+            spiralRadius = 24f;
+            fireTimer = 0;
+            isInSpiralMode = true;
 
-            // 正/倒三角形特效
-            CreateTriangleMetaballEffect(target.Center, existingBirdCount < 10);
-            CreateTriangleParticleEffect(target.Center, existingBirdCount < 10);
+
+
+            {
+                // 计算小鸟数量
+                int existingBirdCount = Main.projectile.Count(p => p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<SoulSeekerJavBRID>());
+
+                if (existingBirdCount < 10)
+                {
+                    Vector2 spawnPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (3 * 16);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, -Projectile.velocity * 1f, ModContent.ProjectileType<SoulSeekerJavBRID>(), Projectile.damage, 0f, Projectile.owner);
+                }
+                else
+                {
+                    //hit.damage *= 2.22f;
+                }
+
+                // 正/倒三角形特效
+                CreateTriangleMetaballEffect(target.Center, existingBirdCount < 10);
+                CreateTriangleParticleEffect(target.Center, existingBirdCount < 10);
+            }
         }
         private void CreateTriangleParticleEffect(Vector2 center, bool isNormalTriangle)
         {
