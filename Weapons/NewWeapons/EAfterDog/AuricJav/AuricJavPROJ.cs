@@ -219,7 +219,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                             spawnPosition + positionOffset, // 根据位置偏移生成弹幕
                             direction * speed,              // 速度和方向
                             ModContent.ProjectileType<AuricJavBallPROJ>(),
-                            (int)(Projectile.damage * 2.25f),
+                            (int)(Projectile.damage * 2.75f),
                             Projectile.knockBack,
                             Projectile.owner
                         );
