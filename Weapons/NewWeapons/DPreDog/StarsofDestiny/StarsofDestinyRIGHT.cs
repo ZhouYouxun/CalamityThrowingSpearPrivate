@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader.IO;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     internal class StarsofDestinyRIGHT : ModProjectile
     {

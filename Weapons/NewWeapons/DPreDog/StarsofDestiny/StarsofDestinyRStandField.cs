@@ -12,7 +12,7 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     internal class StarsofDestinyRStandField : ModProjectile
     {

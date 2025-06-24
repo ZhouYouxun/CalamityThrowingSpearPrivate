@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     internal class StarsofDestinyPBuffPlayer : ModPlayer
     {

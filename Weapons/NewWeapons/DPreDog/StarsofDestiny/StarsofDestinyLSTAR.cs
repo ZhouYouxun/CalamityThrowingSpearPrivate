@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     internal class StarsofDestinyLSTAR : ModProjectile
     {

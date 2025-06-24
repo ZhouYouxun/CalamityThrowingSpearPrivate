@@ -14,7 +14,7 @@ using CalamityMod.Rarities;
 using Microsoft.Xna.Framework;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     internal class StarsofDestiny : ModItem, ILocalizedModType
     {
