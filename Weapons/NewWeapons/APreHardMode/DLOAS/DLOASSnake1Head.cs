@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
             Projectile.timeLeft = 800;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 50;
             //Projectile.ArmorPenetration = 15;
         }
         private int targetProjectileID = -1;
