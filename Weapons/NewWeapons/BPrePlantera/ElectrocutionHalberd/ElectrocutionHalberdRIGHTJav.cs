@@ -111,7 +111,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 modifiedVelocity *= speedMultiplier;
 
                 // 随机伤害倍率（0.95倍到1.5倍之间）
-                float damageMultiplier = Main.rand.NextFloat(0.95f, 1.5f);
+                float damageMultiplier = Main.rand.NextFloat(0.6f, 1.1f);
 
                 // 创建散射弹幕
                 Projectile.NewProjectile(

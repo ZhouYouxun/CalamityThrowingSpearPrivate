@@ -107,7 +107,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 135; // 设置伤害值
+                Item.damage = 35; // 设置伤害值
                 Item.useTime = 50;
                 Item.useAnimation = 50;
                 Item.useLimitPerAnimation = 1;
@@ -119,8 +119,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             }
             else // 左键
             {
-                Item.damage = 107;
-                Item.useTime = Item.useAnimation = 20;
+                Item.damage = 122;
+                Item.useTime = Item.useAnimation = 70;
                 Item.shootSpeed = 10f;
                 Item.shoot = ModContent.ProjectileType<ElectrocutionHalberdPROJ>();
                 Item.UseSound = null;

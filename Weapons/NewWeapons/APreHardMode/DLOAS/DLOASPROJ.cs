@@ -153,18 +153,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 
             // **生成头部**
             int prev = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, Projectile.velocity,
-                ModContent.ProjectileType<DLOASSnake1Head>(), Projectile.damage * 3, Projectile.knockBack, owner, Projectile.whoAmI);
+                ModContent.ProjectileType<DLOASSnake1Head>(), (int)(Projectile.damage * 1.0), Projectile.knockBack, owner, Projectile.whoAmI);
 
             // **生成身体**
             for (int j = 0; j < 3; j++)
             {
                 prev = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, Projectile.velocity,
-                    ModContent.ProjectileType<DLOASSnake2Body>(), Projectile.damage * 3, Projectile.knockBack, owner, prev);
+                    ModContent.ProjectileType<DLOASSnake2Body>(), (int)(Projectile.damage * 0.6), Projectile.knockBack, owner, prev);
             }
 
             // **生成尾巴**
             int tailID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, Projectile.velocity,
-                ModContent.ProjectileType<DLOASSnake3Tail>(), Projectile.damage * 3, Projectile.knockBack, owner, prev);
+                ModContent.ProjectileType<DLOASSnake3Tail>(), (int)(Projectile.damage * 0.3), Projectile.knockBack, owner, prev);
         }
 
 
