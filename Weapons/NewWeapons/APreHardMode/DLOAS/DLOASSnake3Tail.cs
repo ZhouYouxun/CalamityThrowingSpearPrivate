@@ -27,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
             Projectile.penetrate = -1;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 50;
             //Projectile.ArmorPenetration = 15;
         }
         private Queue<Vector2> positionHistory = new Queue<Vector2>(); // 存储历史位置
