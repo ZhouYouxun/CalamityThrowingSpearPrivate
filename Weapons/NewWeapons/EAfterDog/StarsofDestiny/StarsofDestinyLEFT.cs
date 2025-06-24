@@ -254,18 +254,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
         {
             base.OnKill(timeLeft);
 
-            // 定义音效路径数组
             string[] soundPaths = new string[]
             {
-                "CalamityThrowingSpear/Sound/StarsofDestinyClock1",
-                "CalamityThrowingSpear/Sound/StarsofDestinyClock2",
-                "CalamityThrowingSpear/Sound/StarsofDestinyClock3",
-                "CalamityThrowingSpear/Sound/StarsofDestinyClock4"
+    "CalamityThrowingSpear/Sound/StarsofDestinyClock1",
+    "CalamityThrowingSpear/Sound/StarsofDestinyClock2",
+    "CalamityThrowingSpear/Sound/StarsofDestinyClock3",
+    "CalamityThrowingSpear/Sound/StarsofDestinyClock4"
             };
 
-            // 播放随机音效
             string selectedSoundPath = soundPaths[Main.rand.Next(soundPaths.Length)];
-            SoundEngine.PlaySound(new SoundStyle(selectedSoundPath), Projectile.Center);
+
+            SoundStyle boostedSound = new SoundStyle(selectedSoundPath).WithVolumeScale(3f); // ✅ 放大300%音量【这个没用，别看这玩意儿，这失效了，这tmd绝对是来捣乱的是吧】
+
+            SoundEngine.PlaySound(boostedSound, Projectile.Center);
+
+
+
+
+
 
             // 在死亡时发射5发弹幕，正前方散射
             for (int i = -2; i <= 2; i++) // 扩散角度 -2 到 +2

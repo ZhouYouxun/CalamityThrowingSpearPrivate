@@ -17,7 +17,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 {
     public class TenebreusTidesJavPROJ : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/CPreMoodLord/TenebreusTidesC/TenebreusTidesJav";
+        //public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/CPreMoodLord/TenebreusTidesC/TenebreusTidesJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.CPreMoodLord";
 
         public enum BehaviorState

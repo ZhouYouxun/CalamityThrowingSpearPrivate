@@ -26,6 +26,7 @@
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\HellionFlowerC\HellionFlowerJavVine.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\HellionFlowerC\TenebreusTidesWaterSword.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TenebreusTidesC\TenebreusTidesJav.png" />
+	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TenebreusTidesC\TenebreusTidesJavPROJ.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TenebreusTidesC\深渊潮涌.txt" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\TyphonsGreedC\TyphonsGreedJavBubble.png" />
 	  <None Remove="Weapons\ChangedWeapons\CPreMoodLord\VulcaniteLanceC\VulcaniteLanceJavTinyFlare.png" />

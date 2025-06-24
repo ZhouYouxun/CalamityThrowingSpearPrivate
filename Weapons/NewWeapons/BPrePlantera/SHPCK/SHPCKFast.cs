@@ -68,6 +68,34 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
                 Main.EntitySpriteDraw(lightTexture, drawPosition, null, innerColor, Projectile.rotation, lightTexture.Size() * 0.5f, fixedScale * 0.7f, SpriteEffects.None, 0);
             }
 
+
+            if (hasRecordedSpawnPosition)
+            {
+                Texture2D magicTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_03").Value;
+
+                // 旋转和缩放逐渐减小
+                Projectile.localAI[0] += 0.075f; // 旋转
+                Projectile.localAI[1] -= 0.02f; // 大小
+                if (Projectile.localAI[1] < 0f)
+                    Projectile.localAI[1] = 0f;
+
+                Vector2 drawPos = spawnEffectPosition - Main.screenPosition;
+                Color technoBlue = new Color(80, 200, 255, 200) * (Projectile.localAI[1] / 2.5f);
+                Color deepBlue = new Color(30, 100, 220, 240) * (Projectile.localAI[1] / 2.5f);
+
+                Main.EntitySpriteDraw(
+                    magicTexture,
+                    drawPos,
+                    null,
+                    deepBlue,
+                    Projectile.localAI[0],
+                    magicTexture.Size() / 2f,
+                    Projectile.localAI[1],
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
             return false;
         }
 
@@ -91,11 +119,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
         public override void OnSpawn(IEntitySource source)
         {
             // 传送至最近 Boss 或非 Boss 敌人
-            NPC target = FindClosestTarget(4000f); // 查找范围 4000
+            NPC target = FindClosestTarget(4000f);
             if (target != null)
             {
                 Projectile.Center = target.Center;
+                spawnEffectPosition = target.Center; // ✅ 记录出生特效位置
+                hasRecordedSpawnPosition = true;
             }
+
+
+            // 初始化旋转角度和缩放
+            Projectile.localAI[0] = Main.rand.NextFloat(MathHelper.TwoPi); // 初始旋转
+            Projectile.localAI[1] = 1.0f; // 初始缩放倍率（从X倍开始）
+
 
             // 透明化
             Projectile.alpha = 255;
@@ -116,62 +152,125 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             //    dust.noGravity = true;
             //}
 
-            // 生成吸引向心 Dust 特效，呈现闪电形状
+            //// 生成吸引向心 Dust 特效，呈现闪电形状
+            //{
+            //    float maxDustVelSpread = 1.2f;
+            //    int dustPerSegment = 32; // 每个闪电分段的粒子数
+            //    float lightningRotation = Main.rand.NextFloat(0, MathHelper.TwoPi); // 整体闪电的随机初始旋转
+
+            //    // 定义闪电的三个主要段
+            //    Vector2 segmentOneStart = new Vector2(0f, -120f);
+            //    Vector2 segmentOneEnd = new Vector2(-48f, 24f);
+            //    Vector2 segmentOneIncrement = (segmentOneEnd - segmentOneStart) / dustPerSegment;
+
+            //    Vector2 segmentTwoStart = segmentOneEnd;
+            //    Vector2 segmentTwoEnd = new Vector2(48f, -24f);
+            //    Vector2 segmentTwoIncrement = (segmentTwoEnd - segmentTwoStart) / dustPerSegment;
+
+            //    Vector2 segmentThreeStart = segmentTwoEnd;
+            //    Vector2 segmentThreeEnd = new Vector2(0f, 120f);
+            //    Vector2 segmentThreeIncrement = (segmentThreeEnd - segmentThreeStart) / dustPerSegment;
+
+            //    // 对每个分段生成 Dust
+            //    for (int i = 0; i < dustPerSegment; ++i)
+            //    {
+            //        // 每段的线性插值计算粒子位置
+            //        float interpolant = i + 0.5f;
+            //        Vector2 segmentOnePos = segmentOneStart + segmentOneIncrement * interpolant;
+            //        Vector2 segmentTwoPos = segmentTwoStart + segmentTwoIncrement * interpolant;
+            //        Vector2 segmentThreePos = segmentThreeStart + segmentThreeIncrement * interpolant;
+
+            //        // 将闪电形状整体旋转
+            //        segmentOnePos = segmentOnePos.RotatedBy(lightningRotation);
+            //        segmentTwoPos = segmentTwoPos.RotatedBy(lightningRotation);
+            //        segmentThreePos = segmentThreePos.RotatedBy(lightningRotation);
+
+            //        // 转换到弹幕中心坐标
+            //        segmentOnePos += Projectile.Center;
+            //        segmentTwoPos += Projectile.Center;
+            //        segmentThreePos += Projectile.Center;
+
+            //        // 随机加速度，吸向中心
+            //        float spreadSpeed = Main.rand.NextFloat(0.5f, maxDustVelSpread);
+            //        Vector2 velocityOne = (Projectile.Center - segmentOnePos).SafeNormalize(Vector2.Zero) * spreadSpeed;
+            //        Vector2 velocityTwo = (Projectile.Center - segmentTwoPos).SafeNormalize(Vector2.Zero) * spreadSpeed;
+            //        Vector2 velocityThree = (Projectile.Center - segmentThreePos).SafeNormalize(Vector2.Zero) * spreadSpeed;
+
+            //        // 创建 Dust
+            //        Dust d = Dust.NewDustPerfect(segmentOnePos, DustID.Electric, velocityOne, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
+            //        d.noGravity = true;
+
+            //        d = Dust.NewDustPerfect(segmentTwoPos, DustID.Electric, velocityTwo, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
+            //        d.noGravity = true;
+
+            //        d = Dust.NewDustPerfect(segmentThreePos, DustID.Electric, velocityThree, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
+            //        d.noGravity = true;
+            //    }
+            //}
+
+
             {
-                float maxDustVelSpread = 1.2f;
-                int dustPerSegment = 32; // 每个闪电分段的粒子数
-                float lightningRotation = Main.rand.NextFloat(0, MathHelper.TwoPi); // 整体闪电的随机初始旋转
+                // 1. 记录初始位置
+                Vector2 origin = Projectile.Center;
 
-                // 定义闪电的三个主要段
-                Vector2 segmentOneStart = new Vector2(0f, -120f);
-                Vector2 segmentOneEnd = new Vector2(-48f, 24f);
-                Vector2 segmentOneIncrement = (segmentOneEnd - segmentOneStart) / dustPerSegment;
-
-                Vector2 segmentTwoStart = segmentOneEnd;
-                Vector2 segmentTwoEnd = new Vector2(48f, -24f);
-                Vector2 segmentTwoIncrement = (segmentTwoEnd - segmentTwoStart) / dustPerSegment;
-
-                Vector2 segmentThreeStart = segmentTwoEnd;
-                Vector2 segmentThreeEnd = new Vector2(0f, 120f);
-                Vector2 segmentThreeIncrement = (segmentThreeEnd - segmentThreeStart) / dustPerSegment;
-
-                // 对每个分段生成 Dust
-                for (int i = 0; i < dustPerSegment; ++i)
+                // 2. Dust 粒子：爆发式放射 + 时间扭曲
+                int dustCount = 30;
+                for (int i = 0; i < dustCount; i++)
                 {
-                    // 每段的线性插值计算粒子位置
-                    float interpolant = i + 0.5f;
-                    Vector2 segmentOnePos = segmentOneStart + segmentOneIncrement * interpolant;
-                    Vector2 segmentTwoPos = segmentTwoStart + segmentTwoIncrement * interpolant;
-                    Vector2 segmentThreePos = segmentThreeStart + segmentThreeIncrement * interpolant;
+                    Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(80f, 124f); // 半径随机
+                    Vector2 pos = origin + offset;
+                    Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.8f, 3.2f); // 回吸式
 
-                    // 将闪电形状整体旋转
-                    segmentOnePos = segmentOnePos.RotatedBy(lightningRotation);
-                    segmentTwoPos = segmentTwoPos.RotatedBy(lightningRotation);
-                    segmentThreePos = segmentThreePos.RotatedBy(lightningRotation);
+                    Color dustColor = Main.rand.NextBool(2) ? Color.Cyan : Color.BlueViolet;
+                    float scale = Main.rand.NextFloat(1.2f, 2.1f);
 
-                    // 转换到弹幕中心坐标
-                    segmentOnePos += Projectile.Center;
-                    segmentTwoPos += Projectile.Center;
-                    segmentThreePos += Projectile.Center;
-
-                    // 随机加速度，吸向中心
-                    float spreadSpeed = Main.rand.NextFloat(0.5f, maxDustVelSpread);
-                    Vector2 velocityOne = (Projectile.Center - segmentOnePos).SafeNormalize(Vector2.Zero) * spreadSpeed;
-                    Vector2 velocityTwo = (Projectile.Center - segmentTwoPos).SafeNormalize(Vector2.Zero) * spreadSpeed;
-                    Vector2 velocityThree = (Projectile.Center - segmentThreePos).SafeNormalize(Vector2.Zero) * spreadSpeed;
-
-                    // 创建 Dust
-                    Dust d = Dust.NewDustPerfect(segmentOnePos, DustID.Electric, velocityOne, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
+                    Dust d = Dust.NewDustPerfect(pos, DustID.Electric, vel, 0, dustColor, scale);
                     d.noGravity = true;
-
-                    d = Dust.NewDustPerfect(segmentTwoPos, DustID.Electric, velocityTwo, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
-                    d.noGravity = true;
-
-                    d = Dust.NewDustPerfect(segmentThreePos, DustID.Electric, velocityThree, 100, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
-                    d.noGravity = true;
+                    d.fadeIn = 1.2f;
                 }
+
+                // 3. 方块粒子：随机旋转散落，表现科技能量核心爆发
+                int squareCount = 30;
+                for (int i = 0; i < squareCount; i++)
+                {
+                    Vector2 vel = Main.rand.NextVector2Circular(3f, 3f); // 缓慢漂浮感
+                    Color c = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat());
+                    SquareParticle square = new SquareParticle(
+                        origin,
+                        vel,
+                        false,
+                        Main.rand.Next(36, 64), // 存活时间
+                        Main.rand.NextFloat(1.2f, 2.5f), // 大小
+                        c * 1.5f
+                    );
+                    GeneralParticleHandler.SpawnParticle(square);
+                }
+
+                // 4. 线性拖尾粒子：方向感，表现“时空能量流动”
+                int sparkCount = 12;
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 4f);
+                    Color c = Color.Lerp(Color.OrangeRed, Color.Orange, Main.rand.NextFloat());
+
+                    Particle trail = new SparkParticle(
+                        origin + Main.rand.NextVector2Circular(16f, 16f),
+                        vel,
+                        false,
+                        60,
+                        Main.rand.NextFloat(0.8f, 1.4f),
+                        c
+                    );
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
+
             }
+
+
         }
+
+        private Vector2 spawnEffectPosition;
+        private bool hasRecordedSpawnPosition = false;
 
         public override void AI()
         {

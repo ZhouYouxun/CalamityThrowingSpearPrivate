@@ -31,6 +31,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 
         public override bool PreDraw(ref Color lightColor)
         {
+            //if (disableDraw)
+            //    return false;
+
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return false;
         }
@@ -51,6 +54,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
             Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
         }
+        private bool hasCollided = false;          // 是否已经命中地面
+        private bool disableDraw = false;          // 是否关闭 PreDraw
+        private bool beginSpawning = false;        // 是否开始地表发射流程
+        private int spawnTimer = 0;                // 发射间隔计时器
+        private int spawnCount = 0;                // 已发射次数
+        private Vector2 spawnDirection;            // 发射方向（正左或正右）
+        private Vector2 cachedDirection;
+
 
         public override void AI()
         {
@@ -60,11 +71,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             // Lighting - 添加深橙色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 模拟重力效果
-            if (Projectile.velocity.Y < 24f)
-            {
-                //Projectile.velocity.Y += 0.1f; // Y 轴速度逐渐增加
-            }
+
 
             // 飞行时留下卡其色的烟雾特效
             Projectile.ai[0] += 1f;
@@ -81,131 +88,74 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 }
             }
 
-            // 冷却计时器递减
-            if (Projectile.localAI[1] > 0)
-                Projectile.localAI[1]--;
-            // 穿墙计时器递减
-            if (Projectile.localAI[0] > 0)
+            // 模拟重力效果
+            if (Projectile.velocity.Y < 24f)
             {
-                Projectile.localAI[0]--;
-                if (Projectile.localAI[0] == 0)
+                //Projectile.velocity.Y += 0.1f; // Y 轴速度逐渐增加
+            }
+
+            if (Projectile.timeLeft == 400) // 初始帧缓存方向
+                cachedDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            if (beginSpawning)
+            {
+                spawnTimer--;
+                if (spawnTimer <= 0 && spawnCount < 6)
                 {
-                    Projectile.tileCollide = true; // 穿墙结束，恢复碰撞
+                    Vector2 spawnPos = Projectile.Center + spawnDirection * 64f * spawnCount; // xxf是每两个之间的间隔
+
+                    // 发射一枚向上的分裂弹幕
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        spawnPos,
+                        new Vector2(0f, -16f),
+                        ModContent.ProjectileType<EarthenJavSHARD>(),
+                        Projectile.damage,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+
+                    spawnCount++;
+                    spawnTimer = 3; // 每次间隔 X 帧
                 }
             }
+
         }
+
+
+
+    
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            // 使用钥匙大剑的特效【不必外包，因为没这必要】【搞错了，这个是一个圈，不是那个】
-            //{
-            //    // ✦ Keybrand 光环特效（在圆内随机位置）
-            //    Vector2 keybrandPosition = Projectile.Center + Main.rand.NextVector2Circular(35f, 35f);
-
-            //    FadingParticle ringParticle = new FadingParticle();
-            //    ringParticle.SetBasicInfo(TextureAssets.Extra[174], null, Vector2.Zero, keybrandPosition);
-            //    ringParticle.SetTypeInfo(40); // 生命周期：40帧
-
-            //    // 颜色：橙黄光环
-            //    Color orangeColor = new Color(1f, 0.6f, 0.2f, 1f);
-            //    ringParticle.ColorTint = orangeColor;
-            //    ringParticle.ColorTint.A = 200;
-
-            //    // 大小与扩散
-            //    ringParticle.Scale = Vector2.One * Main.rand.NextFloat(0.6f, 1.0f);
-            //    ringParticle.ScaleVelocity = Vector2.One * 0.1f;
-            //    ringParticle.ScaleAcceleration = -ringParticle.ScaleVelocity / 40f; // 让扩散逐渐减缓
-
-            //    // 淡入淡出时间
-            //    ringParticle.FadeInNormalizedTime = 0.1f;
-            //    ringParticle.FadeOutNormalizedTime = 0.9f;
-
-            //    // 加入粒子系统
-            //    Main.ParticleSystem_World_OverPlayers.Add(ringParticle);
-            //}
-
+            if (!hasCollided)
             {
-                // ✦ Keybrand 原版粒子特效：在以弹幕中心为圆心、半径35的范围内随机一个点
-                Vector2 randomOffset = Main.rand.NextVector2Circular(35f, 35f);
-                Vector2 keybrandPosition = Projectile.Center + randomOffset;
+                hasCollided = true;
+                disableDraw = true;
+                beginSpawning = true;
 
-                ParticleOrchestrator.RequestParticleSpawn(
-                    clientOnly: false,
-                    ParticleOrchestraType.Keybrand,
-                    new ParticleOrchestraSettings
-                    {
-                        PositionInWorld = keybrandPosition
-                    },
-                    Projectile.owner
-                );
+                Projectile.friendly = false;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.tileCollide = false;
+                Projectile.timeLeft = 70;
+                //Projectile.alpha = 255;
+                Projectile.velocity = new Vector2(0f, -6f); // 给一个向上的初速（可调）
+
+
+                // 朝向判定（只允许水平两方向）
+                spawnDirection = cachedDirection.X < 0 ? -Vector2.UnitX : Vector2.UnitX;
+
+                // 触发音效 & 粒子 & 震屏
+                SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+                for (int i = 0; i < 10; i++)
+                {
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0, 0, 150, default, 1.2f);
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0, 0, 150, default, 1.2f);
+                }
+                float shakePower = 1.5f;
+                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
             }
-
-
-            // 如果在冷却中，忽略
-            if (Projectile.localAI[1] > 0)
-                return false;
-
-            // 设置穿墙状态：只持续X帧
-            Projectile.tileCollide = false;
-            Projectile.localAI[0] = 50;
-
-
-
-            // 如果还在冷却中，则忽略本次碰撞
-            if (Projectile.localAI[1] > 0)
-                return false;
-
-            // 设置碰撞冷却为10帧
-            Projectile.localAI[1] = 10;
-
-            // 减少穿透次数
-            Projectile.penetrate--;
-            if (Projectile.penetrate <= 0)
-            {
-                Projectile.Kill();
-                return false;
-            }
-
-            // 播放爆炸音效
-            SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
-
-            // ✦ 发射 FossilShard 弹片（固定方向：正上方 ±45°）
-            for (int i = 0; i < Main.rand.Next(5, 7); i++)
-            {
-                // 以正上为中心 ±45°
-                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
-                Vector2 shardDirection = -Vector2.UnitY.RotatedBy(angleOffset);
-
-                // 随机速度与抖动
-                float speed = Main.rand.NextFloat(6f, 9f);
-                Vector2 shardVelocity = shardDirection * speed;
-
-                // 发射弹片
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, shardVelocity,
-                    ModContent.ProjectileType<EarthenJavSHARD>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
-            }
-
-
-            // ✦ 撞击特效粒子
-            for (int i = 0; i < 10; i++)
-            {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0, 0, 150, default, 1.2f);
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0, 0, 150, default, 1.2f);
-            }
-
-            // ✦ 屏幕震动效果
-            float shakePower = 1.5f;
-            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-
-            // ✦ 以绝对正上方为基准偏转 ±30°
-            float randomAngle = MathHelper.ToRadians(Main.rand.Next(-60, 61));
-            Vector2 baseDirection = -Vector2.UnitY; // 正上方方向（注意Y轴向下为正）
-            Vector2 newDirection = baseDirection.RotatedBy(randomAngle);
-
-            // 保持原有速度大小，只改变方向
-            Projectile.velocity = newDirection * Projectile.velocity.Length();
-
             return false;
         }
 
@@ -214,6 +164,44 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
         {
             target.AddBuff(ModContent.BuffType<Crumbling>(), 300); // 粉碎
         }
+
+
+
+
+
+        public override void OnKill(int timeLeft)
+        {
+            // 爆炸弹幕：X个 EarthenJavSHARD 弹片
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 shardVelocity = Main.rand.NextVector2Circular(5f, 5f); // 随机方向
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    shardVelocity,
+                    ModContent.ProjectileType<EarthenJavSHARD>(),
+                    (int)(Projectile.damage * 0.5f),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+
+            // 粒子特效：泥土 + 石头 + 沙尘混合
+            int dustAmount = 18;
+            for (int i = 0; i < dustAmount; i++)
+            {
+                int dustType = Main.rand.Next(new int[] { DustID.Dirt, DustID.Stone, DustID.Sand, DustID.SandstormInABottle });
+                Dust d = Dust.NewDustPerfect(Projectile.Center, dustType);
+                d.velocity = Main.rand.NextVector2Circular(3.5f, 3.5f);
+                d.scale = Main.rand.NextFloat(1.3f, 2.0f);
+                d.noGravity = Main.rand.NextBool();
+            }
+
+            // 可选：爆炸声
+            SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+        }
+
+
 
     }
 }

@@ -25,9 +25,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
             {
                 Player player = Main.LocalPlayer;
 
-                // 检查是否已击败 DoG
-                if (!DownedBossSystem.downedDoG)
-                    return; // 未击败 DoG，直接返回
+                // 检查是否已击败 Polterghast
+                if (!DownedBossSystem.downedPolterghast)
+                    return; // 未击败 Polterghast，直接返回
 
                 // 检查玩家是否手持 PlatinumWatch 或 GoldWatch
                 if (player.HeldItem.type != ItemID.PlatinumWatch && player.HeldItem.type != ItemID.GoldWatch)

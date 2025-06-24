@@ -25,100 +25,94 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             base.Projectile.aiStyle = 1;
             base.Projectile.timeLeft = 250;
             base.Projectile.tileCollide = false;
-            base.AIType = 1;
+            AIType = ProjectileID.WoodenArrowFriendly;
         }
-
-        //private int gravityTimer = 0;
-        //private int gravityDuration = 30; // 初始重力周期长度
-        //private float gravityDirection = 1f; // 当前重力方向，1 = 向下，-1 = 向上
-        //private float verticalSpeed = 0f; // 当前Y方向速度（累积线性增加）
-        //private float speedGainPerFrame = 0.08f; // 每帧加速量（线性增长）
-
-
-        private int gravityTimer = 0;
-        private int gravityDuration = 30;
-        private float gravityDirection = 1f;
-        private float gravityAccel = 0.08f; // 每帧加速度
 
         public override void AI()
         {
             Projectile.rotation += Projectile.velocity.Y;
 
 
-            // 灵感来自于shellshocklive里面的武器："卫星"
-            {
-                //// 这个是线性反转，也就是折线
-                //gravityTimer++;
-                //if (gravityTimer >= gravityDuration)
-                //{
-                //    gravityTimer = 0;
+            //// 灵感来自于shellshocklive里面的武器："卫星"
+            //{
+            //    //// 这个是线性反转，也就是折线
+            //    //gravityTimer++;
+            //    //if (gravityTimer >= gravityDuration)
+            //    //{
+            //    //    gravityTimer = 0;
 
-                //    // 每次周期结束，反转重力方向
-                //    gravityDirection *= -1f;
+            //    //    // 每次周期结束，反转重力方向
+            //    //    gravityDirection *= -1f;
 
-                //    // 生成新的周期长度（每次不同）
-                //    gravityDuration = Main.rand.Next(20, 46); // 周期 20~45 帧
-                //}
+            //    //    // 生成新的周期长度（每次不同）
+            //    //    gravityDuration = Main.rand.Next(20, 46); // 周期 20~45 帧
+            //    //}
 
-                //// 垂直速度线性增加（每帧都加）
-                //verticalSpeed += speedGainPerFrame;
+            //    //// 垂直速度线性增加（每帧都加）
+            //    //verticalSpeed += speedGainPerFrame;
 
-                //// 应用速度变化
-                //Projectile.velocity.Y = gravityDirection * verticalSpeed;
+            //    //// 应用速度变化
+            //    //Projectile.velocity.Y = gravityDirection * verticalSpeed;
 
-                //// 保持水平速度不变（这句不能省，否则你之前的 *= 会不断衰减）
-                //Projectile.velocity.X = Projectile.velocity.X;
-
-
-
-                // 这个是指数反转，也就是每次都曲线
-                // 每gravityDuration帧反转一次重力方向
-                gravityTimer++;
-                if (gravityTimer >= gravityDuration)
-                {
-                    gravityTimer = 0;
-                    gravityDirection *= -1f;
-                    gravityDuration = Main.rand.Next(20, 46); // 每段时长变动
-                }
-
-                // 垂直加速度累加（模拟抛物线效果）
-                Projectile.velocity.Y += gravityDirection * gravityAccel;
-
-                // 水平速度维持不变
-                // （可略做扰动让轨迹更“生动”）
-                Projectile.velocity.X = Projectile.velocity.X;
-
-
-            }
+            //    //// 保持水平速度不变（这句不能省，否则你之前的 *= 会不断衰减）
+            //    //Projectile.velocity.X = Projectile.velocity.X;
 
 
 
-            if (Main.rand.NextBool(2)) // 每帧约50%概率生成
-            {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f), DustID.Dirt);
-                d.scale = Main.rand.NextFloat(1.2f, 1.6f);
-                d.velocity = -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f);
-                d.noGravity = false;
-            }
+            //    // 这个是指数反转，也就是每次都曲线
+            //    // 每gravityDuration帧反转一次重力方向
+            //    gravityTimer++;
+            //    if (gravityTimer >= gravityDuration)
+            //    {
+            //        gravityTimer = 0;
+            //        gravityDirection *= -1f;
+            //        gravityDuration = Main.rand.Next(20, 46); // 每段时长变动
+            //    }
 
-            if (Main.rand.NextBool(4)) // 每4帧左右生成一次
-            {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Stone);
-                d.scale = 1.0f;
-                d.velocity = -Projectile.velocity.SafeNormalize(Vector2.UnitY) * 1.2f;
-                d.noGravity = true;
-            }
+            //    // 垂直加速度累加（模拟抛物线效果）
+            //    Projectile.velocity.Y += gravityDirection * gravityAccel;
 
-            if (Projectile.velocity.Y > 4f && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.SandstormInABottle);
-                    d.velocity = Main.rand.NextVector2Circular(2f, 1.5f);
-                    d.scale = 1.3f;
-                    d.noGravity = true;
-                }
-            }
+            //    // 水平速度维持不变
+            //    // （可略做扰动让轨迹更“生动”）
+            //    Projectile.velocity.X = Projectile.velocity.X;
+
+
+            //}
+
+
+            if (Projectile.velocity.Y <= 0f)
+                Projectile.velocity.Y = 0.1f;
+            Projectile.rotation += Projectile.velocity.Y;
+            Projectile.velocity.Y *= 1.05f;
+
+
+            //if (Main.rand.NextBool(2)) // 每帧约50%概率生成
+            //{
+            //    Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f), DustID.Dirt);
+            //    d.scale = Main.rand.NextFloat(1.2f, 1.6f);
+            //    d.velocity = -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f);
+            //    d.noGravity = false;
+            //}
+
+            //if (Main.rand.NextBool(4)) // 每4帧左右生成一次
+            //{
+            //    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Stone);
+            //    d.scale = 1.0f;
+            //    d.velocity = -Projectile.velocity.SafeNormalize(Vector2.UnitY) * 1.2f;
+            //    d.noGravity = true;
+            //}
+
+            // 钻地期间的特效
+            //if (Projectile.velocity.Y > 4f && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+            //{
+            //    for (int i = 0; i < 3; i++)
+            //    {
+            //        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.SandstormInABottle);
+            //        d.velocity = Main.rand.NextVector2Circular(2f, 1.5f);
+            //        d.scale = 1.3f;
+            //        d.noGravity = true;
+            //    }
+            //}
 
         }
 

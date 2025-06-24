@@ -114,7 +114,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
             Projectile.timeLeft = 720;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
+            Projectile.tileCollide = false; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用通用无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧

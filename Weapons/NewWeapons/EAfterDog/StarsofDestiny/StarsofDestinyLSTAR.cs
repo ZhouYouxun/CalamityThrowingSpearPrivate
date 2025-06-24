@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
 {
@@ -39,6 +40,66 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
 
         public override void AI()
         {
+            {
+                // 🌌 彗星轨迹扰动粒子（核心 + 扩散）
+                if (Main.rand.NextBool(1)) // 仍保持每帧最多一次
+                {
+                    // 主方形粒子（中心）
+                    SquareParticle sq = new SquareParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
+                        Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(0.3f, 0.3f),
+                        false,
+                        Main.rand.Next(18, 32),
+                        Main.rand.NextFloat(0.8f, 1.3f),
+                        Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()) * 0.6f
+                    );
+                    GeneralParticleHandler.SpawnParticle(sq);
+
+                    // 每隔3~6帧，触发扩散小环（不全时间激活，控制负载）
+                    if (Projectile.timeLeft % Main.rand.Next(3, 7) == 0)
+                    {
+                        int dustCount = 4;
+                        float radius = Main.rand.NextFloat(8f, 14f);
+                        for (int i = 0; i < dustCount; i++)
+                        {
+                            float angle = MathHelper.TwoPi / dustCount * i + Main.rand.NextFloat(-0.2f, 0.2f); // 微乱角
+                            Vector2 offset = angle.ToRotationVector2() * radius;
+                            Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.4f, 1.2f);
+
+                            Dust d = Dust.NewDustPerfect(
+                                Projectile.Center + offset,
+                                DustID.Electric,
+                                velocity,
+                                100,
+                                Color.LightBlue * 0.8f,
+                                Main.rand.NextFloat(0.9f, 1.3f)
+                            );
+                            d.noGravity = true;
+                            d.fadeIn = 1.1f;
+                        }
+                    }
+                }
+
+
+                // 🌠 彗星飞行路径中的 “恒星闪烁粒子”
+                if (Main.rand.NextBool(2))
+                {
+                    Vector2 spawnOffset = Main.rand.NextVector2Circular(12f, 12f);
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center + spawnOffset,
+                        DustID.FireworkFountain_Yellow,
+                        Vector2.Zero,
+                        120,
+                        Color.Gold,
+                        Main.rand.NextFloat(0.9f, 1.2f)
+                    );
+                    d.fadeIn = 1.3f;
+                    d.noGravity = true;
+                }
+
+            }
+
+
             if (Projectile.ai[0] == 3f)
                 CalamityUtils.HomeInOnNPC(Projectile, true, 300f, 12f, 20);
 
@@ -86,6 +147,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.StarsofDestiny
                 if (Main.rand.NextBool(20) && Main.netMode != NetmodeID.Server)
                     Gore.NewGore(Projectile.GetSource_FromAI(), Projectile.position, new Vector2(Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f), Main.rand.Next(16, 18), 1f);
             }
+
+
+
+
+
+
 
             Time++;
         }

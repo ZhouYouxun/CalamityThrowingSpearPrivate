@@ -119,29 +119,80 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
         {
             SoundEngine.PlaySound(SoundID.Item30, Projectile.Center);
 
-            // 创建雪花形法阵效果
-            int numParticles = 60; // 总粒子数
-            float radius = 50f; // 法阵半径
-            float expansionSpeed = 2f; // 粒子向外扩展的速度
+            Particle blastRing = new CustomPulse(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.White,
+                "CalamityThrowingSpear/Texture/christmas512",
+                Vector2.One * 0.33f,
+                Main.rand.NextFloat(-10f, 10f),
+                0.10f,
+                0.25f,
+                30
+            );
+            GeneralParticleHandler.SpawnParticle(blastRing);
 
+            // === 无序爆散圆圈 ===
+            int numParticles = 60;
+            float radius = 50f;
+            float expansionSpeed = 2f;
             for (int i = 0; i < numParticles; i++)
             {
-                // 计算粒子初始位置，以雪花形分布
-                float angle = MathHelper.TwoPi / 6 * (i % 6) + Main.rand.NextFloat(-MathHelper.PiOver4 / 2, MathHelper.PiOver4 / 2); // 每6个粒子形成一个“雪花分支”
-                float offset = radius * (1 + Main.rand.NextFloat(-0.2f, 0.2f)); // 半径随机化
-
+                float angle = MathHelper.TwoPi / 6 * (i % 6) + Main.rand.NextFloat(-MathHelper.PiOver4 / 2, MathHelper.PiOver4 / 2);
+                float offset = radius * (1 + Main.rand.NextFloat(-0.2f, 0.2f));
                 Vector2 startPosition = Projectile.Center + angle.ToRotationVector2() * offset;
-
-                // 设置粒子的速度，以随机扩散形式
-                float particleAngle = angle + Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4); // 偏移角度
+                float particleAngle = angle + Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4);
                 Vector2 velocity = particleAngle.ToRotationVector2() * Main.rand.NextFloat(2f, expansionSpeed);
-
-                // 创建粒子
                 Dust dust = Dust.NewDustPerfect(startPosition, DustID.BlueCrystalShard, velocity, 100, Color.White, 1.5f);
-                dust.noGravity = true; // 悬浮粒子效果
-                dust.fadeIn = 1.2f; // 逐渐消失
-                dust.scale = Main.rand.NextFloat(1.0f, 1.5f); // 粒子大小随机化
+                dust.noGravity = true;
+                dust.fadeIn = 1.2f;
+                dust.scale = Main.rand.NextFloat(1.0f, 1.5f);
             }
+
+            // === 有序雪花几何法阵 ===
+            int[] snowDustTypes = { 68, 137, 80, 135, 185 };
+            int totalRays = 6;
+            int raysPerBranch = 6;
+            float branchLength = 60f;
+            float innerRadius = 12f;
+
+            for (int i = 0; i < totalRays; i++)
+            {
+                float baseAngle = MathHelper.TwoPi / totalRays * i;
+
+                for (int j = 0; j <= raysPerBranch; j++)
+                {
+                    float dist = innerRadius + (branchLength * j / raysPerBranch);
+                    Vector2 pos = Projectile.Center + baseAngle.ToRotationVector2() * dist;
+                    Vector2 vel = baseAngle.ToRotationVector2() * 1.8f * (1f + j * 0.1f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+
+                    int dustType = snowDustTypes[Main.rand.Next(snowDustTypes.Length)];
+                    Dust dust = Dust.NewDustPerfect(pos, dustType, vel, 100, Color.Cyan, 1.6f + Main.rand.NextFloat(-0.3f, 0.3f));
+                    dust.noGravity = true;
+                    dust.fadeIn = 1.3f;
+                }
+
+                // 添加分叉枝干
+                for (int j = 1; j < raysPerBranch; j++)
+                {
+                    float dist = innerRadius + (branchLength * j / raysPerBranch);
+                    Vector2 basePos = Projectile.Center + baseAngle.ToRotationVector2() * dist;
+
+                    for (int b = -1; b <= 1; b += 2) // 左右两边
+                    {
+                        float branchAngle = baseAngle + b * MathHelper.PiOver4;
+                        Vector2 sidePos = basePos + branchAngle.ToRotationVector2() * 8f;
+                        Vector2 sideVel = branchAngle.ToRotationVector2() * 1.6f + Main.rand.NextVector2Circular(0.3f, 0.3f);
+
+                        int dustType = snowDustTypes[Main.rand.Next(snowDustTypes.Length)];
+                        Dust dust = Dust.NewDustPerfect(sidePos, dustType, sideVel, 120, Color.LightBlue, 1.3f);
+                        dust.noGravity = true;
+                        dust.fadeIn = 1.1f;
+                    }
+                }
+            }
+
+
 
             //检查是否存在 CoolWhipProj
             bool coolWhipExists = Main.projectile.Any(proj => proj.active && proj.type == 917);
