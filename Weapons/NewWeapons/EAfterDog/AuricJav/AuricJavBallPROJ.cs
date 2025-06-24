@@ -47,66 +47,68 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
         public override void AI()
         {
-
-
-            // 飞行中持续生成金色 & 蓝色 Dust
-            int[] yellowDust = { 244, 246, 228, 269 }; // 黄色电感类
-            int[] blueDust = { 230, 226, 187 };        // 蓝色电能类
-
-            // 在飞行过程中逐渐变透明和加速
-            Projectile.alpha += 5;
-            Projectile.velocity *= 1.05f;
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
-
-            // 产生金色粒子效果
-            int dustType = Main.rand.NextBool(3) ? 244 : 246;
-            float scale = 0.8f + Main.rand.NextFloat(0.6f);
-            int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType);
-            Main.dust[idx].noGravity = true;
-            Main.dust[idx].velocity = Projectile.velocity / 3f;
-            Main.dust[idx].scale = scale;
-
-
-
-
-            // 正弦波轨迹粒子（每帧生成多个相位点，形成连续波纹）
-            float waveAmplitude = 28f; // 波动幅度
-            float waveFrequency = 0.52f; // 波动频率
-            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
-
-            int stepsPerFrame = 3; // 每帧生成几段“相位插值”
-            for (int i = 0; i < stepsPerFrame; i++)
+            if (Time > 10)
             {
-                float fakeTime = Time + i * (1f / stepsPerFrame); // 插值相位
-                float waveOffset = (float)Math.Sin(fakeTime * waveFrequency) * waveAmplitude;
-                Vector2 spawnPos = Projectile.Center + normal * waveOffset;
+                // 飞行中持续生成金色 & 蓝色 Dust
+                int[] yellowDust = { 244, 246, 228, 269 }; // 黄色电感类
+                int[] blueDust = { 230, 226, 187 };        // 蓝色电能类
 
-                int dustType2 = Main.rand.NextBool(2) ? yellowDust[Main.rand.Next(yellowDust.Length)] : blueDust[Main.rand.Next(blueDust.Length)];
-                Dust d = Dust.NewDustPerfect(spawnPos, dustType2, Vector2.Zero, 100, Color.White, 1.4f);
-                d.noGravity = true;
-                d.fadeIn = 1.2f;
-            }
-
+                // 在飞行过程中逐渐变透明和加速
+                Projectile.alpha += 5;
+                Projectile.velocity *= 1.05f;
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
 
+                // 产生金色粒子效果
+                int dustType = Main.rand.NextBool(3) ? 244 : 246;
+                float scale = 0.8f + Main.rand.NextFloat(0.6f);
+                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType);
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity = Projectile.velocity / 3f;
+                Main.dust[idx].scale = scale;
 
-            // 每X帧创建一圈旋转粒子（像磁力感）
-            if (Time % 25 == 0)
-            {
-                for (int j = 0; j < 4; j++)
+
+
+
+                // 正弦波轨迹粒子（每帧生成多个相位点，形成连续波纹）
+                float waveAmplitude = 28f; // 波动幅度
+                float waveFrequency = 0.52f; // 波动频率
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
+
+                int stepsPerFrame = 3; // 每帧生成几段“相位插值”
+                for (int i = 0; i < stepsPerFrame; i++)
                 {
-                    float angle = MathHelper.TwoPi * j / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
-                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * 6f;
-                    Dust d2 = Dust.NewDustPerfect(pos, 226, angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 1.2f, 100, Color.SkyBlue, 1.1f);
-                    d2.noGravity = true;
-                    d2.fadeIn = 1.1f;
+                    float fakeTime = Time + i * (1f / stepsPerFrame); // 插值相位
+                    float waveOffset = (float)Math.Sin(fakeTime * waveFrequency) * waveAmplitude;
+                    Vector2 spawnPos = Projectile.Center + normal * waveOffset;
+
+                    int dustType2 = Main.rand.NextBool(2) ? yellowDust[Main.rand.Next(yellowDust.Length)] : blueDust[Main.rand.Next(blueDust.Length)];
+                    Dust d = Dust.NewDustPerfect(spawnPos, dustType2, Vector2.Zero, 100, Color.White, 1.4f);
+                    d.noGravity = true;
+                    d.fadeIn = 1.2f;
                 }
+
+
+
+
+                // 每X帧创建一圈旋转粒子（像磁力感）
+                if (Time % 25 == 0)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        float angle = MathHelper.TwoPi * j / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
+                        Vector2 pos = Projectile.Center + angle.ToRotationVector2() * 6f;
+                        Dust d2 = Dust.NewDustPerfect(pos, 226, angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 1.2f, 100, Color.SkyBlue, 1.1f);
+                        d2.noGravity = true;
+                        d2.fadeIn = 1.1f;
+                    }
+                }
+
             }
 
 
-            
+
 
             Time ++;
         }

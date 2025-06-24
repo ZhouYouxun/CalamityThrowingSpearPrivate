@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
 
             // 外圈贴图：灵魂漩涡
-            Texture2D vortexTexture = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/SoulVortex").Value;
+            Texture2D vortexTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/twirl_01").Value;
             for (int i = 0; i < 4; i++)
             {
                 float angle = MathHelper.TwoPi * i / 3f - Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 1.5f; // ⚡反向旋转 + 加速
@@ -55,8 +55,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             }
 
             // 内圈贴图：BloomCircle
-            Texture2D bloom = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
-            float randSize = Main.rand.NextFloat(0.95f, 1.1f);
+            Texture2D bloom = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/Lightning").Value;
+            float randSize = Main.rand.NextFloat(0.05f, 0.03f);
 
             // 中心闪电蓝 + 外圈白
             Color innerColor = Color.Lerp(Color.LightBlue, Color.White, 0.4f);
@@ -76,7 +76,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 12;
+            Projectile.width = Projectile.height = 50;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
