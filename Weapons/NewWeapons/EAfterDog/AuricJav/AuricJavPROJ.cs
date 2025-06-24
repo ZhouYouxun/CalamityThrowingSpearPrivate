@@ -179,13 +179,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         public override void OnKill(int timeLeft)
         {
             // 播放音效
-            SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+            //SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/QuasarExploded"));
 
+            //SoundStyle boom = new SoundStyle("CalamityThrowingSpear/Sound/QuasarExploded")
+            //{
+            //    Volume = 5.5f,
+            //    Pitch = -0.05f
+            //};
+
+            //SoundEngine.PlaySound(boom, Projectile.Center);
+
+            
             // 获取弹幕中心位置
             Vector2 spawnPosition = Projectile.Center;
             ProduceHexagonEffect(spawnPosition); // 释放小阵法
-            
-            
+
+
             // 生成金黄色 Dust 粒子特效
             for (int i = 0; i < 30; i++)
             {
@@ -199,6 +209,91 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 dust.noGravity = true; // 粒子无重力效果
                 dust.fadeIn = 1.2f; // 粒子淡入效果
             }
+
+            Particle pulse = new DirectionalPulseRing(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.White,
+                new Vector2(1f, 1f),
+                Main.rand.NextFloat(4f, 6f), // 可调
+                0.1f,
+                2.5f,
+                12
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
+
+
+
+            
+                // 粒子设定
+                int[] yellowDust = new int[] { 244, 246, 228, 269 };
+                int[] blueDust = new int[] { 230, 226, 187 };
+
+                // 1. 主视觉电光爆裂
+                for (int i = 0; i < 36; i++)
+                {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float distance = Main.rand.NextFloat(20f, 40f);
+                    Vector2 offset = angle.ToRotationVector2() * distance;
+                    Vector2 pos = spawnPosition + offset;
+
+                    int dustType = yellowDust[Main.rand.Next(yellowDust.Length)];
+                    Dust d = Dust.NewDustPerfect(pos, dustType, offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f), 100, Color.White, 1.9f);
+                    d.noGravity = true;
+                    d.fadeIn = 0.8f;
+                }
+
+                // 2. 十字方向电弧线条
+                Vector2[] directions2 = new Vector2[] { Vector2.UnitX, -Vector2.UnitX, Vector2.UnitY, -Vector2.UnitY };
+                foreach (Vector2 dir in directions2)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        float length = Main.rand.NextFloat(20f, 40f);
+                        Vector2 pos = spawnPosition + dir * length;
+                        int dustType = blueDust[Main.rand.Next(blueDust.Length)];
+                        Dust d = Dust.NewDustPerfect(pos, dustType, dir * Main.rand.NextFloat(4f, 7f), 120, Color.Cyan, 1.6f);
+                        d.noGravity = true;
+                        d.fadeIn = 1.2f;
+                    }
+                }
+
+                // 3. 垂直电冲击柱
+                for (int i = 0; i < 14; i++)
+                {
+                    Vector2 vel = Vector2.UnitY * (Main.rand.NextBool() ? 1 : -1) * Main.rand.NextFloat(4f, 8f);
+                    int dustType = 230;
+                    Dust d = Dust.NewDustPerfect(spawnPosition, dustType, vel, 100, Color.LightBlue, 1.7f);
+                    d.noGravity = true;
+                    d.fadeIn = 1.4f;
+                }
+
+                // 4. 环状脉冲光圈
+                for (int i = 0; i < 16; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 16f;
+                    Vector2 pos = spawnPosition + angle.ToRotationVector2() * 18f;
+                    Dust d = Dust.NewDustPerfect(pos, 244, -angle.ToRotationVector2() * 1f, 80, Color.Gold, 1.4f);
+                    d.noGravity = true;
+                }
+
+                // 5. 悬浮余辉粒子
+                for (int i = 0; i < 12; i++)
+                {
+                    Vector2 pos = spawnPosition + Main.rand.NextVector2Circular(14f, 14f);
+                    int dustType = yellowDust[Main.rand.Next(yellowDust.Length)];
+                    Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f), 120, Color.White, 2f);
+                    d.noGravity = true;
+                    d.fadeIn = 2.4f;
+                }
+
+            
+
+
+
+
+
+
 
             // 定义左右方向的速度
             Vector2[] directions = { new Vector2(-1, 0), new Vector2(1, 0) }; // 左方和右方方向
