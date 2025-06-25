@@ -14,6 +14,7 @@ using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 {
@@ -188,6 +189,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                     Vector2 fireVel = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVel,
                         ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), Projectile.damage, 0f, Projectile.owner);
+
+                    SoundEngine.PlaySound(SoundID.Item23, Projectile.Center);
 
                     // 冷却时间逐步缩短，最短为6帧
                     fireInterval = Math.Max(fireInterval - fireIntervalDecrement, 6);
