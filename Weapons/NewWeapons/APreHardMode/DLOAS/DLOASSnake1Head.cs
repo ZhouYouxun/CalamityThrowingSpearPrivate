@@ -41,14 +41,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 
         public override void AI()
         {
-            // 仅在第一帧获取 `DLOASPROJ` ID
+            // 第一次执行：记录目标弹幕 ID
             if (Projectile.ai[1] == 0)
             {
                 targetProjectileID = (int)Projectile.ai[0];
                 Projectile.ai[1] = 1;
             }
 
-            // 查找 `DLOASPROJ`
+            // 获取目标弹幕（DLOAS 主弹幕）
             Projectile target = Main.projectile[targetProjectileID];
             if (!target.active || target.type != ModContent.ProjectileType<DLOASPROJ>())
             {
@@ -56,48 +56,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
                 return;
             }
 
-            Vector2 targetDirection = target.Center - Projectile.Center;
-            float distance = targetDirection.Length();
+            // 计算目标方向与当前角度
+            Vector2 toTarget = target.Center - Projectile.Center;
+            float desiredAngle = toTarget.ToRotation();
+            float currentAngle = Projectile.velocity.ToRotation();
+            float angleDiff = MathHelper.WrapAngle(desiredAngle - currentAngle);
 
-            // 检测是否进入 X × 16 范围的圆圈
-            if (isTracking && distance <= 5 * 16f)
+            // 限制每帧最大旋转角度（更懒惰）
+            float maxTurnAngle = MathHelper.ToRadians(3f);
+            angleDiff = MathHelper.Clamp(angleDiff, -maxTurnAngle, maxTurnAngle);
+
+            // 应用新速度（基于旧速度方向旋转后维持原速）
+            float speed = Projectile.velocity.Length();
+            float newAngle = currentAngle + angleDiff;
+            Projectile.velocity = new Vector2((float)Math.Cos(newAngle), (float)Math.Sin(newAngle)) * speed;
+
+            // 限制最大速度（防止过冲）
+            float maxSpeed = 9.5f;
+            if (Projectile.velocity.Length() > maxSpeed)
             {
-                isTracking = false; // 停止追踪
-                trackingCooldown = Main.rand.Next(15, 36); // 进入直线飞行模式 15~35 帧
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * maxSpeed;
             }
 
-            if (!isTracking)
-            {
-                trackingCooldown--;
-
-                // **直线飞行**
-                if (trackingCooldown <= 0)
-                {
-                    isTracking = true; // 重新启用追踪
-                }
-            }
-            else
-            {
-                // **追踪 `DLOASPROJ`，但角度变化受限制**
-                targetDirection.Normalize();
-                float maxTurnAngle = MathHelper.ToRadians(5); // 每帧最多旋转 X°
-                Vector2 newVelocity = Vector2.Lerp(Projectile.velocity, targetDirection * baseSpeed, 0.1f);
-                float angleDifference = MathHelper.WrapAngle(newVelocity.ToRotation() - Projectile.velocity.ToRotation());
-
-                // 限制最大转向角度
-                if (Math.Abs(angleDifference) > maxTurnAngle)
-                {
-                    angleDifference = Math.Sign(angleDifference) * maxTurnAngle;
-                    newVelocity = Projectile.velocity.RotatedBy(angleDifference);
-                }
-
-                Projectile.velocity = newVelocity;
-            }
-
-            // 旋转朝向飞行方向
+            // 旋转朝向飞行方向（偏移 π 是为了 sprite 对齐）
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
         }
-        
+
 
         public override void OnKill(int timeLeft)
         {

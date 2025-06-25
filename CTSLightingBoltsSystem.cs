@@ -518,8 +518,91 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+        public static void Spawn_BansheeSoulOrbs(Vector2 center, float rotationAngle)
+        {
+            float radius = 32f; // 半径为 2 × 16 = 32 像素
+
+            // 粉色光点
+            Vector2 pinkOffset = rotationAngle.ToRotationVector2() * radius;
+            PrettySparkleParticle pink = _poolPrettySparkle.RequestParticle();
+            pink.ColorTint = new Color(1f, 0.5f, 0.9f); // 粉红色
+            pink.LocalPosition = center + pinkOffset;
+            pink.Rotation = rotationAngle;
+            pink.Scale = new Vector2(2f, 1f);
+            pink.FadeInNormalizedTime = 5E-06f;
+            pink.FadeOutNormalizedTime = 0.95f;
+            pink.TimeToLive = 30;
+            pink.FadeOutEnd = 30;
+            pink.FadeInEnd = 15;
+            pink.FadeOutStart = 15;
+            pink.AdditiveAmount = 0.45f;
+            Main.ParticleSystem_World_OverPlayers.Add(pink);
+
+            // 蓝色光点（相差180度）
+            float blueAngle = rotationAngle + MathHelper.Pi;
+            Vector2 blueOffset = blueAngle.ToRotationVector2() * radius;
+            PrettySparkleParticle blue = _poolPrettySparkle.RequestParticle();
+            blue.ColorTint = new Color(0.4f, 0.8f, 1f); // 天蓝色
+            blue.LocalPosition = center + blueOffset;
+            blue.Rotation = blueAngle;
+            blue.Scale = new Vector2(2f, 1f);
+            blue.FadeInNormalizedTime = 5E-06f;
+            blue.FadeOutNormalizedTime = 0.95f;
+            blue.TimeToLive = 30;
+            blue.FadeOutEnd = 30;
+            blue.FadeInEnd = 15;
+            blue.FadeOutStart = 15;
+            blue.AdditiveAmount = 0.45f;
+            Main.ParticleSystem_World_OverPlayers.Add(blue);
+        }
 
 
+        public static void Spawn_GaussDischargeShards(Vector2 position)
+        {
+            int pointCount = Main.rand.Next(6, 10); // 数量浮动
+            for (int i = 0; i < pointCount; i++)
+            {
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+
+                p.ColorTint = Main.rand.NextBool() ? new Color(180, 240, 255) : new Color(100, 180, 255);
+                p.LocalPosition = position + Main.rand.NextVector2Circular(24f, 24f);
+                p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                p.Scale = new Vector2(1.5f, 0.8f) * Main.rand.NextFloat(0.8f, 1.3f);
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.92f;
+                p.TimeToLive = Main.rand.Next(28, 42);
+                p.FadeInEnd = 10;
+                p.FadeOutStart = 20;
+                p.FadeOutEnd = p.TimeToLive;
+                p.AdditiveAmount = 0.4f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+        public static void Spawn_GaussSingularityPulse(Vector2 position)
+        {
+            float radius = 32f;
+            float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+            for (int i = 0; i < 2; i++) // 两个对立点
+            {
+                float angle = baseAngle + i * MathHelper.Pi;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = i == 0 ? new Color(0.6f, 0.8f, 1f) : new Color(1f, 1f, 0.8f);
+                p.LocalPosition = position + offset;
+                p.Rotation = angle;
+                p.Scale = new Vector2(2.2f, 1f);
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.TimeToLive = 36;
+                p.FadeOutEnd = 36;
+                p.FadeInEnd = 10;
+                p.FadeOutStart = 20;
+                p.AdditiveAmount = 0.55f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
 
 
 

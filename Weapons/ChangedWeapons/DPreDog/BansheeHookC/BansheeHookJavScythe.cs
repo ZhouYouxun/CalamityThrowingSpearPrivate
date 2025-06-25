@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using CalamityMod.Particles;
 
 
 
@@ -79,6 +80,31 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC
         {
             Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.6f / 255f, 0f, 0f);
             Projectile.rotation += 0.25f; // 你可以根据需求调整旋转速度，增加或减少该值
+
+            // === 粒子拖尾效果 ===
+
+            // 1️⃣ 星光拖尾（每帧）
+            Color sparkleColor = Main.rand.NextBool() ? Color.HotPink : Color.LightBlue;
+            Particle sparkle = new SparkParticle(
+                Projectile.Center + Main.rand.NextVector2Circular(3f, 3f), // 略微偏移位置
+                Projectile.velocity * 0.1f,
+                false,
+                36,
+                1.1f,
+                sparkleColor
+            );
+            GeneralParticleHandler.SpawnParticle(sparkle);
+
+            // 2️⃣ 每3帧留下粉蓝 Dust
+            if (Time % 3 == 0)
+            {
+                int dustID = Main.rand.NextBool() ? DustID.PinkTorch : DustID.BlueTorch;
+                Dust d = Dust.NewDustPerfect(Projectile.Center, dustID, Main.rand.NextVector2Circular(0.8f, 0.8f));
+                d.scale = Main.rand.NextFloat(1.2f, 1.5f);
+                d.velocity *= 0.2f;
+                d.noGravity = true;
+            }
+
 
             // 前30帧不追踪，之后开始追踪玩家
             if (Projectile.ai[1] > 30)

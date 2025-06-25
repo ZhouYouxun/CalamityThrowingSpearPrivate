@@ -15,6 +15,8 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.Audio;
+using CalamityMod.Particles;
+
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 {
@@ -109,6 +111,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
+        private HashSet<Point> visitedTiles = new();
 
         public override void AI()
         {
@@ -196,6 +199,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                     fireInterval = Math.Max(fireInterval - fireIntervalDecrement, 6);
                 }
 
+            }
+
+            //// ✅ 检测当前中心是否在实心方块内
+            //Point tileCoords = Projectile.Center.ToTileCoordinates();
+            //Tile tile = Framing.GetTileSafely(tileCoords.X, tileCoords.Y);
+
+            //if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+            //{
+            //    // ✅ 在当前中心位置生成一个熔岩粒子
+            //    RancorLavaMetaball.SpawnParticle(Projectile.Center, Main.rand.NextFloat(70f, 100f));
+            //}
+
+            // ✅ 获取当前位置对应的 tile 坐标
+            Point tileCoords = Projectile.Center.ToTileCoordinates();
+
+            // ✅ 如果没访问过
+            if (!visitedTiles.Contains(tileCoords))
+            {
+                Tile tile = Framing.GetTileSafely(tileCoords.X, tileCoords.Y);
+
+                // ✅ 如果是合法实心方块
+                if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+                {
+                    visitedTiles.Add(tileCoords); // 记录访问，避免重复
+
+                    // ✅ 在该 tile 的中心生成 2~3 个 RancorLavaMetaball
+                    for (int i = 0; i < Main.rand.Next(2, 4); i++)
+                    {
+                        Vector2 pos = tileCoords.ToVector2() * 16f + Main.rand.NextVector2Circular(4f, 4f);
+                        float size = Main.rand.NextFloat(60f, 100f);
+                        RancorLavaMetaball.SpawnParticle(pos, size);
+                    }
+                }
             }
 
         }
@@ -380,6 +416,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                 float radius = Main.rand.NextFloat(40f, 80f);
                 GruesomeMetaball.SpawnParticle(spawnPosition, velocity, radius);
             }
+
+            for (int i = 0; i < 16; i++)
+            {
+                Vector2 spawnOffset = Main.rand.NextVector2Circular(32f, 32f);
+                float radius = Main.rand.NextFloat(60f, 100f);
+
+                RancorLavaMetaball.SpawnParticle(
+                    Projectile.Center + spawnOffset,
+                    radius
+                );
+            }
+
+
         }
+
+
+        //public override bool OnTileCollide(Vector2 oldVelocity)
+        //{
+
+
+        //}
+
+
     }
 }

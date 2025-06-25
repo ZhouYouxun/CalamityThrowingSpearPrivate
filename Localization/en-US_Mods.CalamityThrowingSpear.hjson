@@ -221,6 +221,7 @@ Projectiles: {
 			ViolenceJavPROJ.DisplayName: Rampage
 			StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
 			DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
+			DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
 		}
 	}
 

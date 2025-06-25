@@ -93,64 +93,137 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
         }
         public override void OnKill(int timeLeft)
         {
-            // 播放音效
+            // 播放爆炸音效
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 
-            // 生成一圈原版粒子特效，形成小圆圈，半径为4格（64像素）
-            int particleCount = 20;
-            float angleIncrement = MathHelper.TwoPi / particleCount;
-            float radius = 4 * 16f; // 圆的半径为4格
-
-            for (int i = 0; i < particleCount; i++)
+            // 1️⃣ 混乱灰烬圆圈 Dust（外环）
+            int dustCount = 32;
+            float radius = 64f;
+            for (int i = 0; i < dustCount; i++)
             {
-                Vector2 offset = new Vector2(radius, 0f).RotatedBy(angleIncrement * i);
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Smoke, Vector2.Zero, 0, Color.Red);
-                dust.scale = 1.2f;
-                dust.noGravity = true;
+                float angle = MathHelper.TwoPi / dustCount * i;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+                Dust ash = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Ash, Vector2.Zero, 0, Color.DarkGray, 1.4f);
+                ash.noGravity = true;
+            }
+
+            //// 2️⃣ 重构轻型烟雾：颜色更烈、粒径更散、速度更猛
+            //for (int i = 0; i < 60; i++)
+            //{
+            //    Vector2 velocity = Main.rand.NextVector2Circular(2.8f, 2.8f);
+            //    Color smokeColor = Main.rand.NextBool() ? Color.DarkRed : Color.OrangeRed;
+
+            //    Particle smoke = new HeavySmokeParticle(
+            //        Projectile.Center,
+            //        velocity * Main.rand.NextFloat(1.4f, 3.4f),
+            //        smokeColor,
+            //        20,
+            //        Main.rand.NextFloat(1.2f, 1.8f),
+            //        0.45f,
+            //        Main.rand.NextFloat(-1.5f, 1.5f),
+            //        false
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(smoke);
+            //}
+
+            // 3️⃣ 火焰电光拖尾：以十字状扩散
+            for (int i = 0; i < 6; i++)
+            {
+                float angle = MathHelper.PiOver4 * i;
+                Vector2 dir = angle.ToRotationVector2();
+                Particle flame = new SparkParticle(
+                    Projectile.Center,
+                    dir * 5f,
+                    false,
+                    40,
+                    1.1f,
+                    Main.rand.NextBool() ? Color.Orange : Color.DarkRed
+                );
+                GeneralParticleHandler.SpawnParticle(flame);
+            }
+
+            // 4️⃣ 更夸张的地狱尘火 Dust 爆炸（火山碎爆感）
+            for (int i = 0; i < 60; i++)
+            {
+                int type = Main.rand.Next(new int[] {
+                    DustID.Lava, DustID.Ash, DustID.Torch, DustID.Blood, DustID.Smoke
+                });
+
+                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f); // 更剧烈
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, type, velocity, 0, Color.OrangeRed);
+
+                dust.scale = Main.rand.NextFloat(1.5f, 2.3f);
+                dust.noGravity = Main.rand.NextBool(3) ? false : true; // 少数带重力下坠
+
+                // 粒子尾焰轨迹：闪烁火星
+                if (Main.rand.NextBool(3))
+                {
+                    Particle flame = new SparkParticle(
+                        Projectile.Center,
+                        velocity * 0.2f,
+                        false,
+                        30,
+                        1.2f,
+                        Color.Orange
+                    );
+                    GeneralParticleHandler.SpawnParticle(flame);
+                }
             }
 
 
+            // 5️⃣ 有序 + 无序混乱轨迹线：残影爆心 + 电爆扩散
+            // 有序：固定构成一个旋转扭曲十字星状
+            for (int i = 0; i < 4; i++)
+            {
+                float angle = MathHelper.PiOver2 * i + Main.rand.NextFloat(-0.2f, 0.2f);
+                Vector2 dir = angle.ToRotationVector2();
+
+                LineParticle line = new LineParticle(
+                    Projectile.Center + dir * 12f,
+                    dir * 24f,
+                    false,
+                    36,
+                    1.05f,
+                    Color.Lerp(Color.Red, Color.DarkViolet, i % 2 == 0 ? 0.3f : 0.7f)
+                );
+                GeneralParticleHandler.SpawnParticle(line);
+            }
+
+            // 无序：从中心炸出一堆带扰动、下坠的线性粒子
+            for (int i = 0; i < 10; i++)
+            {
+                Vector2 randomVel = Main.rand.NextVector2Circular(4f, 4f) + new Vector2(0f, Main.rand.NextFloat(1f, 3f)); // 加点向下
+                Vector2 randomOffset = Main.rand.NextVector2Circular(12f, 12f);
+
+                LineParticle chaos = new LineParticle(
+                    Projectile.Center + randomOffset,
+                    randomVel * 8f,
+                    true, // ✅ 重力影响
+                    40,
+                    Main.rand.NextFloat(0.6f, 1.2f),
+                    Color.Lerp(Color.DarkRed, Color.Black, Main.rand.NextFloat(0.2f, 0.6f))
+                );
+                GeneralParticleHandler.SpawnParticle(chaos);
+            }
 
 
-            // 释放 Fuckyou 爆炸弹幕，大小 1.5 倍，伤害 1.0 倍
+            // 6️⃣ 爆炸弹幕（保留）
             int fuckyouProj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FuckYou>(), (int)(Projectile.damage * 1.0f), 0, Projectile.owner);
             Main.projectile[fuckyouProj].scale = 1.5f;
 
-            // 释放菱形特效
+            // 7️⃣ 保留的菱形特效
             SpawnDiamondParticleEffect();
 
-            // 在弹幕死亡位置释放轻型烟雾
-            for (int i = 0; i < 50; i++)
-            {
-                // 生成360度随机方向的速度
-                Vector2 dustVelocity = Main.rand.NextVector2Circular(2f, 2f);
-                // 设置颜色为血红色
-                Color smokeColor = Color.DarkRed;
-
-                // 创建并生成粒子
-                Particle smoke = new HeavySmokeParticle(Projectile.Center, dustVelocity * Main.rand.NextFloat(1f, 2.6f), smokeColor, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
-                GeneralParticleHandler.SpawnParticle(smoke);
-            }
-
-            // 随机发射三个 ChaosEssenceJavFIRE 弹幕
-            Player owner = Main.player[Projectile.owner];
-            bool isInHell = owner != null && owner.ZoneUnderworldHeight; // 检测玩家是否在地狱区域
-
-            // 根据条件发射弹幕数量
-            //int projectileCount = isInHell ? 6 : 3;
-
-            // 就直接发射6个，不加强
+            // 8️⃣ 地狱火焰弹幕发射
             int projectileCount = 6;
-
             for (int i = 0; i < projectileCount; i++)
             {
-                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f)); // 0 到 360 度随机角度
-                Vector2 direction = Vector2.UnitY.RotatedBy(angleOffset); // 从中心向外随机方向
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * 30f, ModContent.ProjectileType<ChaosEssenceJavFIRE>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(0f, 360f));
+                Vector2 dir = Vector2.UnitY.RotatedBy(angleOffset);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 30f, ModContent.ProjectileType<ChaosEssenceJavFIRE>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
             }
-
-
         }
+
 
         private void SpawnDiamondParticleEffect()
         {

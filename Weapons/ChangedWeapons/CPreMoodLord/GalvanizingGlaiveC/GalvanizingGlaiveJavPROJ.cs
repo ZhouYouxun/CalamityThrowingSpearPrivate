@@ -19,6 +19,7 @@ using CalamityMod.Projectiles.Magic;
 using Terraria.Audio;
 using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Buffs.StatDebuffs;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingGlaiveC
 {
@@ -118,46 +119,109 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            Vector2 baseVelocity = Projectile.velocity; // 基础速度（当前弹幕的速度方向）
-            float baseSpeed = baseVelocity.Length(); // 基础速度的大小
-
+            Vector2 baseVelocity = Projectile.velocity;
+            float baseSpeed = baseVelocity.Length();
             Player owner = Main.player[Projectile.owner];
-            bool hasAdrenalineMode = owner.HasBuff(ModContent.BuffType<AdrenalineMode>());
 
-            target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
+            target.AddBuff(BuffID.Electrified, 300); // 电击效果
 
-            //肾上腺素期间增强移除
-            if (Main.rand.NextFloat() < 0.8f)
+            bool spawnFlux = !Main.rand.NextBool(5); // 20% 概率生成漩涡
+
+            if (spawnFlux)
             {
-                // 如果玩家拥有 AdrenalineMode Buff，将 GalvanizingGlaiveJavGaussEnergy 的伤害增加至 1.25
-                //float energyDamageMultiplier = hasAdrenalineMode ? 1.25f : 0.5f;
-                for (int i = 0; i < 4; i++)
-                {
-                    Vector2 spawnVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(45)) * 0.6f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussEnergy>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
-                }
+                // 模式B：漩涡
+                Vector2 fluxVelocity = baseVelocity.RotatedByRandom(MathHelper.ToRadians(30)) * 0.8f;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fluxVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussFlux>(), (int)(Projectile.damage * 3f), Projectile.knockBack, Projectile.owner);
+
+                // 新光点特效
+                CTSLightingBoltsSystem.Spawn_GaussSingularityPulse(Projectile.Center);
+
+                // 电磁波爆发：自定义环状光爆
+                Particle pulse = new DirectionalPulseRing(
+                    Projectile.Center,
+                    Vector2.Zero,
+                    new Color(200, 230, 255),
+                    new Vector2(1f, 1f),
+                    0f,
+                    0.15f,
+                    0.6f,
+                    20
+                );
+                GeneralParticleHandler.SpawnParticle(pulse);
             }
             else
             {
-                // 如果玩家拥有 AdrenalineMode Buff，将 GalvanizingGlaiveJavGaussFlux 的伤害增加至 7.5
-                //float fluxDamageMultiplier = hasAdrenalineMode ? 3f : 3f;
-                Vector2 fluxVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * 0.8f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fluxVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussFlux>(), (int)(Projectile.damage * 3f), Projectile.knockBack, Projectile.owner);
+                // 模式A：能量弹
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 spawnVelocity = baseVelocity.RotatedByRandom(MathHelper.ToRadians(45)) * 0.6f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, spawnVelocity, ModContent.ProjectileType<GalvanizingGlaiveJavGaussEnergy>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                }
+
+                // 新光点特效
+                CTSLightingBoltsSystem.Spawn_GaussDischargeShards(Projectile.Center);
+
+                // 爆破性星光碎片
+                for (int i = 0; i < 5; i++)
+                {
+                    GenericSparkle s = new GenericSparkle(
+                        Projectile.Center,
+                        Main.rand.NextVector2Circular(1.2f, 1.2f),
+                        Color.Cyan,
+                        Color.LightBlue,
+                        Main.rand.NextFloat(1.5f, 2.3f),
+                        6,
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        1.5f
+                    );
+                    GeneralParticleHandler.SpawnParticle(s);
+                }
             }
 
-            // 生成粒子效果
-            float[] particleAngleOffsets = { -2.3f, -1.15f, 1.15f, 2.3f };
-
-            for (int i = 0; i < 4; i++)
+            // 🌩️ 自定义闪电火花
+            for (int i = 0; i < 6; i++)
             {
-                Vector2 particleVelocity = Projectile.velocity.RotatedBy(particleAngleOffsets[i]) * 0.5f;
-                PointParticle spark = new PointParticle(Projectile.Center - Projectile.velocity + particleVelocity, particleVelocity, false, 5, 1.1f, Color.SkyBlue);
+                Vector2 vel = baseVelocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.6f, 1.2f);
+                CritSpark spark = new CritSpark(
+                    Projectile.Center,
+                    vel,
+                    Color.White,
+                    Color.Cyan,
+                    1.4f,
+                    20
+                );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            // 播放音效或其他特效
-            // SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
+            // 💥 强化 Dust 效果
+            for (int i = 0; i < 30; i++)
+            {
+                int dustID = Main.rand.NextBool() ? DustID.Electric : DustID.PurpleTorch;
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, dustID, Main.rand.NextVector2Circular(5f, 5f));
+                dust.scale = Main.rand.NextFloat(1.3f, 1.9f);
+                dust.noGravity = true;
+                dust.velocity *= 1.5f;
+            }
+
+            // 🔷 特效强化电波粒子
+            for (int i = 0; i < 2; i++)
+            {
+                Particle pulse = new CustomPulse(
+                    Projectile.Center,
+                    Vector2.Zero,
+                    Color.Lerp(Color.LightBlue, Color.Violet, Main.rand.NextFloat()),
+                    "CalamityMod/Particles/HighResFoggyCircleHardEdge",
+                    Vector2.One * 0.9f,
+                    Main.rand.NextFloat(-6f, 6f),
+                    0.02f,
+                    0.14f,
+                    16
+                );
+                GeneralParticleHandler.SpawnParticle(pulse);
+            }
         }
+
+
 
 
 

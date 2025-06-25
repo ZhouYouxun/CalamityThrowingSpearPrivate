@@ -169,9 +169,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
             SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
             if (Main.netMode != NetmodeID.Server)
             {
-                Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark1").Type, Projectile.scale);
-                Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark2").Type, Projectile.scale);
-                Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark3").Type, Projectile.scale);
+                //Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark1").Type, Projectile.scale);
+                //Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark2").Type, Projectile.scale);
+                //Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity, Mod.Find<ModGore>("MaelstromReaperShark3").Type, Projectile.scale);
             }
             for (int i = 0; i < 12; i++)
             {

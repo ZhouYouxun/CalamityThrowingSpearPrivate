@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -36,28 +37,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
         {
             Lighting.AddLight(Projectile.Center, 0.5f, 0f, 0.5f);
 
-            int previousSegment = Projectile.GetByUUID(Projectile.owner, (int)Projectile.ai[0]);
-            if (previousSegment >= 0 && Main.projectile[previousSegment].active)
-            {
-                Vector2 previousPosition = Main.projectile[previousSegment].Center;
-
-                // 存储前一个部分的历史位置
-                positionHistory.Enqueue(previousPosition);
-
-                // 让尾巴跟随身体的历史位置，延迟更大
-                if (positionHistory.Count > 2.5)
-                    Projectile.Center = positionHistory.Dequeue();
-
-                // 旋转朝向运动方向
-                Vector2 followVector = Projectile.Center - previousPosition;
-                Projectile.rotation = followVector.ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
-                Projectile.spriteDirection = (followVector.X > 0f) ? 1 : -1;
-            }
-            else
+            // 获取前一节（最后一段身体）
+            int prevIndex = Projectile.GetByUUID(Projectile.owner, (int)Projectile.ai[0]);
+            if (prevIndex < 0 || !Main.projectile[prevIndex].active)
             {
                 SpawnDustEffect();
                 Projectile.Kill();
+                return;
             }
+
+            // 尾巴不主动移动
+            Projectile.velocity = Vector2.Zero;
+
+            Projectile prev = Main.projectile[prevIndex];
+            Vector2 offset = prev.Center - Projectile.Center;
+
+            // 平滑角度插值
+            float desiredRotation = offset.ToRotation();
+            float angleDiff = MathHelper.WrapAngle(desiredRotation - Projectile.rotation);
+            //Projectile.rotation += angleDiff * 0.15f + MathHelper.PiOver2 + MathHelper.PiOver4;
+            Projectile.rotation += angleDiff + MathHelper.PiOver2;
+
+            // 尾巴继承缩放
+            float scale = MathHelper.Clamp(prev.scale, 0.5f, 3f);
+            Projectile.scale = scale;
+            Projectile.width = Projectile.height = (int)(10f * scale);
+
+            // 沿前一节方向摆尾
+            float followDistance = 16f * scale;
+            if (offset != Vector2.Zero)
+                Projectile.Center = prev.Center - Vector2.Normalize(offset) * followDistance;
+
+            Projectile.spriteDirection = (offset.X > 0f) ? 1 : -1;
 
             if (Projectile.alpha > 0)
                 Projectile.alpha -= 40;

@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
             Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<DLOASPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 17f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
