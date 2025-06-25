@@ -17,7 +17,7 @@ namespace CalamityRangerExpansion.LightingBolts
         // 想去学习的话可以去这里：namespace Terraria.GameContent.Drawing; public class ParticleOrchestrator
         // 这里面的各种光点和光学效果都是参考了上面这些的，更加倾向于那些魔法，能量，生物，环境，反射相关的特效
         // 注意！！注意！！
-        // 本文件里的所有特效均不需要灾厄本体运行，完全独立，因为这些特效是基于原版1.4.4.9的
+        // 本文件里的所有特效均不需要灾厄Calamity运行！这些东西完全独立，因为这些特效是基于原版1.4.4.9 Terraria的！
 
         public static void Spawn_IonizingRadiation(Vector2 position)
         {
@@ -412,7 +412,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-        // 这个是唯一一个用到的，上面的都是cre模组的
+        // 这个是唯一一个用到的，上面的都是cre模组的[仅供参考，但是cre模组毕竟也是我的模组]
         public static void Apple_OnKill(Vector2 position)
         {
             float lifespan = 36f; // 粒子存活时间
@@ -465,6 +465,60 @@ namespace CalamityRangerExpansion.LightingBolts
                 Main.ParticleSystem_World_OverPlayers.Add(spark);
             }
         }
+
+
+
+
+
+
+
+        public static void Spawn_CelestialBurst(Vector2 center)
+        {
+            int rays = 6; // 六芒星
+            float radius = 48f;
+
+            for (int i = 0; i < rays; i++)
+            {
+                float angle = MathHelper.TwoPi * i / rays;
+                Vector2 dir = angle.ToRotationVector2();
+
+                for (int j = 0; j < 3; j++) // 每条射线布点
+                {
+                    float distance = (j + 1) * radius / 3f;
+                    Vector2 pos = center + dir * distance;
+
+                    PrettySparkleParticle p = CTSLightingBoltsSystem._poolPrettySparkle.RequestParticle();
+
+                    // ✦ 设置基本视觉参数
+                    p.LocalPosition = pos;
+                    p.ColorTint = Main.rand.NextBool() ? Color.Orange : Color.LightBlue;
+                    p.Scale = new Vector2(1.3f, 0.8f);
+                    p.FadeInNormalizedTime = 0.05f;
+                    p.FadeOutNormalizedTime = 0.9f;
+                    p.TimeToLive = Main.rand.Next(36, 50);
+                    p.FadeOutEnd = p.TimeToLive;
+                    p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
+                    p.FadeOutStart = (int)(p.TimeToLive * 0.75f);
+                    p.AdditiveAmount = 0.55f;
+
+                    // ✦ 浮动运动：在上下 + 左右两个方向上缓慢漂移
+                    float waveFreq = Main.rand.NextFloat(0.05f, 0.15f); // 波动频率
+                    float waveAmp = Main.rand.NextFloat(0.5f, 1.5f);     // 波动幅度
+                    float timeOffset = Main.rand.NextFloat(0, MathHelper.TwoPi); // 每个粒子偏移不同
+
+                    // 绑定更新逻辑，在每帧更新中偏移位置（模拟上下左右浮动）
+                    float xWave = (float)Math.Sin(Main.GameUpdateCount * waveFreq + timeOffset) * waveAmp;
+                    float yWave = (float)Math.Cos(Main.GameUpdateCount * waveFreq + timeOffset) * waveAmp * 0.3f; // ✅ Y方向大幅减缓
+
+                    p.Velocity = new Vector2(xWave, yWave);
+
+
+                    Main.ParticleSystem_World_OverPlayers.Add(p);
+                }
+            }
+        }
+
+
 
 
 

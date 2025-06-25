@@ -15,6 +15,8 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Buffs.DamageOverTime;
+using static CalamityRangerExpansion.LightingBolts.CTSLightingBoltsSystem;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 {
@@ -104,7 +106,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 
                 // 第一次反弹后粒子效果
                 CreateBounceParticles();
-
+                CTSLightingBoltsSystem.Spawn_CelestialBurst(Projectile.Center);
+                CTSLightingBoltsSystem.Spawn_SpectralWhispers(Projectile.Center);
+                
                 return false; // 不销毁弹幕，继续运行
             }
 
@@ -243,6 +247,60 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
                 randomDust.scale = Main.rand.NextFloat(1f, 2.5f); // 随机大小
                 randomDust.rotation = Main.rand.NextFloat(MathHelper.TwoPi); // 随机旋转
                 randomDust.velocity *= Main.rand.NextFloat(0.8f, 1.5f); // 随机速度
+            }
+
+
+            {
+                Vector2 center = Projectile.Center;
+
+                // ✦ 1. 中心爆炸核心光尘
+                for (int i = 0; i < 18; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
+                    int dustType = Main.rand.NextBool() ? DustID.OrangeTorch : DustID.BlueTorch;
+
+                    Dust d = Dust.NewDustPerfect(center, dustType, velocity, 150, default, Main.rand.NextFloat(1.5f, 2.1f));
+                    d.noGravity = true;
+                    d.fadeIn = 1.2f;
+                }
+
+                // ✦ 2. 外圈高速星尘放射（Dust 长线扩散）
+                for (int i = 0; i < 36; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 36f;
+                    Vector2 dir = angle.ToRotationVector2();
+                    Vector2 velocity = dir * Main.rand.NextFloat(4f, 8f);
+
+                    int dustType = (i % 2 == 0) ? DustID.OrangeTorch : DustID.BlueTorch;
+                    Dust d = Dust.NewDustPerfect(center, dustType, velocity, 100, default, Main.rand.NextFloat(1.2f, 1.6f));
+                    d.noGravity = true;
+                    d.fadeIn = 1.1f;
+                }
+
+                // ✦ 3. 星芒旋涡式线性粒子轨迹（SparkParticle 旋涡状）
+                for (int i = 0; i < 20; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 20f;
+                    Vector2 dir = angle.ToRotationVector2();
+                    Vector2 spawnPos = center + dir * Main.rand.NextFloat(4f, 10f);
+                    Vector2 vel = dir.RotatedBy(MathHelper.PiOver4) * Main.rand.NextFloat(1.5f, 3f);
+
+                    Color trailColor = Main.rand.NextBool(2) ? Color.LightBlue : Color.Orange;
+                    float scale = Main.rand.NextFloat(0.8f, 1.4f);
+
+                    Particle p = new SparkParticle(spawnPos, vel, false, 40, scale, trailColor);
+                    GeneralParticleHandler.SpawnParticle(p);
+                }
+
+                // ✦ 4. 中心高亮粒子 + 放射光（Spark 核心加光晕）
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector2 spawnPos = center + Main.rand.NextVector2Circular(6f, 6f);
+                    Vector2 vel = -Projectile.velocity.RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 1.2f);
+
+                    Particle p = new SparkParticle(spawnPos, vel, false, 60, Main.rand.NextFloat(1.6f, 2.2f), Color.White);
+                    GeneralParticleHandler.SpawnParticle(p);
+                }
             }
         }
 
