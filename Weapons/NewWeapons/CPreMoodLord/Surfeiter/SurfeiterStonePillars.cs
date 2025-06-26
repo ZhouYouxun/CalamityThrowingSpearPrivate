@@ -24,10 +24,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
         private int frameCounter = 0;
         private float acceleration = 0.175f; // 逐渐加速值
         private float maxSpeed = 8f; // 最大速度
+        private const int fadeInDuration = 20;
+        private const int fadeOutDuration = 20;
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            float opacity = 1f;
+
+            // ⏳ 淡入阶段
+            if (Projectile.timeLeft > (Projectile.timeLeft - fadeInDuration))
+            {
+                int age = 600 - Projectile.timeLeft;
+                opacity = MathHelper.Clamp(age / (float)fadeInDuration, 0f, 1f);
+            }
+
+            // ⌛ 淡出阶段
+            if (Projectile.timeLeft < fadeOutDuration)
+            {
+                float fade = Projectile.timeLeft / (float)fadeOutDuration;
+                opacity *= MathHelper.Clamp(fade, 0f, 1f);
+            }
+
+            // 应用透明度
+            Color finalColor = lightColor * opacity;
+
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], finalColor, 1);
+
             return false;
         }
 
@@ -58,6 +80,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
         {
             // 保持弹幕旋转
             //Projectile.rotation = Projectile.velocity.ToRotation();
+
+            float scalePulse = 1f + 0.05f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f);
+            Projectile.scale = scalePulse;
+
 
             frameCounter++;
 

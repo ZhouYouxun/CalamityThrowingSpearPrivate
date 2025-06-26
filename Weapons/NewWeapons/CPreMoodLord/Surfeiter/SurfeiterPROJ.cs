@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
@@ -22,12 +23,73 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
+        private struct GhostRecord
+        {
+            public Vector2 position;
+            public float rotation;
+            public float alpha;
+        }
+        private List<GhostRecord> ghostList = new();
+
+        private struct BloodCircleRecord
+        {
+            public Vector2 position;
+            public float alpha;
+            public float scale;
+        }
+        private List<BloodCircleRecord> circleList = new();
+
+        private float ghostSpawnTimer = 0f;
+        private Vector2 lastCirclePosition;
+        private float circleDistanceThreshold = 80f;
+        private float circleTimer = 0f;
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            SpriteBatch sb = Main.spriteBatch;
+
+            if (!Projectile.hide)
+            {
+                // ✅ 正常情况下绘制拖尾
+                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+
+                // ✅ 幻影绘制
+                Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+                Vector2 origin = texture.Size() / 2f;
+                foreach (GhostRecord ghost in ghostList)
+                {
+                    Color ghostColor = Color.DarkRed * ghost.alpha;
+                    sb.Draw(texture,
+                        ghost.position - Main.screenPosition,
+                        null,
+                        ghostColor,
+                        ghost.rotation,
+                        origin,
+                        Projectile.scale,
+                        SpriteEffects.None,
+                        0);
+                }
+            }
+
+            // ✅ 不论 hide 状态如何，始终绘制血圈
+            Texture2D circleTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/circle_03").Value;
+            foreach (BloodCircleRecord circle in circleList)
+            {
+                Color bloodColor = new Color(160, 0, 0) * circle.alpha;
+                sb.Draw(circleTex,
+                    circle.position - Main.screenPosition,
+                    null,
+                    bloodColor,
+                    0f,
+                    circleTex.Size() / 2,
+                    circle.scale,
+                    SpriteEffects.None,
+                    0);
+            }
+
             return false;
         }
+
 
         public override void SetDefaults()
         {
@@ -35,7 +97,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 240;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -63,10 +125,60 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                 dust.scale = Main.rand.NextFloat(0.75f, 1.45f);
                 dust.noGravity = true;
             }
+            // 👻 生成幻影（每隔3帧）
+            ghostSpawnTimer++;
+            if (ghostSpawnTimer >= 3f)
+            {
+                ghostSpawnTimer = 0f;
+                Vector2 randomOffset = Main.rand.NextVector2Circular(6f, 6f);
+                ghostList.Add(new GhostRecord
+                {
+                    position = Projectile.Center + randomOffset,
+                    rotation = Projectile.rotation,
+                    alpha = 0.9f
+                });
+            }
+            for (int i = 0; i < ghostList.Count; i++)
+            {
+                GhostRecord g = ghostList[i];
+                g.alpha -= 0.05f;
+                if (g.alpha <= 0f)
+                    ghostList.RemoveAt(i--);
+                else
+                    ghostList[i] = g;
+            }
+
+            // 🔴 法阵圆圈生成（按距离）
+            if (Vector2.Distance(Projectile.Center, lastCirclePosition) > circleDistanceThreshold)
+            {
+                lastCirclePosition = Projectile.Center;
+                circleList.Add(new BloodCircleRecord
+                {
+                    position = Projectile.Center,
+                    scale = Main.rand.NextFloat(0.08f, 0.1f),
+                    alpha = 1f
+                });
+            }
+            for (int i = 0; i < circleList.Count; i++)
+            {
+                BloodCircleRecord c = circleList[i];
+                c.alpha -= 0.03f;
+                c.scale += 0.01f;
+                if (c.alpha <= 0f)
+                    circleList.RemoveAt(i--);
+                else
+                    circleList[i] = c;
+            }
+
         }
 
         public override void OnKill(int timeLeft)
         {
+            // 屏幕震动效果
+            float shakePower = 5f; // 设置震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
 
             // 释放重型烟雾
             for (int i = 0; i < 40; i++)
@@ -110,12 +222,60 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 
             SoundEngine.PlaySound(new SoundStyle(soundToPlay), Projectile.Center);
         }
+        private bool hasTriggeredEffect = false;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            if (hasTriggeredEffect)
+                return;
 
+            hasTriggeredEffect = true;
 
+            // 🌋 华丽上喷式特效：红色 + 血腥感
+            for (int i = 0; i < 40; i++)
+            {
+                Vector2 velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-9f, -5f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, velocity);
+                d.scale = Main.rand.NextFloat(1.2f, 1.8f);
+                d.noGravity = false;
+                d.fadeIn = 1.5f;
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                Particle upward = new SparkParticle(
+                    Projectile.Center,
+                    new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(6f, 10f)),
+                    false,
+                    50,
+                    Main.rand.NextFloat(1f, 1.4f),
+                    Color.OrangeRed
+                );
+                GeneralParticleHandler.SpawnParticle(upward);
+            }
+
+            // 自定义仪式能量冲击波（向上）
+            Particle ring = new CustomPulse(
+                Projectile.Center + new Vector2(0, -16),
+                Vector2.Zero,
+                Color.DarkRed,
+                "CalamityMod/Particles/HighResHollowCircleHardEdge",
+                new Vector2(1f, 1.6f),
+                0f,
+                0.06f,
+                0.24f,
+                25
+            );
+            GeneralParticleHandler.SpawnParticle(ring);
+
+            // 🫥 隐形处理
+            Projectile.alpha = 255;         // 完全透明
+            Projectile.hide = true;         // 不绘制贴图
+            Projectile.friendly = false;    // 不再造成伤害
+            Projectile.tileCollide = false; // 避免再触发
+            Projectile.timeLeft = 60;       // 1秒后清除
         }
+
 
 
     }

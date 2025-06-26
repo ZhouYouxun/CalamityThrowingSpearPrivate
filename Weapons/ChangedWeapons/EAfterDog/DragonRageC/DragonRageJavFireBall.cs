@@ -99,7 +99,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             else if (state == 2)
             {
                 float dashSpeed = MathHelper.Lerp(6f, 36f, Utils.GetLerpValue(0f, 60f, timer, true));
-                Projectile.velocity = dashDirection * dashSpeed;
+                Projectile.velocity = dashDirection * dashSpeed * 2f;
             }
 
             // 发光粒子（线性尾迹）

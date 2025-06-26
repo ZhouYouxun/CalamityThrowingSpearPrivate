@@ -90,7 +90,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 只允许一次伤害
+            Projectile.penetrate = -1; // 允许？次伤害
             Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;

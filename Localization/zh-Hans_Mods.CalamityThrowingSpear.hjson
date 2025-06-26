@@ -198,6 +198,7 @@ Projectiles: {
 			ElementalLanceJavPROJVortex.DisplayName: 元素长枪-星漩
 			// ElementalLanceJavPROJV.DisplayName: Elemental Lance Jav P R O J V
 			ElementalLanceJavPROJEntropy.DisplayName: 元素长枪-冥思
+			// ElementalLanceJavPROJE.DisplayName: Elemental Lance Jav P R O J E
 			ELPStardust.DisplayName: 元素长枪-星尘碎片
 			ELPVortexElectricity.DisplayName: 元素长枪-星漩电磁
 			ELPVortexLighting.DisplayName: 元素长枪-星漩闪电
@@ -392,8 +393,8 @@ ChangedWeapons: {
 			DisplayName: 磐石地元叉
 			Tooltip:
 				'''
-				命中物块时可以反弹一次
-				反弹时炸出大量岩石碎片
+				命中物块时在前方召唤多个岩石碎片
+				若找不到合适的方块，则不释放
 				[c/ac8f50:“别敲了，地板都被你敲碎了”]
 				'''
 		}
@@ -402,8 +403,7 @@ ChangedWeapons: {
 			DisplayName: 星夜长枪
 			Tooltip:
 				'''
-				本体追踪
-				消失时释放追踪转向的星夜光束
+				本体追踪，消失时释放追踪转向的星夜光束
 				[c/f692ff:“能不能多释放一道剑气”]
 				'''
 		}
@@ -414,7 +414,6 @@ ChangedWeapons: {
 			DisplayName: 幻星矛
 			Tooltip:
 				'''
-				掷出一柄高速投矛
 				击中敌人时，投矛会产生星爆并在远端召唤幻星
 				如果撞击物块，那么投矛会穿墙并追踪敌人
 				[c/ffbf73:“钻地流星”]
@@ -436,7 +435,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				扔出三根具备追踪能力的长矛，长矛在攻击到敌人时会被弹开
-				                            第二次命中时释放瘟疫环与三个追踪的瘟疫弹
+				第二次命中时释放瘟疫环与三个追踪的瘟疫弹
 				[c/49ff1f:“传播的疾病中不包含猪瘟”]
 				'''
 		}
@@ -455,9 +454,9 @@ ChangedWeapons: {
 			DisplayName: 刺花长矛
 			Tooltip:
 				'''
-				长矛飞行期间往两边不断的发射花瓣并在周边生成几个紧随长矛的种子
+				长矛无限穿透，飞行期间往两边不断的发射花瓣并在周边生成几个紧随长矛的种子
 				种子带有隐形的伤害光环而长矛会逐渐减速并且能够穿透多次
-				                            速度归零时会释放毒气与6根荆棘
+				速度归零时会释放毒气与6根荆棘
 				[c/007708:“它蔓延了”]
 				'''
 		}
@@ -466,9 +465,8 @@ ChangedWeapons: {
 			DisplayName: 深渊潮涌
 			Tooltip:
 				'''
-				投矛飞行期间往两边不断的发射小型三叉戟
-				命中敌人也会生成小型三叉戟
-				可以穿透很多次
+				蓄力期间持续在鼠标周围生成小型三叉戟瞄准鼠标位置
+				松手时扔出本体，飞行过程中产生更多的小三叉戟
 				[c/001087:“它在呼唤你”]
 				'''
 		}
@@ -477,8 +475,7 @@ ChangedWeapons: {
 			DisplayName: 提丰之贪婪
 			Tooltip:
 				'''
-				撞墙后反弹并释放一圈水球
-				飞行一段时间后自身开始旋转
+				撞墙后立刻释放一圈水球并反弹，并进入旋转攻击模式
 				旋转模式期间不断的向外释放可以追踪的水弹
 				[c/2f366b:“总算有点用了”]
 				'''
@@ -489,7 +486,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				扔出一根受重力的长矛，在飞行一段距离后将会“喷发”
-				                            “喷发”时会同时释放3个追踪的火焰之灵
+				“喷发”时会同时释放3个追踪的火焰之灵
 				[c/ff8400:“岩浆溢流”]
 				'''
 		}
@@ -511,12 +508,7 @@ ChangedWeapons: {
 			DisplayName: 元素长枪
 			Tooltip:
 				'''
-				按顺序射出五种能量投枪
-				日曜长枪能够无限穿透并爆炸
-				星漩长枪能够释放追踪导弹
-				星云长枪击中一次后获得追踪能力
-				星尘长枪制造额外的星尘弹幕
-				冥思长枪在原地留下熵变爆炸
+				5份力量，无限可能
 				[c/8e8e8e:“最应该出现的白矮星却没有到场”]
 				'''
 		}
@@ -542,8 +534,9 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				手持时将不断旋转巨龙之怒切割接触到的敌怪
-				按住左键允许巨龙之怒在一定范围内追踪鼠标
-				右键将旋转巨龙之怒并在周边持续生成烟幕
+				按住左键允许巨龙之怒在无限范围内追踪鼠标，距离越远伤害越低
+				右键将旋转巨龙之怒并在周边持续生成光球，高速旋转一段时间后冲向鼠标位置
+				左键的优先级高于右键
 				[c/ffc27a:“金源巨龙最后的怒火”]
 				'''
 		}
@@ -553,7 +546,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				飞行过程中持续生成飞升的深渊精华，命中时也会产生大量飞升的深渊精华
-				                            深渊精华能够追踪敌怪并在命中时释放数个虚空触手
+				深渊精华能够追踪敌怪并在命中时释放数个虚空触手
 				[c/867891:“上下相应”]
 				'''
 		}
@@ -572,8 +565,8 @@ ChangedWeapons: {
 			DisplayName: 宇宙暗流
 			Tooltip:
 				'''
-				                            扔出一根高速移动的长矛，在路径上持续产生长矛幻影伤害接触到的敌怪
-				                            长矛在穿透7次或飞行一小段时间后在原地爆炸
+				扔出一根高速移动的长矛，在路径上持续产生长矛幻影伤害接触到的敌怪
+				长矛在穿透7次或飞行一小段时间后在原地爆炸
 				爆炸后会在周边5个敌人身上释放一个长矛幻影对其进行一次挥砍
 				[c/9d5ad0:“神秘七费艺术书页”]
 				'''
@@ -678,9 +671,9 @@ NewWeapons: {
 			Tooltip:
 				'''
 				按住左键举起长矛，长矛的伤害随举起施加增加
-				                            命中时在原地生成电圈，电圈数量随举起时间增加
-				                            右键发射三个球状闪电，球状闪电击中时产生电火花
-				                            如果没有闪电存在，则额外生成一道闪电
+				命中时在原地生成电圈，电圈数量随举起时间增加
+				右键发射三个球状闪电，球状闪电击中时产生电火花
+				如果没有闪电存在，则额外生成一道闪电
 				[c/99fffe:“安培定律”]
 				'''
 		}
@@ -758,8 +751,8 @@ NewWeapons: {
 			DisplayName: 节日长戟
 			Tooltip:
 				'''
-				在路径上不断的留下大量的圣诞彩灯
-				彩灯随后会落下
+				在路径上不断的往上喷出大量的圣诞彩灯
+				命中时释放一颗追踪别人的五角星，并往上喷射出针刺
 				[c/86ff4b:“因为你发觉了地心引力”]
 				'''
 		}
@@ -792,6 +785,7 @@ NewWeapons: {
 		}
 
 		Surfeiter: {
+			DisplayName: 巴蛇吞象
 			Tooltip:
 				'''
 				手持时在头顶生成一个鼓
@@ -806,7 +800,6 @@ NewWeapons: {
 				右键切换鼓的类型
 				[c/B8860B:“生犯贪嗔痴戾疑，死受鞭笞釜灼烹”]
 				'''
-			DisplayName: 巴蛇吞象
 		}
 	}
 
@@ -876,9 +869,9 @@ NewWeapons: {
 			DisplayName: 魂狩
 			TooltipNormal:
 				'''
-				                            长矛能够在空中朝着最近的敌怪进行一次冲刺
+				长矛能够在空中朝着最近的敌怪进行一次冲刺
 				命中时会在周边持续生成魂狩的复制体
-				                            在一段时间后产生一次巨大的深渊爆炸与3只追踪的充能猎魂鲨
+				在一段时间后产生一次巨大的深渊爆炸与3只追踪的充能猎魂鲨
 				[c/2836a1:“永恒的狩猎...开始了...”]
 				'''
 			Tooltip: "[GFB]"
@@ -908,8 +901,7 @@ NewWeapons: {
 				'''
 				击中敌人后往左右各释放六发无限穿透的冷却电池并积攒电量
 				冷却电池在初始的12帧内不造成伤害
-				                            当电量充满时右键发射一个高速球状闪电
-				                            球状闪电会在不同的敌怪之间弹射
+				右键消耗电量发射一个高速追踪弹射球状闪电
 				[c/fff994:“到底是那个天才想到把电池插在棍子上当武器的]
 				[c/fff994:“我要用这玩意让他的脑袋好好‘冷却’一下”]
 				'''
@@ -920,8 +912,8 @@ NewWeapons: {
 			Tooltip:
 				'''
 				左键丢出长枪，命中后沿着速度方向依次释放数个冲击波，造成多次伤害
-				                            每扔出九根长枪，第十根长枪便会被强化
-				                            强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
+				每扔出九根长枪，第十根长枪便会被强化
+				强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
 				右键以持续消耗自身许多生命值为代价，举起长枪
 				在一定的蓄力时间过后往鼠标位置处持续发动冲刺
 				冲刺期间释放数圈火球，撞击敌人时造成巨额伤害
@@ -965,7 +957,7 @@ NewWeapons: {
 				右键射出可以追踪并粘附在敌人身上的长枪
 				粘附过程中可以不断的从周围召唤随机长枪
 				右键长枪的存在期间点击左键或右键将会清除它并重新释放
-				[c/8f8f8f:“F*（∈ 70V”]
+				[c/8f8f8f:“无视风险，继续安装”]
 				'''
 		}
 
@@ -1003,9 +995,10 @@ NewWeapons: {
 			DisplayName: 终幕残翼
 			Tooltip:
 				'''
-				飞行一段时间或击中方块后获得追踪能力
+				命中敌人时开始螺旋飞行，并持续释放火焰弹
 				每次命中敌人都会获得一只至尊探魂眼
-				至尊探魂眼会盘旋着玩家不造成伤害
+				至尊探魂眼会盘旋着玩家
+				能够造成接触伤害的同时跟随武器本体攻击而进行协同攻击
 				点击右键命令他们全部冲刺过去，施加一秒钟的孱弱巫咒
 				至尊探魂眼最多存在10只，如果数量为满那么本体击中敌人造成更高的伤害
 				使用镀金鸟喙进行死灵灌注即可获取，丢进微光中转化回镀金鸟喙
@@ -1036,17 +1029,12 @@ NewWeapons: {
 		StarsofDestiny: {
 			Tooltip:
 				'''
-				         左键扔出长针枪，到底特定位置后散射流星
-				         右键扔出短针枪，扎在目标上形成立场，可被长针枪提前引爆
-				         长按左键可蓄力提升长针枪的伤害，造成伤害后短暂提升机动性
+				左键扔出长针枪，到底特定位置后散射流星
+				右键扔出短针枪，扎在目标上形成立场，可被长针枪提前引爆
+				长按左键可蓄力提升长针枪的伤害，造成伤害后短暂提升机动性
 				[c/FFFFFF:“海洋与冰雪之国的女王把你误认为自己的爱人”]
 				'''
 			DisplayName: 命定星启
-		}
-
-		AuricSpear: {
-			// DisplayName: Auric Spear
-			// Tooltip: ""
 		}
 	}
 }
@@ -1171,65 +1159,6 @@ Items: {
 	XiaoZhiTiaoEA2: {
 		DisplayName: 星夜箴言
 		Tooltip: 挑战：在不吃下任何一种灾厄水果的情况下击杀月球领主
-	}
-
-	TheSkillAcc: {
-		// Tooltip: ""
-		// DisplayName: The Skill Acc
-	}
-
-	Weapons: {
-		Rogue: {
-			PhantomShuriken: {
-				// Tooltip: ""
-				// DisplayName: Phantom Shuriken
-			}
-		}
-	}
-
-	PrimeMeridian: {
-		// Tooltip: ""
-		// DisplayName: Prime Meridian
-	}
-
-	Sunset2: {
-		// Tooltip: ""
-		// DisplayName: Sunset2
-	}
-
-	GlobalStorm: {
-		// Tooltip: ""
-		// DisplayName: Global Storm
-	}
-
-	ElectrocutionHalberdSpear: {
-		// DisplayName: Electrocution Halberd Spear
-		// Tooltip: ""
-	}
-
-	TidalMechanicsSpear: {
-		// DisplayName: Tidal Mechanics Spear
-		// Tooltip: ""
-	}
-
-	TheLastLanceSpear: {
-		// Tooltip: ""
-		// DisplayName: The Last Lance Spear
-	}
-
-	TheBrokenSpear: {
-		// Tooltip: ""
-		// DisplayName: The Broken Spear
-	}
-
-	HeartSwordSpear: {
-		// DisplayName: Heart Sword Spear
-		// Tooltip: ""
-	}
-
-	MirrorWater: {
-		// DisplayName: Mirror Water
-		// Tooltip: ""
 	}
 }
 
