@@ -191,9 +191,12 @@ Projectiles: {
 			BansheeHookJavPROJ.DisplayName: Banshee Claw
 			BansheeHookJavScythe.DisplayName: Banshee Claw Retrieving Scythe
 			ElementalLanceJavPROJNebula.DisplayName: Elemental Lance - Nebula
+			ElementalLanceJavPROJN.DisplayName: Elemental Lance Jav P R O J N
 			ElementalLanceJavPROJSolar.DisplayName: Elemental Lance - Solar
 			ElementalLanceJavPROJStardust.DisplayName: Elemental Lance - Stardust
+			ElementalLanceJavPROJS.DisplayName: Elemental Lance Jav P R O J S
 			ElementalLanceJavPROJVortex.DisplayName: Elemental Lance - Vortex
+			ElementalLanceJavPROJV.DisplayName: Elemental Lance Jav P R O J V
 			ElementalLanceJavPROJEntropy.DisplayName: Elemental Lance - Entropy
 			ELPStardust.DisplayName: Elemental Lance - Stardust Fragment
 			ELPVortexElectricity.DisplayName: Elemental Lance - Vortex Electricity

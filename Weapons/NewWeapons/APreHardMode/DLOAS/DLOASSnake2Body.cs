@@ -63,7 +63,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
             Projectile.width = Projectile.height = (int)(10f * scale);
 
             // 设置位置：沿前一段方向延伸 16 像素（形成连接）
-            float followDistance = 16f * scale;
+            float followDistance = 11f * scale; // 调整这个xf来控制身体和头的距离
             if (offset != Vector2.Zero)
                 Projectile.Center = prev.Center - Vector2.Normalize(offset) * followDistance;
 

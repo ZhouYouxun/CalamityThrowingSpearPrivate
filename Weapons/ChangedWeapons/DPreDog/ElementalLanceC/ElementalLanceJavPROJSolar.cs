@@ -1,24 +1,32 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
-using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Projectiles.Typeless; // 引入爆炸用弹幕类型
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
 {
+    /// <summary>
+    /// Solar 元素标枪的投掷弹幕逻辑。
+    /// 命中敌人后会周期性追击并捶打目标，每次命中后有追踪延迟与华丽特效。
+    /// </summary>
     public class ElementalLanceJavPROJSolar : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/ElementalLanceJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.DPreDog";
+
+        private int targetID = -1;
+        private int chaseCooldown = 0;
+        private int hitCount = 0;
+        private const int MaxHits = 5;
+        private bool justStartedChasing = false;
+        private float curveDirection = 1f;
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
@@ -28,13 +36,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;
-            // 使用橙红色绘制拖尾效果
-            Color trailColor = new Color(255, 69, 0); // 橙红色
+            Color trailColor = new Color(255, 69, 0);
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], trailColor * 0.3f, 1);
             return false;
         }
-
-
 
         public override void SetDefaults()
         {
@@ -46,78 +51,146 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 8; // 无敌帧冷却时间为14帧
+            Projectile.tileCollide = true;
+            Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 8;
         }
 
         public override void AI()
         {
-            // 保持弹幕旋转（对于倾斜走向的弹幕而言）
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            if (targetID != -1)
+                Projectile.rotation += 0.35f;
+            else
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            // Lighting - 添加深橙色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.02f;
-
-
-            // 为箭矢本体后面添加卡其色光束特效
-            if (Projectile.numUpdates % 3 == 0)
+            if (targetID != -1 && chaseCooldown <= 0)
             {
-                Color outerSparkColor = new Color(255, 69, 0); // RGB: (255, 69, 0)
-                float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
-                float outerSparkScale = 1.2f + scaleBoost;
-                SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-                GeneralParticleHandler.SpawnParticle(spark);
+                if (Main.rand.NextBool(3))
+                {
+                    SemiCircularSmearVFX semiSmear = new SemiCircularSmearVFX(
+                        Projectile.Center,
+                        Color.Yellow * Main.rand.NextFloat(0.78f, 0.85f),
+                        Main.rand.NextFloat(-8, 8),
+                        Main.rand.NextFloat(1.2f, 1.3f) * 2.1f,
+                        new Vector2(1f, 0.8f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(semiSmear);
+                }
+
+                if (justStartedChasing)
+                {
+                    curveDirection = Main.rand.NextBool() ? 1f : -1f;
+                    for (int i = 0; i < 25; i++)
+                    {
+                        Vector2 dir = -Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.ToRadians(20));
+                        Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.SolarFlare);
+                        dust.velocity = dir * Main.rand.NextFloat(4f, 9f);
+                        dust.scale = Main.rand.NextFloat(1.2f, 2.0f);
+                        dust.noGravity = true;
+                    }
+                    justStartedChasing = false;
+                }
+
+                NPC target = Main.npc[targetID];
+                if (target != null && target.active && !target.friendly)
+                {
+                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                    float t = (float)Math.Sin((600 - Projectile.timeLeft) * 0.12f);
+                    float speed = MathHelper.Lerp(8f, 32f, (t + 1f) / 2f);
+                    direction = direction.RotatedBy(MathHelper.ToRadians(12f) * curveDirection);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, 0.2f);
+                }
+            }
+            else
+            {
+                Projectile.velocity *= 1.01f;
+                if (Projectile.numUpdates % 3 == 0 && targetID == -1)
+                {
+                    Color outerSparkColor = new Color(255, 69, 0);
+                    float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
+                    float outerSparkScale = 1.2f + scaleBoost;
+                    SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
 
+            if (chaseCooldown > 0)
+                chaseCooldown--;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(ModContent.BuffType<ElementalMix>(), 300); // 元素混合
+            target.AddBuff(ModContent.BuffType<ElementalMix>(), 300);
 
-            // 在原地生成一个FuckYou弹幕，伤害倍率为1.0，大小倍率为3.0
-            int projectileID = ModContent.ProjectileType<FuckYou>();
+            // ✴️ 每次命中都生成爆炸弹幕
+            int explosionType = ModContent.ProjectileType<FuckYou>();
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, explosionType, Projectile.damage, Projectile.knockBack, Projectile.owner);
 
-            // 生成弹幕，大小倍率为3.0
-            Projectile fuckYouProjectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, projectileID, Projectile.damage, Projectile.knockBack, Projectile.owner);
-
-            // 调整弹幕的大小倍率为3.0
-            fuckYouProjectile.scale *= 3.0f;
-
-
-
-            // 在原地生成随机橙红色粒子特效
-            for (int i = 0; i < 10; i++)
+            if (targetID == -1)
             {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f)); // 随机方向
-                Color particleColor = new Color(255, 69, 0); // 橙红色
-                float scale = Main.rand.NextFloat(0.5f, 1.5f); // 随机缩放粒子大小
-                SparkParticle particle = new SparkParticle(Projectile.Center, velocity, false, 7, scale, particleColor);
-                GeneralParticleHandler.SpawnParticle(particle);
+                targetID = target.whoAmI;
+                chaseCooldown = 30;
+                justStartedChasing = true;
             }
+            else
+            {
+                hitCount++;
+                chaseCooldown = 30;
+                justStartedChasing = true;
 
+                // 🌟 更复杂的命中特效：有序+无序结合的多重粒子效果
+                for (int i = 0; i < 15; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
+                    Particle trail = new SparkParticle(Projectile.Center, velocity * 0.2f, false, 60, 1.2f + Main.rand.NextFloat(0.3f), Color.Orange);
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
+                for (int i = 0; i < 16; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 16f;
+                    Vector2 dir = angle.ToRotationVector2();
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center + dir * 6f, DustID.Torch);
+                    dust.velocity = dir * 4f;
+                    dust.noGravity = true;
+                    dust.scale = 1.6f;
+                }
+                for (int i = 0; i < 30; i++)
+                {
+                    Dust chaos = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(24, 24), DustID.SolarFlare);
+                    chaos.velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    chaos.scale = Main.rand.NextFloat(1.5f, 2.5f);
+                    chaos.fadeIn = 0.6f;
+                    chaos.noGravity = true;
+                }
+
+                if (hitCount >= MaxHits)
+                    Projectile.Kill();
+            }
         }
+
         public override void OnKill(int timeLeft)
         {
-            //// 计算等边三角形三个顶点相对于中心的位置偏移
-            //float triangleSize = 60f; // 三角形的边长，可以根据需要调整
-            //Vector2 offset1 = new Vector2(0, -triangleSize / (float)Math.Sqrt(3)); // 顶点1
-            //Vector2 offset2 = new Vector2(-triangleSize / 2, triangleSize / (2 * (float)Math.Sqrt(3))); // 顶点2
-            //Vector2 offset3 = new Vector2(triangleSize / 2, triangleSize / (2 * (float)Math.Sqrt(3))); // 顶点3
+            // 💫 华丽退场特效
+            for (int i = 0; i < 36; i++)
+            {
+                float angle = MathHelper.TwoPi * i / 36;
+                Vector2 offset = angle.ToRotationVector2() * 16f;
+                Vector2 velocity = offset.SafeNormalize(Vector2.UnitY) * 6f;
+                Particle spark = new SparkParticle(Projectile.Center + offset, velocity, false, 40, 1.5f, Color.Orange);
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
 
-            //// 生成三个爆炸弹幕，大小为当前的3.5倍
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + offset1, Vector2.Zero, ProjectileID.SolarWhipSwordExplosion, Projectile.damage, Projectile.knockBack, Projectile.owner, ai0: 0, ai1: 0);
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + offset2, Vector2.Zero, ProjectileID.SolarWhipSwordExplosion, Projectile.damage, Projectile.knockBack, Projectile.owner, ai0: 0, ai1: 0);
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + offset3, Vector2.Zero, ProjectileID.SolarWhipSwordExplosion, Projectile.damage, Projectile.knockBack, Projectile.owner, ai0: 0, ai1: 0);
-
-
+            for (int i = 0; i < 20; i++)
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.SolarFlare);
+                d.velocity = Main.rand.NextVector2Circular(6, 6);
+                d.scale = Main.rand.NextFloat(1.5f, 2.5f);
+                d.noGravity = true;
+                d.fadeIn = 0.5f;
+            }
         }
-
-
     }
 }

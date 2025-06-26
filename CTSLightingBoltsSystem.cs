@@ -604,6 +604,35 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+        public static void Spawn_StardustNova_Simple(Vector2 position, Color color, float rotationOffset)
+        {
+            float angleStep = MathHelper.ToRadians(120f); // 三角形分布
+            float angleSpacing = MathHelper.ToRadians(60f); // 每个角的间隔
+            float radius = 32f;
+
+            for (int i = 0; i < 3; i++) // 3 个点
+            {
+                float angle = rotationOffset + i * angleSpacing;
+                Vector2 spawnOffset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle particle = _poolPrettySparkle.RequestParticle();
+                particle.ColorTint = color;
+                particle.LocalPosition = position + spawnOffset;
+                particle.Rotation = angle;
+                particle.Scale = new Vector2(2f, 0.5f);
+                particle.FadeInNormalizedTime = 5E-06f;
+                particle.FadeOutNormalizedTime = 0.95f;
+                particle.TimeToLive = 30;
+                particle.FadeOutEnd = 30;
+                particle.FadeInEnd = 15;
+                particle.FadeOutStart = 15;
+                particle.AdditiveAmount = 0.35f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(particle);
+            }
+        }
+
+
 
 
 

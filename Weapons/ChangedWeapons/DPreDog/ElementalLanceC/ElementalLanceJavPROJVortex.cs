@@ -1,10 +1,6 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
@@ -14,23 +10,22 @@ using CalamityMod.Buffs.DamageOverTime;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
 {
+    /// <summary>
+    /// Vortex 元素投掷弹幕，命中后失效，向上飞行并释放新的弹幕。
+    /// 同时拥有击中特效和死亡特效，特效由有序粒子与无序 Dust 构成。
+    /// </summary>
     public class ElementalLanceJavPROJVortex : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/ElementalLanceJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.DPreDog";
+
+        private bool triggered = false; // 是否已经击中过敌人
+        private int releaseTimer = 0; // 击中后计时器
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;
-            // 使用墨绿色绘制拖尾效果
-            Color trailColor = new Color(0, 128, 128); // 墨绿色
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], trailColor * 0.3f, 1);
-            return false;
         }
 
         public override void SetDefaults()
@@ -39,114 +34,123 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1; // 只允许一次伤害
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.tileCollide = true;
+            Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 14;
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;
+            Color trailColor = new Color(0, 128, 128);
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], trailColor * 0.3f, 1);
+            return false;
         }
 
         public override void AI()
         {
-            // 保持弹幕旋转（对于倾斜走向的弹幕而言）
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // Lighting - 添加深橙色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.DarkGreen.ToVector3() * 0.55f);
 
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.00f;
-
-            // 为箭矢本体后面添加卡其色光束特效
-            if (Projectile.numUpdates % 3 == 0)
+            // ✴️ 无论状态如何都释放持续飞行粒子
+            if (Main.rand.NextBool(2))
             {
-                Color outerSparkColor = new Color(0, 128, 128); // RGB: (0, 128, 128)
+                Vector2 vel = -Projectile.velocity.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(1.5f, 3.5f);
+                SquareParticle trail = new SquareParticle(Projectile.Center, vel, false, 20, Main.rand.NextFloat(1.0f, 1.6f), Color.Teal);
+                GeneralParticleHandler.SpawnParticle(trail);
+            }
+            if (Main.rand.NextBool(4))
+            {
+                int dustType = Utils.SelectRandom(Main.rand, 99, 202, 229);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType);
+                dust.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
+                dust.scale = Main.rand.NextFloat(0.9f, 1.5f);
+                dust.noGravity = true;
+            }
+
+            // ⛔ 拖尾仅在未触发命中前播放
+            if (!triggered && Projectile.numUpdates % 3 == 0)
+            {
+                Color outerSparkColor = new Color(0, 128, 128);
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
                 float outerSparkScale = 1.2f + scaleBoost;
                 SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
+        
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(ModContent.BuffType<ElementalMix>(), 300); // 元素混合
+            target.AddBuff(ModContent.BuffType<ElementalMix>(), 300);
 
-            // 1. 获取生成位置和目标位置
-            Vector2 spawnPosition = Main.player[Projectile.owner].Center; // 从玩家位置生成
-            Vector2 projectileToKillPosition = Projectile.Center; // 获取主弹幕消失的位置
-
-            // 2. 计算方向向量
-            Vector2 forwardDirection = (projectileToKillPosition - spawnPosition).SafeNormalize(Vector2.Zero);
-
-            // 3. 定义角度偏移
-            float[] angles = { MathHelper.ToRadians(60), MathHelper.ToRadians(-60), MathHelper.ToRadians(120), MathHelper.ToRadians(-120) };
-
-            // 4. 生成4个弹幕
-            foreach (float angle in angles)
+            if (!triggered)
             {
-                // 计算旋转后的方向
-                Vector2 rotatedDirection = forwardDirection.RotatedBy(angle);
+                triggered = true;
+                Projectile.friendly = false;
 
-                // 生成弹幕
-                int newProjectile = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    spawnPosition,
-                    rotatedDirection * 10f, // 保持原速度
-                    ProjectileID.VortexBeaterRocket,
-                    (int)(Projectile.damage * 0.33f), // 伤害降低为主弹幕的0.33倍
-                    0f,
-                    Projectile.owner
-                );
+                // 强制朝上飞行 + 设置存活时间
+                Projectile.velocity = Vector2.UnitY * -18f; // 朝上
+                Projectile.timeLeft = 20; // 保留时间为 X 帧
 
-                // 获取生成的投射物实例并修改属性
-                Projectile newProj = Main.projectile[newProjectile];
-                if (newProj != null && newProj.active)
+                for (int i = 0; i < 24; i++)
                 {
-                    newProj.scale = 1f; // 保持大小为1.0
-                    newProj.DamageType = DamageClass.Melee; // 设置为近战职业类型
-                    newProj.usesLocalNPCImmunity = true; // 使用本地无敌帧
-                    newProj.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+                    float angle = MathHelper.TwoPi * i / 24f;
+                    Vector2 vel = angle.ToRotationVector2() * 4f;
+                    SquareParticle p = new SquareParticle(Projectile.Center, vel, false, 30, 1.7f + Main.rand.NextFloat(0.6f), Color.Cyan * 1.5f);
+                    GeneralParticleHandler.SpawnParticle(p);
+                }
+
+                for (int i = 0; i < 36; i++)
+                {
+                    int dustType = Utils.SelectRandom(Main.rand, 99, 202, 229);
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType);
+                    dust.velocity = Main.rand.NextVector2Circular(6, 6);
+                    dust.scale = Main.rand.NextFloat(1.4f, 2.2f);
+                    dust.noGravity = true;
                 }
             }
-
-
-
-
-
-            // 2. 在弹幕消失位置的正前方生成深绿色线性粒子特效
-            for (int i = 0; i < 10; i++)
-            {
-                // 计算粒子的生成方向，基于弹幕的当前朝向
-                Vector2 particleSpawnDirection = Projectile.velocity.SafeNormalize(Vector2.Zero); // 获取弹幕的正前方向
-                                                                                                  // 生成两个方向偏移的粒子，一个偏移 10 度，一个偏移 -10 度
-                Vector2 velocityLeft = particleSpawnDirection.RotatedBy(MathHelper.ToRadians(10)) * Main.rand.NextFloat(5f, 10f); // 向左偏移10度
-                Vector2 velocityRight = particleSpawnDirection.RotatedBy(MathHelper.ToRadians(-10)) * Main.rand.NextFloat(5f, 10f); // 向右偏移10度
-                                                                                                                                    // 创建深绿色（墨绿色）粒子，偏移10度
-                Particle trailLeft = new SparkParticle(Projectile.Center + particleSpawnDirection * 10f, velocityLeft, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.DarkGreen);
-                Particle trailRight = new SparkParticle(Projectile.Center + particleSpawnDirection * 10f, velocityRight, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.DarkGreen);
-                // 生成粒子
-                GeneralParticleHandler.SpawnParticle(trailLeft);
-                GeneralParticleHandler.SpawnParticle(trailRight);
-            }
         }
-
-
-
-
-
-
-
 
         public override void OnKill(int timeLeft)
         {
-        
+            for (int i = 0; i < 32; i++)
+            {
+                float angle = MathHelper.TwoPi * i / 32f;
+                Vector2 vel = angle.ToRotationVector2() * 5f;
+                SquareParticle p = new SquareParticle(Projectile.Center, vel, false, 30, 2.0f + Main.rand.NextFloat(0.3f), Color.Cyan);
+                GeneralParticleHandler.SpawnParticle(p);
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                int dustType = Utils.SelectRandom(Main.rand, 99, 202, 229);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, dustType);
+                d.velocity = Main.rand.NextVector2Circular(5, 5);
+                d.scale = Main.rand.NextFloat(1.5f, 2.4f);
+                d.fadeIn = 0.5f;
+                d.noGravity = true;
+            }
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<ElementalLanceJavPROJV>(),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+
         }
-
-
     }
 }
