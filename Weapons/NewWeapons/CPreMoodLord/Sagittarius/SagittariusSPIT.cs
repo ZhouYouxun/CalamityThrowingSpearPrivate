@@ -171,19 +171,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                     dust.noGravity = true;
 
                     // Sparkle 位于同一方向稍内侧（脉动/能量感）
-                    Vector2 sparklePos = Projectile.Center + baseDirection * (arcRadius - 8f);
-                    SparkleParticle spark = new SparkleParticle(
-                        sparklePos,
-                        baseDirection.RotatedBy(MathHelper.PiOver2) * 0.4f, // 横向流动
-                        Color.LightYellow * 0.7f,
-                        Color.White * 0.3f,
-                        0.65f + 0.1f * arc,
-                        24,
-                        Main.rand.NextFloat(-0.05f, 0.05f),
-                        0.2f,
-                        false
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    //Vector2 sparklePos = Projectile.Center + baseDirection * (arcRadius - 8f);
+                    //SparkleParticle spark = new SparkleParticle(
+                    //    sparklePos,
+                    //    baseDirection.RotatedBy(MathHelper.PiOver2) * 0.4f, // 横向流动
+                    //    Color.LightYellow * 0.7f,
+                    //    Color.White * 0.3f,
+                    //    0.65f + 0.1f * arc,
+                    //    24,
+                    //    Main.rand.NextFloat(-0.05f, 0.05f),
+                    //    0.2f,
+                    //    false
+                    //);
+                    //GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
 

@@ -72,20 +72,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             }
 
             // ✅ 不论 hide 状态如何，始终绘制血圈
-            Texture2D circleTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/circle_03").Value;
-            foreach (BloodCircleRecord circle in circleList)
-            {
-                Color bloodColor = new Color(160, 0, 0) * circle.alpha;
-                sb.Draw(circleTex,
-                    circle.position - Main.screenPosition,
-                    null,
-                    bloodColor,
-                    0f,
-                    circleTex.Size() / 2,
-                    circle.scale,
-                    SpriteEffects.None,
-                    0);
-            }
+            //Texture2D circleTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/circle_03").Value;
+            //foreach (BloodCircleRecord circle in circleList)
+            //{
+            //    Color bloodColor = new Color(160, 0, 0) * circle.alpha;
+            //    sb.Draw(circleTex,
+            //        circle.position - Main.screenPosition,
+            //        null,
+            //        bloodColor,
+            //        0f,
+            //        circleTex.Size() / 2,
+            //        circle.scale,
+            //        SpriteEffects.None,
+            //        0);
+            //}
 
             return false;
         }
@@ -149,16 +149,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             }
 
             // 🔴 法阵圆圈生成（按距离）
-            if (Vector2.Distance(Projectile.Center, lastCirclePosition) > circleDistanceThreshold)
+            if (!Projectile.hide)
             {
-                lastCirclePosition = Projectile.Center;
-                circleList.Add(new BloodCircleRecord
+                if (Vector2.Distance(Projectile.Center, lastCirclePosition) > circleDistanceThreshold)
                 {
-                    position = Projectile.Center,
-                    scale = Main.rand.NextFloat(0.08f, 0.1f),
-                    alpha = 1f
-                });
+                    lastCirclePosition = Projectile.Center;
+                    circleList.Add(new BloodCircleRecord
+                    {
+                        position = Projectile.Center,
+                        scale = Main.rand.NextFloat(0.08f, 0.1f),
+                        alpha = 1f
+                    });
+                }
             }
+
+
+
             for (int i = 0; i < circleList.Count; i++)
             {
                 BloodCircleRecord c = circleList[i];

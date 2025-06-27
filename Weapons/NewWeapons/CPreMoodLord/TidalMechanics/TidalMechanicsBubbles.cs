@@ -8,6 +8,7 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -157,6 +158,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
         public override void OnKill(int timeLeft)
         {
             CreateBurstEffect();
+
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/潮汐突然爆"));
 
             // 获取玩家对象
             Player owner = Main.player[Projectile.owner];

@@ -16,8 +16,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
     internal class SurfeiterDrumINV : ModProjectile, ILocalizedModType
     {
-        public override string Texture => $"CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Surfeiter/SurfeiterDrum-{drumForm + 1}";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
+
+        public override string Texture => $"CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Surfeiter/SurfeiterDrum-{drumForm + 1}";
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
@@ -60,7 +61,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             Projectile.timeLeft = 240;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false; // 允许与方块碰撞
+            Projectile.tileCollide = false; // 与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
@@ -151,8 +152,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                 Projectile.velocity *= 0.93f;
 
                 if (Projectile.timeLeft > 65)
-                    Projectile.timeLeft = 65; 
-                
+                    Projectile.timeLeft = 65;
+
                 if (Projectile.alpha < 255)
                     Projectile.alpha = Projectile.alpha + 3;
 
@@ -162,7 +163,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                         Projectile.Center,
                         Vector2.Zero,
                         Color.SaddleBrown,
-                        "CalamityMod/Particles/HighResHollowCircleHardEdge",
+                        "CalamityThrowingSpear/Texture/KsTexture/light_01",
                         Vector2.One,
                         Main.rand.NextFloat(-10, 10),
                         0.12f,
@@ -173,6 +174,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 
                     SoundStyle fire = new("CalamityMod/Sounds/Item/ArcNovaDiffuserChargeImpact");
                     SoundEngine.PlaySound(fire with { Volume = 1.25f, Pitch = -0.2f, PitchVariance = 0.15f }, Projectile.Center);
+
+
+
+                    // ✅ 在准备爆炸时向正后方发射视觉特效弹幕
+                    Vector2 back = -Projectile.rotation.ToRotationVector2();
+                    Vector2 velocity = back * 6f;
+
+                    Projectile backProj = Projectile.NewProjectileDirect(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        velocity * 3f,
+                        ModContent.ProjectileType<SurfeiterDrumINVBack>(),
+                        0, // 无伤害
+                        0f,
+                        Projectile.owner
+                    );
+
+                    // 可传递 drumForm（若需要区分颜色、效果）
+                    if (backProj.ModProjectile is SurfeiterDrumINVBack backModProj)
+                    {
+                        backModProj.SetDrumForm(drumForm);
+                    }
+
                 }
             }
         }
@@ -263,18 +287,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                 }
 
                 // 🌊 冲击波环形粒子
-                Particle pulse = new CustomPulse(
-                    Projectile.Center,
-                    Vector2.Zero,
-                    new Color(100, 60, 20), // 暗棕色冲击
-                    "CalamityMod/Particles/HighResHollowCircleHardEdge",
-                    Vector2.One,
-                    Main.rand.NextFloat(-8f, 8f),
-                    0.05f,
-                    0.20f,
-                    20
-                );
-                GeneralParticleHandler.SpawnParticle(pulse);
+                //Particle pulse = new CustomPulse(
+                //    Projectile.Center,
+                //    Vector2.Zero,
+                //    new Color(100, 60, 20), // 暗棕色冲击
+                //    "CalamityMod/Particles/HighResHollowCircleHardEdge",
+                //    Vector2.One,
+                //    Main.rand.NextFloat(-8f, 8f),
+                //    0.05f,
+                //    0.20f,
+                //    20
+                //);
+                //GeneralParticleHandler.SpawnParticle(pulse);
 
                 // 🌪️ 灰尘破片（偏低/重力）
                 for (int i = 0; i < 20; i++)

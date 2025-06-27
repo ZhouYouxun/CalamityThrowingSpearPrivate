@@ -12,6 +12,7 @@ using CalamityMod.Rarities;
 using CalamityMod;
 using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.Yharon;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 {
@@ -66,7 +67,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 else if (bubblePlayer.CanSpawnBubble()) // 泡泡不存在且冷却结束
                 {
                     Item.useTime = Item.useAnimation = 10;
-                    Item.UseSound = SoundID.Item149;
+                    //Item.UseSound = SoundID.Item149;
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/潮汐右键生成泡泡"));
+
                     Item.shoot = ModContent.ProjectileType<TidalMechanicsBubbles>();
                     Item.shootSpeed = 0f; // 泡泡生成在玩家位置，不需要速度
 

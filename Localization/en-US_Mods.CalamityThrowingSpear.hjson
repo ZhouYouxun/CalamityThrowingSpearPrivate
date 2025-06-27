@@ -42,6 +42,11 @@ Projectiles: {
 			ChaosWindSpearWind.DisplayName: Chaos Wind Spear Wind
 			TerraLanceSpearBEAM.DisplayName: Terra Lance Spear B E A M
 			AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
+			NuclearFuelRodPROJ.DisplayName: Nuclear Fuel Rod P R O J
+			NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
+			NuclearFuelRodL.DisplayName: Nuclear Fuel Rod L
+			NuclearFuelRodM.DisplayName: Nuclear Fuel Rod M
+			NuclearFuelRodSAM.DisplayName: Nuclear Fuel Rod S A M
 		}
 
 		BPrePlantera: {
@@ -107,6 +112,7 @@ Projectiles: {
 			SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
 			SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
 			FestiveHalberdSTAR.DisplayName: Festive Halberd S T A R
+			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
 		}
 
 		EAfterDog: {
@@ -142,6 +148,7 @@ Projectiles: {
 			AuricJavLighting.DisplayName: Auric Jav Lighting
 			FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 			SoulSeekerJavBRIDFire.DisplayName: Soul Seeker Jav B R I D Fire
+			NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
 		}
 	}
 
@@ -874,6 +881,11 @@ NewWeapons: {
 		Sunset: {
 			Tooltip: ""
 			DisplayName: Sunset
+		}
+
+		NuclearFuelRod: {
+			DisplayName: Nuclear Fuel Rod
+			Tooltip: ""
 		}
 	}
 

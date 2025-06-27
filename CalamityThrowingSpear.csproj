@@ -132,6 +132,9 @@
 	  <None Remove="Weapons\NewWeapons\DPreDog\EndlessDevourJav\EndlessDevourJav.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\BlackSLASH.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\InfiniteDarknessJav.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\NuclearFuelRod\NuclearFuelRodL.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\NuclearFuelRod\NuclearFuelRodM.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\NuclearFuelRod\NuclearFuelRodSAM.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\SoulHunterJav\SoulHunterJavSHARK.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftListener.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftMagic.png" />
