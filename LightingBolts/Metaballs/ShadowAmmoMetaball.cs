@@ -79,7 +79,7 @@ namespace CalamityThrowingSpear.LightingBolts.Metaballs
                 return;
 
             // 加载 Metaball 叠加的纹理层
-            LayerAsset = ModContent.Request<Texture2D>($"CalamityRangerExpansion/LightingBolts/Metaballs/ShadowAmmoLayer", AssetRequestMode.ImmediateLoad);
+            LayerAsset = ModContent.Request<Texture2D>($"CalamityThrowingSpear/LightingBolts/Metaballs/ShadowAmmoLayer", AssetRequestMode.ImmediateLoad);
         }
 
         // 这个方法用于更新所有粒子
