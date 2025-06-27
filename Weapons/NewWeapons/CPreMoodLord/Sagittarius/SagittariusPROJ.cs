@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using CalamityMod.Particles;
 using Terraria.Audio;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
@@ -78,6 +79,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 }
             }
 
+
+            // 每 X 帧生成一组对称 Dust
+            if (Main.GameUpdateCount % 2 == 0)
+            {
+                int layers = 3;
+                int dustPerLayer = 6;
+                float baseRadius = 14f;
+
+                for (int layer = 0; layer < layers; layer++)
+                {
+                    float radius = baseRadius + layer * 6f;
+                    for (int i = 0; i < dustPerLayer; i++)
+                    {
+                        float angle = MathHelper.TwoPi * i / dustPerLayer + Projectile.timeLeft * 0.04f * (1 + layer);
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+                        Vector2 pos = Projectile.Center + offset;
+
+                        Dust dust = Dust.NewDustPerfect(pos, 267, offset.SafeNormalize(Vector2.Zero) * 0.4f, 0, Color.White, 0.9f + layer * 0.2f);
+                        dust.noGravity = true;
+                    }
+                }
+            }
+
+
+            if (Main.rand.NextBool(6))
+            {
+                Particle dust = new HeavySmokeParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    Main.rand.NextVector2Circular(1f, 1f),
+                    Color.LightGoldenrodYellow * 0.4f,
+                    30,
+                    Main.rand.NextFloat(0.5f, 1f),
+                    0.2f,
+                    Main.rand.NextFloat(-0.05f, 0.05f),
+                    false
+                );
+                GeneralParticleHandler.SpawnParticle(dust);
+            }
+
+
+            // 在 AI 中调用（持续飞行时）
+            if (Main.rand.NextBool(2)) // 降低频率避免刷屏
+            {
+                float angleOffset = Projectile.timeLeft * 0.1f;
+                CTSLightingBoltsSystem.Spawn_SagittariusFlightSpiral(Projectile.Center, angleOffset);
+            }
+
+
             Lighting.AddLight(Projectile.Center, Color.LightGoldenrodYellow.ToVector3() * 0.55f);
         }
 
@@ -120,6 +169,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
+
+            // 神圣魔法阵结构性散射
+            int ringCount = 5;
+            float ringRadius = 64f;
+            for (int ring = 1; ring <= ringCount; ring++)
+            {
+                int points = 8 + ring * 2; // 每圈粒子数量递增
+                float radius = ring * ringRadius * 0.2f; // 每圈间距
+
+                for (int i = 0; i < points; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / points + Main.GameUpdateCount * 0.05f;
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * radius;
+
+                    Dust dust = Dust.NewDustPerfect(pos, 267, Vector2.Zero, 0, Color.Goldenrod, 1.4f);
+                    dust.noGravity = true;
+                }
+            }
+
+            // 辐射型线性粒子轨迹
+            int rayCount = 16;
+            float length = 100f;
+            for (int i = 0; i < rayCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / rayCount;
+                Vector2 velocity = angle.ToRotationVector2() * 2.5f;
+
+                for (int j = 0; j < 4; j++) // 每条轨迹 4 个段
+                {
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * j * (length / 4f);
+                    Particle trail = new SparkParticle(
+                        pos,
+                        velocity,
+                        false,
+                        40,
+                        1.0f,
+                        Color.LightYellow * 0.8f
+                    );
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
+            }
+
 
         }
 

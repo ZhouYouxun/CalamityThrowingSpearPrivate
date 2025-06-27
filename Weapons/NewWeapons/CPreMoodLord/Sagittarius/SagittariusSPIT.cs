@@ -12,6 +12,8 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
@@ -47,9 +49,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             // 初始速度设置为充能长枪速度的x%
             Projectile.velocity *= 3.00f;
         }
+        public override void OnSpawn(IEntitySource source)
+        {
 
+
+        }
         public override void AI()
         {
+            // 在 AI 内加入一次性判断调用（只在出生时）
+            if (Projectile.timeLeft == 600) // 初始时调用
+            {
+                CTSLightingBoltsSystem.Spawn_SagittariusSpitBirth(Projectile.Center);
+            }
+
             // 加速效果，每帧速度乘以1.01
             Projectile.velocity *= 1.01f;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -116,6 +128,79 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
         }
 
 
+        public override void OnKill(int timeLeft)
+        {
+            //for (int i = 0; i < 30; i++)
+            //{
+            //    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+            //    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
+            //    Color color = Main.rand.NextBool() ? Color.White : Color.LightYellow;
+
+            //    SparkleParticle spark = new SparkleParticle(
+            //        Projectile.Center,
+            //        velocity,
+            //        color * 0.6f,
+            //        color * 0.2f,
+            //        Main.rand.NextFloat(0.6f, 1.0f),
+            //        Main.rand.Next(18, 30),
+            //        Main.rand.NextFloat(-0.2f, 0.2f),
+            //        0.2f,
+            //        false
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(spark);
+            //}
+            int arcCount = 5; // 弧段数
+            int pointsPerArc = 8;
+            float baseRadius = 60f;
+
+            for (int arc = 0; arc < arcCount; arc++)
+            {
+                float arcStartAngle = MathHelper.TwoPi * arc / arcCount + Main.GameUpdateCount * 0.03f;
+                float arcSpan = MathHelper.PiOver4;
+                float arcRadius = baseRadius + arc * 6f;
+
+                for (int i = 0; i < pointsPerArc; i++)
+                {
+                    float t = (float)i / (pointsPerArc - 1);
+                    float angle = arcStartAngle - arcSpan * 0.5f + arcSpan * t;
+                    Vector2 baseDirection = angle.ToRotationVector2();
+
+                    // Dust 位于主弧线圆上（稳定结构）
+                    Vector2 dustPos = Projectile.Center + baseDirection * arcRadius;
+                    Dust dust = Dust.NewDustPerfect(dustPos, 267, Vector2.Zero, 0, Color.White, 1.3f);
+                    dust.noGravity = true;
+
+                    // Sparkle 位于同一方向稍内侧（脉动/能量感）
+                    Vector2 sparklePos = Projectile.Center + baseDirection * (arcRadius - 8f);
+                    SparkleParticle spark = new SparkleParticle(
+                        sparklePos,
+                        baseDirection.RotatedBy(MathHelper.PiOver2) * 0.4f, // 横向流动
+                        Color.LightYellow * 0.7f,
+                        Color.White * 0.3f,
+                        0.65f + 0.1f * arc,
+                        24,
+                        Main.rand.NextFloat(-0.05f, 0.05f),
+                        0.2f,
+                        false
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+
+            // 金色冲击波
+            Particle pulse = new DirectionalPulseRing(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.Goldenrod,
+                new Vector2(1.6f, 1.6f),
+                0f,
+                0.5f,
+                1.0f,
+                30
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
+        }
 
         public override bool PreDraw(ref Color lightColor)
         {

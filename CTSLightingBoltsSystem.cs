@@ -635,6 +635,81 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
+        // SagittariusPROJ 飞行时生成：亮黄螺旋轨迹光点
+        public static void Spawn_SagittariusFlightSpiral(Vector2 center, float angleOffset)
+        {
+            float radius = 24f;
+            float angle = Main.GameUpdateCount * 0.1f + angleOffset; // 单螺旋角度随时间变化
+            Vector2 offset = angle.ToRotationVector2() * radius;
+
+            var spark = _poolPrettySparkle.RequestParticle();
+            spark.ColorTint = new Color(1f, 1f, 0.6f, 1f); // 柔和金白色
+            spark.LocalPosition = center + offset;
+            spark.Rotation = angle;
+            spark.Scale = new Vector2(1.8f, 0.6f);
+            spark.FadeInNormalizedTime = 0.01f;
+            spark.FadeOutNormalizedTime = 0.9f;
+            spark.TimeToLive = 36;
+            spark.FadeOutEnd = 36;
+            spark.FadeInEnd = 10;
+            spark.FadeOutStart = 20;
+            spark.AdditiveAmount = 0.5f;
+            Main.ParticleSystem_World_OverPlayers.Add(spark);
+        }
+
+        // SagittariusSPIT 出现时爆发光点（类似星屑点燃）
+        public static void Spawn_SagittariusSpitBirth(Vector2 center)
+        {
+            int count = 8;
+            for (int i = 0; i < count; i++)
+            {
+                float angle = MathHelper.TwoPi * i / count;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 3.5f);
+
+                var spark = _poolPrettySparkle.RequestParticle();
+                spark.ColorTint = new Color(1f, 0.9f, 0.5f, 1f); // 偏金黄
+                spark.LocalPosition = center;
+                spark.Velocity = velocity;
+                spark.Scale = new Vector2(1.6f, 0.6f);
+                spark.FadeInNormalizedTime = 0.01f;
+                spark.FadeOutNormalizedTime = 0.85f;
+                spark.TimeToLive = 40;
+                spark.FadeOutEnd = 40;
+                spark.FadeInEnd = 10;
+                spark.FadeOutStart = 20;
+                spark.AdditiveAmount = 0.45f;
+                Main.ParticleSystem_World_OverPlayers.Add(spark);
+            }
+        }
+
+        // SagittariusPROJECHO 蓄力期间，随机喷发喷射型光点
+        public static void Spawn_SagittariusEchoCharging(Vector2 center)
+        {
+            int count = Main.rand.Next(2, 4);
+            for (int i = 0; i < count; i++)
+            {
+                Vector2 vel = Main.rand.NextVector2Circular(3f, 3f);
+                var spark = _poolPrettySparkle.RequestParticle();
+                spark.ColorTint = new Color(1f, 1f, 0.8f, 1f); // 圣光色
+                spark.LocalPosition = center;
+                spark.Velocity = vel;
+                spark.Scale = new Vector2(1.5f, 1.0f);
+                spark.FadeInNormalizedTime = 0.01f;
+                spark.FadeOutNormalizedTime = 0.9f;
+                spark.TimeToLive = 50;
+                spark.FadeOutEnd = 50;
+                spark.FadeInEnd = 10;
+                spark.FadeOutStart = 30;
+                spark.AdditiveAmount = 0.55f;
+                Main.ParticleSystem_World_OverPlayers.Add(spark);
+            }
+        }
+
+
+
+
+
+
 
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CalamityThrowingSpear")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d8c02ed49b0d98c92904e932da838115dabc157")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+528721965e147038d46963500b48f7059034a102")]
 [assembly: System.Reflection.AssemblyProductAttribute("CalamityThrowingSpear")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CalamityThrowingSpear")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

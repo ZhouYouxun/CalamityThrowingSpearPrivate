@@ -12,6 +12,7 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.Audio;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
@@ -76,6 +77,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 
             if (!isAttached)// 蓄力阶段
             {
+
+                // 在 AI 中蓄力阶段循环调用
+                if (!isAttached && Main.rand.NextBool(3))
+                {
+                    CTSLightingBoltsSystem.Spawn_SagittariusEchoCharging(Projectile.Center);
+                }
+
+                if (Main.GameUpdateCount % 12 == 0)
+                {
+                    int dustCount = 12;
+                    float radius = 32f;
+                    for (int i = 0; i < dustCount; i++)
+                    {
+                        float angle = MathHelper.TwoPi * i / dustCount + Main.GameUpdateCount * 0.05f;
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+
+                        Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, 267, offset.SafeNormalize(Vector2.Zero) * 0.5f, 0, Color.White, 1.2f);
+                        dust.noGravity = true;
+                    }
+                }
+
+
 
                 // 减速并逐渐增大和旋转
                 Projectile.velocity *= 0.98f;

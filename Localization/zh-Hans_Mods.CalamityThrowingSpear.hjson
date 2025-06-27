@@ -785,7 +785,6 @@ NewWeapons: {
 		}
 
 		Surfeiter: {
-			DisplayName: 巴蛇吞象
 			Tooltip:
 				'''
 				手持时在头顶生成一个鼓
@@ -800,6 +799,7 @@ NewWeapons: {
 				右键切换鼓的类型
 				[c/B8860B:“生犯贪嗔痴戾疑，死受鞭笞釜灼烹”]
 				'''
+			DisplayName: 巴蛇吞象
 		}
 	}
 
@@ -1036,6 +1036,11 @@ NewWeapons: {
 				'''
 			DisplayName: 命定星启
 		}
+
+		AuricSpear: {
+			// DisplayName: Auric Spear
+			// Tooltip: ""
+		}
 	}
 }
 
@@ -1159,6 +1164,65 @@ Items: {
 	XiaoZhiTiaoEA2: {
 		DisplayName: 星夜箴言
 		Tooltip: 挑战：在不吃下任何一种灾厄水果的情况下击杀月球领主
+	}
+
+	TheSkillAcc: {
+		// Tooltip: ""
+		// DisplayName: The Skill Acc
+	}
+
+	Weapons: {
+		Rogue: {
+			PhantomShuriken: {
+				// Tooltip: ""
+				// DisplayName: Phantom Shuriken
+			}
+		}
+	}
+
+	PrimeMeridian: {
+		// Tooltip: ""
+		// DisplayName: Prime Meridian
+	}
+
+	Sunset2: {
+		// Tooltip: ""
+		// DisplayName: Sunset2
+	}
+
+	GlobalStorm: {
+		// Tooltip: ""
+		// DisplayName: Global Storm
+	}
+
+	ElectrocutionHalberdSpear: {
+		// DisplayName: Electrocution Halberd Spear
+		// Tooltip: ""
+	}
+
+	TidalMechanicsSpear: {
+		// DisplayName: Tidal Mechanics Spear
+		// Tooltip: ""
+	}
+
+	TheLastLanceSpear: {
+		// Tooltip: ""
+		// DisplayName: The Last Lance Spear
+	}
+
+	TheBrokenSpear: {
+		// Tooltip: ""
+		// DisplayName: The Broken Spear
+	}
+
+	HeartSwordSpear: {
+		// DisplayName: Heart Sword Spear
+		// Tooltip: ""
+	}
+
+	MirrorWater: {
+		// DisplayName: Mirror Water
+		// Tooltip: ""
 	}
 }
 
