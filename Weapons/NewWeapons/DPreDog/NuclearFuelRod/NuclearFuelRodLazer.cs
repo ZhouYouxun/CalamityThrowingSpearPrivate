@@ -29,7 +29,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 
         public override float MaxScale => 3f;
         public override float MaxLaserLength => 2000f;
-        public override float Lifetime => 100; // 只持续 100 帧
+        public override float Lifetime => 180; // 持续 X 帧
         public override Color LaserOverlayColor => new Color(150, 255, 150, 100); // 荧光绿色
         public override Color LightCastColor => Color.White;
         public override Texture2D LaserBeginTexture => Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
@@ -52,7 +52,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             Projectile.alpha = 255;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 100;
+            Projectile.timeLeft = 180;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 1; // 无敌帧冷却时间为1帧
         }

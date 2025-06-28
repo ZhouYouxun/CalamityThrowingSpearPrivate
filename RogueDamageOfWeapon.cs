@@ -58,6 +58,13 @@ namespace CalamityThrowingSpear
                 {
                     item.DamageType = ModContent.GetInstance<RogueDamageClass>(); // 将职业类型改为盗贼
                 }
+
+                // 自动检测是否为本模组武器
+                //if (MeleeSpeedOfThrowingSpear.ThisModWeaponTypes.Contains(item.type))
+                //{
+                //    item.DamageType = ModContent.GetInstance<RogueDamageClass>(); // 改为盗贼职业类型
+                //}
+
             }
         }
     }

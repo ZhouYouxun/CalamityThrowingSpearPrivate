@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CalamityRangerExpansion.LightingBolts.Shader
 {
-    internal class ShaderGames : Mod
+    internal class ShaderGames : ModSystem
     {
         // 直接定义所有 Shader
         public static Effect RainbowShader;
@@ -43,7 +43,7 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
         public static Effect TrailWarpDistortion;
 
 
-        
+
 
 
 
@@ -112,10 +112,6 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
 
 
 
-            
-
-
-
 
 
 
@@ -133,6 +129,7 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
 
             // 以后新增 Shader 直接加在这里
         }
+
         // 调用的时候可以使用这些原版的底图：
         // Images/Extra_
         // 191 192 193 194 196 197
@@ -140,12 +137,20 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
 
 
         // **注册拖尾 Shader**
+        [System.Obsolete]
         private static void RegisterTrailShader(Effect shader, string passName, string registrationName)
         {
             Ref<Effect> shaderPointer = new(shader);
             MiscShaderData passParamRegistration = new(shaderPointer, passName);
             GameShaders.Misc[$"ModNamespace:{registrationName}"] = passParamRegistration;
         }
+
+        //private static void RegisterTrailShader(string shaderName, string passName, string registrationName)
+        //{
+        //    var shaderAsset = ModContent.Request<Effect>($"CalamityRangerExpansion/LightingBolts/Shader/XNBcoder/Effects/{shaderName}", AssetRequestMode.ImmediateLoad);
+        //    MiscShaderData passParamRegistration = new(shaderAsset, passName);
+        //    GameShaders.Misc[$"ModNamespace:{registrationName}"] = passParamRegistration;
+        //}
 
 
         // 统一的 Shader 加载方法

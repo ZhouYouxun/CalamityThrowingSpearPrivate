@@ -113,13 +113,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         mAngleOffset += MathHelper.ToRadians(2f);    // 顺时针
                         mAngleOffset2 -= MathHelper.ToRadians(2f);   // 逆时针
 
-                        Vector2 dir1 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset).ToRotationVector2();
-                        Vector2 dir2 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset2).ToRotationVector2();
+                        Vector2 dir1 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset).ToRotationVector2() * 0.3f;
+                        Vector2 dir2 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset2).ToRotationVector2() * 0.3f;
 
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             gunTip,
-                            dir1 * 8f,
+                            dir1,
                             ModContent.ProjectileType<NuclearFuelRodM>(),
                             Projectile.damage / 2,
                             2f,
@@ -129,7 +129,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             gunTip,
-                            dir2 * 8f,
+                            dir2,
                             ModContent.ProjectileType<NuclearFuelRodM>(),
                             Projectile.damage / 2,
                             2f,
@@ -212,7 +212,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 
 
                     phaseTimer++;
-                    if (phaseTimer >= 90)
+                    if (phaseTimer >= 180) // 激光形态持续多久
                     {
                         Projectile.Kill();
                     }

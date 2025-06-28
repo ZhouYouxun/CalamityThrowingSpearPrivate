@@ -61,6 +61,8 @@ using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
+using CalamityMod.Items.Accessories;
 
 
 namespace CalamityThrowingSpear
@@ -120,8 +122,10 @@ namespace CalamityThrowingSpear
             typeof(ChaosWindJav), // 狂风
             typeof(EndlessDevourJav), // 黑噬
             typeof(InfiniteDarknessJav), // 无边黑暗
-            typeof(SoulHunterJav), // 狩魂
+            typeof(SoulHunterJav), // 魂狩
             typeof(TerraLance), // 泰拉
+            typeof(StarsofDestiny), // 星钟
+            typeof(NuclearFuelRod), // 核燃料棒
 
             typeof(AuricJav), // 电池
             typeof(MiracleMatterJav), // 轻星流
@@ -138,15 +142,61 @@ namespace CalamityThrowingSpear
             typeof(ShadowJav), // 无极
         };
 
-        public override void SetStaticDefaults()
+        static MeleeSpeedOfThrowingSpear()
         {
-            base.SetStaticDefaults();
+            Mod calamitySpearMod = ModContent.GetInstance<CalamityThrowingSpearMod>(); // 确保你的 Mod 主类已改名
+            foreach (var modItem in calamitySpearMod.GetContent<ModItem>())
+            {
+                Item item = modItem.Item;
+                // 简易判断：damage>0，maxStack==1，非配饰
+                if (item.damage > 0 && item.maxStack == 1 && !item.accessory)
+                {
+                    WeaponSetA.Add(modItem.GetType());
+                }
+            }
+
+
         }
+
+
+        //public static HashSet<int> ThisModWeaponTypes = new();
+
+
+
+        //public override void SetStaticDefaults()
+        //{
+        //    base.SetStaticDefaults();
+
+        //    // 避免重复执行
+        //    if (ThisModWeaponTypes.Count > 0)
+        //        return;
+
+        //    Mod calamitySpearMod = ModContent.GetInstance<CalamityThrowingSpearMod>(); // 获取当前模组
+
+        //    foreach (var modItem in calamitySpearMod.GetContent<ModItem>())
+        //    {
+        //        Item item = modItem.Item;
+
+        //        // 简单筛选规则：damage>0 + maxStack=1（可自行根据需要增添筛选条件）
+        //        if (item.damage > 0 && item.maxStack == 1 && !item.accessory)
+        //        {
+        //            ThisModWeaponTypes.Add(item.type);
+        //        }
+        //    }
+
+        //    // 可选：验证捕捉结果
+        //    foreach (int id in ThisModWeaponTypes)
+        //    {
+        //        //Logger.Info($"[自动捕捉武器] {Lang.GetItemNameValue(id)} ID={id}");
+        //    }
+        //}
+
 
         public override void SetDefaults(Item item)
         {
             // 检查当前物品类型是否在容器中
             if (WeaponSetA.Contains(item.ModItem?.GetType()))
+            //if (ThisModWeaponTypes.Contains(item.type))
             {
                 // 根据 CTSConfigs.EnableMeleeSpeed 的状态设置 BonusAttackSpeedMultiplier
                 if (ModContent.GetInstance<CTSConfigs>().EnableMeleeSpeed)

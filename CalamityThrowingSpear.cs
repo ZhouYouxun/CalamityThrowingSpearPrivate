@@ -22,11 +22,11 @@ using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear
 {
-	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
-	//public class CalamityThrowingSpear : Mod
-	//{
+    // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
+    public class CalamityThrowingSpearMod : Mod
+    {
 
-    //}
+    }
 
     // 实际颜色转化成三维颜色选取
     // https://www.w3schools.com/colors/colors_picker.asp
