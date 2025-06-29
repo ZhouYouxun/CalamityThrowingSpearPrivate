@@ -85,7 +85,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 // 每次左键使用计数 +1
                 attackCounter++;
 
-                if (attackCounter >= 2) // 测试用改成二,之后改掉这个
+                if (attackCounter >= 10) // 每攻击多少次触发一次强化攻击
                 {
                     // 第 10 次触发强化攻击
                     FinishingTouchPROJ.UseDragonSnakeMode = true;

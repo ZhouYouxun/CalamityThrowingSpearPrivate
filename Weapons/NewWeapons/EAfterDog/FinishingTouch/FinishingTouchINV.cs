@@ -39,96 +39,144 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            // 💥 持续生成橙色椭圆形光波
-            Particle pulse = new DirectionalPulseRing(
-                Projectile.Center,
-                Projectile.velocity * 0.75f,
-                Color.Orange,
-                new Vector2(1f, 2.5f),
-                Projectile.rotation - MathHelper.PiOver4,
-                0.2f,
-                0.03f,
-                20
-            );
-            GeneralParticleHandler.SpawnParticle(pulse);
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-            // 🎇 生成多条竹笋状拖尾（随机）
-            for (int i = 0; i < 2; i++) // 可根据需要调整数量
+            // === 无序部分：Dust 火焰瀑布喷射，占总量 50% ===
+            int dustCount = 25; // 每帧
+            for (int i = 0; i < dustCount; i++)
             {
-                Vector2 spawnOffset = Main.rand.NextVector2Circular(6f, 6f);
+                float spread = MathHelper.ToRadians(90f); // ±45°
+                float angle = Main.rand.NextFloat(-spread, spread);
+                Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(8f, 22f);
+                int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst;
+                Dust d = Dust.NewDustDirect(
+                    Projectile.Center,
+                    0, 0,
+                    type,
+                    velocity.X,
+                    velocity.Y,
+                    0,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(1.5f, 2.8f)
+                );
+                d.noGravity = true;
+            }
+
+            // === 有序部分：方向冲击波 PulseWave ===
+            if (Main.GameUpdateCount % 5 == 0)
+            {
+                int pulseLayers = 4;
+                for (int i = 0; i < pulseLayers; i++)
+                {
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center + forward * (20f + i * 10f),
+                        forward * (3f + i * 1f),
+                        Color.Lerp(Color.OrangeRed, Color.Yellow, i / (float)pulseLayers),
+                        new Vector2(1f, 2.5f + i * 0.4f),
+                        Projectile.rotation - MathHelper.PiOver4,
+                        0.2f + i * 0.05f,
+                        0.03f,
+                        20
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                }
+            }
+
+            // === 有序部分：竹笋状拖尾 AltSparkParticle ===
+            for (int i = 0; i < 5; i++)
+            {
+                Vector2 offset = Main.rand.NextVector2Circular(8f, 8f);
                 AltSparkParticle spark = new AltSparkParticle(
-                    Projectile.Center + spawnOffset,
-                    Projectile.velocity * 0.01f,
+                    Projectile.Center + offset,
+                    Projectile.velocity * 0.05f,
                     false,
-                    8,
-                    1.3f,
-                    Color.Cyan * 0.135f
+                    12,
+                    1.5f,
+                    Color.Cyan * 0.2f
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
         }
 
+
+
+
+
+
+
+
+
+
         public override void OnKill(int timeLeft)
         {
-            // 🟧 有序线性橙色拖尾粒子
-            for (int i = 0; i < 8; i++)
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+            // === 无序部分：Dust 极限喷射 ===
+            int dustCount = 300; // 大爆发
+            float spread = MathHelper.ToRadians(150f);
+            for (int i = 0; i < dustCount; i++)
             {
-                Particle trail = new SparkParticle(
+                float angle = Main.rand.NextFloat(-spread, spread);
+                Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(15f, 50f);
+                int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst;
+                Dust d = Dust.NewDustDirect(
                     Projectile.Center,
-                    Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(1f, 3f),
+                    0, 0,
+                    type,
+                    velocity.X,
+                    velocity.Y,
+                    0,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(1.8f, 3.5f)
+                );
+                d.noGravity = true;
+            }
+
+            // === 有序部分：火焰冲击波 ===
+            int pulseLayers = 8;
+            for (int i = 0; i < pulseLayers; i++)
+            {
+                Particle pulse = new DirectionalPulseRing(
+                    Projectile.Center + forward * (30f + i * 12f),
+                    forward * (6f + i * 2f),
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, i / (float)pulseLayers),
+                    new Vector2(1.2f, 3f + i * 0.5f),
+                    Projectile.rotation - MathHelper.PiOver4,
+                    0.25f + i * 0.06f,
+                    0.02f,
+                    35
+                );
+                GeneralParticleHandler.SpawnParticle(pulse);
+            }
+
+            // === 有序部分：橙色 SparkParticle 扇形喷射 ===
+            int sparkCount = 120;
+            float sparkSpread = MathHelper.ToRadians(90f);
+            for (int i = 0; i < sparkCount; i++)
+            {
+                float angle = MathHelper.Lerp(-sparkSpread / 2, sparkSpread / 2, i / (float)sparkCount);
+                Vector2 dir = forward.RotatedBy(angle);
+                Color color = Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat());
+
+                Particle spark = new SparkParticle(
+                    Projectile.Center,
+                    dir * Main.rand.NextFloat(15f, 40f),
                     false,
                     60,
-                    1.0f,
-                    Color.Orange
+                    Main.rand.NextFloat(1.2f, 2.2f),
+                    color
                 );
-                GeneralParticleHandler.SpawnParticle(trail);
+                GeneralParticleHandler.SpawnParticle(spark);
             }
-
-            // 🧪 Dust 火花（红橙）
-            for (int i = 0; i < 6; i++)
-            {
-                int dust = Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Torch,
-                    Main.rand.NextFloat(-2f, 2f),
-                    Main.rand.NextFloat(-2f, 2f),
-                    150,
-                    Color.OrangeRed,
-                    1.2f
-                );
-                Main.dust[dust].noGravity = true;
-            }
-
-            // 💨 轻型白色烟雾
-            for (int i = 0; i < 3; i++)
-            {
-                Particle smokeL = new HeavySmokeParticle(
-                    Projectile.Center,
-                    Main.rand.NextVector2Circular(1f, 1f),
-                    Color.WhiteSmoke,
-                    18,
-                    Main.rand.NextFloat(0.9f, 1.6f),
-                    0.35f,
-                    Main.rand.NextFloat(-1, 1),
-                    false
-                );
-                GeneralParticleHandler.SpawnParticle(smokeL);
-            }
-
-            // 🌫️ 重型灰色烟雾
-            Particle smokeH = new HeavySmokeParticle(
-                Projectile.Center + new Vector2(0, -10),
-                new Vector2(0, -1) * 5f,
-                Color.Gray,
-                30,
-                Main.rand.NextFloat(0.7f, 1.3f),
-                1.0f,
-                MathHelper.ToRadians(2f),
-                true
-            );
-            GeneralParticleHandler.SpawnParticle(smokeH);
         }
+
+
+
+
+
+
+
+
+
     }
 }

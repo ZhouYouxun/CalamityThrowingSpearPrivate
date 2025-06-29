@@ -706,6 +706,40 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
+        public static void Spawn_FlamingPentagonOrbs(Vector2 center, float rotationAngle)
+        {
+            int points = 5;
+            float radius = 120f; // 半径可调
+            float angleStep = MathHelper.TwoPi / points;
+
+            for (int i = 0; i < points; i++)
+            {
+                float angle = rotationAngle + i * angleStep;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle orb = _poolPrettySparkle.RequestParticle();
+                orb.ColorTint = new Color(1f, 0.5f, 0f); // 橙色
+                orb.LocalPosition = center + offset;
+                orb.Rotation = angle;
+                orb.Scale = new Vector2(2.5f, 1.2f);
+                orb.FadeInNormalizedTime = 0.01f;
+                orb.FadeOutNormalizedTime = 0.95f;
+                orb.TimeToLive = 30; // 可调
+                orb.FadeOutEnd = 30;
+                orb.FadeInEnd = 10;
+                orb.FadeOutStart = 15;
+                orb.AdditiveAmount = 0.45f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(orb);
+            }
+        }
+
+
+
+
+
+
+
 
 
 

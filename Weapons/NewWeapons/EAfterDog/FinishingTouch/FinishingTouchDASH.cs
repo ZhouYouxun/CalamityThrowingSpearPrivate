@@ -26,6 +26,8 @@ using CalamityMod.NPCs.Bumblebirb;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
+using CalamityRangerExpansion.LightingBolts;
+using Terraria.Graphics.Renderers;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -66,6 +68,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.localNPCHitCooldown = 60; // 无敌帧冷却时间为60帧
         }
         private bool hasSaidPhrase = false; // 添加一个标记，确保只触发一次
+        private float pentagonLightRotation = 0f; // 五边形光点旋转角度
 
 
         public override void OnSpawn(IEntitySource source)
@@ -238,6 +241,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     AddTrailParticles(); // 尖刺型粒子特效
                     AddSmokeParticles(); // 轻型烟雾粒子特效
                     AddHeavySmokeParticles(); // 重型烟雾粒子特效
+                    AddPulseWaves(); // 🚩 新增冲击波效果
+
+                    // 🚩 调用光点环绕生成
+                    pentagonLightRotation += 0.05f; // 🚩 每次调用前累加角度，确保持续旋转
+                    CTSLightingBoltsSystem.Spawn_FlamingPentagonOrbs(Projectile.Center, pentagonLightRotation);
                 }
             }
 
@@ -312,6 +320,57 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             // 播放弹幕死亡的音效
             SoundEngine.PlaySound(Yharon.FireSound, owner.position);
+
+            {
+
+                // 🚩 获取正前方方向
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                // ======================== 有序部分：喷射型线性 SparkParticle ========================
+                int sparkCount = 80; // 数量可微调
+                float spread = MathHelper.ToRadians(30f); // ±15° 扩散
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float angle = MathHelper.Lerp(-spread / 2, spread / 2, i / (float)sparkCount);
+                    Vector2 dir = forward.RotatedBy(angle);
+                    Color color = Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat(0.2f, 0.8f));
+
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        dir * Main.rand.NextFloat(12f, 24f), // 高速喷射
+                        false,
+                        50, // 生命周期
+                        Main.rand.NextFloat(1.0f, 1.8f),
+                        color
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // ======================== 无序部分：Dust 狂野扩散喷射（极限强化） ========================
+                int dustCount = 300; // 🚩 数量翻 3 倍
+                float extremeSpread = MathHelper.ToRadians(160f); // 🚩 ±80° 超广角喷发范围
+                for (int i = 0; i < dustCount; i++)
+                {
+                    float randomAngle = Main.rand.NextFloat(-extremeSpread, extremeSpread);
+                    Vector2 velocity = forward.RotatedBy(randomAngle) * Main.rand.NextFloat(30f, 80f); // 🚩 大幅提升速度（原 6~14 → 30~80）
+                    int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst;
+                    Dust d = Dust.NewDustDirect(
+                        Projectile.Center,
+                        0, 0,
+                        type,
+                        velocity.X,
+                        velocity.Y,
+                        20, // 更低 alpha，保证亮度
+                        Color.OrangeRed,
+                        Main.rand.NextFloat(1.8f, 3.5f) // 🚩 更大缩放
+                    );
+                    d.noGravity = true;
+                }
+
+
+
+
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -447,6 +506,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
         }
+        private void AddPulseWaves()
+        {
+            int pulseCount = 6; // 🚩 增加叠加层次（更复杂）
+            float baseScale = 0.25f; // 基础缩放
+            float scaleStep = 0.07f; // 每层缩放递增（更明显）
+
+            for (int i = 0; i < pulseCount; i++)
+            {
+                float rotation = Projectile.rotation - MathHelper.PiOver4;
+
+                Particle pulse = new DirectionalPulseRing(
+                    Projectile.Center
+                    + Projectile.velocity.SafeNormalize(Vector2.UnitY) * (40f + i * 5f)
+                    + Main.rand.NextVector2Circular(8f, 8f), // 🚩 新增：随机偏移初始位置
+                    Projectile.velocity.SafeNormalize(Vector2.UnitY) * (3f + i * 1.5f),
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, i / (float)pulseCount),
+                    new Vector2(1f, 2.5f + i * 0.4f),
+                    rotation,
+                    baseScale + i * scaleStep,
+                    0.02f,
+                    30
+                );
+
+                GeneralParticleHandler.SpawnParticle(pulse);
+            }
+        }
+
+
+
+
 
         public override void SetStaticDefaults()
         {

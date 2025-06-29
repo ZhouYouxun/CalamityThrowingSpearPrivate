@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using CalamityMod;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,13 +24,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
         private const float MaxSpeed = 34f;
         private const float MinSpeed = 6f;
-        private static readonly float MaxTurnRate = MathHelper.ToRadians(5f);
-        private static readonly float MinTurnRate = MathHelper.ToRadians(0.003f);
 
-        private bool lastTurnLeft = false; // 上一次击中后是左转还是右转，默认 false（右转）
-        private float turnRateMultiplier = 1.0f; // 当前转向速度倍率
-        private const float MaxTurnRateBase = 8f; // 【可改】基础最大转向度（度）
-        private static readonly float MaxTurnRateRad = MathHelper.ToRadians(MaxTurnRateBase); // 转换弧度
+        private Player lockedPlayer; // 用于B方案
+        private bool useBPlan = false; // 用于B方案
+
+        private int startupTimer = 0; // 用于B方案
+
+        private bool hasChased = false;      // 是否已执行过一次追踪
+        private bool hasHitTarget = false;   // 是否已击中过目标
+
+        private const int DelayBeforeChase = 60; // 延迟帧数，可调
+        private int chaseDelayTimer = 0; // 延迟计时器
 
 
         internal class Segment
@@ -65,14 +70,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
             Projectile.netImportant = true;
             Projectile.light = 1.2f;
         }
-        private Player lockedPlayer; // 用于B方案时锁定玩家
-        private bool useBPlan = false; // 当前弹幕是否使用B方案
-        private int startupTimer = 0; // 飞行启动计时器
-        private const int StartupDuration = 45; // 直线加速持续时间，可调
-
-        private enum ChasePhase { Startup, TurnLeft, Charge, TurnRight, ChargeBack }
-        private ChasePhase chasePhase = ChasePhase.Startup;
-        private int phaseTimer = 0;
 
         public void SetBPlan(bool enable)
         {
@@ -87,78 +84,76 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
         public override void AI()
         {
-            // === 特效生成（全程存在） ===
+            // === 飞行期间特效生成（全程存在） ===
             {
-                // 1️⃣ 喷射重型火焰烟雾（更有质感）
-                //for (int i = 0; i < 3; i++) // 增加生成量和密度
-                //{
-                //    // 正前方方向
-                //    Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-                //    // 在 -20° ~ 20° 内散射
-                //    float scatterAngle = MathHelper.ToRadians(Main.rand.NextFloat(-20f, 20f));
-                //    Vector2 smokeVelocity = baseDirection.RotatedBy(scatterAngle) * Main.rand.NextFloat(2f, 5f);
-
-                //    // 烟雾颜色
-                //    Color smokeColor = Color.Lerp(Color.OrangeRed, Color.DarkOrange, Main.rand.NextFloat(0.3f, 0.7f));
-
-                //    // 烟雾生成位置（稍微随机偏移模拟火焰口喷射范围）
-                //    Vector2 spawnPosition = Projectile.Center + baseDirection * 30f + Main.rand.NextVector2Circular(8f, 8f);
-
-                //    // 生成重型烟雾粒子
-                //    Particle smoke = new HeavySmokeParticle(
-                //        spawnPosition,
-                //        smokeVelocity,
-                //        smokeColor,
-                //        30, // 生命周期更长
-                //        Projectile.scale * Main.rand.NextFloat(0.8f, 1.5f),
-                //        1.0f,
-                //        MathHelper.ToRadians(Main.rand.NextFloat(-3f, 3f)), // 轻微旋转
-                //        required: true // 使用强制渲染，更有质感
-                //    );
-
-                //    GeneralParticleHandler.SpawnParticle(smoke);
-                //}
-
-                // 2️⃣ 火焰尖刺鳞片粒子
-                //if (Main.rand.NextBool(2))
-                //{
-                //    for (int i = 0; i < 2; i++) // 增加数量
-                //    {
-                //        Vector2 sparkVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f)) * 0.8f;
-                //        Color sparkColor = Color.Lerp(Color.Orange, Color.Gold, Main.rand.NextFloat(0.3f, 0.7f));
-                //        PointParticle spark = new PointParticle(
-                //            Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                //            sparkVel,
-                //            false,
-                //            20,
-                //            Main.rand.NextFloat(1f, 1.4f),
-                //            sparkColor
-                //        );
-                //        GeneralParticleHandler.SpawnParticle(spark);
-                //    }
-                //}
-
-                // 3️⃣ 周期性冲击波（能量波纹）
-                if (Main.GameUpdateCount % 12 == 0) // 更高频率
+                // 1️⃣ 喷射重型火焰烟雾（质感尾焰）
+                if (Main.rand.NextBool(3)) // 减少密度避免遮挡
                 {
-                    for (int i = 0; i < 2; i++) // 每次生成两次不同色冲击波
-                    {
-                        Color pulseColor = i == 0 ? Color.OrangeRed : Color.Yellow;
-                        Particle pulse = new DirectionalPulseRing(
-                            Projectile.Center,
-                            Projectile.velocity * 0.75f,
-                            pulseColor,
-                            new Vector2(1f, 2.5f),
-                            Projectile.rotation - MathHelper.PiOver4 + Main.rand.NextFloat(-0.1f, 0.1f),
-                            0.25f,
-                            0.03f,
-                            24
-                        );
-                        GeneralParticleHandler.SpawnParticle(pulse);
-                    }
+                    Vector2 spawnPosition = Projectile.Center - baseDirection * 40f + Main.rand.NextVector2Circular(6f, 6f);
+                    Vector2 smokeVelocity = -baseDirection.RotatedByRandom(MathHelper.ToRadians(10f)) * Main.rand.NextFloat(1.5f, 3f);
+                    Color smokeColor = Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.8f));
+
+                    Particle smoke = new HeavySmokeParticle(
+                        spawnPosition,
+                        smokeVelocity,
+                        smokeColor,
+                        36, // 生命周期适中
+                        Projectile.scale * Main.rand.NextFloat(0.7f, 1.2f),
+                        0.8f,
+                        MathHelper.ToRadians(Main.rand.NextFloat(-2f, 2f)),
+                        required: false
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(smoke);
+                }
+
+                // 2️⃣ 飞行火花点缀
+                if (Main.rand.NextBool(4))
+                {
+                    Vector2 sparkVelocity = -baseDirection.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(2f, 4f);
+                    Color sparkColor = Color.Lerp(Color.Orange, Color.Gold, Main.rand.NextFloat(0.3f, 0.7f));
+                    PointParticle spark = new PointParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                        sparkVelocity,
+                        false,
+                        25,
+                        Main.rand.NextFloat(0.8f, 1.2f),
+                        sparkColor
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 3️⃣ 周期性小型能量脉冲
+                if (Main.GameUpdateCount % 30 == 0)
+                {
+                    Color pulseColor = Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.3f, 0.7f));
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center,
+                        Projectile.velocity * 0.5f,
+                        pulseColor,
+                        new Vector2(0.8f, 1.8f),
+                        Projectile.rotation - MathHelper.PiOver4 + Main.rand.NextFloat(-0.05f, 0.05f),
+                        0.18f,
+                        0.02f,
+                        20
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
                 }
             }
+
+
+
+
+
+
+
+
+
+
+
+
 
             if (!initialized)
             {
@@ -177,106 +172,71 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
             // === 飞行行为控制 ===
             if (!useBPlan)
             {
-                // ===== A方案：启动阶段（直线加速） =====
-                if (chasePhase == ChasePhase.Startup)
+                if (lockedTarget == null || !lockedTarget.active)
                 {
-                    Projectile.velocity += initialDirection * 0.25f;
-                    Projectile.velocity = Vector2.Clamp(Projectile.velocity, Vector2.One * MinSpeed, Vector2.One * MaxSpeed * 0.8f);
-
-                    phaseTimer++;
-                    if (phaseTimer >= 45) // 启动完成
-                    {
-                        chasePhase = ChasePhase.TurnLeft;
-                        phaseTimer = 0;
-                    }
-                    return;
+                    lockedTarget = FindClosestNPC(1600f);
                 }
 
                 if (lockedTarget == null || !lockedTarget.active)
                 {
-                    // 无敌人时继续直线飞行
-                    Projectile.velocity = Projectile.velocity.SafeNormalize(initialDirection) * MaxSpeed;
+                    // 无敌人时继续直线上飞
+                    Projectile.velocity = Vector2.UnitY * -MaxSpeed * 3f;
                     return;
                 }
 
-                Vector2 toTarget = lockedTarget.Center - Projectile.Center;
-                float desiredAngle = toTarget.ToRotation();
-                float currentAngle = Projectile.velocity.ToRotation();
-                float angleDiff = MathHelper.WrapAngle(desiredAngle - currentAngle);
-
-                float turnSpeed = MathHelper.ToRadians(1.5f); // 【可调】转弯速度
-                float chargeSpeed = MaxSpeed * 1.1f;          // 【可调】冲刺速度
-
-                switch (chasePhase)
+                if (!hasChased)
                 {
-                    case ChasePhase.TurnLeft:
-                        // 持续左转
-                        Projectile.velocity = Projectile.velocity.RotatedBy(-turnSpeed).SafeNormalize(Vector2.UnitY) * MaxSpeed;
-                        phaseTimer++;
-                        if (phaseTimer >= 30)
-                        {
-                            chasePhase = ChasePhase.Charge;
-                            phaseTimer = 0;
-                        }
-                        break;
-
-                    case ChasePhase.Charge:
-                        // 朝向目标冲刺
-                        Projectile.velocity = Vector2.Lerp(
-                            Projectile.velocity,
-                            toTarget.SafeNormalize(Vector2.UnitY) * chargeSpeed,
-                            0.15f
-                        );
-                        phaseTimer++;
-                        if (phaseTimer >= 20)
-                        {
-                            chasePhase = ChasePhase.TurnRight;
-                            phaseTimer = 0;
-                        }
-                        break;
-
-                    case ChasePhase.TurnRight:
-                        // 持续右转
-                        Projectile.velocity = Projectile.velocity.RotatedBy(turnSpeed).SafeNormalize(Vector2.UnitY) * MaxSpeed;
-                        phaseTimer++;
-                        if (phaseTimer >= 30)
-                        {
-                            chasePhase = ChasePhase.ChargeBack;
-                            phaseTimer = 0;
-                        }
-                        break;
-
-                    case ChasePhase.ChargeBack:
-                        // 再次朝向目标冲刺
-                        Projectile.velocity = Vector2.Lerp(
-                            Projectile.velocity,
-                            toTarget.SafeNormalize(Vector2.UnitY) * chargeSpeed,
-                            0.15f
-                        );
-                        phaseTimer++;
-                        if (phaseTimer >= 20)
-                        {
-                            chasePhase = ChasePhase.TurnLeft;
-                            phaseTimer = 0;
-                        }
-                        break;
+                    if (chaseDelayTimer < DelayBeforeChase)
+                    {
+                        // 启动阶段：正上方高速飞行
+                        Projectile.velocity = Vector2.UnitY * -MaxSpeed * 3f;
+                        chaseDelayTimer++;
+                        Projectile.friendly = false; // 🚩 禁用伤害
+                    }
+                    else
+                    {
+                        // 延迟后直接快速朝向敌人冲刺
+                        Vector2 toTarget = (lockedTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                        Projectile.velocity = toTarget * MaxSpeed * 5f; // 极高速冲锋
+                        Projectile.friendly = true; // 🚩 开启伤害
+                    }
                 }
+                else
+                {
+                    // 命中后什么也不做，保留原有的速度
 
 
 
-
-
+                }
             }
+
+
+
             else
             {
 
 
                 // ===== B 方案：围绕玩家旋转后高速附身 =====
-                if (lockedPlayer == null || !lockedPlayer.active)
+
+                // 检查是否存在 FinishingTouchDASH，如果不存在则自杀
+                bool dashExists = false;
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<FinishingTouchDASH>())
+                    {
+                        dashExists = true;
+                        break;
+                    }
+                }
+
+                // 🚩 如找不到 FinishingTouchDASH，则立即销毁自身
+                if (!dashExists || lockedPlayer == null || !lockedPlayer.active)
                 {
                     Projectile.Kill();
                     return;
                 }
+
 
                 float elapsed = 300 - Projectile.timeLeft;
 
@@ -340,26 +300,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 }
                 else
                 {
-                    // 超过 120 帧后检测 FinishingTouchDASH 是否存在
-                    bool dashExists = false;
-                    for (int i = 0; i < Main.maxProjectiles; i++)
-                    {
-                        Projectile proj = Main.projectile[i];
-                        if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<FinishingTouchDASH>())
-                        {
-                            dashExists = true;
-                            break;
-                        }
-                    }
 
-                    if (!dashExists)
-                    {
-                        Projectile.Kill();
-                        return;
-                    }
                 }
-
-
 
 
             }
@@ -394,48 +336,194 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 命中敌人后切换转向方向
-            lastTurnLeft = !lastTurnLeft; // 切换追踪方向
-
-            // 命中后短暂提升转向速率上限
-            turnRateMultiplier = 1.3f; // 撞击后立刻提升到 130%
-
+            // 命中敌人后关闭追踪能力，进入自由飞行
+            if (!useBPlan && !hasChased)
             {
-                // 命中时释放爆炸烟雾、gore
-                for (int i = 0; i < 8; i++)
+                hasChased = true; // 命中后进入停止追踪阶段
+
+                // 🚩 距离衰减型屏幕震动
+                float shakePower = 100f; // 设置基础震动强度（可调）
+                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
+
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded"));
+
                 {
-                    int goreIndex = Gore.NewGore(Projectile.GetSource_FromThis(), target.Center, Main.rand.NextVector2Circular(3f, 3f), Main.rand.Next(61, 64));
-                    Main.gore[goreIndex].scale = Main.rand.NextFloat(0.8f, 1.5f);
+                    // ======================== 无序部分 1：极限狂野扩散烟雾 ========================
+                    for (int i = 0; i < Main.rand.Next(80, 101); i++)
+                    {
+                        int dust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke);
+                        Main.dust[dust].scale = Main.rand.NextFloat(1.8f, 3.0f);
+                        Main.dust[dust].velocity = Main.rand.NextVector2Circular(12f, 12f);
+                        Main.dust[dust].noGravity = true;
+                    }
+
+                    // ======================== 无序部分 2：极限狂野火花粒子扩散（再翻5倍） ========================
+                    for (int i = 0; i < 600; i++) // 🚩 数量提升至600+
+                    {
+                        int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst; // 🚩 使用浮点概率避免报错
+
+                        Vector2 randPos = target.Center + Main.rand.NextVector2Circular(300f, 300f); // 🚩 扩散范围极大
+
+                        Dust d = Dust.NewDustDirect(
+                            randPos,
+                            1, 1,
+                            type,
+                            0f, 0f,
+                            50,
+                            Color.OrangeRed,
+                            Main.rand.NextFloat(2f, 4f) // 🚩 放大粒子大小
+                        );
+
+                        d.velocity = Main.rand.NextVector2Circular(25f, 50f); // 🚩 扩散速度极快
+                        d.noGravity = true;
+                    }
+
+
+                    // ======================== 无序部分 2：极限狂野火花粒子扩散（再翻5倍） ========================
+                    for (int i = 0; i < 600; i++) // 🚩 数量提升至600+
+                    {
+                        int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst; // 🚩 修复：使用浮点概率
+                        Vector2 randPos = target.Center + Main.rand.NextVector2Circular(300f, 300f); // 🚩 扩散范围极大
+                        Dust d = Dust.NewDustDirect(randPos, 1, 1, type, 0f, 0f, 50, Color.OrangeRed, Main.rand.NextFloat(2f, 4f)); // 🚩 放大
+                        d.velocity = Main.rand.NextVector2Circular(25f, 50f); // 🚩 扩散速度极快
+                        d.noGravity = true;
+                    }
+
+                    // ======================== 有序部分 1：超大型复杂六芒星魔法阵 Dust（再翻5倍） ========================
+                    int layers = Main.rand.Next(7, 10); // 🚩 层数提升至7~9层
+                    for (int layer = 0; layer < layers; layer++)
+                    {
+                        float radius = 300f + layer * 150f; // 🚩 半径提升至300~1500+
+                        Color color = Color.Lerp(Color.OrangeRed, Color.Yellow, layer / (float)layers);
+                        int points = 144; // 🚩 每层144个点
+                        for (int i = 0; i < points; i++)
+                        {
+                            Vector2 pos = target.Center + (MathHelper.TwoPi * i / points).ToRotationVector2() * radius;
+                            Dust d = Dust.NewDustDirect(pos, 1, 1, DustID.OrangeTorch, 0f, 0f, 0, color, 2.5f); // 🚩 放大
+                            d.velocity = (target.Center - pos).SafeNormalize(Vector2.Zero) * 15f; // 🚩 回卷速度极快
+                            d.noGravity = true;
+                        }
+                    }
+
+
+                    // ======================== 有序部分 2：多层火花环形拖尾线性粒子 ========================
+                    int sparkLayers = 6;
+                    for (int l = 0; l < sparkLayers; l++)
+                    {
+                        float ringRadius = 40f + l * 30f;
+                        int points = 36;
+                        for (int p = 0; p < points; p++)
+                        {
+                            Vector2 pos = target.Center + (MathHelper.TwoPi * p / points).ToRotationVector2() * ringRadius;
+                            Vector2 dir = (pos - target.Center).SafeNormalize(Vector2.UnitY);
+                            Color color = Color.Lerp(Color.Orange, Color.Red, l / (float)sparkLayers);
+
+                            Particle trail = new SparkParticle(
+                                pos,
+                                dir * 10f, // 更快速度扩散
+                                false,
+                                70, // 延长生命周期
+                                1.5f,
+                                color
+                            );
+                            GeneralParticleHandler.SpawnParticle(trail);
+                        }
+                    }
+
+
                 }
 
-                for (int i = 0; i < 20; i++)
+
+            }
+
+            if (useBPlan)
+            {
+
+
+                SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
+
+
+                // ======================== 无序部分 1：小范围喷射烟雾 ========================
+                for (int i = 0; i < 15; i++) // 🚩 大幅减少数量
                 {
-                    int dust = Dust.NewDust(target.position, target.width, target.height, DustID.Smoke);
-                    Main.dust[dust].scale = 1.5f;
-                    Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
+                    Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.ToRadians(20));
+                    int dust = Dust.NewDust(target.Center, 1, 1, DustID.Smoke, 0f, 0f, 50, default, Main.rand.NextFloat(1f, 1.5f));
+                    Main.dust[dust].velocity = direction * Main.rand.NextFloat(4f, 8f); // 🚩 沿方向喷射
                     Main.dust[dust].noGravity = true;
                 }
 
-                // 六芒星魔法阵（Dust + 线性粒子模拟）
-                for (int i = 0; i < 36; i++)
+                // ======================== 无序部分 2：火花粒子沿方向喷射 ========================
+                for (int i = 0; i < 25; i++) // 🚩 大幅减少数量
                 {
-                    Vector2 dustPos = target.Center + Vector2.One.RotatedBy(MathHelper.ToRadians(i * 10)) * 40f;
-                    Dust d = Dust.NewDustDirect(dustPos, 1, 1, DustID.OrangeTorch, 0f, 0f, 150, Color.Orange, 1.2f);
-                    d.velocity = (target.Center - dustPos).SafeNormalize(Vector2.Zero) * 2f;
+                    int type = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst;
+                    Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.ToRadians(15));
+                    Dust d = Dust.NewDustDirect(target.Center, 1, 1, type, 0f, 0f, 50, Color.OrangeRed, Main.rand.NextFloat(1f, 1.8f));
+                    d.velocity = direction * Main.rand.NextFloat(5f, 10f);
                     d.noGravity = true;
                 }
+
+                // ======================== 有序部分 1：前方能量线性拖尾火花（SparkParticle） ========================
+                for (int i = 0; i < 10; i++)
+                {
+                    Vector2 offset = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.ToRadians(10)) * Main.rand.NextFloat(10f, 30f);
+                    Particle trail = new SparkParticle(
+                        target.Center + offset,
+                        offset.SafeNormalize(Vector2.UnitY) * 8f, // 向前喷射
+                        false,
+                        40, // 生命周期短
+                        1.2f,
+                        Color.Orange
+                    );
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
+
+                // ======================== 有序部分 2：前方锥形小型火花喷发环 ========================
+                int points = 18;
+                float angleSpread = MathHelper.ToRadians(60); // 60度锥形扩散
+                for (int p = 0; p < points; p++)
+                {
+                    float angle = MathHelper.Lerp(-angleSpread / 2, angleSpread / 2, p / (float)(points - 1));
+                    Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(angle);
+                    Particle trail = new SparkParticle(
+                        target.Center,
+                        direction * Main.rand.NextFloat(6f, 12f),
+                        false,
+                        30, // 生命周期短
+                        1f,
+                        Color.Lerp(Color.Orange, Color.Yellow, p / (float)points)
+                    );
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
             }
-           
+
+
+
+
+
+
+
+
+
         }
 
+        private const float SegmentSpacing = 70f;         // 身体 & 尾部使用
+        private const float HeadToBodySpacing = 152f;     // 头部与身体的专用间距
 
         private void InitializeSegments()
         {
             for (int i = 0; i < SegmentCount; i++)
             {
-                Segments[i] = new Segment(255, Projectile.rotation, Projectile.Center - initialDirection * i * 70f);
+                float spacing = i == 0 ? 0f : (i == 1 ? HeadToBodySpacing : SegmentSpacing);
+                Segments[i] = new Segment(
+                    255,
+                    Projectile.rotation,
+                    Projectile.Center - initialDirection * spacing
+                );
             }
         }
+
 
         private void UpdateSegment(int index)
         {
@@ -487,7 +575,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 Main.EntitySpriteDraw(tex, drawPos, null, color, Segments[i].Rotation, origin, Projectile.scale, SpriteEffects.None, 0);
             }
 
-            Main.EntitySpriteDraw(headTex, Projectile.Center - screenPos, null, color, Projectile.rotation, headTex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(
+                headTex,
+                Projectile.Center - screenPos,
+                null,
+                color,
+                Projectile.rotation,
+                headTex.Size() * 0.5f,
+                Projectile.scale,
+                (Projectile.velocity.X < 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                0
+            );
+
 
             return false;
         }

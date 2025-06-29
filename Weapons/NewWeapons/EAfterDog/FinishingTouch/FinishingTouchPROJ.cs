@@ -71,7 +71,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             float offsetDistance = 10f;
 
             // 使用飞行距离驱动 DNA 波动
-            float travelLength = Projectile.Center.Length() * 0.15f; // 可替换为 Projectile.Distance(Main.LocalPlayer.Center) * 0.05f 根据实际需要
+            float travelLength = Projectile.Center.Length() * 0.000015f; // 可替换为 Projectile.Distance(Main.LocalPlayer.Center) * 0.05f 根据实际需要
             float freqMultiplier = 1.5f;
             float dnaOffset = (float)Math.Sin(travelLength * freqMultiplier) * 8f; // 螺旋幅度
 
