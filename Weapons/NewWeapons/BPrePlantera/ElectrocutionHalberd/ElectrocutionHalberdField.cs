@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
-    internal class ElectrocutionHalberdField : ModProjectile, ILocalizedModType
+    public class ElectrocutionHalberdField : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";
         public override string Texture => "Terraria/Images/Projectile_443";

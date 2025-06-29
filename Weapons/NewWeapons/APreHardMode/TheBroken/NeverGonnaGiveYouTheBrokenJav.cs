@@ -11,7 +11,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 {
-    internal class NeverGonnaGiveYouTheBrokenJav : GlobalItem
+    public class NeverGonnaGiveYouTheBrokenJav : GlobalItem
     {
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {

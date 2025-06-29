@@ -17,7 +17,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
-    internal class PrimordialStatePROJ : ModProjectile, ILocalizedModType
+    public class PrimordialStatePROJ : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/PrimordialState/PrimordialState";
 

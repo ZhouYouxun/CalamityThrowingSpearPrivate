@@ -10,7 +10,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpearC
 {
-    internal class GoldplumeJavFeather : ModProjectile, ILocalizedModType
+    public class GoldplumeJavFeather : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.APreHardMode";
         public override string Texture => "CalamityMod/Projectiles/Magic/TradewindsProjectile";

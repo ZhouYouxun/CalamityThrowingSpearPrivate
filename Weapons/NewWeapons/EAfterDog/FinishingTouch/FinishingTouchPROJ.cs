@@ -18,40 +18,121 @@ using CalamityMod.Sounds;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
 using Terraria.Audio;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Graphics.Primitives;
+using Terraria.Graphics.Shaders;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
-    internal class FinishingTouchPROJ : ModProjectile, ILocalizedModType
+    public class FinishingTouchPROJ : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/FinishingTouch";
         public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/FinishingTouch";
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
             Main.projFrames[Projectile.type] = 4; // 设置投射物的帧数为 4
         }
+        private float dnaWaveCounter = 0f; // 用于计算螺旋偏移波动
 
-        public override bool PreDraw(ref Color lightColor) // 确保贴图的中心点为绘制的中心点
+        public override bool PreDraw(ref Color lightColor)
         {
             SpriteBatch spriteBatch = Main.spriteBatch;
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
+            // === 本体部分 ===
             // 计算当前动画帧
-            int frameCount = 4; // 总共 4 帧
-            int frameHeight = texture.Height / frameCount; // 每帧的高度
-            int currentFrame = (int)(Main.GameUpdateCount / 6 % frameCount); // 每 6 帧切换一次，总共 4 帧
+            int frameCount = 4;
+            int frameHeight = texture.Height / frameCount;
+            int currentFrame = (int)(Main.GameUpdateCount / 6 % frameCount);
             Rectangle sourceRectangle = new Rectangle(0, currentFrame * frameHeight, texture.Width, frameHeight);
 
-            // 设置绘制的原点和位置
-            Vector2 drawOrigin = new Vector2(texture.Width / 2, frameHeight / 2); // 每帧的高度作为原点
+            // 设置绘制原点和位置
+            Vector2 drawOrigin = new Vector2(texture.Width / 2, frameHeight / 2);
             Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
 
             // 绘制当前帧
             spriteBatch.Draw(texture, drawPosition, sourceRectangle, lightColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0f);
 
+
+
+
+
+
+            // === 螺旋双线平行拖尾部分 ===
+
+            GameShaders.Misc["CalamityMod:ImpFlameTrail"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/spark_07")
+            );
+
+            // 左右基础偏移距离
+            float offsetDistance = 10f;
+
+            // 使用飞行距离驱动 DNA 波动
+            float travelLength = Projectile.Center.Length() * 0.15f; // 可替换为 Projectile.Distance(Main.LocalPlayer.Center) * 0.05f 根据实际需要
+            float freqMultiplier = 1.5f;
+            float dnaOffset = (float)Math.Sin(travelLength * freqMultiplier) * 8f; // 螺旋幅度
+
+            // 平行向量
+            Vector2 perpendicular = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
+            Vector2 leftOffset = perpendicular * offsetDistance + perpendicular * dnaOffset;
+            Vector2 rightOffset = -perpendicular * offsetDistance - perpendicular * dnaOffset;
+
+            // 提前约 30 像素到贴图前端
+            Vector2 frontOffset = Projectile.velocity.SafeNormalize(Vector2.UnitY) * 100f;
+
+            // 渲染左侧拖尾
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    FinishingTouchWidthFunction,
+                    FinishingTouchColorFunction,
+                    (_) => Projectile.Size * 0.5f + frontOffset + leftOffset,
+                    shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
+                ),
+                36
+            );
+
+            // 渲染右侧拖尾
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    FinishingTouchWidthFunction,
+                    FinishingTouchColorFunction,
+                    (_) => Projectile.Size * 0.5f + frontOffset + rightOffset,
+                    shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
+                ),
+                36
+            );
+
+
             return false;
         }
+
+        /// <summary>
+        /// 拖尾宽度函数：基础宽度 + 微抖动，模拟火焰呼吸感
+        /// </summary>
+        private float FinishingTouchWidthFunction(float completionRatio)
+        {
+            float baseWidth = 18f;
+            float flicker = (float)Math.Sin(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 4f) * 2f;
+            return baseWidth + flicker;
+        }
+
+        /// <summary>
+        /// 拖尾颜色函数：橙红 → 黄橙 → 透明的平滑渐变
+        /// </summary>
+        private Color FinishingTouchColorFunction(float completionRatio)
+        {
+            float intensity = (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
+            Color baseColor = Color.Lerp(Color.OrangeRed, Color.Orange, intensity);
+            return Color.Lerp(baseColor, Color.Transparent, completionRatio);
+        }
+
+
+
 
 
         public override void SetDefaults()
@@ -93,16 +174,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 GenerateInitialParticles();
             }
 
-            if (Projectile.ai[0] % 60 == 0)
-            {
-                //// 特效尾迹
-                //Vector2 trailPos = Projectile.Center;
-                //float trailScale = Main.rand.NextFloat(0.8f, 1.2f);
-                //Color trailColor = Color.Orange; // 橙色特效
-                //Particle trail = new SparkParticle(trailPos, Projectile.velocity * 0.2f, false, 60, trailScale, trailColor);
-                //GeneralParticleHandler.SpawnParticle(trail);
-            }
-
             // 定义一个偏移距离，用来增加粒子之间的间隔
             float offsetDistance = 20f;
 
@@ -134,17 +205,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Particle smoke = new HeavySmokeParticle(Projectile.Center, dustVelocity * Main.rand.NextFloat(1f, 2.6f), Color.Orange, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
-
-
-
-            //// 每隔 60 帧生成一次火球和粒子特效
-            //Projectile.ai[0]++;
-            //if (Projectile.ai[0] >= 60)
-            //{
-            //    ReleaseFireballs();
-            //    ReleaseLinearParticles();
-            //    Projectile.ai[0] = 0; // 重置计数
-            //}
         }
 
 
@@ -199,27 +259,90 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
         }
 
-      
+
+        public static bool UseDragonSnakeMode = false;
 
 
         public override void OnKill(int timeLeft)
         {
             ReleaseFireballs();
             ReleaseLinearParticles();
-            // 释放爆炸弹幕
-            //int explosionType = ModContent.ProjectileType<FinishingTouchDASHFuckYou>();
-            //Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, explosionType, Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+            {
+                {
+                    if (!UseDragonSnakeMode)
+                    {
+                        // 开关关闭，默认召唤 FinishingTouchINV
+                        int invProjType = ModContent.ProjectileType<FinishingTouchINV>();
+                        Vector2 shootDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                        float shootSpeed = Projectile.velocity.Length();
+                        Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            Projectile.Center,
+                            shootDirection * shootSpeed,
+                            invProjType,
+                            (int)(Projectile.damage * 0.8f),
+                            Projectile.knockBack,
+                            Projectile.owner
+                        );
+                    }
+                    else
+                    {
+                        // 开关开启时，使用单文件新蛇 FinishingTouchDragon
+                        Vector2 spawnPosition = Projectile.Center;
+                        Vector2 spawnVelocity = Vector2.UnitY * -1f * 25f; // 固定正上方发射
+
+                        int proj = Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            spawnPosition,
+                            spawnVelocity,
+                            ModContent.ProjectileType<FinishingTouchDragon>(),
+                            (int)(Projectile.damage * 1.0),
+                            Projectile.knockBack,
+                            Projectile.owner
+                        );
+
+                        // 保险设置为 A 方案（即便默认就是 A）
+                        if (proj.WithinBounds(Main.maxProjectiles))
+                        {
+                            (Main.projectile[proj].ModProjectile as FinishingTouchDragon)?.SetBPlan(false);
+                        }
+
+
+                    }
+
+
+
+                }
+
+                // 🌀 2️⃣ 生成 16 个橙色椭圆冲击波粒子（等角分布）
+                int pulseCount = 16;
+                float baseAngle = MathHelper.TwoPi / pulseCount;
+                float particleSpeed = Projectile.velocity.Length() * 0.75f;
+                for (int i = 0; i < pulseCount; i++)
+                {
+                    float angle = baseAngle * i;
+                    Vector2 velocity = angle.ToRotationVector2() * particleSpeed;
+
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center,
+                        velocity,
+                        Color.Orange,
+                        new Vector2(1f, 2.5f), // 椭圆长短轴比例
+                        Projectile.rotation - MathHelper.PiOver4,
+                        0.2f,
+                        0.03f,
+                        20
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                }
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<Dragonfire>(), 300); // 龙焰
 
-            //// 检查是否击中了指定 Boss，并进行伤害加成
-            //if (target.type == ModContent.NPCType<Bumblefuck>() || target.type == ModContent.NPCType<Bumblefuck2>())
-            //{
-            //    hit.Damage = (int)(hit.Damage * 50);
-            //}
             int slashCount = 2; // 生成2到3个斩击特效
             for (int i = 0; i < slashCount; i++)
             {

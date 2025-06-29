@@ -15,7 +15,7 @@ using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 {
-    internal class SunEssenceJavLightPoint : ModProjectile, ILocalizedModType
+    public class SunEssenceJavLightPoint : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.CPreMoodLord";
         public override void SetDefaults()

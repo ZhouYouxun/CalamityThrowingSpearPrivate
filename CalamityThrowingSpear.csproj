@@ -157,6 +157,7 @@
 	  <None Remove="Weapons\NewWeapons\EAfterDog\ArkofTheDragonSoul\龙魂方舟.txt" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\AuricJav\AuricJavBallPROJ456456.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\DragonRageStaff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\FinishingTouch\FTDragon\FinishingTouchDragon.cs.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimeMeridian\PrimeMeridianLaser.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimeMeridian\PrimeMeridianRIGHTPROJ.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\PrimordialState\AuricJav.png" />

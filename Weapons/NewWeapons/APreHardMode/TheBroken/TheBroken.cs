@@ -11,7 +11,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 {
-    internal class TheBroken : ModItem, ILocalizedModType
+    public class TheBroken : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.APreHardMode";
         public override void SetStaticDefaults()

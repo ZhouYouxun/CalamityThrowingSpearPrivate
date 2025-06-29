@@ -13,7 +13,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
-    internal class NuclearFuelRodL : ModProjectile, ILocalizedModType
+    public class NuclearFuelRodL : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";
 

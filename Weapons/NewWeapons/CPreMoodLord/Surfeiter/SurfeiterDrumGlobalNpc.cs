@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterDrumGlobalNpc : GlobalNPC
+    public class SurfeiterDrumGlobalNpc : GlobalNPC
     {
         public override bool InstancePerEntity => true; // 每个 NPC 独立实例化
 

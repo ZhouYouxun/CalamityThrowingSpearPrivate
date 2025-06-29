@@ -10,7 +10,7 @@
 
 //namespace CalamityThrowingSpear
 //{
-//    internal class TheSkill : ModPlayer
+//    public class TheSkill : ModPlayer
 //    {
 //        private bool skillActive = false; // 技能是否激活
 //        private int skillTimer = 0; // 技能持续时间计时

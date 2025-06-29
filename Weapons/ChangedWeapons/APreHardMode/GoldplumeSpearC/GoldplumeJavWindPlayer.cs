@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpearC
 {
-    internal class GoldplumeJavWindPlayer : ModPlayer
+    public class GoldplumeJavWindPlayer : ModPlayer
     {
         private Projectile goldplumeWind; // 记录生成的 GoldplumeJavWind
 

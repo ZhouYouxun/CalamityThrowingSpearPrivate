@@ -11,7 +11,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowerC
 {
-    internal class HellionFlowerJavAbsorb : ModProjectile, ILocalizedModType
+    public class HellionFlowerJavAbsorb : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.CPreMoodLord";
 

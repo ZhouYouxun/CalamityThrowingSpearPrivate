@@ -16,7 +16,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestiny : ModItem, ILocalizedModType
+    public class StarsofDestiny : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.EAfterDog";
         public override void SetDefaults()

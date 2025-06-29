@@ -14,7 +14,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 {
-    internal class HeartSwordPROJExtra : ModProjectile, ILocalizedModType
+    public class HeartSwordPROJExtra : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/HeartSword/HeartSword";
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";

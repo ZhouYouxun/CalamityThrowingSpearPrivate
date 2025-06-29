@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
 {
-    internal class VulcaniteLanceJavSuperFlame : ModProjectile, ILocalizedModType
+    public class VulcaniteLanceJavSuperFlame : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.CPreMoodLord";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

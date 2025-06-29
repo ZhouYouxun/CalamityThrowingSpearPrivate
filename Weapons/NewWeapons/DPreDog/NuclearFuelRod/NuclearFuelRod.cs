@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
-    internal class NuclearFuelRod : ModItem, ILocalizedModType
+    public class NuclearFuelRod : ModItem, ILocalizedModType
     {
         private const int CooldownMax = 1800;
         private int cooldownTimer = 0;

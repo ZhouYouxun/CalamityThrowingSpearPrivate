@@ -63,11 +63,12 @@ using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
 using CalamityMod.Items.Accessories;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState;
 
 
 namespace CalamityThrowingSpear
 {
-    internal class MeleeSpeedOfThrowingSpear : GlobalItem
+    public class MeleeSpeedOfThrowingSpear : GlobalItem
     {
         // 定义一个静态的武器容器
         public static readonly List<Type> WeaponSetA = new List<Type>
@@ -128,6 +129,7 @@ namespace CalamityThrowingSpear
             typeof(NuclearFuelRod), // 核燃料棒
 
             typeof(AuricJav), // 电池
+            typeof(PrimordialState), // 无极
             typeof(MiracleMatterJav), // 轻星流
             typeof(SoulSeekerJav), // 残翼
             typeof(TheOtherMiracleMatterJav), // 重星流

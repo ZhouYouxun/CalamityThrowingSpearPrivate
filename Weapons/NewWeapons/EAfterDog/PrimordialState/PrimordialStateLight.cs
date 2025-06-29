@@ -16,7 +16,7 @@ using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
-    internal class PrimordialStateLight : ModProjectile, ILocalizedModType
+    public class PrimordialStateLight : ModProjectile, ILocalizedModType
     {
         //public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public new string LocalizationCategory => "Projectile.EAfterDog";

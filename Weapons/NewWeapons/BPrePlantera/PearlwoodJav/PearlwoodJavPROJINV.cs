@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 {
-    internal class PearlwoodJavPROJINV : ModProjectile, ILocalizedModType
+    public class PearlwoodJavPROJINV : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

@@ -14,7 +14,7 @@ using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowerC
 {
-    internal class HellionFlowerJavSPIT : ModProjectile, ILocalizedModType
+    public class HellionFlowerJavSPIT : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.CPreMoodLord";
         public override void SetStaticDefaults()

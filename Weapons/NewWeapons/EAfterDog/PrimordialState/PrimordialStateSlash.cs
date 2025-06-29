@@ -15,7 +15,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
-    internal class PrimordialStateSlash : ModProjectile
+    public class PrimordialStateSlash : ModProjectile
     {
         internal const float StartingScale = 1f;
 

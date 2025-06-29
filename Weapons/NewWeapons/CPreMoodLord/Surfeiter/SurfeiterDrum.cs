@@ -13,7 +13,7 @@ using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterDrum : ModProjectile, ILocalizedModType
+    public class SurfeiterDrum : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Surfeiter/SurfeiterDrum-1";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";

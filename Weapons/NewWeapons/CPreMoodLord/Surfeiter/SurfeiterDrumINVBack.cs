@@ -14,7 +14,7 @@ using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterDrumINVBack : ModProjectile, ILocalizedModType
+    public class SurfeiterDrumINVBack : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
         public override string Texture => "Terraria/Images/Extra_89"; // 使用原版光点

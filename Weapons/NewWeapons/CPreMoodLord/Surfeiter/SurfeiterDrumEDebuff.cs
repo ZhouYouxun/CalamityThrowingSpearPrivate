@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterDrumEDebuff : ModBuff
+    public class SurfeiterDrumEDebuff : ModBuff
     {
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public override void SetStaticDefaults()

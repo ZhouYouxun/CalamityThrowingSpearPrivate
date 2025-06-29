@@ -17,7 +17,7 @@ using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
-    internal class NuclearFuelRodLazer : BaseLaserbeamProjectile, ILocalizedModType
+    public class NuclearFuelRodLazer : BaseLaserbeamProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";
 

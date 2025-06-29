@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
 {
-    internal class StreamGougeJavEXP : ModProjectile, ILocalizedModType
+    public class StreamGougeJavEXP : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

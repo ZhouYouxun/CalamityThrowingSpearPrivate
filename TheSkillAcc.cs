@@ -8,7 +8,7 @@
 
 //namespace CalamityThrowingSpear
 //{
-//    internal class TheSkillAcc : ModItem
+//    public class TheSkillAcc : ModItem
 //    {
 //        public override void SetStaticDefaults()
 //        {

@@ -14,7 +14,7 @@
 
 //namespace CalamityThrowingSpear.LightingBolts.Metaballs
 //{
-//    internal class ShadowAmmoMetaball : Metaball
+//    public class ShadowAmmoMetaball : Metaball
 //    {
 //        // 这个类定义了 Metaball 内部的粒子，每个粒子会有自己的位置、速度和大小
 

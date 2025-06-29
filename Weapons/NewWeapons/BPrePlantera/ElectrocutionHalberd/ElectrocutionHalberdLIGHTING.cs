@@ -15,7 +15,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
-    internal class ElectrocutionHalberdLIGHTING : ModProjectile, ILocalizedModType
+    public class ElectrocutionHalberdLIGHTING : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.BPrePlantera";
 

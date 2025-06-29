@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 {
-    internal class RedtideJavEXP : ModProjectile, ILocalizedModType
+    public class RedtideJavEXP : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

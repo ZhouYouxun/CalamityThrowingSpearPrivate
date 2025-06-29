@@ -12,7 +12,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class Surfeiter : ModItem, ILocalizedModType
+    public class Surfeiter : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.CPreMoodLord";
         public override void SetDefaults()

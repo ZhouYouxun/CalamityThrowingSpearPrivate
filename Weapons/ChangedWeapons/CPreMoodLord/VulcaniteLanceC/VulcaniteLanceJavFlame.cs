@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
 {
-    internal class VulcaniteLanceJavFlame : ModProjectile, ILocalizedModType
+    public class VulcaniteLanceJavFlame : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.CPreMoodLord";
         public int frameX = 0;

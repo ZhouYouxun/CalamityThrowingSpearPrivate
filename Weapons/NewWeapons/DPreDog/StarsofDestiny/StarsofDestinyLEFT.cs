@@ -16,7 +16,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyLEFT : ModProjectile, ILocalizedModType
+    public class StarsofDestinyLEFT : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";
 

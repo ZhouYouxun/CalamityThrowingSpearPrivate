@@ -13,7 +13,7 @@ using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyLSTAR : ModProjectile
+    public class StarsofDestinyLSTAR : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         private int noTileHitCounter = 90;

@@ -12,7 +12,7 @@ using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyRLIGHT : ModProjectile
+    public class StarsofDestinyRLIGHT : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_4923";
         public override void SetStaticDefaults()

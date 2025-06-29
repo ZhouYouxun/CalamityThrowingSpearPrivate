@@ -17,7 +17,7 @@ using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
 {
-    internal class SoulHunterJavSHARK : ModProjectile, ILocalizedModType
+    public class SoulHunterJavSHARK : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.DPreDog";
         public override void SetStaticDefaults()

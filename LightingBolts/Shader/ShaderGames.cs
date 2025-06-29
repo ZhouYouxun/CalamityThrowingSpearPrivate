@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CalamityRangerExpansion.LightingBolts.Shader
 {
-    internal class ShaderGames : ModSystem
+    public class ShaderGames : ModSystem
     {
         // 直接定义所有 Shader
         public static Effect RainbowShader;

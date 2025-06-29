@@ -17,7 +17,7 @@ using CalamityMod.Items.Weapons.Ranged;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
-    internal class ElectrocutionHalberdRIGHT : ModProjectile, ILocalizedModType
+    public class ElectrocutionHalberdRIGHT : ModProjectile, ILocalizedModType
     {
         public override string Texture => "Terraria/Images/Projectile_254";
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";

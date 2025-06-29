@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework;
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     
-    internal class GiveYouStarsofDestiny : GlobalTile
+    public class GiveYouStarsofDestiny : GlobalTile
     {
         public override void RightClick(int i, int j, int type)
         {

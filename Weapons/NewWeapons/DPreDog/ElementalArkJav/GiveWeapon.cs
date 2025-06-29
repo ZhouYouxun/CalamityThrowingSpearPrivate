@@ -10,7 +10,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
 {
-    internal class GiveWeapon : GlobalNPC
+    public class GiveWeapon : GlobalNPC
     {
         //public override bool AppliesToEntity(NPC entity)
         //{

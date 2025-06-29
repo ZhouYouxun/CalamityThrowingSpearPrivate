@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 {
-    internal class EarthenJavSHARD : ModProjectile, ILocalizedModType
+    public class EarthenJavSHARD : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.BPrePlantera";
 

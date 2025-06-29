@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 {
-    internal class DLOASSnake1Head : ModProjectile, ILocalizedModType
+    public class DLOASSnake1Head : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
 

@@ -12,7 +12,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 {
-    internal class TheBrokenPROJ : ModProjectile, ILocalizedModType
+    public class TheBrokenPROJ : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/APreHardMode/TheBroken/TheBroken";
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";

@@ -25,6 +25,7 @@ using CalamityMod.NPCs.Yharon;
 using CalamityMod.NPCs.Bumblebirb;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityThrowingSpear.Global;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -65,6 +66,33 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.localNPCHitCooldown = 60; // 无敌帧冷却时间为60帧
         }
         private bool hasSaidPhrase = false; // 添加一个标记，确保只触发一次
+
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            base.OnSpawn(source);
+
+            // 获取生成位置和速度（固定向上发射）
+            Vector2 spawnPosition = Projectile.Center;
+            Vector2 spawnVelocity = Vector2.UnitY * -1f * 25f;
+
+            // 生成巨龙
+            int proj = Projectile.NewProjectile(
+                source,
+                spawnPosition,
+                spawnVelocity,
+                ModContent.ProjectileType<FinishingTouchDragon>(),
+                (int)(Projectile.damage * 1.0),
+                Projectile.knockBack,
+                Projectile.owner
+            );
+
+            // 保险设置为启用 B 方案（围绕玩家模式）
+            if (proj.WithinBounds(Main.maxProjectiles))
+            {
+                (Main.projectile[proj].ModProjectile as FinishingTouchDragon)?.SetBPlan(true);
+            }
+        }
 
         public override void AI()
         {

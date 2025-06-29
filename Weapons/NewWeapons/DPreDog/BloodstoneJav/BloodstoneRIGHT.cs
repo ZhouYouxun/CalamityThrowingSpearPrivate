@@ -14,7 +14,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 {
-    internal class BloodstoneRIGHT : ModProjectile, ILocalizedModType
+    public class BloodstoneRIGHT : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/BloodstoneJav/BloodstoneJav";
 

@@ -13,7 +13,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpearC
 {
-    internal class GoldplumeJavWind : ModProjectile, ILocalizedModType
+    public class GoldplumeJavWind : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.APreHardMode";
         public override void SetStaticDefaults()

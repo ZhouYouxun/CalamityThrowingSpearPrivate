@@ -11,7 +11,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterDrumINVEXP : BaseMassiveExplosionProjectile, ILocalizedModType
+    public class SurfeiterDrumINVEXP : BaseMassiveExplosionProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
         public override int Lifetime => 40;

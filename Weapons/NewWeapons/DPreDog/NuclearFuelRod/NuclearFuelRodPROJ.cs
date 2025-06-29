@@ -11,7 +11,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
-    internal class NuclearFuelRodPROJ : ModProjectile, ILocalizedModType
+    public class NuclearFuelRodPROJ : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/NuclearFuelRod/NuclearFuelRod";
 
@@ -52,6 +52,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                 // 第一阶段：逐渐减速 + 转向最近敌人
                 Projectile.velocity *= 0.98f;
 
+                // ✅ 恢复追踪最近敌人以更新 rotation
                 NPC target = Projectile.Center.ClosestNPCAt(1500f);
                 if (target != null)
                 {
@@ -71,16 +72,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             {
                 Projectile.velocity *= 0.95f;
 
-                NPC target = Projectile.Center.ClosestNPCAt(1500f);
-                if (target != null)
-                {
-                    Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                    float targetRotation = directionToTarget.ToRotation() + MathHelper.PiOver4;
-                    Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.1f);
-                }
 
                 if (!laserSpawned && Main.netMode != NetmodeID.MultiplayerClient)
                 {
+                    // 在发射激光前先精准对准敌人方向
+                    NPC target = Projectile.Center.ClosestNPCAt(1500f);
+                    if (target != null)
+                    {
+                        Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                        Projectile.rotation = directionToTarget.ToRotation() + MathHelper.PiOver4;
+                    }
+
                     int laser = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                         Projectile.Center,
                         Vector2.Zero, // 不用管速度
@@ -98,23 +100,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                     laserSpawned = true;
                 }
 
-
-
-
-
                 if (laserSpawned)
                 {
+     
+
                     mFireTimer++;
                     if (mFireTimer % 3f == 0f && Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         Vector2 gunTip = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 48f;
 
-                        // 旋转偏移
-                        mAngleOffset += MathHelper.ToRadians(2f);    // 顺时针
-                        mAngleOffset2 -= MathHelper.ToRadians(2f);   // 逆时针
+                        // ✅ 添加保险获取 target
+                        NPC target = Projectile.Center.ClosestNPCAt(1500f);
+                        if (target != null)
+                        {
+                            Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                            float targetRotation = directionToTarget.ToRotation() + MathHelper.PiOver4;
 
-                        Vector2 dir1 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset).ToRotationVector2() * 0.3f;
-                        Vector2 dir2 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset2).ToRotationVector2() * 0.3f;
+                            // 在 phase 2 追踪目标时（转向速度 0.15f 保留）
+                            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.15f);
+                        }
+
+                        // 在 M 弹幕发射部分：
+                        mAngleOffset += MathHelper.ToRadians(0.4f * 2.5f);    // 顺时针旋转角（减小波动，提升旋转速度X.5x）
+                        mAngleOffset2 -= MathHelper.ToRadians(0.4f * 2.5f);   // 逆时针旋转角
+
+                        Vector2 dir1 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset).ToRotationVector2() * 0.5f; // 基速
+                        Vector2 dir2 = (Projectile.rotation - MathHelper.PiOver4 + MathHelper.Pi + mAngleOffset2).ToRotationVector2() * 0.5f; // 基速
 
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
@@ -135,6 +146,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                             2f,
                             Projectile.owner
                         );
+
 
 
 
@@ -221,6 +233,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
               
             }
         }
+        private void SafeTrackClosestNPC(float maxTurnDegrees)
+        {
+            NPC target = Projectile.Center.ClosestNPCAt(1500f); // 直接 NPC，不需要 NPC?
+            if (target != null) // 防御性保险（虽一般不为 null）
+            {
+                Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                float targetRotation = directionToTarget.ToRotation() + MathHelper.PiOver4;
+                float currentRotation = Projectile.rotation;
+                float maxTurn = MathHelper.ToRadians(maxTurnDegrees);
+                Projectile.rotation = currentRotation.AngleLerp(targetRotation, maxTurn / Math.Abs(MathHelper.WrapAngle(targetRotation - currentRotation)));
+            }
+        }
+
 
 
         public override void OnKill(int timeLeft)

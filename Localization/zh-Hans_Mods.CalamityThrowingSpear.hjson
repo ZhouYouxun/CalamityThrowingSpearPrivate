@@ -95,6 +95,8 @@ Projectiles: {
 			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
 			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
 			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
+			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
+			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
 		}
 
 		CPreMoodLord: {
@@ -149,6 +151,9 @@ Projectiles: {
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 			// SoulSeekerJavBRIDFire.DisplayName: Soul Seeker Jav B R I D Fire
 			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
+			// FinishingTouchINV.DisplayName: Finishing Touch I N V
+			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
+			// FinishingTouchDragon.DisplayName: Finishing Touch Dragon
 		}
 	}
 
@@ -314,6 +319,7 @@ Projectiles: {
 	// ChaosWindSpearPROJ.DisplayName: Chaos Wind Spear P R O J
 	// TidalMechanicsSpearHoldOutSP.DisplayName: Tidal Mechanics Spear Hold Out S P
 	// BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
+	// FinishingTouchDragon.DisplayName: Finishing Touch Dragon
 }
 
 Projectile: {

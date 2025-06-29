@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Terraria;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria;
 
-namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
+namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon
 {
-    public class DLOASSnake2Body : ModProjectile, ILocalizedModType
+    public class FinishingTouchDragon2Body : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
 
@@ -18,8 +21,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 
         public override void SetDefaults()
         {
-            Projectile.width = 14;
-            Projectile.height = 16;
+            Projectile.width = 70;
+            Projectile.height = 70;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
@@ -35,47 +38,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 
         public override void AI()
         {
-            Lighting.AddLight(Projectile.Center, 0.5f, 0f, 0.5f);
+            Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.5f);
 
-            // 获取前一节（蛇头或身体）的弹幕
             int prevIndex = Projectile.GetByUUID(Projectile.owner, (int)Projectile.ai[0]);
             if (prevIndex < 0 || !Main.projectile[prevIndex].active)
             {
-                SpawnDustEffect();
                 Projectile.Kill();
                 return;
             }
 
-            // 蛇身本身不主动移动
-            Projectile.velocity = Vector2.Zero;
-
             Projectile prev = Main.projectile[prevIndex];
+
             Vector2 offset = prev.Center - Projectile.Center;
 
-            // 平滑角度过渡：使蛇身缓慢追上前段角度
+            // 平滑旋转追随前一节
             float desiredRotation = offset.ToRotation();
             float angleDiff = MathHelper.WrapAngle(desiredRotation - Projectile.rotation);
-            Projectile.rotation += angleDiff + MathHelper.PiOver2;
+            Projectile.rotation += angleDiff * 0.25f + MathHelper.PiOver2; // 平滑追随 + 调整 sprite 对齐
 
-            // 跟随缩放（如不需要可以删掉）
+            // 保持 scale 和宽高与前一节一致
             float scale = MathHelper.Clamp(prev.scale, 0.5f, 3f);
             Projectile.scale = scale;
             Projectile.width = Projectile.height = (int)(10f * scale);
 
-            // 设置位置：沿前一段方向延伸 16 像素（形成连接）
-            float followDistance = 11f * scale; // 调整这个xf来控制身体和头的距离
+            // 适合的节距
+            float followDistance = 70f * scale;
+
+            // 精准跟随前一节位置
             if (offset != Vector2.Zero)
                 Projectile.Center = prev.Center - Vector2.Normalize(offset) * followDistance;
 
-            // 设置贴图方向
             Projectile.spriteDirection = (offset.X > 0f) ? 1 : -1;
 
-            // Alpha 逐步显现
+            // 淡入
             if (Projectile.alpha > 0)
                 Projectile.alpha -= 40;
             if (Projectile.alpha < 0)
                 Projectile.alpha = 0;
         }
+
 
 
         /// <summary>

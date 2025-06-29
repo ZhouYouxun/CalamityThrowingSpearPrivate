@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
-    internal class PrimordialStateNight : ModProjectile, ILocalizedModType
+    public class PrimordialStateNight : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.EAfterDog";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

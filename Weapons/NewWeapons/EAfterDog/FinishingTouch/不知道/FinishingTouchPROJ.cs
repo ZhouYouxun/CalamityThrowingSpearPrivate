@@ -16,7 +16,7 @@
 
 //namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 //{
-//    internal class FinishingTouchPROJ : ModProjectile
+//    public class FinishingTouchPROJ : ModProjectile
 //    {
 //        public override void SetStaticDefaults()
 //        {

@@ -15,7 +15,7 @@ using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
 {
-    internal class ViolenceJavLight : ModProjectile, ILocalizedModType
+    public class ViolenceJavLight : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

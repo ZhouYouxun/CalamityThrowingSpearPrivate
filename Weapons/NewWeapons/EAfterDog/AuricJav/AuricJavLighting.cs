@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 {
-    internal class AuricJavLighting : ModProjectile, ILocalizedModType
+    public class AuricJavLighting : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";

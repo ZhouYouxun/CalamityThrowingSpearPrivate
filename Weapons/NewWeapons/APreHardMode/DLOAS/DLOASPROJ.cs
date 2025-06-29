@@ -16,7 +16,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 {
-    internal class DLOASPROJ : ModProjectile, ILocalizedModType
+    public class DLOASPROJ : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/APreHardMode/DLOAS/DLOAS";

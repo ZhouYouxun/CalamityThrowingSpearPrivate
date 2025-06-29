@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyEDebuff : ModBuff
+    public class StarsofDestinyEDebuff : ModBuff
     {
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public override void SetStaticDefaults()

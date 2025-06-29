@@ -46,7 +46,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav;
 
 namespace CalamityThrowingSpear
 {
-    internal class RogueDamageOfWeapon : GlobalItem
+    public class RogueDamageOfWeapon : GlobalItem
     {
         public override void SetDefaults(Item item)
         {
@@ -69,7 +69,7 @@ namespace CalamityThrowingSpear
         }
     }
 
-    internal class RogueDamageOfProjectile : GlobalProjectile
+    public class RogueDamageOfProjectile : GlobalProjectile
     {
         public override void SetDefaults(Projectile projectile)
         {

@@ -17,7 +17,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
 {
-    internal class FestiveHalberdSTAR : ModProjectile, ILocalizedModType
+    public class FestiveHalberdSTAR : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
         public override void SetStaticDefaults()

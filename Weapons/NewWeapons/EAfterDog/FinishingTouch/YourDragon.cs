@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
-    internal class YourDragon : GlobalNPC
+    public class YourDragon : GlobalNPC
     {
         private static bool hasGivenXiaoZhiTiaoFT = false; // 静态开关，限制当前世界内只触发一次
 

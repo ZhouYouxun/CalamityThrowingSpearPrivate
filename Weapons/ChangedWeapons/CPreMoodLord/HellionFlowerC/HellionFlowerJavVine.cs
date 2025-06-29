@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowerC
 {
-    internal class HellionFlowerJavVine : ModProjectile, ILocalizedModType
+    public class HellionFlowerJavVine : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.CPreMoodLord";
         public static int TotalSegments = 10;

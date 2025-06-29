@@ -12,7 +12,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
-    internal class ElectrocutionHalberdRIGHTJav : ModProjectile, ILocalizedModType
+    public class ElectrocutionHalberdRIGHTJav : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/ElectrocutionHalberd/ElectrocutionHalberdJav";
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";

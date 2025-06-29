@@ -12,7 +12,7 @@ using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 {
-    internal class SoulSeekerJavBRIDFire : ModProjectile, ILocalizedModType
+    public class SoulSeekerJavBRIDFire : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";
         public ref float BurstIntensity => ref Projectile.ai[0];

@@ -19,7 +19,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyRIGHT : ModProjectile
+    public class StarsofDestinyRIGHT : ModProjectile
     {
         public override void SetStaticDefaults()
         {

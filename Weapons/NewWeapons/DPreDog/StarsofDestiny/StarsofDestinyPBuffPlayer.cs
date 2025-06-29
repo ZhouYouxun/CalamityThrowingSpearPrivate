@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyPBuffPlayer : ModPlayer
+    public class StarsofDestinyPBuffPlayer : ModPlayer
     {
         public bool IsBuffActive; // 用于控制 Buff 是否启用
 

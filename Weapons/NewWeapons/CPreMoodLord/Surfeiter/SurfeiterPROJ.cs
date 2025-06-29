@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterPROJ : ModProjectile, ILocalizedModType
+    public class SurfeiterPROJ : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Surfeiter/Surfeiter";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";

@@ -14,7 +14,7 @@ using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
 {
-    internal class DLOAS : ModItem, ILocalizedModType
+    public class DLOAS : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.APreHardMode";
         public override void SetDefaults()

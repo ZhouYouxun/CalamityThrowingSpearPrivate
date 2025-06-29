@@ -8,7 +8,7 @@ using Terraria.GameContent;
 
 namespace CalamityRangerExpansion.LightingBolts
 {
-    internal class CTSLightingBoltsSystem
+    public class CTSLightingBoltsSystem
     {
         private static ParticlePool<PrettySparkleParticle> _poolPrettySparkle = new ParticlePool<PrettySparkleParticle>(200, () => new PrettySparkleParticle());
 

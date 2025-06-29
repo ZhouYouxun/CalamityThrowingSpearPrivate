@@ -23,7 +23,7 @@ using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
 {
-    internal class BrimlanceJavFireWall : ModProjectile, ILocalizedModType
+    public class BrimlanceJavFireWall : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.BPrePlantera";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

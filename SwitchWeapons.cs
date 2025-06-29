@@ -41,7 +41,7 @@ using CalamityMod.Items.Weapons.Magic;
 
 namespace CalamityThrowingSpear
 {
-    internal class SwitchWeapons : ModPlayer
+    public class SwitchWeapons : ModPlayer
     {
         // 容器A和B，用于存储二二绑定的武器类类型
         // 注意！！这很重要！！

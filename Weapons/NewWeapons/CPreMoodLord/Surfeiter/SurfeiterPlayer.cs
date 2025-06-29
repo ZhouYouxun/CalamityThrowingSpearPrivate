@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
-    internal class SurfeiterPlayer : ModPlayer
+    public class SurfeiterPlayer : ModPlayer
     {
         public override void PostUpdateEquips()
         {

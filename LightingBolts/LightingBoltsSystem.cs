@@ -8,7 +8,7 @@
 
 //namespace CalamityRangerExpansion.LightingBolts
 //{
-//    internal class LightingBoltsSystem
+//    public class LightingBoltsSystem
 //    {
 //        private static ParticlePool<PrettySparkleParticle> _poolPrettySparkle = new ParticlePool<PrettySparkleParticle>(200, () => new PrettySparkleParticle());
 

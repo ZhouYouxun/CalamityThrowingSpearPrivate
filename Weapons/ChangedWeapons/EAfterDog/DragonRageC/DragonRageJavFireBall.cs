@@ -29,6 +29,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 
         private Vector2 dashDirection;
 
+        private int transitionTime = 20; // 过渡帧数
+        private int transitionCounter = 0;
+        private Vector2 transitionStartVelocity;
+
         public override void SetDefaults()
         {
             Projectile.width = 150;
@@ -37,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 2;
+            Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
         }
 
@@ -46,29 +50,62 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             timer++;
             owner = Main.player[Projectile.owner];
 
-            // 阶段 0：上升阶段，线性加速
+            // 0(上升)4(过渡)1(轨道)3(第2次过渡)2(冲刺)
+            // 阶段 0：上升阶段，线性加速（加速更快）
             if (state == 0)
             {
-                float speedFactor = MathHelper.Lerp(1f, 2f, timer / 40f);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, -Vector2.UnitY * verticalSpeed * speedFactor, 0.1f);
+                float speedFactor = MathHelper.Lerp(1f, 5f, timer / 40f); // 5f 是原来 2f 的 2.5 倍
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, -Vector2.UnitY * verticalSpeed * speedFactor, 0.15f);
 
                 if (timer >= 40)
                 {
-                    // 切换到轨道阶段
-                    state = 1;
+                    // 切换到平滑进入轨道阶段（状态 4）
+                    state = 4;
                     timer = 0;
+                    transitionCounter = 0;
 
                     orbitCenter = owner.Center;
                     orbitAngle = Main.rand.NextFloat(0f, MathHelper.TwoPi);
 
-                    // 椭圆形轨道大小更加随机夸张
-                    float a = Main.rand.NextFloat(24f, 48f) * 16f;
-                    float b = Main.rand.NextFloat(12f, 60f) * 16f;
+                    float a = Main.rand.NextFloat(12f, 72f) * 16f; // 长轴范围
+                    float b = Main.rand.NextFloat(12f, 72f) * 16f; // 短轴范围
                     if (Main.rand.NextBool())
                         Utils.Swap(ref a, ref b);
 
                     orbitShape = new Vector2(a, b);
                     orbitSpeed = Main.rand.NextFloat(0.06f, 0.15f);
+
+                    transitionStartVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                }
+            }
+
+            // 阶段 4：平滑过渡到轨道阶段
+            else if (state == 4)
+            {
+                transitionCounter++;
+                float t = transitionCounter / (float)transitionTime;
+                t = MathHelper.SmoothStep(0f, 1f, t);
+
+                // 椭圆轨道位置
+                orbitAngle += orbitSpeed;
+                Vector2 offset = new Vector2(
+                    (float)Math.Cos(orbitAngle) * orbitShape.X,
+                    (float)Math.Sin(orbitAngle) * orbitShape.Y
+                );
+                Vector2 targetPosition = orbitCenter + offset;
+
+                // 平滑位置过渡
+                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, t * 0.2f);
+
+                // 平滑速度方向过渡
+                Vector2 tangent = orbitAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2);
+                Vector2 targetVelocity = tangent * MathHelper.Lerp(2f, 6f, t);
+                Projectile.velocity = Vector2.Lerp(transitionStartVelocity * 6f, targetVelocity, t);
+
+                if (transitionCounter >= transitionTime)
+                {
+                    state = 1; // 平滑进入椭圆轨道阶段
+                    timer = 0;
                 }
             }
 
@@ -88,19 +125,44 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 
                 if (timer >= 60)
                 {
-                    // 切换到冲刺阶段
-                    state = 2;
+                    // 切换到平滑过渡阶段（状态 3）
+                    state = 3;
                     timer = 0;
+                    transitionCounter = 0;
                     dashDirection = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    transitionStartVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitY);
                 }
             }
+
+
+            // 状态 3：平滑过渡阶段
+            else if (state == 3)
+            {
+                transitionCounter++;
+                float t = transitionCounter / (float)transitionTime;
+                t = MathHelper.SmoothStep(0f, 1f, t); // 平滑插值
+
+                Vector2 currentDir = Vector2.Lerp(transitionStartVelocity, dashDirection, t).SafeNormalize(Vector2.UnitY);
+                float dashSpeed = MathHelper.Lerp(6f, 36f, t); // 平滑加速至冲刺速度
+
+                Projectile.velocity = currentDir * dashSpeed;
+
+                if (transitionCounter >= transitionTime)
+                {
+                    state = 2;
+                    timer = 0;
+                }
+            }
+
 
             // 阶段 2：冲刺阶段，保持直线飞行
             else if (state == 2)
             {
                 float dashSpeed = MathHelper.Lerp(6f, 36f, Utils.GetLerpValue(0f, 60f, timer, true));
-                Projectile.velocity = dashDirection * dashSpeed * 2f;
+                Projectile.velocity = dashDirection * dashSpeed * 6f;
             }
+
+
 
             // 发光粒子（线性尾迹）
             if (Main.rand.NextBool(2))

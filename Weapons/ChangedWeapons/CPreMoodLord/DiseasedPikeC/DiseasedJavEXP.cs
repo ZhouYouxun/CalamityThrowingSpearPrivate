@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPikeC
 {
-    internal class DiseasedJavEXP : ModProjectile, ILocalizedModType
+    public class DiseasedJavEXP : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectile.CPreMoodLord";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";

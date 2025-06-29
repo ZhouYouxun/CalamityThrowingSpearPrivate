@@ -14,7 +14,7 @@ using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyRStandField : ModProjectile
+    public class StarsofDestinyRStandField : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public override void SetStaticDefaults()

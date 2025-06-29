@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
-    internal class NuclearFuelRodSAM : ModProjectile, ILocalizedModType
+    public class NuclearFuelRodSAM : ModProjectile, ILocalizedModType
     {
 
         public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";

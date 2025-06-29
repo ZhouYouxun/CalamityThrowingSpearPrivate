@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav;
-using CalamityMod.Sounds; // 引入 Calamity 声音库
+using CalamityMod.Sounds;
 using System;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -56,6 +56,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Item.shootSpeed = 0f;
             Item.crit = 15;
         }
+        private int attackCounter = 0; // 攻击计数
+        private int baseDamage = 520;  // 原始伤害
+
 
         public override bool AltFunctionUse(Player player) => true;
         public override bool CanUseItem(Player player)
@@ -79,6 +82,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
             else
             {
+                // 每次左键使用计数 +1
+                attackCounter++;
+
+                if (attackCounter >= 2) // 测试用改成二,之后改掉这个
+                {
+                    // 第 10 次触发强化攻击
+                    FinishingTouchPROJ.UseDragonSnakeMode = true;
+                    Item.damage = baseDamage * 2;
+                    attackCounter = 0; // 重置
+                }
+                else
+                {
+                    FinishingTouchPROJ.UseDragonSnakeMode = false;
+                    Item.damage = baseDamage;
+                }
+
+
                 // 播放龙吼音效
                 SoundEngine.PlaySound(Yharon.ShortRoarSound with { Volume = 0.5f }, player.position);
                 // 切换为抛射物弹幕，并设置使用时间和动画为60帧

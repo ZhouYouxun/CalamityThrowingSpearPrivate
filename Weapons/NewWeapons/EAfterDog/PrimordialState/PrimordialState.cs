@@ -19,7 +19,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
-    internal class PrimordialState : ModItem, ILocalizedModType
+    public class PrimordialState : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.EAfterDog";
         public override void SetDefaults()

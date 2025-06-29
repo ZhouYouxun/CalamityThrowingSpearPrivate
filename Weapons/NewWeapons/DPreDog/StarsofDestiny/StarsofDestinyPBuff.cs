@@ -8,7 +8,7 @@ using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
-    internal class StarsofDestinyPBuff : ModBuff
+    public class StarsofDestinyPBuff : ModBuff
     {
         public override void SetStaticDefaults()
         {
