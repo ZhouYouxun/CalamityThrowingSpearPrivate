@@ -1338,8 +1338,12 @@ Buffs: {
 	}
 
 	StarsofDestinyPBuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyPBuff.Description
-		// DisplayName: Starsof Destiny P Buff
+		Description: 
+                        '''
+                        小幅度提升移动速度与再生速度
+                        你的时间开始加速了！
+                        '''
+		DisplayName: 时之再生
 	}
 
 	StarsofDestinyEDebuff: {
