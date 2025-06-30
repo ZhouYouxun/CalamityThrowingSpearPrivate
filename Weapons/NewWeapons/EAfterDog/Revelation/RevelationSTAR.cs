@@ -43,87 +43,93 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
         public override void AI()
         {
-            if (Projectile.ai[0] == 3f)
-                CalamityUtils.HomeInOnNPC(Projectile, true, 300f, 12f, 20);
+            // 🚩【速度保持恒定】
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 22f;
 
-            noTileHitCounter -= 1;
-            if (noTileHitCounter == 0)
-                Projectile.tileCollide = true;
-
-            if (Projectile.soundDelay == 0)
+            // 🚩【飞行特效：AstralOrange Dust（轻度增强）】
+            if (!Main.dedServ && Time > 5f)
             {
-                Projectile.soundDelay = 20 + Main.rand.Next(40);
-                //if (Main.rand.NextBool(5))
-                    //SoundEngine.PlaySound(SoundID.Item9, Projectile.position);
+                int dustCount = Main.rand.Next(3, 5); // 每帧生成3~4个
+
+                for (int i = 0; i < dustCount; i++)
+                {
+                    // 使用圆环分布而非线性插值以分散
+                    Vector2 offset = Main.rand.NextVector2CircularEdge(Projectile.width * 0.5f, Projectile.height * 0.5f);
+                    Vector2 spawnPos = Projectile.Center + offset;
+
+                    Dust dust = Dust.NewDustPerfect(spawnPos, ModContent.DustType<AstralOrange>());
+
+                    //// 🚩 保持亮度稳定的蓝白流动
+                    //float hue = (0.55f + Main.rand.NextFloat(-0.05f, 0.05f)) % 1f; // 蓝白范围
+                    //dust.color = Main.hslToRgb(hue, 0.85f, 0.8f); // 提高亮度到0.8f
+
+                    dust.scale = Main.rand.NextFloat(1.0f, 1.4f); // 保持原本体积感
+                    dust.fadeIn = 0.8f;
+                    dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                    dust.velocity = Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f); // 较小扰动
+                    dust.noGravity = true;
+                }
             }
 
-            Projectile.alpha -= 15;
-            int alphaControl = 150;
-            if (Projectile.Center.Y >= Projectile.ai[1])
-                alphaControl = 0;
-            if (Projectile.alpha < alphaControl)
-                Projectile.alpha = alphaControl;
 
-            Projectile.localAI[0] += (Math.Abs(Projectile.velocity.X) + Math.Abs(Projectile.velocity.Y)) * 0.01f * Projectile.direction;
-            Projectile.rotation += (Math.Abs(Projectile.velocity.X) + Math.Abs(Projectile.velocity.Y)) * 0.01f * Projectile.direction;
-
-            if (Main.rand.NextBool(16))
+            // 🚩【生成 Gore：频率略增强】
+            if (Main.rand.NextBool(32) && Main.netMode != NetmodeID.Server)
             {
-                Vector2 rotational = Vector2.UnitX.RotatedByRandom(1.5707963705062866).RotatedBy((double)Projectile.velocity.ToRotation(), default);
-                int astralDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<AstralOrange>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f, 150, default, 1f);
-                Main.dust[astralDust].velocity = rotational * 0.66f;
-                Main.dust[astralDust].position = Projectile.Center + rotational * 12f;
+                int gore = Gore.NewGore(
+                    Projectile.GetSource_FromAI(),
+                    Projectile.Center,
+                    Projectile.velocity * 0.25f,
+                    16,
+                    1f
+                );
+                Main.gore[gore].velocity *= 0.7f;
+                Main.gore[gore].velocity += Projectile.velocity * 0.3f;
             }
 
-            if (Main.rand.NextBool(48) && Main.netMode != NetmodeID.Server)
-            {
-                int starry = Gore.NewGore(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f), 16, 1f);
-                Main.gore[starry].velocity *= 0.66f;
-                Main.gore[starry].velocity += Projectile.velocity * 0.3f;
-            }
+            // 🚩【透明度和光效】
+            Projectile.alpha = Math.Max(Projectile.alpha - 15, 0);
+            int minAlpha = 50;
+            if (Projectile.alpha < minAlpha)
+                Projectile.alpha = minAlpha;
 
             if (Projectile.ai[1] == 1f)
             {
                 Projectile.light = 0.9f;
-                if (Main.rand.NextBool(10))
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<AstralOrange>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f, 150, default, 1f);
-                if (Main.rand.NextBool(20) && Main.netMode != NetmodeID.Server)
-                    Gore.NewGore(Projectile.GetSource_FromAI(), Projectile.position, new Vector2(Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f), Main.rand.Next(16, 18), 1f);
             }
 
+            // 🚩【旋转同步】
+            Projectile.rotation += Projectile.velocity.Length() * 0.01f * Projectile.direction;
 
-
-            // 前30帧不追踪，之后开始追踪敌人
-            if (Projectile.ai[1] > 30)
+            // 🚩【飞行路径控制】
+            if (Time <= 30f)
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找范围内最近的敌人
-                if (target != null)
-                {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 15f, 0.08f); // 追踪速度为15f
-                }
+                // 前30帧：sin震荡+随机扰动（已改进飞行）
+                float wave = (float)Math.Sin(Time * 0.3f) * MathHelper.ToRadians(2f);
+                float randomNudge = Main.rand.NextFloat(-0.01f, 0.01f);
+                Projectile.velocity = Projectile.velocity.RotatedBy(wave + randomNudge);
             }
             else
             {
-                // 每一帧右拐 3 度
-                Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(3));
-                Projectile.ai[1]++;
+                // 之后进行柔和追踪
+                NPC target = Projectile.Center.ClosestNPCAt(3600);
+                if (target != null)
+                {
+                    // 🚩 线性提升追踪速度
+                    Projectile.localAI[0] += 0.0025f; // 每帧线性加速，可根据需要微调
+
+                    float currentSpeed = 18f + Projectile.localAI[0] * 60f; // 可封顶防止过快，可改为 Math.Min(currentSpeed, maxSpeed)
+                    Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                    Vector2 desiredVelocity = toTarget.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * currentSpeed;
+
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, 0.06f);
+                }
             }
+
 
             Time++;
         }
 
-        //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        //{
-        //    if (Projectile.DamageType != DamageClass.Ranged)
-        //        target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 120);
-        //}
 
-        //public override void OnHitPlayer(Player target, Player.HurtInfo info)
-        //{
-        //    if (Projectile.DamageType != DamageClass.Ranged)
-        //        target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 120);
-        //}
 
         public override Color? GetAlpha(Color lightColor) => new Color(200, 100, 250, Projectile.alpha);
 

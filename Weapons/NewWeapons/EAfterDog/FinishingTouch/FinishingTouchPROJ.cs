@@ -279,7 +279,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             Projectile.Center,
-                            shootDirection * shootSpeed,
+                            shootDirection * shootSpeed * 2,
                             invProjType,
                             (int)(Projectile.damage * 0.8f),
                             Projectile.knockBack,

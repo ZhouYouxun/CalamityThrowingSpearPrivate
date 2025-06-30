@@ -73,86 +73,141 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/RevelationBIGEXP"));
 
-            // 释放大量小型粒子组成垂直激光
-            for (int i = 0; i < 25; i++)
-            {
-                Color randomColor = Main.rand.Next(4) switch
-                {
-                    0 => Color.Red,
-                    1 => Color.MediumTurquoise,
-                    2 => Color.Orange,
-                    _ => Color.LawnGreen,
-                };
-                GlowSparkParticle spark = new GlowSparkParticle(Projectile.Center + Main.rand.NextVector2Circular(5, 5), Vector2.UnitY * Main.rand.NextFloat(-20f, 20f), false, Main.rand.Next(40, 50), Main.rand.NextFloat(0.04f, 0.095f), randomColor, new Vector2(0.3f, 1.6f));
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
+            // ===================================
+            // 🚩【0️⃣ 屏幕震动与基础冲击波（保留，微调）】🚩
+            // ===================================
+            Owner.Calamity().GeneralScreenShakePower = 15.9f; // 维持削减后幅度
 
-            // 释放大量小型粒子组成水平激光
-            for (int i = 0; i < 25; i++)
-            {
-                Color randomColor = Main.rand.Next(4) switch
-                {
-                    0 => Color.Red,
-                    1 => Color.MediumTurquoise,
-                    2 => Color.Orange,
-                    _ => Color.LawnGreen,
-                };
-                GlowSparkParticle spark = new GlowSparkParticle(Projectile.Center + Main.rand.NextVector2Circular(5, 5), Vector2.UnitX * Main.rand.NextFloat(-20f, 20f), false, Main.rand.Next(40, 50), Main.rand.NextFloat(0.04f, 0.095f), randomColor, new Vector2(1.6f, 0.3f));
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-
-
-            // 屏幕震动，震动幅度削减到 1/5
-            Owner.Calamity().GeneralScreenShakePower = 2.9f;
-
-            // 生成一个逐渐向外扩散的小型冲击波
-            Particle finalPulse = new StaticPulseRing(Projectile.Center, Vector2.Zero, Color.White * 0.4f, new Vector2(0.33f, 0.33f), 0f, 5f, 0f, 10); // 大小为原来的 1/3
+            Particle finalPulse = new StaticPulseRing(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.White * 0.4f,
+                new Vector2(0.33f, 0.33f),
+                0f,
+                5f,
+                0f,
+                10
+            );
             GeneralParticleHandler.SpawnParticle(finalPulse);
 
-            // 在死亡时生成50个亮白色的线性粒子
-            for (int i = 0; i < 50; i++)
-            {
-                float angle = MathHelper.ToRadians(i * (360f / 50f)); // 将360度均分成50个方向
-                Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)); // 计算方向向量
-                Color brightWhite = Color.White; // 亮白色
-                Vector2 particleVelocity = direction * Main.rand.NextFloat(10f, 20f); // 随机化速度
+            // ===================================
+            // 🚩【1️⃣ 有序：多层“螺旋星体阵”GlowSparkParticle矩阵】
+            // ===================================
+            int spiralLayers = 4;
+            int sparksPerLayer = 24;
+            float baseRadius = 20f;
+            float radiusStep = 12f;
 
-                // 创建亮白色线性粒子
-                Particle trail = new SparkParticle(
+            for (int layer = 0; layer < spiralLayers; layer++)
+            {
+                float radius = baseRadius + layer * radiusStep;
+                for (int i = 0; i < sparksPerLayer; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / sparksPerLayer + layer * 0.5f; // 形成螺旋
+                    Vector2 dir = angle.ToRotationVector2();
+                    Vector2 spawnPos = Projectile.Center + dir * radius;
+                    Vector2 velocity = dir.RotatedBy(MathHelper.PiOver4) * Main.rand.NextFloat(5f, 10f);
+
+                    GlowSparkParticle spark = new GlowSparkParticle(
+                        spawnPos,
+                        velocity,
+                        false,
+                        Main.rand.Next(40, 55),
+                        Main.rand.NextFloat(0.08f, 0.12f),
+                        Color.Cyan * 0.8f,
+                        new Vector2(0.5f, 1.5f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+            // ===================================
+            // 🚩【2️⃣ 有序：十字星矩阵爆裂】
+            // ===================================
+            int starCount = 12;
+            for (int i = 0; i < starCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / starCount;
+                Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(16f, 32f);
+                Vector2 spawnPos = Projectile.Center + offset;
+
+                GenericSparkle sparkle = new GenericSparkle(
+                    spawnPos,
+                    Vector2.Zero,
+                    Color.White,
+                    Color.Cyan,
+                    Main.rand.NextFloat(2.0f, 2.8f),
+                    8,
+                    Main.rand.NextFloat(-0.05f, 0.05f),
+                    1.8f
+                );
+                GeneralParticleHandler.SpawnParticle(sparkle);
+            }
+
+            // ===================================
+            // 🚩【3️⃣ 无序：Dust蓝白能量爆散（主导）】
+            // ===================================
+            int dustAmount = 300; // 超级爆散
+            int[] dustTypes = { DustID.BlueCrystalShard, DustID.WhiteTorch };
+            Color[] dustColors = { Color.Cyan, Color.White, Color.LightBlue };
+
+            for (int i = 0; i < dustAmount; i++)
+            {
+                int type = dustTypes[Main.rand.Next(dustTypes.Length)];
+                Color color = dustColors[Main.rand.Next(dustColors.Length)];
+                Vector2 velocity = Main.rand.NextVector2Circular(18f, 18f);
+
+                int dust = Dust.NewDust(Projectile.Center, 0, 0, type, velocity.X, velocity.Y, 100, color, Main.rand.NextFloat(1.2f, 2.0f));
+                Main.dust[dust].noGravity = true;
+            }
+
+            // ===================================
+            // 🚩【4️⃣ 无序：亮白线性粒子爆散（全面覆盖）】
+            // ===================================
+            int linearCount = 120;
+            for (int i = 0; i < linearCount; i++)
+            {
+                float angle = MathHelper.ToRadians(i * (360f / linearCount));
+                Vector2 direction = angle.ToRotationVector2();
+                Color brightWhite = Color.White;
+                Vector2 velocity = direction * Main.rand.NextFloat(15f, 30f);
+
+                Particle sparkTrail = new SparkParticle(
                     Projectile.Center,
-                    particleVelocity,
+                    velocity,
                     false,
-                    40, // 生命周期
-                    Main.rand.NextFloat(0.15f, 0.25f), // 粒子大小随机化
+                    50,
+                    Main.rand.NextFloat(0.2f, 0.35f),
                     brightWhite
                 );
-                GeneralParticleHandler.SpawnParticle(trail);
+                GeneralParticleHandler.SpawnParticle(sparkTrail);
             }
 
-            for (int i = 0; i < 10; i++)
+            // ===================================
+            // 🚩【5️⃣ 有序 + 中和：彩色脉冲环爆发（可适当保留原爆炸感觉）】
+            // ===================================
+            for (int i = 0; i < 20; i++)
             {
-                Color randomColor = Main.rand.Next(4) switch
+                Color randomColor = Main.rand.Next(3) switch
                 {
-                    0 => Color.Red,
-                    1 => Color.MediumTurquoise,
-                    2 => Color.Orange,
-                    _ => Color.LawnGreen,
+                    0 => Color.Cyan,
+                    1 => Color.LightBlue,
+                    _ => Color.White,
                 };
 
-                Particle pulse2 = new CustomPulse(
+                Particle pulse = new CustomPulse(
                     Projectile.Center,
                     Vector2.Zero,
-                    randomColor * 0.7f,
+                    randomColor * 0.6f,
                     "CalamityMod/Particles/FlameExplosion",
-                    new Vector2(0.2f, 0.2f), // 缩小为原来的1/5大小
-                    Main.rand.NextFloat(-20, 20),
+                    new Vector2(0.4f, 0.4f),
+                    Main.rand.NextFloat(-25, 25),
                     0f,
-                    (4f - i * 0.28f) * 0.2f, // 缩小为原来的1/5大小
+                    (5f - i * 0.25f) * 0.4f / 3f, // 最终大小
                     50
                 );
-                GeneralParticleHandler.SpawnParticle(pulse2);
+                GeneralParticleHandler.SpawnParticle(pulse);
             }
-
         }
 
 

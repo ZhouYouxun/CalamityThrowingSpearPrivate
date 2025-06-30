@@ -175,55 +175,87 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             if (chargeDurationFrames == 60)
             {
                 SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
-                // 生成 20 个随机
-                //for (int i = 0; i < 20; i++)
-                //{
-                //    Vector2 randomDirection = Main.rand.NextVector2Circular(3f, 3f) * 3.33f; // 生成随机方向的速度
-                //    Vector2 particlePosition = Projectile.Center; // 粒子生成位置为弹幕中心
-                //    GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, randomDirection, Color.White, 0.25f, Main.rand.Next(20) + 10));
-                //}
 
-                // 魔法阵设计
-                int numRings = 3; // 圆环数量
-                int pointsPerRing = 12; // 每个圆环的点数
-                float radiusIncrement = 30f; // 每个圆环之间的半径增量
+                // === 确保中心对齐枪头位置 ===
+                Vector2 gunTipCenter = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+
                 int totalParticles = 0;
 
-                for (int ring = 0; ring < numRings; ring++)
+                // ============================== 1️⃣ 光球（GenericBloom） ==============================
+                int spiralPoints = 72; // 狂野值 x3
+                float spiralRadius = 120f;
+                float spiralTurns = 3f;
+
+                for (int i = 0; i < spiralPoints; i++)
                 {
-                    if (totalParticles >= 36) break; // 限制总光球数量
+                    float progress = i / (float)spiralPoints;
+                    float angle = MathHelper.TwoPi * spiralTurns * progress;
+                    float radius = spiralRadius * progress;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    Vector2 position = gunTipCenter + offset;
+                    Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
 
-                    float radius = (ring + 1) * radiusIncrement; // 当前圆环半径
-                    for (int point = 0; point < pointsPerRing; point++)
-                    {
-                        if (totalParticles >= 36) break; // 再次检查光球总数限制
+                    Color color = (i % 3 == 0) ? Color.White : Color.LightBlue;
+                    float scale = Main.rand.NextFloat(0.25f, 0.4f);
 
-                        float angle = MathHelper.TwoPi * point / pointsPerRing; // 计算点的位置角度
-                        Vector2 position = Projectile.Center + angle.ToRotationVector2() * radius; // 光球位置
-                        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f); // 光球初始速度
-
-                        // 创建光球粒子
-                        GeneralParticleHandler.SpawnParticle(new GenericBloom(position, velocity, Color.White, 0.25f, Main.rand.Next(20) + 10));
-
-                        totalParticles++;
-                    }
-                }
-
-                // 中心光球旋转特效
-                for (int i = 0; i < 12; i++) // 12个中心点粒子
-                {
-                    if (totalParticles >= 36) break;
-
-                    float angle = MathHelper.TwoPi * i / 12f; // 角度间隔
-                    Vector2 position = Projectile.Center; // 粒子生成位置
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f); // 中心点旋转速度
-
-                    // 创建光球粒子
-                    GeneralParticleHandler.SpawnParticle(new GenericBloom(position, velocity, Color.LightBlue, 0.3f, Main.rand.Next(20) + 10));
+                    GeneralParticleHandler.SpawnParticle(new GenericBloom(position, velocity, color, scale, Main.rand.Next(25, 40)));
 
                     totalParticles++;
                 }
+
+                // ============================== 2️⃣ Dust（蓝色系爆散，无序） ==============================
+                for (int i = 0; i < 120; i++) // 狂野级数量
+                {
+                    int dustType = DustID.BlueCrystalShard;
+                    Vector2 dustVelocity = Main.rand.NextVector2Circular(12f, 12f);
+                    int dust = Dust.NewDust(gunTipCenter, 0, 0, dustType, dustVelocity.X, dustVelocity.Y, 100, default, Main.rand.NextFloat(1.2f, 2.0f));
+                    Main.dust[dust].noGravity = true;
+                }
+
+                // ============================== 3️⃣ 线性粒子 SparkParticle（有序旋转爆发） ==============================
+                int sparkCount = 36;
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / sparkCount;
+                    Vector2 direction = angle.ToRotationVector2();
+                    Vector2 velocity = direction * Main.rand.NextFloat(6f, 12f);
+
+                    Color color = Color.Cyan;
+                    float scale = Main.rand.NextFloat(0.8f, 1.4f);
+
+                    Particle spark = new SparkParticle(
+                        gunTipCenter,
+                        velocity,
+                        false,
+                        50,
+                        scale,
+                        color
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // ============================== 4️⃣ 冲击波收缩（DirectionalPulseRing 浅绿色） ==============================
+                Particle shrinkingpulse = new DirectionalPulseRing(
+                    gunTipCenter,
+                    Vector2.Zero,
+                    Color.LightGreen,
+                    new Vector2(1.2f, 1.2f),
+                    Main.rand.NextFloat(8f, 12f),
+                    0.1f,
+                    3.5f,
+                    15
+                );
+                GeneralParticleHandler.SpawnParticle(shrinkingpulse);
             }
+
+
+
+
+
+
+
+
 
             // 如果是 Zenith World 天顶世界，那么让他无视敌人无敌帧
             if (Main.zenithWorld)
@@ -292,21 +324,122 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             // 零级时候产生的飞行过程中的特效
             if (ProjectileLevel >= 0)
             {
-                // 在投射物飞行过程中生成特效
-                Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2); // 生成粒子位置
+                //// 在投射物飞行过程中生成特效
+                //Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2); // 生成粒子位置
 
-                switch (Main.rand.Next(2)) // 随机选择生成哪种粒子
-                // 这里选择两种鸿蒙方舟的光点特效
+                //switch (Main.rand.Next(2)) // 随机选择生成哪种粒子
+                //// 这里选择两种鸿蒙方舟的光点特效
+                //{
+                //    case 0:
+                //        Vector2 strongBloomVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(2f, 4f) * 0.33f;
+                //        GeneralParticleHandler.SpawnParticle(new StrongBloom(particlePosition, strongBloomVelocity, Color.White, 0.25f, Main.rand.Next(20) + 10)); // 将粒子缩小到 1/4
+                //        break;
+                //    case 1:
+                //        Vector2 genericBloomVelocity = Main.rand.NextVector2Circular(3f, 3f) * 0.33f;
+                //        GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, genericBloomVelocity, Color.White, 0.25f, Main.rand.Next(20) + 10)); // 将粒子缩小到 1/4
+                //        break;
+                //}
+
+
+
+                // ============================== 【启示录飞行特效】 ==============================
+                if (ProjectileLevel >= 0)
                 {
-                    case 0:
-                        Vector2 strongBloomVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(2f, 4f) * 0.33f;
-                        GeneralParticleHandler.SpawnParticle(new StrongBloom(particlePosition, strongBloomVelocity, Color.White, 0.25f, Main.rand.Next(20) + 10)); // 将粒子缩小到 1/4
-                        break;
-                    case 1:
-                        Vector2 genericBloomVelocity = Main.rand.NextVector2Circular(3f, 3f) * 0.33f;
-                        GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, genericBloomVelocity, Color.White, 0.25f, Main.rand.Next(20) + 10)); // 将粒子缩小到 1/4
-                        break;
+                    // === 🚩 1️⃣ 无序部分：光球特效（翻倍狂野） ===
+                    for (int i = 0; i < 2; i++) // 翻倍执行两次
+                    {
+                        Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2);
+                        switch (Main.rand.Next(2))
+                        {
+                            case 0:
+                                Vector2 strongBloomVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(2f, 4f) * 0.66f; // 翻倍速度
+                                GeneralParticleHandler.SpawnParticle(new StrongBloom(particlePosition, strongBloomVelocity, Color.White, 0.35f, Main.rand.Next(30, 45)));
+                                break;
+                            case 1:
+                                Vector2 genericBloomVelocity = Main.rand.NextVector2Circular(3f, 3f) * 0.66f; // 翻倍速度
+                                GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, genericBloomVelocity, Color.White, 0.35f, Main.rand.Next(30, 45)));
+                                break;
+                        }
+                    }
+
+                    // === 🚩 2️⃣ 有序部分：四螺旋 Dust（蓝、白，气势 ×3，复杂化） ===
+                    float time = Main.GameUpdateCount / 6f; // 提高旋转速度以增强动态感
+                    float baseRadius = 20f; // 扩大基础半径
+                    float radiusVariation = (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 10f; // sin 波动幅度加大
+                    float actualRadius = baseRadius + radiusVariation;
+
+                    // 使用蓝白四螺旋，相互对立构成高科技感结构
+                    Color[] dustColors = { Color.Cyan, Color.LightBlue, Color.White, Color.SkyBlue };
+                    int[] dustTypes = { DustID.BlueCrystalShard, DustID.WhiteTorch, DustID.WhiteTorch, DustID.BlueTorch };
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        // 相邻螺旋以 Pi/2 间隔，形成四螺旋结构
+                        float angle = time + i * MathHelper.PiOver2;
+                        Vector2 offset = angle.ToRotationVector2() * actualRadius;
+
+                        // 对称螺旋（相互对立）
+                        Vector2 spawnPosition1 = Projectile.Center + offset;
+                        Vector2 spawnPosition2 = Projectile.Center - offset;
+
+                        Vector2 velocity1 = offset.SafeNormalize(Vector2.Zero) * 1.2f + Projectile.velocity * 0.2f;
+                        Vector2 velocity2 = -offset.SafeNormalize(Vector2.Zero) * 1.2f + Projectile.velocity * 0.2f;
+
+                        // 每条螺旋生成多个点以加大密度（气势 ×3）
+                        for (int j = 0; j < 2; j++)
+                        {
+                            int dustType = dustTypes[i];
+                            Color color = dustColors[i];
+                            float scale = Main.rand.NextFloat(1.5f, 2.3f); // 大型粒子
+
+                            Vector2 pos = (j == 0) ? spawnPosition1 : spawnPosition2;
+                            Vector2 vel = (j == 0) ? velocity1 : velocity2;
+
+                            int dust = Dust.NewDust(pos, 0, 0, dustType, vel.X, vel.Y, 80, color, scale);
+                            Main.dust[dust].noGravity = true;
+                        }
+                    }
+
+
+                    // === 🚩 3️⃣ 有序部分：周期性科技方块法阵释放（SquareParticle矩阵） ===
+                    if (Main.GameUpdateCount % 12 == 0) // 每12帧触发一次
+                    {
+                        Vector2 gunTip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
+
+                        int matrixCount = 8; // 矩阵中的小方块数量
+                        float matrixRadius = 24f;
+                        float rotationOffset = Main.GameUpdateCount * 0.05f;
+
+                        for (int i = 0; i < matrixCount; i++)
+                        {
+                            float angle = MathHelper.TwoPi * i / matrixCount + rotationOffset;
+                            Vector2 offset = angle.ToRotationVector2() * matrixRadius;
+                            Vector2 spawnPos = gunTip + offset;
+                            Vector2 particleVelocity = offset.SafeNormalize(Vector2.Zero) * 1.5f; // 缓慢向外扩散
+
+                            SquareParticle squareParticle = new SquareParticle(
+                                spawnPos,
+                                particleVelocity,
+                                false,
+                                25,
+                                1.5f + Main.rand.NextFloat(0.4f),
+                                Color.Cyan * 1.3f // 冷色科技感
+                            );
+
+                            GeneralParticleHandler.SpawnParticle(squareParticle);
+                        }
+                    }
                 }
+
+
+
+
+
+
+
+
+
+
             }
 
             // 如果是二级及以上，每 20 帧释放一个 火花
@@ -359,14 +492,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                 //Main.NewText($"击中次数: {player.HitCounterForLevelUp}, 当前等级: {player.RevelationLevel}");
                 player.TrackHit(); // 调用以增加计时器
             }
-
-            // 零级及以上的时候会释放这种特效
-            if (ProjectileLevel >= 0)
-            {
-                Particle bloodsplosion = new CustomPulse(Projectile.Center, Vector2.Zero, Color.GhostWhite, "CalamityMod/Particles/DetailedExplosion", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.16f, 0.87f, (int)(Viscera.BoomLifetime * 0.38f), false);
-                GeneralParticleHandler.SpawnParticle(bloodsplosion);
-            }
-
+       
             // 如果强化等级是三级及以上，触发元素紊乱效果
             if (ProjectileLevel >= 3)
             {
@@ -377,7 +503,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
         public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/TeslaCannonFire").WithVolumeScale(0.33f));
-
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/空中分裂").WithVolumeScale(0.33f));
+            
             chargeDurationFrames = 0; // 重置蓄力计数
 
             // 012为小爆炸效果
@@ -437,6 +564,100 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                     );
                 }
             }
+
+
+
+            // 零级及以上的时候会释放这种特效
+            if (ProjectileLevel >= 0)
+            {
+                Vector2 hitCenter = Projectile.Center;
+
+                // 🚩 🚩 🚩 1️⃣ 有序：冲击波（强化）
+                Particle bloodsplosion = new CustomPulse(
+                    hitCenter,
+                    Vector2.Zero,
+                    Color.GhostWhite,
+                    "CalamityMod/Particles/DetailedExplosion",
+                    Vector2.One * 1.5f, // 放大尺寸
+                    Main.rand.NextFloat(-25f, 25f),
+                    0.08f,
+                    0.88f,
+                    30,
+                    false
+                );
+                GeneralParticleHandler.SpawnParticle(bloodsplosion);
+
+                // 🚩 🚩 🚩 2️⃣ 无序：Dust 蓝黑白狂野爆散
+                int dustAmount = 300; // 500% 狂野度
+                int[] dustTypes = { DustID.BlueCrystalShard, DustID.Smoke, DustID.WhiteTorch };
+                Color[] dustColors = { Color.Cyan, Color.Black, Color.White };
+
+                for (int i = 0; i < dustAmount; i++)
+                {
+                    int type = dustTypes[Main.rand.Next(dustTypes.Length)];
+                    Color color = dustColors[Main.rand.Next(dustColors.Length)];
+                    Vector2 velocity = Main.rand.NextVector2Circular(28f, 28f);
+
+                    int dust = Dust.NewDust(hitCenter, 0, 0, type, velocity.X, velocity.Y, 100, color, Main.rand.NextFloat(1.5f, 3.0f));
+                    Main.dust[dust].noGravity = true;
+                }
+
+                // 🚩 🚩 🚩 3️⃣ 屏幕震动
+                if (Main.player[Projectile.owner] == Main.LocalPlayer)
+                {
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, 15f);
+                }
+
+                // 🚩 🚩 🚩 4️⃣ 有序：复杂“魔法阵”线性粒子阵
+                // 模拟三层六芒星展开
+                int layers = 3;
+                int pointsPerLayer = 36;
+                float baseRadius = 24f;
+                float radiusIncrement = 24f;
+
+                for (int layer = 0; layer < layers; layer++)
+                {
+                    float radius = baseRadius + layer * radiusIncrement;
+                    for (int point = 0; point < pointsPerLayer; point++)
+                    {
+                        float angle = MathHelper.TwoPi * point / pointsPerLayer + layer * 0.2f; // 每层略偏移形成旋转感
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+                        Vector2 position = hitCenter + offset;
+                        Vector2 velocity = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 7f);
+
+                        Particle spark = new SparkParticle(
+                            position,
+                            velocity,
+                            false,
+                            50,
+                            1.2f,
+                            Color.Cyan
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+                }
+
+                // 🚩 🚩 🚩 5️⃣ 中和：十字星粒子闪光
+                int starAmount = 8; // 多个十字星
+                for (int i = 0; i < starAmount; i++)
+                {
+                    Vector2 starOffset = Main.rand.NextVector2Circular(24f, 24f);
+                    GenericSparkle sparker = new GenericSparkle(
+                        hitCenter + starOffset,
+                        Vector2.Zero,
+                        Color.Cyan,
+                        Color.White,
+                        Main.rand.NextFloat(1.5f, 2.5f),
+                        7,
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        1.8f
+                    );
+                    GeneralParticleHandler.SpawnParticle(sparker);
+                }
+            }
+
+
+
 
 
         }

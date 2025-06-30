@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using CalamityMod;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 {
@@ -34,7 +35,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
         public override void AI()
         {
-            // 确保速度固定为 10f
+            // 确保速度固定
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 22f;
 
             if (!Main.dedServ && Time > 5f)
@@ -52,43 +53,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                 }
             }
 
-
-
             {
-                //NPC potentialTarget = Projectile.Center.ClosestNPCAt(MaxHomingDistance);
-                //if (potentialTarget != null)
-                //{
-                //    Projectile.velocity = (Projectile.velocity * 8f + Projectile.SafeDirectionTo(potentialTarget.Center) * 18f) / 9f;
-                //    return;
-                //}
-
-                if (Time > 60f) // 超过60帧后直接直线飞行
+                // === 独立随机偏移以避免多发同步 ===
+                if (Projectile.ai[1] == 0f)
                 {
-                    NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找范围内最近的敌人
+                    Projectile.ai[1] = Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4); // 每发火花独立生成随机偏转范围
+                }
+                float randomOffset = (float)Projectile.ai[1];
+
+                if (Time > 60f)
+                {
+                    NPC target = Projectile.Center.ClosestNPCAt(1800);
                     if (target != null)
                     {
                         Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                        Projectile.velocity = direction * 18f; // 直接设置为直线飞行速度18f
+                        Projectile.velocity = direction.RotatedBy(randomOffset) * 18f; // 独立随机偏转追踪
                     }
                 }
                 else
                 {
-                    Projectile.ai[1]++;
+                    Projectile.ai[2]++; // 占位
                 }
-
 
                 if (Time > 30f)
                 {
                     float updatedTime = Time - 30f;
-                    // Make a complete 90 degree turn in 30 frames.
                     if (updatedTime % 120f > 90f)
                     {
-                        Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2 / 20f);
+                        Projectile.velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2 / 20f * (0.8f + Main.rand.NextFloat(0.4f))); // 随机微调
                     }
-                    // Arc around quickly for 60 frames.
                     else if (updatedTime % 120f > 30f)
                     {
-                        Projectile.velocity = Projectile.velocity.RotatedBy((float)Math.Sin((updatedTime - 30f) % 60f / 60f * MathHelper.TwoPi) * MathHelper.ToRadians(15f));
+                        Projectile.velocity = Projectile.velocity.RotatedBy((float)Math.Sin((updatedTime - 30f) % 60f / 60f * MathHelper.TwoPi) * MathHelper.ToRadians(15f) * (0.8f + Main.rand.NextFloat(0.4f)));
                     }
                 }
             }
@@ -98,19 +94,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
         public override void OnKill(int timeLeft)
         {
-            //Projectile.ExpandHitboxBy(60, 60);
-            //Projectile.Damage();
             if (!Main.dedServ)
             {
-                for (int i = 0; i < 20; i++)
+                // 🚩 Dust 爆散，狂野程度 ×3
+                for (int i = 0; i < 60; i++) // 原20 ×3
                 {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center, DustType);
                     dust.color = Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.7f);
-                    dust.scale = Main.rand.NextFloat(0.9f, 1.25f);
-                    dust.velocity = Main.rand.NextVector2Circular(6f, 6f);
+                    dust.scale = Main.rand.NextFloat(1.0f, 1.8f); // 放大范围
+                    dust.velocity = Main.rand.NextVector2Circular(10f, 10f); // 加快扩散
                     dust.noGravity = true;
+                }
+
+                // 🚩 可选：线性粒子补充动感
+                for (int i = 0; i < 15; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        velocity,
+                        false,
+                        40,
+                        1.2f,
+                        Color.Cyan
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
         }
+
+
+
     }
 }

@@ -518,21 +518,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
                 Particle pulse = new DirectionalPulseRing(
                     Projectile.Center
-                    + Projectile.velocity.SafeNormalize(Vector2.UnitY) * (40f + i * 5f)
-                    + Main.rand.NextVector2Circular(8f, 8f), // 🚩 新增：随机偏移初始位置
-                    Projectile.velocity.SafeNormalize(Vector2.UnitY) * (3f + i * 1.5f),
+                    - Projectile.velocity.SafeNormalize(Vector2.UnitY) * (40f + i * 5f) // 🚩 修改为反向
+                    + Main.rand.NextVector2Circular(8f, 8f), // 随机偏移
+                    -Projectile.velocity.SafeNormalize(Vector2.UnitY) * (3f + i * 1.5f), // 🚩 修改为反向
                     Color.Lerp(Color.OrangeRed, Color.Yellow, i / (float)pulseCount),
                     new Vector2(1f, 2.5f + i * 0.4f),
                     rotation,
-                    baseScale + i * scaleStep,
-                    0.02f,
+                    baseScale + i * scaleStep, // originalScale
+                    0.02f,                     // finalScale
                     30
                 );
 
                 GeneralParticleHandler.SpawnParticle(pulse);
             }
         }
-
 
 
 

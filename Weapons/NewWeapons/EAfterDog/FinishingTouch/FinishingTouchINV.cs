@@ -28,8 +28,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 2;
             Projectile.timeLeft = 100;
+            Projectile.extraUpdates = 5;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.alpha = 255; // 完全透明
@@ -92,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     false,
                     12,
                     1.5f,
-                    Color.Cyan * 0.2f
+                    Color.OrangeRed * 0.2f
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
@@ -101,6 +102,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
 
 
+        private bool hasHitOnce = false; // 用于追踪是否已命中一次
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (!hasHitOnce)
+            {
+                hasHitOnce = true;
+                Projectile.friendly = false; // 命中后立即关闭友方伤害属性
+            }
+        }
 
 
 

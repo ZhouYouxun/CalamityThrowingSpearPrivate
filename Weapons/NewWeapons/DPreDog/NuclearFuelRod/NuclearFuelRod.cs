@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
     public class NuclearFuelRod : ModItem, ILocalizedModType
     {
         private const int CooldownMax = 1800;
-        private int cooldownTimer = 0;
+        public int cooldownTimer = 0;
 
         public new string LocalizationCategory => "NewWeapons.DPreDog";
         public override void SetDefaults()
@@ -74,6 +74,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 
         public override void UpdateInventory(Player player)
         {
+            // 玩家死亡时立即清空冷却
+            if (player.dead && cooldownTimer > 0)
+            {
+                cooldownTimer = 0;
+                return;
+            }
             if (cooldownTimer > 0)
                 cooldownTimer--;
         }
