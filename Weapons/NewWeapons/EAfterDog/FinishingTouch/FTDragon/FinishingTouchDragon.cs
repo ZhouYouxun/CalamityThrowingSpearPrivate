@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
         private const int SegmentCount = 10;
         private Segment[] Segments = new Segment[SegmentCount];
 
-        private const float MaxSpeed = 34f;
+        private const float MaxSpeed = 24f;
         private const float MinSpeed = 6f;
 
         private Player lockedPlayer; // 用于B方案
@@ -79,7 +79,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
             if (useBPlan)
                 lockedPlayer = FindClosestPlayer(1600f);
             else
-                lockedTarget = FindClosestNPC(1600f);
+                lockedTarget = FindClosestNPC(3600f);
         }
 
         public override void AI()
@@ -174,13 +174,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
             {
                 if (lockedTarget == null || !lockedTarget.active)
                 {
-                    lockedTarget = FindClosestNPC(1600f);
+                    lockedTarget = FindClosestNPC(3600f);
                 }
 
                 if (lockedTarget == null || !lockedTarget.active)
                 {
                     // 无敌人时继续直线上飞
-                    Projectile.velocity = Vector2.UnitY * -MaxSpeed * 3f;
+                    Projectile.velocity = Vector2.UnitY * -MaxSpeed * 2f;
                     return;
                 }
 
@@ -189,7 +189,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                     if (chaseDelayTimer < DelayBeforeChase)
                     {
                         // 启动阶段：正上方高速飞行
-                        Projectile.velocity = Vector2.UnitY * -MaxSpeed * 3f;
+                        Projectile.velocity = Vector2.UnitY * -MaxSpeed * 2f;
                         chaseDelayTimer++;
                         Projectile.friendly = false; // 🚩 禁用伤害
                     }
@@ -197,7 +197,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                     {
                         // 延迟后直接快速朝向敌人冲刺
                         Vector2 toTarget = (lockedTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                        Projectile.velocity = toTarget * MaxSpeed * 5f; // 极高速冲锋
+                        Projectile.velocity = toTarget * MaxSpeed * 6f; // 极高速冲锋
                         Projectile.friendly = true; // 🚩 开启伤害
                     }
                 }
@@ -281,7 +281,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 }
 
 
-                else if (elapsed < 60f)
+                else if (elapsed < 75f)
                 {
                     // 阶段 2：10 帧快速飞向玩家位置
                     Vector2 toPlayer = lockedPlayer.Center - Projectile.Center;
@@ -295,7 +295,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 }
                 else if (elapsed < 120f)
                 {
-                    // 阶段 3：极速追踪玩家，速度完全匹配
+                    // 阶段 3：极速追踪玩家，速度略快
                     Projectile.velocity = lockedPlayer.velocity;
                 }
                 else
@@ -337,7 +337,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             // 命中敌人后关闭追踪能力，进入自由飞行
-            if (!useBPlan && !hasChased)
+            int slashCount = 1;
+            for (int i = 0; i < slashCount; i++)
+            {
+                Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+                int slashID = ModContent.ProjectileType<FinishingTouchDASHFuckYou>();
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID, ((Projectile.damage) * 1), Projectile.knockBack, Projectile.owner);
+            }
+
+            if (!hasChased)
             {
                 hasChased = true; // 命中后进入停止追踪阶段
 

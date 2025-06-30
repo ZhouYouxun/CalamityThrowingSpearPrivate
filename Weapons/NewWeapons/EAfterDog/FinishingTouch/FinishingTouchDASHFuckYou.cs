@@ -27,9 +27,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.tileCollide = false;
             Projectile.alpha = 255;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 1; // Lasts so long due to visuals.
+            Projectile.timeLeft = 3; // Lasts so long due to visuals.
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 600; // Under absolutely no circumstances should this explosion hit more than once.
+            Projectile.localNPCHitCooldown = 300; // Under absolutely no circumstances should this explosion hit more than once.
         }
 
         

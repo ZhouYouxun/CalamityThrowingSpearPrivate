@@ -20,6 +20,7 @@ using CalamityMod.Buffs.DamageOverTime;
 using Microsoft.Xna.Framework;
 using Microsoft.Build.Tasks;
 using CalamityThrowingSpear.Global;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -39,7 +40,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 520;
+            Item.damage = 750;
             Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;
@@ -57,13 +58,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Item.crit = 15;
         }
         private int attackCounter = 0; // 攻击计数
-        private int baseDamage = 520;  // 原始伤害
+        private int baseDamage = 600;  // 原始伤害
 
-
+ 
         public override bool AltFunctionUse(Player player) => true;
         public override bool CanUseItem(Player player)
         {
-            if (player.altFunctionUse == 2) // 检测是否为右键使用
+            if (player.altFunctionUse == 2 && player.statLife >= 600) // 检测是否为右键使用
             {
                 // 限制右键只能生成一个FinishingTouchDASH弹幕
                 if (player.ownedProjectileCounts[Item.shoot] > 0)
@@ -79,6 +80,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
                 // 给玩家添加 VulnerabilityHex 孱弱巫咒 和 Dragonfire 龙焰，持续时间为4秒（240帧）
                 player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 300);
+                player.statLife -= 150;
             }
             else
             {

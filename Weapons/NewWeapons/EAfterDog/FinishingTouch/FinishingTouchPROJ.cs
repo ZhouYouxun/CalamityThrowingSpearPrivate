@@ -141,7 +141,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1; // 允许6次伤害
+            Projectile.penetrate = 1; // 允许1次伤害
             Projectile.timeLeft = 60;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -281,7 +281,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                             Projectile.Center,
                             shootDirection * shootSpeed * 2,
                             invProjType,
-                            (int)(Projectile.damage * 0.8f),
+                            (int)(Projectile.damage * 0.75f),
                             Projectile.knockBack,
                             Projectile.owner
                         );
@@ -297,7 +297,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                             spawnPosition,
                             spawnVelocity,
                             ModContent.ProjectileType<FinishingTouchDragon>(),
-                            (int)(Projectile.damage * 1.0),
+                            (int)(Projectile.damage * 10),
                             Projectile.knockBack,
                             Projectile.owner
                         );
@@ -343,14 +343,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             target.AddBuff(ModContent.BuffType<Dragonfire>(), 300); // 龙焰
 
-            int slashCount = 2; // 生成2到3个斩击特效
+            /*int slashCount = 2; // 生成2到3个斩击特效
             for (int i = 0; i < slashCount; i++)
             {
                 // 随机生成方向
                 Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
                 int slashID = ModContent.ProjectileType<OrangeSLASH>();
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID, (int)(Projectile.damage * 2.5f), Projectile.knockBack, Projectile.owner);
-            }
+            }*/
 
             // 给予5秒钟的创造胜利
             int buffDuration = 5 * 60; // 5 秒钟，单位为帧（每秒 60 帧）

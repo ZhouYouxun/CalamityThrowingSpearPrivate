@@ -228,12 +228,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
 
                 // 每隔18帧释放一次火球
-                fireballTimer++;
+                /*fireballTimer++;
                 if (fireballTimer >= 10)
                 {
                     ReleaseFireballs();
                     fireballTimer = 0; // 重置计时器
-                }
+                }*/
 
                 // 每 60 帧释放粒子拖尾和烟雾
                 if (Projectile.ai[0] % 30 == 0)
@@ -294,7 +294,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.netUpdate = true;
         }
 
-        private void ReleaseFireballs() // 释放火球的逻辑
+        /*private void ReleaseFireballs() // 释放火球的逻辑
         {
             int fireballType = ModContent.ProjectileType<FinishingTouchBALL>();
             float baseAngle = MathHelper.TwoPi / 60;
@@ -304,7 +304,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Vector2 fireballVelocity = baseAngle.ToRotationVector2().RotatedBy(baseAngle * i) * 15f; // 初始速度为原来的8.5倍
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireballVelocity, fireballType, (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner);
             }
-        }
+        }*/
 
         public override void OnKill(int timeLeft)
         {
@@ -387,7 +387,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             {
                 Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
                 int slashID = ModContent.ProjectileType<FinishingTouchDASHFuckYou>();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID, ((Projectile.damage) * 36), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID, ((Projectile.damage) * 18), Projectile.knockBack, Projectile.owner);
             }
 
 
@@ -395,7 +395,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             //SoundEngine.PlaySound(CommonCalamitySounds.SwiftSliceSound with { Volume = CommonCalamitySounds.SwiftSliceSound.Volume * 0.5f }, Projectile.Center);
 
             // 释放橙红色粒子特效 - 击中方向一串和一个圆圈
-            int numberOfDusts = 88;
+            /*int numberOfDusts = 88;
             float rotFactor = 360f / numberOfDusts;
 
             // 释放一串粒子特效朝击中方向
@@ -420,7 +420,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Main.dust[dust].velocity = velOffset;
                 Main.dust[dust].scale = 3.8f;
                 Main.dust[dust].color = new Color(255, 140, 0); // 橙红色
-            }
+            }*/
         }
 
         private void AddTrailParticles() // 尖刺型粒子特效

@@ -3,12 +3,14 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.IL_Player;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -51,15 +53,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void Update(Player player, ref int buffIndex)
         {
             // 每秒流失 50 点生命值
-            int damagePerSecond = 2;
+            /*int damagePerSecond = 2;
             player.statLife -= damagePerSecond;
             if (player.statLife <= 0)
             {
                 player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} 创业未半而中道崩殂."), 10.0, 0);
-            }
+            }*/
 
-            // 减少 40 点防御
-            player.statDefense -= 60;
+            // 增加 40 点防御
+            player.statDefense += 40;
+            player.endurance += 0.3f;
+            player.lifeRegen += 12;
 
             // 生成橙色 "V" 形粒子特效
             Vector2 playerCenter = player.Center; // 以玩家为中心
@@ -76,7 +80,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     : MathHelper.ToRadians(-165); // 左上角
 
                 // 偏移量和长度不变
-                float lengthMultiplier = 5f; // 将长度扩大 5 倍
+                float lengthMultiplier = 6f; // 将长度扩大 5 倍
                 Vector2 offset = new Vector2(i % (particleCount / 2), i % (particleCount / 2))
                                  * Main.rand.NextFloat(0.5f, 1.5f) * lengthMultiplier;
 

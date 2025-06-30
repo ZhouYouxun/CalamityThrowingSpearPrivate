@@ -28,11 +28,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 2;
-            Projectile.timeLeft = 100;
+            Projectile.penetrate = 4;
+            Projectile.timeLeft = 50;
             Projectile.extraUpdates = 5;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 1;
             Projectile.alpha = 255; // 完全透明
         }
 
