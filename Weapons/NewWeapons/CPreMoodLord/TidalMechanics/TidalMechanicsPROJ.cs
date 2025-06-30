@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.Audio;
 using CalamityMod.Particles;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 {
@@ -81,7 +82,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                     targetPosition = target.Center;
                 }
                 SmoothRotateToTarget(targetPosition);
-                CreateOceanDust();
+               
             }
             else if (Projectile.ai[0] < DecelerationFrames + 120)
             {
@@ -148,12 +149,51 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 
 
 
-        // 新增的粒子生成方法
+        // 🚩 优雅水流飞行特效重制
         private void CreateWaterParticles()
         {
-            Vector2 velocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.5f, 1.5f);
-            Particle waterParticle = new HeavySmokeParticle(Projectile.Center, velocity, Color.LightBlue, 15, 0.9f, 0.5f, 0.2f, true);
-            GeneralParticleHandler.SpawnParticle(waterParticle);
+            Vector2 center = Projectile.Center;
+
+            // === 1️⃣ 保留并微调：轻型水流烟雾（HeavySmokeParticle，淡蓝）
+            Vector2 smokeVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.4f, 0.8f);
+            Particle waterSmoke = new HeavySmokeParticle(
+                center,
+                smokeVelocity,
+                Color.LightBlue,
+                18,          // 稍长寿命
+                0.8f,        // 稍小缩放
+                0.4f,        // 透明度偏淡
+                0.15f,       // 缓慢旋转
+                true         // Required
+            );
+            GeneralParticleHandler.SpawnParticle(waterSmoke);
+
+            // === 2️⃣ 新增：水元素 Dust，轻缓流动感 ===
+            int dustCount = 2; // 保持克制
+            for (int i = 0; i < dustCount; i++)
+            {
+                Vector2 offset = Main.rand.NextVector2Circular(Projectile.width * 0.3f, Projectile.height * 0.3f);
+                Vector2 dustPos = center + offset;
+                Vector2 dustVelocity = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.02f, 0.08f);
+
+                int dust = Dust.NewDust(dustPos, 0, 0, DustID.BlueCrystalShard, dustVelocity.X, dustVelocity.Y, 80, Color.Cyan, Main.rand.NextFloat(0.8f, 1.2f));
+                Main.dust[dust].noGravity = true;
+            }
+
+            // === 3️⃣ 新增：线性水流拖尾（SparkParticle） ===
+            if (Main.rand.NextBool(2)) // 平均每两帧一次
+            {
+                Vector2 sparkVelocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.5f + Main.rand.NextVector2Circular(0.1f, 0.1f);
+                Particle spark = new SparkParticle(
+                    center,
+                    sparkVelocity,
+                    false,
+                    40,                          // 寿命适中
+                    0.9f,                         // 精致大小
+                    Color.LightBlue * 0.7f       // 淡蓝透亮
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
         }
 
         private NPC FindClosestNPC(float maxDetectDistance)
@@ -228,38 +268,123 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             // 播放声音
             SoundEngine.PlaySound(SoundID.Item84, Projectile.Center);
         }
-
-        // 生成 极 端 复 杂 的基于散度的粒子炸裂效果
         private void GenerateDivergenceExplosion()
         {
-            int particleCount = Main.rand.Next(333, 666); // 随机生成 ? 个粒子
-            float baseExplosionForce = 6.5f; // 基础爆炸力度
-            float divergenceFactor = 1.5f; // 散度增强因子
-            Vector2 explosionOrigin = Projectile.Center; // 以弹幕中心为爆炸点
+            Vector2 origin = Projectile.Center;
 
-            for (int i = 0; i < particleCount; i++)
+            // 🚩 1️⃣ 有序：指数螺旋 SparkParticle 水流矩阵
+            int spiralCount = 120;
+            float a = 2f;
+            float b = 0.15f;
+
+            for (int i = 0; i < spiralCount; i++)
             {
-                // 选择随机粒子类型
-                int dustType = Main.rand.NextBool() ? DustID.Water : Main.rand.Next(new int[] { 13, 34, DustID.BlueTorch });
+                float theta = i * MathHelper.TwoPi / 20f; // 多圈分布
+                float r = a * (float)Math.Exp(b * theta);
+                Vector2 pos = origin + theta.ToRotationVector2() * r;
 
-                // 生成随机方向：基于球坐标系统 (极坐标转换)
-                float angle = Main.rand.NextFloat(0, MathHelper.TwoPi); // 0~2π 之间的角度
-                float divergenceStrength = baseExplosionForce + Main.rand.NextFloat(-3f, 5f); // 爆炸力度的随机化
-                float spread = Main.rand.NextFloat(0.5f, 1.5f); // 随机扩散系数
+                Vector2 velocity = theta.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 6f;
 
-                // 计算散度方向的扰动
-                Vector2 divergence = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * divergenceStrength;
-                divergence += divergenceFactor * divergence.Length() * new Vector2(
-                    (float)Math.Cos(angle + MathHelper.PiOver4),
-                    (float)Math.Sin(angle + MathHelper.PiOver4)
+                Particle spiralSpark = new SparkParticle(
+                    pos,
+                    velocity,
+                    false,
+                    50,
+                    1.1f,
+                    Color.LightBlue * 0.8f
                 );
-
-                // 生成粒子
-                Dust dust = Dust.NewDustPerfect(explosionOrigin, dustType, divergence * spread, 0, Color.Cyan, Main.rand.NextFloat(1.72f, 2.55f));
-                dust.noGravity = Main.rand.NextBool(); // 50% 机率无重力
-                dust.fadeIn = Main.rand.NextFloat(0.5f, 1.5f); // 渐变增强
+                GeneralParticleHandler.SpawnParticle(spiralSpark);
             }
+
+            // 🚩 2️⃣ 无序：Dust 海水爆散，带多元正弦扰动
+            int dustAmount = 200;
+            for (int i = 0; i < dustAmount; i++)
+            {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float speed = Main.rand.NextFloat(8f, 20f);
+                Vector2 direction = angle.ToRotationVector2();
+                Vector2 velocity = direction * speed;
+
+                // 多元正弦扰动
+                velocity.X += (float)Math.Sin(velocity.Y * 0.1f + Main.GameUpdateCount * 0.05f) * 2f;
+                velocity.Y += (float)Math.Sin(velocity.X * 0.1f + Main.GameUpdateCount * 0.05f) * 2f;
+
+                int dust = Dust.NewDust(origin, 0, 0, DustID.Water, velocity.X, velocity.Y, 80, Color.Cyan, Main.rand.NextFloat(1.2f, 1.8f));
+                Main.dust[dust].noGravity = true;
+            }
+
+            // 🚩 3️⃣ 中和：轻型烟雾环绕
+            int smokeCount = 40;
+            for (int i = 0; i < smokeCount; i++)
+            {
+                Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
+                Particle smoke = new HeavySmokeParticle(
+                    origin,
+                    velocity,
+                    Color.LightBlue * 0.6f,
+                    50,
+                    Main.rand.NextFloat(0.8f, 1.4f),
+                    0.3f,
+                    Main.rand.NextFloat(-0.05f, 0.05f),
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(smoke);
+            }
+
+            // 🚩 4️⃣ 特别强化：Square 粒子矩阵（洛伦兹吸引子投影模拟）
+            // 洛伦兹参数
+            double sigma = 10, rho = 28, beta = 8.0 / 3.0;
+            Vector3 p = new Vector3(0.1f, 0f, 0f);
+
+            int squareCount = 120; // 大幅提高
+            float dt = 0.01f;
+            for (int i = 0; i < squareCount; i++)
+            {
+                // 洛伦兹吸引子迭代
+                double dx = sigma * (p.Y - p.X);
+                double dy = p.X * (rho - p.Z) - p.Y;
+                double dz = p.X * p.Y - beta * p.Z;
+                p.X += (float)(dx * dt);
+                p.Y += (float)(dy * dt);
+                p.Z += (float)(dz * dt);
+
+                Vector2 spawnPos = origin + new Vector2(p.X, p.Y) * 4f;
+                Vector2 velocity = new Vector2(p.Y, -p.X).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(8f, 16f);
+
+                SquareParticle square = new SquareParticle(
+                    spawnPos,
+                    velocity,
+                    false,
+                    60,
+                    2.0f, // 放大至易见
+                    Color.Cyan * 1.4f
+                );
+                GeneralParticleHandler.SpawnParticle(square);
+            }
+
+            // 🚩 5️⃣ CRE 高级光点：水光闪烁
+            CTSLightingBoltsSystem.Spawn_SpectralWhispers(origin);
+            CTSLightingBoltsSystem.Spawn_GaussDischargeShards(origin);
+
+            // 🚩 6️⃣ 有序收尾：脉冲环扩散
+            Particle pulse = new DirectionalPulseRing(
+                origin,
+                Vector2.Zero,
+                Color.LightBlue,
+                new Vector2(1.2f, 1.2f),
+                0f,
+                0.5f,
+                8f,
+                50
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
         }
+
+
+
+     
+
+
         private void SpawnTyphoon()
         {
             for (int i = 0; i < 2; i++)

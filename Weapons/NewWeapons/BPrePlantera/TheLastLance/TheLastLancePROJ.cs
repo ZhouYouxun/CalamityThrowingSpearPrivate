@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Buffs.StatDebuffs;
 using Terraria.Audio;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
 {
@@ -102,6 +103,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             // 播放原版音效 Item69
             SoundEngine.PlaySound(SoundID.Item69, Projectile.position);
 
+            // 现有的屏幕震动效果
+            float shakePower = 0.35f; // 震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 根据与玩家距离进行衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
             // 生成 3 发随机角度的 TheLastLanceWater 弹幕（正后方）
             for (int i = 0; i < 3; i++)
             {
@@ -122,58 +128,146 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                     Projectile.owner
                 );
             }
-            // 现有的屏幕震动效果
-            float shakePower = 0.35f; // 震动强度
-            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 根据与玩家距离进行衰减
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
-            // 在弹幕死亡时，向反方向发射大量蓝色Dust特效
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2 dustVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * -1.2f; // 随机角度旋转并反方向发射Dust
-                Dust blueDust = Dust.NewDustPerfect(Projectile.position, DustID.BlueCrystalShard, dustVelocity, 0, Color.Blue, 1.5f);
-                blueDust.noGravity = true; // 使Dust不受重力影响
-            }
+            // 释放究极特效
+            GenerateDeepSeaExplosion();
+
+            //// 在弹幕死亡时，向反方向发射大量蓝色Dust特效
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    Vector2 dustVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * -1.2f; // 随机角度旋转并反方向发射Dust
+            //    Dust blueDust = Dust.NewDustPerfect(Projectile.position, DustID.BlueCrystalShard, dustVelocity, 0, Color.Blue, 1.5f);
+            //    blueDust.noGravity = true; // 使Dust不受重力影响
+            //}
 
 
-            {
-                // 生成螺旋式水门粒子特效
-                int spiralParticles = 160; // 螺旋粒子的总数
-                float spiralRadius = 0f; // 初始半径
-                float radiusIncrement = 2.5f; // 螺旋半径的增量
-                float initialAngle = Main.rand.NextFloat(0, MathHelper.TwoPi); // 随机生成初始角度
-                float angleIncrement = MathHelper.TwoPi / spiralParticles; // 每个粒子之间的角度增量
-
-                // 原始螺旋粒子特效
-                for (int i = 0; i < spiralParticles; i++)
-                {
-                    float angle = initialAngle + i * angleIncrement; // 计算当前粒子的角度，基于随机初始角度偏移
-                    Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * spiralRadius; // 计算偏移量，形成圆形轨迹
-                    Vector2 position = Projectile.Center + offset; // 计算粒子生成的位置
-
-                    // 创建水门特效粒子
-                    Dust spiralDust = Dust.NewDustPerfect(position, DustID.Water, Vector2.Zero, 0, Color.Cyan, 1.2f);
-                    spiralDust.noGravity = true; // 使粒子不受重力影响
-                    spiralRadius += radiusIncrement; // 增加半径，形成逐渐扩散的螺旋
-                }
-
-                // 反方向的螺旋粒子特效
-                spiralRadius = 0f; // 重置半径
-                for (int i = 0; i < spiralParticles; i++)
-                {
-                    float angle = initialAngle + i * angleIncrement + MathHelper.Pi; // 计算当前粒子的角度，在原始角度基础上偏移180度（反方向）
-                    Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * spiralRadius; // 计算偏移量，形成圆形轨迹
-                    Vector2 position = Projectile.Center + offset; // 计算粒子生成的位置
-
-                    // 创建反方向的水门特效粒子
-                    Dust spiralDust = Dust.NewDustPerfect(position, DustID.Water, Vector2.Zero, 0, Color.Cyan, 1.2f);
-                    spiralDust.noGravity = true; // 使粒子不受重力影响
-                    spiralRadius += radiusIncrement; // 增加半径，形成逐渐扩散的螺旋
-                }
-            }
+         
 
 
         }
+
+
+        // 🚩🚩🚩 TheLastLancePROJ 专属深海终极 OnKill 特效
+        private void GenerateDeepSeaExplosion()
+        {
+            Vector2 origin = Projectile.Center;
+
+            // === 1️⃣ 有序：五芒星深海螺旋矩阵（SparkParticle）===
+            int points = 5;
+            float outerRadius = 90f;
+            float innerRadius = 45f;
+            float rotationOffset = Main.rand.NextFloat(MathHelper.TwoPi);
+            for (int p = 0; p < points; p++)
+            {
+                float angle = MathHelper.TwoPi * p / points + rotationOffset;
+                Vector2 outerPos = origin + angle.ToRotationVector2() * outerRadius;
+                Vector2 innerPos = origin + (angle + MathHelper.PiOver4).ToRotationVector2() * innerRadius;
+
+                for (int i = 0; i < 12; i++)
+                {
+                    Vector2 lerpPos = Vector2.Lerp(innerPos, outerPos, i / 12f);
+                    Vector2 velocity = (lerpPos - origin).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 20f);
+
+                    Particle spark = new SparkParticle(
+                        lerpPos,
+                        velocity,
+                        false,
+                        60,
+                        Main.rand.NextFloat(1.2f, 1.6f),
+                        Color.DeepSkyBlue * 1.5f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+            // === 2️⃣ 有序升级：多螺旋水门粒子特效（深海升级版） ===
+            {
+                int spiralCount = 4;
+                int spiralParticles1 = 100;
+                float initialAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                float radiusIncrement = 1.8f;
+                float baseRadius = 0f;
+
+                for (int s = 0; s < spiralCount; s++)
+                {
+                    float spiralOffsetAngle = s * MathHelper.TwoPi / spiralCount;
+                    float spiralRadius = baseRadius;
+                    float angleIncrement = MathHelper.TwoPi / spiralParticles1;
+
+                    for (int i = 0; i < spiralParticles1; i++)
+                    {
+                        float angle = initialAngle + spiralOffsetAngle + i * angleIncrement;
+                        Vector2 offset = angle.ToRotationVector2() * spiralRadius;
+                        Vector2 position = origin + offset;
+
+                        Dust spiralDust = Dust.NewDustPerfect(position, DustID.Water, Vector2.Zero, 0, Color.DarkSlateGray, 0.9f);
+                        spiralDust.noGravity = true;
+
+                        spiralRadius += radiusIncrement;
+                    }
+                }
+            }
+
+            // === 3️⃣ 有序螺旋波扩散 (SparkParticle) ===
+            int spiralParticles = 100;
+            for (int i = 0; i < spiralParticles; i++)
+            {
+                float progress = i / (float)spiralParticles;
+                float angle = progress * MathHelper.TwoPi * 6f + Main.GameUpdateCount * 0.04f;
+                float radius = progress * 100f;
+                Vector2 pos = origin + angle.ToRotationVector2() * radius;
+                Vector2 velocity = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 5f;
+
+                Particle spiralSpark = new SparkParticle(
+                    pos,
+                    velocity,
+                    false,
+                    50,
+                    1.0f,
+                    Color.DarkBlue * 0.7f
+                );
+                GeneralParticleHandler.SpawnParticle(spiralSpark);
+            }
+
+            // === 4️⃣ 中和：深灰轻型烟雾 (HeavySmokeParticle) ===
+            int smokeCount = 40;
+            for (int i = 0; i < smokeCount; i++)
+            {
+                Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
+                Particle smoke = new HeavySmokeParticle(
+                    origin,
+                    velocity,
+                    Color.Gray * 0.6f,
+                    50,
+                    Main.rand.NextFloat(1.0f, 1.6f),
+                    0.25f,
+                    Main.rand.NextFloat(-0.04f, 0.04f),
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(smoke);
+            }
+
+            // === 5️⃣ 特别强化：Square 粒子环（深海科技爆发感） ===
+            int squareCount = 45;
+            float squareRadius = 70f;
+            for (int i = 0; i < squareCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / squareCount;
+                Vector2 spawnPos = origin + angle.ToRotationVector2() * squareRadius;
+                Vector2 velocity = angle.ToRotationVector2() * 10f;
+
+                SquareParticle square = new SquareParticle(
+                    spawnPos,
+                    velocity,
+                    false,
+                    50,
+                    2.8f,
+                    Color.DarkSlateGray * 1.4f
+                );
+                GeneralParticleHandler.SpawnParticle(square);
+            }
+        }
+
 
 
 

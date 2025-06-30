@@ -657,6 +657,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             }
 
 
+            {
+                // 🚩🚩🚩 6️⃣ 新增：死亡时正前方扇形喷射三层特效（速度×2，数量×1.5）
+
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+                // === 有序喷射：SparkParticle 锥形喷射 ===
+                int sparkAmount = 36; // 24 × 1.5
+                for (int i = 0; i < sparkAmount; i++)
+                {
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-20f, 20f));
+                    Vector2 direction = forward.RotatedBy(angleOffset);
+                    Vector2 velocity = direction * Main.rand.NextFloat(24f, 40f); // 速度×2
+
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        velocity,
+                        false,
+                        50,
+                        1.2f,
+                        Color.Cyan
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // === 无序喷射：Dust 扇形爆散 ===
+                int dustAmount = 90; // 60 × 1.5
+                for (int i = 0; i < dustAmount; i++)
+                {
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-30f, 30f));
+                    Vector2 direction = forward.RotatedBy(angleOffset);
+                    Vector2 velocity = direction * Main.rand.NextFloat(30f, 60f); // 速度×2
+
+                    int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.BlueCrystalShard, velocity.X, velocity.Y, 100, Color.Cyan, Main.rand.NextFloat(1.3f, 1.8f));
+                    Main.dust[dust].noGravity = true;
+                }
+
+                // === 中和闪光：GenericSparkle 十字星扇形闪光 ===
+                int sparkleAmount = 18; // 12 × 1.5
+                for (int i = 0; i < sparkleAmount; i++)
+                {
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-25f, 25f));
+                    Vector2 offset = forward.RotatedBy(angleOffset) * Main.rand.NextFloat(12f, 36f);
+                    Vector2 spawnPos = Projectile.Center + offset;
+
+                    GenericSparkle sparkle = new GenericSparkle(
+                        spawnPos,
+                        Vector2.Zero,
+                        Color.Cyan,
+                        Color.White,
+                        Main.rand.NextFloat(1.5f, 2.2f),
+                        8,
+                        Main.rand.NextFloat(-0.03f, 0.03f),
+                        1.6f
+                    );
+                    GeneralParticleHandler.SpawnParticle(sparkle);
+                }
+
+            }
+
+
+
 
 
 
