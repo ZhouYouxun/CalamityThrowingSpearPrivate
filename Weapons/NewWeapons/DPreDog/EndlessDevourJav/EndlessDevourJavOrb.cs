@@ -73,47 +73,75 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
         public override void AI()
         {
-
             Player owner = Main.player[Projectile.owner];
-            NPC target = CalamityUtils.MinionHoming(Projectile.Center, 1800f, owner);
 
-            // 在刚生成的一瞬间（只在初始帧执行一次）
-            if (Projectile.timeLeft == 300) // 检测弹幕是否刚生成
+            // === 查找是否存在处于 Aim 状态的 EndlessDevourJavPROJ ===
+            Projectile targetProj = null;
+            for (int i = 0; i < Main.maxProjectiles; i++)
             {
-                // 生成两个相互垂直的黑色冲击波
+                Projectile p = Main.projectile[i];
+                if (p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<EndlessDevourJavPROJ>())
+                {
+                    if (p.ModProjectile is EndlessDevourJavPROJ ej && ej.CurrentState == EndlessDevourJavPROJ.BehaviorState.Aim)
+                    {
+                        targetProj = p;
+                        break;
+                    }
+                }
+            }
+
+            NPC targetNPC = null;
+            if (targetProj == null)
+            {
+                // 若无 Aim 状态武器，使用原先敌人追踪逻辑（带奇特弹性）
+                targetNPC = CalamityUtils.MinionHoming(Projectile.Center, 1800f, owner);
+            }
+
+            // === 初始化爆发特效 ===
+            if (Projectile.timeLeft == 300)
+            {
                 Color particleColor = Color.Black;
                 float particleScale = 1.5f;
-
-                // 第一个冲击波（角度为 0 度）
                 GeneralParticleHandler.SpawnParticle(new GenericBloom(Projectile.Center, Vector2.Zero, particleColor, particleScale, 30));
-
-                // 第二个冲击波（旋转 90 度）
                 GeneralParticleHandler.SpawnParticle(new GenericBloom(Projectile.Center, new Vector2(0, 1).RotatedBy(MathHelper.PiOver2), particleColor, particleScale, 30));
             }
 
-
             if (Projectile.scale >= 1f)
             {
-                if (target != null)
+                Vector2 targetCenter = Projectile.Center;
+                if (targetProj != null)
+                {
+                    targetCenter = targetProj.Center;
+                }
+                else if (targetNPC != null)
+                {
+                    targetCenter = targetNPC.Center;
+                }
+                else
+                {
+                    // 无目标时保持当前速度
+                    Projectile.velocity *= 0.99f; // 可选平滑减速【可调整】
+                }
+
+                if (targetProj != null || targetNPC != null)
                 {
                     float projSpeed = 40f;
                     Vector2 fireDirection = Projectile.Center;
-                    float fireXVel = target.Center.X - fireDirection.X;
-                    float fireYVel = target.Center.Y - fireDirection.Y;
-                    float fireVelocity = (float)Math.Sqrt((double)(fireXVel * fireXVel + fireYVel * fireYVel));
+                    Vector2 fireVel = targetCenter - fireDirection;
+                    float fireVelocity = fireVel.Length();
                     if (fireVelocity < 100f)
                     {
-                        projSpeed = 28f; //14
+                        projSpeed = 28f;
                     }
                     fireVelocity = projSpeed / fireVelocity;
-                    fireXVel *= fireVelocity;
-                    fireYVel *= fireVelocity;
-                    Projectile.velocity.X = (Projectile.velocity.X * 25f + fireXVel) / 26f;
-                    Projectile.velocity.Y = (Projectile.velocity.Y * 25f + fireYVel) / 26f;
+                    fireVel *= fireVelocity;
+
+                    Projectile.velocity.X = (Projectile.velocity.X * 25f + fireVel.X) / 26f;
+                    Projectile.velocity.Y = (Projectile.velocity.Y * 25f + fireVel.Y) / 26f;
+
                     if (Main.rand.NextBool(5))
                         Projectile.velocity *= 1.1f;
                 }
-
             }
             else
             {
@@ -121,6 +149,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 Projectile.velocity *= 1.03f;
             }
 
+            // 动画更新
             if (Projectile.frameCounter > 6)
             {
                 Projectile.frame++;
@@ -137,5 +166,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 Projectile.alpha += 4;
             }
         }
+
+
+
+
+
     }
 }

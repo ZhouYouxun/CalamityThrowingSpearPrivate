@@ -115,23 +115,27 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 return false; // 阻止生成默认弹幕
             }
 
-            // 遍历当前世界中的所有弹幕
-            foreach (Projectile proj in Main.projectile)
             {
-                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
+                // 遍历当前世界中的所有弹幕
+                foreach (Projectile proj in Main.projectile)
                 {
-                    // 检查是否为 Aim 状态
-                    if (proj.ModProjectile is BloodstoneJavPROJ BJ && BJ.CurrentState == BloodstoneJavPROJ.BehaviorState.Aim)
+                    if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
                     {
-                        return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
-                                      // Fire 阶段的弹幕不会影响这个判断
+                        // 检查是否为 Aim 状态
+                        if (proj.ModProjectile is BloodstoneJavPROJ BJ && BJ.CurrentState == BloodstoneJavPROJ.BehaviorState.Aim)
+                        {
+                            return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
+                                          // Fire 阶段的弹幕不会影响这个判断
+                        }
                     }
                 }
+
+                // 左键攻击逻辑 - 创建新的弹幕
+                int projIndex = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                return false; // 阻止生成默认弹幕
             }
 
-            // 左键攻击逻辑 - 创建新的弹幕
-            int projIndex = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-            return false; // 阻止生成默认弹幕
+       
         }
 
 

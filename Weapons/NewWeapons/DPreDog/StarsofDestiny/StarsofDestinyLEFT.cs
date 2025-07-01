@@ -343,28 +343,47 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     }
                 }
 
-                // 动态时针和分针
+                // 动态时针和分针 + 伤害透明弹幕
                 float shortHandLength = 10 * 16 * 0.5f; // 短指针长度
-                float longHandLength = 10 * 16 * 0.9f; // 长指针长度
+                float longHandLength = 10 * 16 * 0.9f;  // 长指针长度
 
-                for (int i = 0; i < 2; i++) // 绘制两根指针
+                for (int i = 0; i < 2; i++) // 绘制两根指针（i==0时针，i==1分针）
                 {
-                    // 随机方向
                     float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                    float length = i == 0 ? shortHandLength : longHandLength; // 短指针或长指针
+                    float length = i == 0 ? shortHandLength : longHandLength;
                     Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * length;
 
-                    // 指针由粒子组成
-                    for (int j = 0; j < Main.rand.Next(1, 3); j++) // 1 到 2 层宽度
+                    for (int j = 0; j < Main.rand.Next(1, 3); j++) // 1~2 层宽度
                     {
-                        for (float k = 0f; k < 1f; k += 0.1f) // 沿指针方向放置粒子
+                        for (float k = 0f; k < 1f; k += 0.1f) // 沿指针方向放置
                         {
-                            Vector2 particlePosition = Projectile.Center + direction * k + Main.rand.NextVector2Circular(4f, 4f); // 增加轻微随机性
+                            Vector2 particlePosition = Projectile.Center + direction * k + Main.rand.NextVector2Circular(4f, 4f);
+
+                            // 粒子
                             Dust dust = Dust.NewDustPerfect(particlePosition, DustID.RainbowTorch, Vector2.Zero, 100, Color.Yellow, 2f);
                             dust.noGravity = true;
+
+                            // 同步生成透明弹幕 StarsofDestinyL
+                            if (Main.myPlayer == Projectile.owner) // 防止多人重复生成
+                            {
+                                Projectile.NewProjectile(
+                                    Projectile.GetSource_FromThis(),
+                                    particlePosition,
+                                    Vector2.Zero, // 静止不动
+                                    ModContent.ProjectileType<StarsofDestinyINV>(),
+                                    (int)(Projectile.damage * 0.2f), // 伤害倍率 0.2
+                                    0f,
+                                    Projectile.owner
+                                );
+                            }
                         }
                     }
                 }
+
+
+
+
+
             }
         }
 

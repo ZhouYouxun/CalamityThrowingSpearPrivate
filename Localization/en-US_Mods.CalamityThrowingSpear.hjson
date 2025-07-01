@@ -47,6 +47,8 @@ Projectiles: {
 			NuclearFuelRodL.DisplayName: Nuclear Fuel Rod L
 			NuclearFuelRodM.DisplayName: Nuclear Fuel Rod M
 			NuclearFuelRodSAM.DisplayName: Nuclear Fuel Rod S A M
+			StarsofDestinyINV.DisplayName: Starsof Destiny I N V
+			EndlessDevourJavBlackHole.DisplayName: Endless Devour Jav Black Hole
 		}
 
 		BPrePlantera: {

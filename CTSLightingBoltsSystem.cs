@@ -736,6 +736,45 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
+        public static void Spawn_TerraLanceForestSpirals(Vector2 position, float timeOffset = 0f)
+        {
+            int spiralCount = 2; // 双螺旋
+            int pointsPerSpiral = 8; // 每条螺旋的光点数量
+            float baseRadius = 24f; // 平均半径
+            float radiusOscillation = 4f; // 半径波动范围
+
+            Color forestGreen = new Color(0.2f, 0.9f, 0.2f, 1f); // 鲜绿色森林光
+            Color deepForestGreen = new Color(0.1f, 0.6f, 0.1f, 1f); // 深绿色
+
+            float globalTime = Main.GameUpdateCount * 0.08f + timeOffset;
+
+            for (int spiral = 0; spiral < spiralCount; spiral++)
+            {
+                float spiralOffset = spiral * MathHelper.Pi; // 双螺旋相差180°
+
+                for (int i = 0; i < pointsPerSpiral; i++)
+                {
+                    float progress = (float)i / pointsPerSpiral;
+                    float angle = globalTime + progress * MathHelper.TwoPi + spiralOffset;
+                    float radius = baseRadius + (float)Math.Sin(globalTime + progress * MathHelper.TwoPi) * radiusOscillation;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+
+                    PrettySparkleParticle particle = _poolPrettySparkle.RequestParticle();
+                    particle.ColorTint = Main.rand.NextBool(3) ? forestGreen : deepForestGreen;
+                    particle.LocalPosition = position + offset;
+                    particle.Rotation = angle;
+                    particle.Scale = new Vector2(1.6f, 0.6f);
+                    particle.FadeInNormalizedTime = 0.01f;
+                    particle.FadeOutNormalizedTime = 0.9f;
+                    particle.TimeToLive = 40;
+                    particle.FadeOutEnd = 40;
+                    particle.FadeInEnd = 10;
+                    particle.FadeOutStart = 25;
+                    particle.AdditiveAmount = 0.5f;
+                    Main.ParticleSystem_World_OverPlayers.Add(particle);
+                }
+            }
+        }
 
 
 

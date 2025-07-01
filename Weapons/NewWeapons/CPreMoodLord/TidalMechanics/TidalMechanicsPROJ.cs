@@ -24,6 +24,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
         private const float ChargeMultiplier = 4.5f;
         private bool hasTarget = false;
         private Vector2 targetPosition;
+
+        private bool preparedStrike = false;
+        private Vector2 strikeVelocity;
+        private bool enlarged = false;
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -32,7 +36,52 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            if (!enlarged)
+            {
+                CalamityUtils.DrawAfterimagesCentered(Projectile, 2, lightColor, 1);
+            }
+            else
+            {
+                // 放大贴图 5 倍 + 外层呼吸脉动光效
+                Microsoft.Xna.Framework.Graphics.Texture2D texture = ModContent.Request<Microsoft.Xna.Framework.Graphics.Texture2D>(Texture).Value;
+
+                // 本体 5 倍绘制
+                Main.EntitySpriteDraw(
+                    texture,
+                    Projectile.Center - Main.screenPosition,
+                    null,
+                    lightColor,
+                    Projectile.rotation,
+                    texture.Size() * 0.5f,
+                    5f,
+                    0,
+                    0
+                );
+
+                // === 🚩 新增外层脉动绘制 ===
+
+                // 脉动因子（周期 120 帧，每秒 2 次呼吸）
+                float pulsate = 1f + 0.1f * (float)Math.Sin(Main.GameUpdateCount * 0.105f);
+                // 外层缩放为 5 倍基础上略大（1.1 倍基础呼吸脉动）
+                float outerScale = 5f * 1.1f * pulsate;
+
+                // 外层颜色（淡蓝色 + 透明度呼吸）
+                Color outerColor = Color.Cyan * 0.4f * (0.7f + 0.3f * (float)Math.Sin(Main.GameUpdateCount * 0.105f));
+
+                // 外层绘制
+                Main.EntitySpriteDraw(
+                    texture,
+                    Projectile.Center - Main.screenPosition,
+                    null,
+                    outerColor,
+                    Projectile.rotation,
+                    texture.Size() * 0.5f,
+                    outerScale,
+                    0,
+                    0
+                );
+
+            }
             return false;
         }
 
@@ -63,90 +112,56 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             // 弹幕保持直线运动并逐渐加速
             //Projectile.velocity *= 1.01f;
 
-            // 每个阶段释放水能粒子效果
+
+
             CreateWaterParticles();
 
             if (Projectile.ai[0] < DecelerationFrames)
             {
-                // 第1阶段：减速
+                Projectile.tileCollide = false;
+
+                // 减速阶段
                 Projectile.velocity *= 0.98f;
                 Projectile.ai[0]++;
             }
-            else if (!hasTarget)
+            else if (!preparedStrike)
             {
-                // 第2阶段：寻找目标
-                NPC target = FindClosestNPC(SearchRadius);
+                Projectile.tileCollide = true;
+                Projectile.width = Projectile.height = 160;
+
+                // 进入准备阶段：禁用绘制，瞬移
+                Projectile.hide = true;
+                Player player = Main.player[Projectile.owner];
+                float xOffset = Main.rand.NextFloat(-800f, 800f);
+                float yOffset = Main.rand.NextFloat(-50f, 50f);
+                Projectile.Center = player.Center + new Vector2(xOffset, -400f + yOffset);
+
+                // 锁定目标并计算冲击速度
+                NPC target = FindClosestNPC(19500f);
                 if (target != null)
                 {
-                    hasTarget = true;
-                    targetPosition = target.Center;
+                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    strikeVelocity = direction * Projectile.velocity.Length() * 7f; // 三倍速度砸下
                 }
-                SmoothRotateToTarget(targetPosition);
-               
-            }
-            else if (Projectile.ai[0] < DecelerationFrames + 120)
-            {
-                // 第3阶段：花式追踪 (120帧)
-                DynamicTracking(targetPosition);
-                Projectile.ai[0]++;
+                else
+                {
+                    strikeVelocity = Vector2.UnitY * Projectile.velocity.Length() * 3f; // 无目标则向下砸
+                }
+
+                preparedStrike = true;
             }
             else
             {
-                // 第4阶段：最终冲刺
-                ChargeTowardsTarget(targetPosition);
+                // 开始砸下
+                if (!enlarged)
+                {
+                    enlarged = true;
+                    Projectile.hide = false;
+                }
+
+                Projectile.velocity = strikeVelocity;
             }
         }
-
-        private void DynamicTracking(Vector2 target)
-        {
-            // **1. 计算目标的预测位置**
-            Vector2 targetVelocity = target - targetPosition; // 目标的速度向量
-            Vector2 predictedPosition = target + targetVelocity * 0.5f; // 预测目标0.5秒后的位置
-
-            // **2. 生成螺旋运动路径**
-            float angle = Projectile.ai[1] * 0.1f; // 当前螺旋角度，控制旋转速度
-            float radius = 50f + (float)Math.Sin(Projectile.ai[1] * 0.05f) * 20f; // 动态半径，随时间波动
-            Vector2 spiralOffset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
-
-            // **3. 动态轨迹生成：通过插值逼近目标**
-            Vector2 direction = (predictedPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 nextPosition = Vector2.Lerp(Projectile.Center, predictedPosition + spiralOffset, 0.1f);
-
-            // 更新弹幕位置与速度
-            Projectile.velocity = (nextPosition - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
-
-            // **4. 粒子特效生成**
-            GenerateSpiralParticles();
-            GenerateTrailEffect();
-
-            // **5. 调整弹幕旋转和透明度**
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4; // 旋转调整
-            Projectile.alpha = (int)(255 * (1f - (radius / 100f))); // 根据半径动态调整透明度
-
-            Projectile.ai[1]++; // 更新AI计数器
-        }
-
-        private void GenerateSpiralParticles()
-        {
-            // **生成动态粒子，形成螺旋水流效果**
-            for (int i = 0; i < 3; i++)
-            {
-                Vector2 particleOffset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi / 3 * i) * 10f;
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + particleOffset, DustID.Water, null, 0, Color.LightBlue, 1.5f);
-                dust.noGravity = true; // 水流效果粒子无重力
-            }
-        }
-
-        private void GenerateTrailEffect()
-        {
-            // **生成轨迹粒子，用于增强视觉效果**
-            Vector2 trailOffset = -Projectile.velocity * 0.5f; // 轨迹偏移量
-            Dust trailDust = Dust.NewDustPerfect(Projectile.Center + trailOffset, DustID.BlueTorch, null, 0, Color.Cyan, 1.2f);
-            trailDust.noGravity = true; // 光效粒子无重力
-        }
-
-
-
 
 
         // 🚩 优雅水流飞行特效重制
@@ -154,46 +169,63 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
         {
             Vector2 center = Projectile.Center;
 
-            // === 1️⃣ 保留并微调：轻型水流烟雾（HeavySmokeParticle，淡蓝）
-            Vector2 smokeVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.4f, 0.8f);
+
+            // 判断是否为传送后的巨化阶段
+            bool isEnlarged = enlarged; // 你已有 enlarged 标志
+
+            // 🚩 1️⃣ 水烟粒子：范围与缩放翻 5 倍
+            Vector2 smokeVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(
+                isEnlarged ? 2f : 0.4f,
+                isEnlarged ? 4f : 0.8f
+            );
             Particle waterSmoke = new HeavySmokeParticle(
                 center,
                 smokeVelocity,
-                Color.LightBlue,
-                18,          // 稍长寿命
-                0.8f,        // 稍小缩放
-                0.4f,        // 透明度偏淡
-                0.15f,       // 缓慢旋转
-                true         // Required
+                isEnlarged ? Color.Cyan : Color.LightBlue, // 更亮更夸张
+                isEnlarged ? 30 : 18,                      // 寿命更长
+                isEnlarged ? 4f : 0.8f,                    // 缩放大 5 倍
+                isEnlarged ? 0.8f : 0.4f,                  // 不透明度略增
+                isEnlarged ? 0.3f : 0.15f,                 // 旋转更快
+                true
             );
             GeneralParticleHandler.SpawnParticle(waterSmoke);
 
-            // === 2️⃣ 新增：水元素 Dust，轻缓流动感 ===
-            int dustCount = 2; // 保持克制
+            // 🚩 2️⃣ Dust 粒子生成范围扩大，数量翻倍
+            int dustCount = isEnlarged ? 10 : 2;
             for (int i = 0; i < dustCount; i++)
             {
-                Vector2 offset = Main.rand.NextVector2Circular(Projectile.width * 0.3f, Projectile.height * 0.3f);
+                Vector2 offset = Main.rand.NextVector2Circular(
+                    Projectile.width * (isEnlarged ? 1.5f : 0.3f),
+                    Projectile.height * (isEnlarged ? 1.5f : 0.3f)
+                );
                 Vector2 dustPos = center + offset;
-                Vector2 dustVelocity = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.02f, 0.08f);
+                Vector2 dustVelocity = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(
+                    isEnlarged ? 0.1f : 0.02f,
+                    isEnlarged ? 0.4f : 0.08f
+                );
 
-                int dust = Dust.NewDust(dustPos, 0, 0, DustID.BlueCrystalShard, dustVelocity.X, dustVelocity.Y, 80, Color.Cyan, Main.rand.NextFloat(0.8f, 1.2f));
+                int dust = Dust.NewDust(dustPos, 0, 0, DustID.BlueCrystalShard, dustVelocity.X, dustVelocity.Y, 80, isEnlarged ? Color.Cyan : Color.LightBlue, Main.rand.NextFloat(
+                    isEnlarged ? 2f : 0.8f,
+                    isEnlarged ? 3f : 1.2f
+                ));
                 Main.dust[dust].noGravity = true;
             }
 
-            // === 3️⃣ 新增：线性水流拖尾（SparkParticle） ===
-            if (Main.rand.NextBool(2)) // 平均每两帧一次
+            // 🚩 3️⃣ Spark 粒子生成频率提高
+            if (isEnlarged || Main.rand.NextBool(2))
             {
-                Vector2 sparkVelocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.5f + Main.rand.NextVector2Circular(0.1f, 0.1f);
+                Vector2 sparkVelocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * (isEnlarged ? 2f : 0.5f) + Main.rand.NextVector2Circular(0.1f, 0.1f);
                 Particle spark = new SparkParticle(
                     center,
                     sparkVelocity,
                     false,
-                    40,                          // 寿命适中
-                    0.9f,                         // 精致大小
-                    Color.LightBlue * 0.7f       // 淡蓝透亮
+                    isEnlarged ? 80 : 40,                      // 更长寿命
+                    isEnlarged ? 4f : 0.9f,                    // 大小更大
+                    isEnlarged ? Color.Cyan * 0.9f : Color.LightBlue * 0.7f // 颜色更亮
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
+
         }
 
         private NPC FindClosestNPC(float maxDetectDistance)
@@ -363,8 +395,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             }
 
             // 🚩 5️⃣ CRE 高级光点：水光闪烁
-            CTSLightingBoltsSystem.Spawn_SpectralWhispers(origin);
             CTSLightingBoltsSystem.Spawn_GaussDischargeShards(origin);
+
+            // 🚩 新增：在水平方向产生多次 GaussDischargeShards
+            int shardCount = 6; // 可根据需要调整密度
+            float horizontalSpacing = 40f; // 每个之间的水平距离
+
+            for (int i = -shardCount / 2; i <= shardCount / 2; i++)
+            {
+                Vector2 spawnPos = origin + new Vector2(i * horizontalSpacing, 0f);
+                CTSLightingBoltsSystem.Spawn_SpectralWhispers(spawnPos);
+
+            }
 
             // 🚩 6️⃣ 有序收尾：脉冲环扩散
             Particle pulse = new DirectionalPulseRing(

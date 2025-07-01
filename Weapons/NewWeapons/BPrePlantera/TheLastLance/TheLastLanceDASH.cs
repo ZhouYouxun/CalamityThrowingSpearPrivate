@@ -90,10 +90,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                 if (Time % 3 == 0)
                 {
                     Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-                    particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
+                    particleOffset.X += Main.rand.NextFloat(-3f, 3f);
                     Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
                     Particle Smear = new CircularSmearVFX(particlePosition, Color.CadetBlue * Main.rand.NextFloat(0.9f, 1.0f), Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(1.2f, 1.3f));
                     GeneralParticleHandler.SpawnParticle(Smear);
+
+                    // 🚩🚩🚩 新增复杂 Dust + 气泡 Gore 圆环释放
+                    {
+                        Vector2 origin = Projectile.Center;
+                        int points = 24; // 控制密度
+                        float radius = 40f;
+                        float timeFactor = Main.GameUpdateCount * 0.08f;
+                        for (int i = 0; i < points; i++)
+                        {
+                            float angle = MathHelper.TwoPi * i / points + timeFactor;
+                            Vector2 offset = angle.ToRotationVector2() * radius;
+                            Vector2 spawnPos = origin + offset;
+
+                            // === Dust ===
+                            if (Main.rand.NextBool(2))
+                            {
+                                Vector2 dustVelocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(Math.Sin(timeFactor + i) * 0.2f) * Main.rand.NextFloat(2f, 6f);
+                                Dust dust = Dust.NewDustPerfect(
+                                    spawnPos,
+                                    DustID.Water,
+                                    dustVelocity,
+                                    0,
+                                    Color.DarkSlateGray * 0.9f,
+                                    Main.rand.NextFloat(1.1f, 1.6f)
+                                );
+                                dust.noGravity = true;
+                            }
+
+                            // === Gore 气泡 ===
+                            if (Main.rand.NextBool(3))
+                            {
+                                Vector2 goreVelocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(Math.Sin(timeFactor + i * 0.5f) * 0.3f) * Main.rand.NextFloat(3f, 7f);
+                                Gore bubble = Gore.NewGorePerfect(
+                                    Projectile.GetSource_FromAI(),
+                                    spawnPos,
+                                    goreVelocity,
+                                    411
+                                );
+                                bubble.timeLeft = 10 + Main.rand.Next(8);
+                                bubble.scale = Main.rand.NextFloat(0.7f, 1.2f);
+                                bubble.type = Main.rand.NextBool(4) ? 412 : 411;
+                            }
+                        }
+                    }
                 }
 
                 Time++;
@@ -143,19 +187,80 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                     return;
                 }
 
-                // 在枪头位置生成深蓝色烟雾粒子特效
-                AddSmokeParticles();
-
-                // 每帧释放深蓝色气泡特效
-                if (Projectile.ai[0] % 3 == 0)
                 {
-                    ReleaseBubbles();
-                }
+                    // === 🚩🚩🚩 TheLastLanceDASH 冲刺阶段飞行特效完全重制 ===
 
-                // 在身体上留下蓝色重型烟雾粒子特效，代表海洋的力量
-                Color smokeColor = Color.Lerp(Color.DarkBlue, Color.CadetBlue, 0.5f); // 使用深蓝色和浅蓝色渐变
-                Particle smoke = new HeavySmokeParticle(Projectile.Center, Projectile.velocity * 0.5f, smokeColor, 30, Projectile.scale * Main.rand.NextFloat(0.7f, 1.3f), 1.0f, MathHelper.ToRadians(2f), required: true);
-                GeneralParticleHandler.SpawnParticle(smoke);
+                    {
+                        // === 1️⃣ 枪口位置生成深海重型烟雾（主视觉） ===
+                        Vector2 gunMuzzle = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+                        Particle muzzleSmoke = new HeavySmokeParticle(
+                            gunMuzzle,
+                            Vector2.Zero,
+                            Color.DarkSlateGray,
+                            25,
+                            Main.rand.NextFloat(1.1f, 1.7f),
+                            0.4f,
+                            Main.rand.NextFloat(-0.5f, 0.5f),
+                            required: true
+                        );
+                        GeneralParticleHandler.SpawnParticle(muzzleSmoke);
+
+                        // === 2️⃣ 枪身周围深海灰蓝 Dust 环绕喷发 ===
+                        int dustPoints = 12;
+                        float radius = 18f;
+                        for (int i = 0; i < dustPoints; i++)
+                        {
+                            float angle = MathHelper.TwoPi * i / dustPoints + Main.GameUpdateCount * 0.1f;
+                            Vector2 offset = angle.ToRotationVector2() * radius;
+                            Vector2 spawnPos = Projectile.Center + offset;
+                            Vector2 velocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(Math.Sin(Main.GameUpdateCount * 0.1f + i) * 0.2f) * Main.rand.NextFloat(1f, 4f);
+
+                            Dust dust = Dust.NewDustPerfect(
+                                spawnPos,
+                                DustID.Water,
+                                velocity,
+                                0,
+                                Color.DarkSlateGray * 0.9f,
+                                Main.rand.NextFloat(1.0f, 1.4f)
+                            );
+                            dust.noGravity = true;
+                        }
+
+                        // === 3️⃣ 深海气泡 Gore 喷射（随机位置围绕枪体） ===
+                        if (Main.rand.NextBool(2))
+                        {
+                            Vector2 goreOffset = Main.rand.NextVector2CircularEdge(Projectile.width * 0.5f, Projectile.height * 0.5f);
+                            Vector2 goreSpawnPos = Projectile.Center + goreOffset;
+                            Vector2 goreVelocity = goreOffset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 7f) + Projectile.velocity * 0.2f;
+
+                            Gore bubble = Gore.NewGorePerfect(
+                                Projectile.GetSource_FromAI(),
+                                goreSpawnPos,
+                                goreVelocity,
+                                411
+                            );
+                            bubble.timeLeft = 10 + Main.rand.Next(8);
+                            bubble.scale = Main.rand.NextFloat(0.8f, 1.2f);
+                            bubble.type = Main.rand.NextBool(4) ? 412 : 411;
+                        }
+
+                        // === 4️⃣ 深海线性粒子拖尾（SparkParticle） ===
+                        if (Main.rand.NextBool(3))
+                        {
+                            Vector2 sparkVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(2f, 5f) + Main.rand.NextVector2Circular(0.3f, 0.3f);
+                            Particle spark = new SparkParticle(
+                                Projectile.Center,
+                                sparkVelocity,
+                                false,
+                                35,
+                                0.8f,
+                                Color.DarkBlue * 0.7f
+                            );
+                            GeneralParticleHandler.SpawnParticle(spark);
+                        }
+                    }
+
+                }
 
                 // 如果是超级冲刺且接触到液体，则销毁投射物
                 if (isSuperDash && Collision.WetCollision(Projectile.position, Projectile.width, Projectile.height))
@@ -197,26 +302,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             Projectile.netUpdate = true;
         }
 
-        private void AddSmokeParticles() // 在枪头位置生成深蓝色烟雾粒子特效
-        {
-            Vector2 offset = new Vector2(0, -Projectile.width * 0.5f).RotatedBy(Projectile.velocity.ToRotation() + MathHelper.PiOver2);
-            Vector2 spawnPosition = Projectile.Center + offset;
-            Color smokeColor = Color.DarkBlue; // 深蓝色
-            Particle smoke = new HeavySmokeParticle(spawnPosition, Vector2.Zero, smokeColor, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
-            GeneralParticleHandler.SpawnParticle(smoke);
-        }
 
-        private void ReleaseBubbles() // 每帧释放深蓝色气泡特效
-        {
-            Player player = Main.player[Projectile.owner]; // 获取玩家对象
-            Vector2 playerPosition = player.Center; // 获取玩家的中心位置
-
-            // 将位置参数修改为玩家的位置
-            Gore bubble = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), playerPosition, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
-            bubble.timeLeft = 8 + Main.rand.Next(6);
-            bubble.scale = Main.rand.NextFloat(0.6f, 1f) * (1 + Projectile.timeLeft / (float)Projectile.timeLeft);
-            bubble.type = Main.rand.NextBool(3) ? 412 : 411;
-        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

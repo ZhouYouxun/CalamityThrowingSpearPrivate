@@ -90,18 +90,63 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
                 Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-                // 生成后方的火花特效
-                if (Main.rand.NextFloat() < 0.2f) // 控制生成概率
+                // 生成飞行期间复杂太阳能量混合特效
+                if (Main.rand.NextFloat() < 0.4f) // 保持触发率保证持续性
                 {
-                    Vector2 sparkOffset = Projectile.velocity * -0.3f + Main.rand.NextVector2Circular(1f, 1f);
-
-                    // 调整颜色的亮度，将透明度降低到原来的 25%
-                    Color startColor = new Color(Color.LightGoldenrodYellow.R, Color.LightGoldenrodYellow.G, Color.LightGoldenrodYellow.B, (int)(Color.LightGoldenrodYellow.A * 0.25f));
-                    Color endColor = new Color(Color.LightYellow.R, Color.LightYellow.G, Color.LightYellow.B, (int)(Color.LightYellow.A * 0.25f));
-
-                    GenericSparkle sparker = new GenericSparkle(Projectile.Center + sparkOffset, Vector2.Zero, startColor, endColor, Main.rand.NextFloat(2.5f, 2.9f), 14, Main.rand.NextFloat(-0.01f, 0.01f), 2.5f);
+                    // === 🚩 1️⃣ 十字星（保留，不变） ===
+                    Vector2 sparkOffset = Projectile.velocity * -0.3f + Main.rand.NextVector2Circular(2f, 2f);
+                    Color startColor = new Color(255, 250, 200, 80);
+                    Color endColor = new Color(255, 230, 150, 60);
+                    GenericSparkle sparker = new GenericSparkle(
+                        Projectile.Center + sparkOffset,
+                        Vector2.Zero,
+                        startColor,
+                        endColor,
+                        Main.rand.NextFloat(2.5f, 3.2f),
+                        18,
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        2.8f
+                    );
                     GeneralParticleHandler.SpawnParticle(sparker);
+
+                    // === 🚩 2️⃣ SparkParticle 狂野化，生成更多、更快、范围更大 ===
+                    int sparkCount = 6; // 原本约 2，直接 ×3
+                    for (int i = 0; i < sparkCount; i++)
+                    {
+                        Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(Main.rand.NextFloat(-1.2f, 1.2f));
+                        Vector2 sparkVelocity = direction * Main.rand.NextFloat(6f, 14f); // 速度 ×2-3
+                        Color sparkColor = Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.2f, 0.8f));
+
+                        Particle spark = new SparkParticle(
+                            Projectile.Center + direction * Main.rand.NextFloat(10f, 30f), // 初始位置随机外扩
+                            sparkVelocity,
+                            false,
+                            Main.rand.Next(20, 40),
+                            Main.rand.NextFloat(1.0f, 2.0f), // 放大体积
+                            sparkColor * 0.9f
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    // === 🚩 3️⃣ Dust 狂野化，生成更多、更远、更亮 ===
+                    int dustCount = 8; // 原本约 2-3，直接 ×3
+                    for (int i = 0; i < dustCount; i++)
+                    {
+                        Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi));
+                        Vector2 dustVelocity = direction * Main.rand.NextFloat(3f, 10f) + Main.rand.NextVector2Circular(3f, 3f); // 速度范围扩大
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center + Main.rand.NextVector2Circular(12f, 12f), // 生成范围扩大
+                            DustID.SolarFlare,
+                            dustVelocity,
+                            100,
+                            Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat(0.3f, 0.7f)),
+                            Main.rand.NextFloat(1.5f, 2.8f) // 粒子体积更大
+                        );
+                        dust.noGravity = true;
+                        dust.fadeIn = Main.rand.NextFloat(0.8f, 1.2f);
+                    }
                 }
+
 
             }
             else
@@ -126,23 +171,72 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 float baseAngle2 = baseAngle1 + MathHelper.Pi; // 相差180度
 
                 // 生成两个方向的粒子特效
-                for (int i = 0; i < 2; i++) // 两个方向
                 {
-                    float currentBaseAngle = (i == 0) ? baseAngle1 : baseAngle2;
-
-                    // 每个方向生成粒子
-                    for (int j = 0; j < 3; j++) // 每方向3个粒子
+                    // 生成高速旋转期间增强特效（替换原段）
+                    for (int i = 0; i < 2; i++) // 两个方向
                     {
-                        float randomAngle = currentBaseAngle + Main.rand.NextFloat(-MathHelper.Pi / 36, MathHelper.Pi / 36); // 随机偏移角度
-                        Vector2 particleVelocity = randomAngle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f); // 随机速度
+                        float currentBaseAngle = (i == 0) ? baseAngle1 : baseAngle2;
 
-                        // 生成粒子
-                        Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f); // 粒子初始位置
-                        Color particleColor = Color.LightYellow; // 粒子颜色
-                        float particleScale = 0.35f; // 粒子缩放
+                        for (int j = 0; j < 2; j++) // 每方向 X 个光点
+                        {
+                            float randomAngle = currentBaseAngle + Main.rand.NextFloat(-MathHelper.Pi / 60, MathHelper.Pi / 60); // 偏移范围更小，收敛
+                            Vector2 particleVelocity = randomAngle.ToRotationVector2() * Main.rand.NextFloat(4f, 19f);
 
-                        GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, particleVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
+                            Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f); // 收敛范围缩小
+                            Color particleColor = Color.White * 0.7f; // 更亮更白
+                            float particleScale = Main.rand.NextFloat(0.24f, 0.36f); // 稍大以便可见
+
+                            GeneralParticleHandler.SpawnParticle(new GenericBloom(
+                                particlePosition,
+                                particleVelocity,
+                                particleColor,
+                                particleScale,
+                                Main.rand.Next(20, 35)
+                            ));
+                        }
                     }
+
+                    // === 🚩 添加白色/黄色 Dust 环绕 ===
+                    int dustCount = 7; // 控制数量适中，保证性能
+                    for (int k = 0; k < dustCount; k++)
+                    {
+                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        Vector2 direction = angle.ToRotationVector2();
+                        Vector2 dustPos = Projectile.Center + direction * Main.rand.NextFloat(8f, 20f);
+                        Vector2 dustVel = direction * Main.rand.NextFloat(2f, 5f);
+
+                        Dust dust = Dust.NewDustPerfect(
+                            dustPos,
+                            Main.rand.NextBool() ? DustID.SolarFlare : DustID.Torch,
+                            dustVel,
+                            0,
+                            Main.rand.NextBool() ? Color.White : Color.Yellow,
+                            Main.rand.NextFloat(1.2f, 2f)
+                        );
+                        dust.noGravity = true;
+                        dust.fadeIn = Main.rand.NextFloat(0.8f, 1.2f);
+                    }
+
+                    // === 🚩 添加线性 SparkParticle 放射线但控制范围、形成流动感 ===
+                    int sparkCount = 6;
+                    for (int s = 0; s < sparkCount; s++)
+                    {
+                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        Vector2 direction = angle.ToRotationVector2();
+                        Vector2 sparkVel = direction * Main.rand.NextFloat(7f, 19f);
+
+                        Color sparkColor = Main.rand.NextBool() ? Color.White : Color.Yellow;
+                        Particle spark = new SparkParticle(
+                            Projectile.Center + direction * Main.rand.NextFloat(8f, 24f),
+                            sparkVel,
+                            false,
+                            Main.rand.Next(20, 35),
+                            Main.rand.NextFloat(0.8f, 1.4f),
+                            sparkColor * 0.8f
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
                 }
 
                 // 旋转攻击结束判断
@@ -190,24 +284,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             SoundEngine.PlaySound(SoundID.Item90, Projectile.Center);
 
             // 生成随机数量（2~3个）的 SunEssenceJavLightPoint 弹幕
-            int lightPointCount = Main.rand.Next(2, 4); // 2~3 个弹幕
-            for (int i = 0; i < lightPointCount; i++)
-            {
-                // 在绝对正上方 ±45 度范围内随机选择角度
-                float randomAngle = MathHelper.ToRadians(Main.rand.Next(-45, 46)); // -45到45度
-                Vector2 velocity = (Vector2.UnitY.RotatedBy(randomAngle) * -1f) * Main.rand.NextFloat(4f, 8f) * 0.75f;
+            //int lightPointCount = Main.rand.Next(2, 4); // 2~3 个弹幕
+            //for (int i = 0; i < lightPointCount; i++)
+            //{
+            //    // 在绝对正上方 ±45 度范围内随机选择角度
+            //    float randomAngle = MathHelper.ToRadians(Main.rand.Next(-45, 46)); // -45到45度
+            //    Vector2 velocity = (Vector2.UnitY.RotatedBy(randomAngle) * -1f) * Main.rand.NextFloat(4f, 8f) * 0.75f;
 
-                // 发射 SunEssenceJavLightPoint 弹幕
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    velocity,
-                    ModContent.ProjectileType<SunEssenceJavLightPoint>(),
-                    (int)(Projectile.damage * 1.0f), // 伤害倍率为 1.0
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-            }
+            //    // 发射 SunEssenceJavLightPoint 弹幕
+            //    Projectile.NewProjectile(
+            //        Projectile.GetSource_FromThis(),
+            //        Projectile.Center,
+            //        velocity,
+            //        ModContent.ProjectileType<SunEssenceJavLightPoint>(),
+            //        (int)(Projectile.damage * 1.0f), // 伤害倍率为 1.0
+            //        Projectile.knockBack,
+            //        Projectile.owner
+            //    );
+            //}
 
             // 播放爆炸特效
             Particle blastRing = new CustomPulse(
@@ -231,27 +325,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
 
         // 生成太阳形状的粒子特效
+        // 🚩 替换原 CreateSunParticleEffect，生成真正太阳爆发特效
         private void CreateSunParticleEffect()
         {
-            int particleCount = 20; // 粒子数量，形成太阳形状
-            float radius = 30f; // 粒子半径
+            int particleCount = 50; // 大幅增加，形成完整圆周和内部充实感
+            float radius = 120f; // 半径扩大 4 倍
+
+            Vector2 center = Projectile.Center;
 
             for (int i = 0; i < particleCount; i++)
             {
-                // 每个粒子的角度间隔
                 float angle = MathHelper.TwoPi * i / particleCount;
+                Vector2 direction = angle.ToRotationVector2();
 
-                // 计算粒子的方向和位置
-                Vector2 particleDirection = angle.ToRotationVector2();
-                Vector2 particlePosition = Projectile.Center + particleDirection * radius;
-
-                // 生成粒子特效
-                Dust dust = Dust.NewDustPerfect(particlePosition, DustID.SolarFlare, particleDirection * 2f, Scale: 1.5f);
+                // === 🚩 Dust (太阳流动) ===
+                Vector2 dustPos = center + direction * radius * Main.rand.NextFloat(0.8f, 1.2f);
+                Vector2 dustVel = direction.RotatedByRandom(MathHelper.ToRadians(20f)) * Main.rand.NextFloat(2f, 6f);
+                Dust dust = Dust.NewDustPerfect(
+                    dustPos,
+                    Main.rand.NextBool() ? DustID.SolarFlare : DustID.Torch,
+                    dustVel,
+                    0,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.3f, 0.8f)),
+                    Main.rand.NextFloat(1.5f, 2.8f)
+                );
                 dust.noGravity = true;
-                dust.fadeIn = 1f;
-                dust.color = Color.Yellow;
+                dust.fadeIn = Main.rand.NextFloat(1f, 1.6f);
+
+                // === 🚩 SparkParticle (线性日冕射线) ===
+                if (i % 5 == 0) // 每 5 个角度生成一次，避免过量
+                {
+                    Vector2 sparkVel = direction * Main.rand.NextFloat(8f, 16f);
+                    Color sparkColor = Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat(0.4f, 0.7f));
+                    Particle spark = new SparkParticle(
+                        center + direction * Main.rand.NextFloat(20f, 40f),
+                        sparkVel,
+                        false,
+                        Main.rand.Next(30, 50),
+                        Main.rand.NextFloat(1.0f, 1.8f),
+                        sparkColor * 0.9f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // === 🚩 HeavySmokeParticle (轻型太阳冠烟雾) ===
+                if (i % 3 == 0) // 每 3 个角度生成一次
+                {
+                    Particle smoke = new HeavySmokeParticle(
+                        center + direction * Main.rand.NextFloat(30f, 80f),
+                        direction * Main.rand.NextFloat(0.5f, 2f),
+                        Color.Lerp(Color.Orange, Color.WhiteSmoke, Main.rand.NextFloat(0.3f, 0.7f)),
+                        Main.rand.Next(20, 36),
+                        Main.rand.NextFloat(1.2f, 2.0f),
+                        0.4f,
+                        Main.rand.NextFloat(-0.05f, 0.05f),
+                        false
+                    );
+                    GeneralParticleHandler.SpawnParticle(smoke);
+                }
             }
         }
+
 
         // 创建粒子特效
         private void CreateParticleEffect()

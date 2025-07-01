@@ -58,20 +58,51 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             // Lighting - 添加深橙色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 在弹幕路径上生成双螺旋特效，使用气泡类粒子（Gore bubble）
-            float offset = (float)Math.Sin(Projectile.localAI[0] * 0.1f) * 1.5f; // 双螺旋的偏移量
-            Vector2 bubblePos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
-            Vector2 bubblePos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
-            Gore bubble1 = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), bubblePos1, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
-            Gore bubble2 = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), bubblePos2, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
-            bubble1.timeLeft = 8 + Main.rand.Next(6);
-            bubble2.timeLeft = 8 + Main.rand.Next(6);
-            bubble1.scale = Main.rand.NextFloat(0.6f, 1f);
-            bubble2.scale = Main.rand.NextFloat(0.6f, 1f);
-            bubble1.type = Main.rand.NextBool(3) ? 412 : 411;
-            bubble2.type = Main.rand.NextBool(3) ? 412 : 411;
+            {
+                // 🚩🚩🚩 【TheLastLancePROJ 深海飞行特效重制块】🚩🚩🚩
 
-            Projectile.localAI[0]++; // 更新粒子动画
+                // === 1️⃣ 无序：原双螺旋气泡 (Gore Bubble) 代表深海泡沫 ===
+                float offset = (float)Math.Sin(Projectile.localAI[0] * 0.1f) * 1.5f;
+                Vector2 bubblePos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
+                Vector2 bubblePos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
+                Gore bubble1 = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), bubblePos1, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
+                Gore bubble2 = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), bubblePos2, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
+                bubble1.timeLeft = 8 + Main.rand.Next(6);
+                bubble2.timeLeft = 8 + Main.rand.Next(6);
+                bubble1.scale = Main.rand.NextFloat(0.6f, 1f);
+                bubble2.scale = Main.rand.NextFloat(0.6f, 1f);
+                bubble1.type = Main.rand.NextBool(3) ? 412 : 411;
+                bubble2.type = Main.rand.NextBool(3) ? 412 : 411;
+
+                // === 2️⃣ 有序：深海灰蓝 Dust 水流线条 ===
+                if (Main.rand.NextBool(3)) // 控制频率，保证节奏感
+                {
+                    Vector2 dustOffset = Main.rand.NextVector2Circular(Projectile.width * 0.4f, Projectile.height * 0.4f);
+                    Vector2 spawnPos = Projectile.Center + dustOffset;
+                    Vector2 dustVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(0.5f, 1.5f);
+                    int dust = Dust.NewDust(spawnPos, 0, 0, DustID.Water, dustVelocity.X, dustVelocity.Y, 100, Color.DarkSlateGray, Main.rand.NextFloat(0.8f, 1.2f));
+                    Main.dust[dust].noGravity = true;
+                }
+
+                // === 3️⃣ 有序：深海流线 SparkParticle 拖尾 ===
+                if (Main.rand.NextBool(2)) // 平均每 2 帧一次
+                {
+                    Vector2 sparkVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * 1.2f + Main.rand.NextVector2Circular(0.2f, 0.2f);
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        sparkVelocity,
+                        false,
+                        40,
+                        0.9f,
+                        Color.DarkBlue * 0.8f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                Projectile.localAI[0]++; // 更新动画计数
+            }
+
+
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -14,6 +14,7 @@ using CalamityMod.Rarities;
 using CalamityMod;
 using CalamityMod.Particles;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
 {
@@ -48,6 +49,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
         }
         public override bool AltFunctionUse(Player player) => true;
 
+        private const int RightClickCooldownMax = 300; // 5秒冷却 (60帧 * 5)
         private int rightClickCooldown = 0;
 
         //public override void UpdateInventory(Player player) // 给右键添加一定的冷却时间
@@ -67,36 +69,96 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                 // 冷却时间归零的一瞬间触发效果
                 if (rightClickCooldown == 0)
                 {
-                    // 在玩家中心释放爆炸特效
-                    Particle blastRing = new CustomPulse(
-                        player.Center, // 以玩家为中心
-                        Vector2.Zero,
-                        new Color(0, 0, 139), // 深海的蓝色
-                        "CalamityThrowingSpear/Texture/IonizingRadiation",
-                        Vector2.One * 0.33f,
-                        Main.rand.NextFloat(-10f, 10f),
-                        0.07f,
-                        0.53f,
-                        30
-                    );
-                    GeneralParticleHandler.SpawnParticle(blastRing);
-
-                    // 随机释放粒子特效
-                    for (int i = 0; i < 30; i++)
                     {
-                        Dust dust = Dust.NewDustDirect(
-                            player.Center, // 以玩家为中心
-                            0, 0,
-                            Main.rand.Next(new int[] { DustID.Water, 180 }) // 使用混合 DustID
-                        );
-                        dust.scale = Main.rand.NextFloat(1.25f, 1.75f); // 大小随机
-                        dust.velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, 3f)); // 随机扩散
-                        dust.noGravity = true; // 防止粒子受重力影响
-                    }
+                        // === 🚩🚩🚩 无序：6~9 层深海脉冲环叠加转动释放，形成3D视觉冲击 ===
+                        int ringCount = Main.rand.Next(6, 10);
+                        for (int i = 0; i < ringCount; i++)
+                        {
+                            Particle blastRing = new CustomPulse(
+                                player.Center,
+                                Vector2.Zero,
+                                new Color(15, 25, 35) * (1f - i * 0.1f), // 深灰蓝层次
+                                "CalamityThrowingSpear/Texture/KsTexture/light_01", // 替换纹理
+                                Vector2.One * (0.2f + i * 0.05f), // 大小逐层递增
+                                Main.rand.NextFloat(-15f, 15f), // 旋转速度变化
+                                0.06f + i * 0.005f, // 扩散速度变化
+                                0.4f + i * 0.02f, // 最大大小变化
+                                40 + i * 5 // 存活时间
+                            );
+                            GeneralParticleHandler.SpawnParticle(blastRing);
+                        }
 
-                    // 播放音效
-                    SoundEngine.PlaySound(SoundID.Item30, player.Center);
+                        {
+                            // === 🚩🚩🚩 高级深海灰蓝 Dust 与气泡 Gore 复杂特效重制 ===
+
+                            Vector2 origin = player.Center;
+                            float timeFactor = Main.GameUpdateCount * 0.04f;
+
+                            // === 1️⃣ Dust 多层极坐标矩阵水流喷发 ===
+                            int dustLayers = 3;
+                            int dustPerLayer = 36;
+                            float baseRadius = 6f;
+                            float radiusStep = 12f;
+                            for (int layer = 0; layer < dustLayers; layer++)
+                            {
+                                float currentRadius = baseRadius + layer * radiusStep;
+                                float angleOffset = timeFactor + layer * 0.6f;
+                                for (int i = 0; i < dustPerLayer; i++)
+                                {
+                                    float angle = MathHelper.TwoPi * i / dustPerLayer + angleOffset;
+                                    Vector2 direction = angle.ToRotationVector2();
+                                    Vector2 spawnPos = origin + direction * currentRadius;
+                                    Vector2 velocity = direction.RotatedBy(Math.Sin(timeFactor + i * 0.3f) * 0.2f) * Main.rand.NextFloat(4f, 10f);
+
+                                    Dust dust = Dust.NewDustPerfect(
+                                        spawnPos,
+                                        DustID.Water,
+                                        velocity,
+                                        0,
+                                        Color.DarkSlateGray * 0.9f,
+                                        Main.rand.NextFloat(1.2f, 1.8f)
+                                    );
+                                    dust.noGravity = true;
+                                }
+                            }
+
+                            // === 2️⃣ Gore 气泡：四螺旋复杂螺距排列 ===
+                            int spiralCount = 4;
+                            int bubblesPerSpiral = 20;
+                            float spiralRadiusIncrement = 3.5f;
+                            float spiralBaseRadius = 8f;
+                            for (int spiral = 0; spiral < spiralCount; spiral++)
+                            {
+                                float spiralOffset = spiral * MathHelper.PiOver2;
+                                float spiralRadius = spiralBaseRadius;
+                                for (int i = 0; i < bubblesPerSpiral; i++)
+                                {
+                                    float angle = (float)(i * 0.35f + spiralOffset + Math.Sin(timeFactor + i * 0.2f) * 0.15f);
+                                    Vector2 direction = angle.ToRotationVector2();
+                                    Vector2 spawnPos = origin + direction * spiralRadius;
+                                    Vector2 velocity = direction * Main.rand.NextFloat(6f, 12f);
+
+                                    Gore bubble = Gore.NewGorePerfect(
+                                        player.GetSource_FromThis(),
+                                        spawnPos,
+                                        velocity,
+                                        411
+                                    );
+                                    bubble.timeLeft = 16 + Main.rand.Next(6);
+                                    bubble.scale = Main.rand.NextFloat(0.9f, 1.4f);
+                                    bubble.type = Main.rand.NextBool(4) ? 412 : 411;
+
+                                    spiralRadius += spiralRadiusIncrement;
+                                }
+                            }
+                        }
+
+
+                        // === 🚩🚩🚩 播放深海冷爆发音效 ===
+                        SoundEngine.PlaySound(SoundID.Item30, player.Center);
+                    }
                 }
+
             }
         }
 
@@ -105,7 +167,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
         {
             if (player.altFunctionUse == 2) // 右键点击
             {
-                if (rightClickCooldown > 0 || TLLCoolDown.IsCoolingDown)
+                if (rightClickCooldown > 0)
                 {
                     return false; // 如果冷却中，不能使用
                 }
@@ -128,9 +190,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                 {
                     rightClickCooldown = 300;
                 }
-
-                // 启动冷却视觉效果
-                //TLLCoolDown.StartCooldown(rightClickCooldown);
             }
 
 
@@ -153,6 +212,33 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                 Item.damage = 80; // 那么基础伤害提升至80
             }
         }
+
+
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            if (rightClickCooldown <= 0)
+                return;
+
+            // 进度条贴图
+            var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
+            var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
+
+            float barScale = 0.8f;
+            Vector2 drawPos = position + Vector2.UnitY * (frame.Height - 4f) * scale;
+
+            // 进度百分比（反向，填满后缓慢下降）
+            float progress = 1f - rightClickCooldown / (float)RightClickCooldownMax;
+            Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
+
+            // 颜色可自定义深海风格
+            Color barColor = Color.Lerp(Color.DarkSlateGray, Color.DarkBlue, progress);
+
+            // 绘制背景
+            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+            // 绘制填充
+            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+        }
+
 
         //public override void AddRecipes()
         //{

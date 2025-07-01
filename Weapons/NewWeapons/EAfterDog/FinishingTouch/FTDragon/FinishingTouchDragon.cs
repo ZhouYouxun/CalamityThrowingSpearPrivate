@@ -69,6 +69,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.light = 1.2f;
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 60; // 无敌帧冷却时间为30帧
         }
 
         public void SetBPlan(bool enable)
@@ -243,6 +245,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
                 if (elapsed < 50f)
                 {
+                    Projectile.friendly = false;
+
                     // 🚩 最优雅真实高速公转围绕玩家阶段
 
                     float desiredRadius = 320f; // 公转半径
@@ -283,6 +287,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
                 else if (elapsed < 75f)
                 {
+                    Projectile.friendly = true;
+
                     // 阶段 2：10 帧快速飞向玩家位置
                     Vector2 toPlayer = lockedPlayer.Center - Projectile.Center;
                     Vector2 desiredVelocity = toPlayer.SafeNormalize(Vector2.UnitY) * MaxSpeed * 2f; // 🚩 使用 2x MaxSpeed 提高拉直速度
@@ -295,11 +301,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 }
                 else if (elapsed < 120f)
                 {
+                    Projectile.friendly = true;
+
                     // 阶段 3：极速追踪玩家，速度略快
                     Projectile.velocity = lockedPlayer.velocity;
                 }
                 else
                 {
+                    Projectile.friendly = true;
 
                 }
 

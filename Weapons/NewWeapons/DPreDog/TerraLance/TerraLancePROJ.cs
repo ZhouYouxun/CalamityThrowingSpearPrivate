@@ -15,6 +15,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Buffs.StatDebuffs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 {
@@ -134,6 +135,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 
             // 添加绿色光源
             Lighting.AddLight(Projectile.Center, Color.Green.ToVector3() * 0.55f);
+
+
 
             // 阶段控制
             if (Projectile.ai[0] < 25) // 第一阶段：加速阶段
@@ -271,98 +274,169 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            //{
-            //    // 生成单层圆形浅红色扩散特效
-            //    int circleRadius = 8 * 16; // 圆的半径为 128 像素
-            //    int particleCount = 36; // 每隔10度生成一个点
 
-            //    for (int i = 0; i < particleCount; i++)
-            //    {
-            //        float angle = MathHelper.TwoPi / particleCount * i; // 计算每个粒子的角度
-            //        Vector2 position = target.Center + angle.ToRotationVector2() * circleRadius; // 粒子生成位置
-            //        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(0.5f, 1.5f); // 粒子向外扩散的速度
-
-            //        // 使用 DustID.Torch 或类似浅红色效果的 Dust
-            //        Dust dust = Dust.NewDustPerfect(
-            //            position,            // 粒子位置
-            //            DustID.Torch,        // 浅红色 Dust 类型
-            //            velocity,            // 扩散速度
-            //            100,                 // 透明度（0 - 255，值越低越透明）
-            //            new Color(255, 100, 100), // 浅红色
-            //            1.5f                 // 缩放比例
-            //        );
-            //        dust.noGravity = true; // 禁用重力，确保粒子飘散
-            //        dust.fadeIn = 1.0f;    // 增加粒子动态感
-            //    }
-            //}
-
-            Vector2 center = target.Center; // 使用敌人的中心作为特效的中心
-
-            // 生成更复杂的同心圆法阵特效
-            int numCircles = 5; // 圆的数量
-            int numPointsPerCircle = 18; // 每个圆的粒子数量
-            float radiusIncrement = 40f; // 圆之间的半径递增
-
-            for (int circle = 0; circle < numCircles; circle++)
             {
-                float radius = (circle + 1) * radiusIncrement;
-                for (int i = 0; i < numPointsPerCircle; i++)
+                Vector2 center = target.Center;
+
+                // === 0️⃣ 多次调用 Spawn_TerraLanceForestSpirals 构建六边形结构 ===
+                float spiralRadius = 60f;
+                int spiralPoints = 6;
+                for (int i = 0; i < spiralPoints; i++)
                 {
-                    float angle = MathHelper.TwoPi * i / numPointsPerCircle;
-                    Vector2 position = center + angle.ToRotationVector2() * radius;
+                    float angle = MathHelper.TwoPi * i / spiralPoints;
+                    Vector2 offset = angle.ToRotationVector2() * spiralRadius;
+                    CTSLightingBoltsSystem.Spawn_TerraLanceForestSpirals(center + offset);
+                }
+                // 中心再调用一次
+                CTSLightingBoltsSystem.Spawn_TerraLanceForestSpirals(center);
 
-                    for (int j = 0; j < 10; j++) // 每个点释放更多粒子
+
+                float time = Main.GameUpdateCount * 0.05f;
+
+
+                // ===================================
+                // 🚩【1️⃣ 有序：多层螺旋藤蔓 GlowSparkParticle 阵（收敛版）】
+                // ===================================
+                int spiralLayers = 2;
+                int sparksPerLayer = 16;
+                float baseRadius = 20f;
+                float radiusStep = 12f;
+
+                for (int layer = 0; layer < spiralLayers; layer++)
+                {
+                    float radius = baseRadius + layer * radiusStep;
+                    for (int i = 0; i < sparksPerLayer; i++)
                     {
-                        float speed = MathHelper.Lerp(3f, 10f, j / 10f); // 更宽范围的速度
-                        Color particleColor = Color.Lerp(Color.White, Color.LimeGreen, j / 10f); // 粒子颜色渐变
-                        float scale = MathHelper.Lerp(1.8f, 0.6f, j / 10f); // 粒子缩放渐变
+                        float angle = MathHelper.TwoPi * i / sparksPerLayer + layer * 0.6f;
+                        Vector2 dir = angle.ToRotationVector2();
+                        Vector2 spawnPos = center + dir * radius;
+                        Vector2 velocity = dir.RotatedBy(MathHelper.PiOver4) * Main.rand.NextFloat(2f, 5f);
 
-                        Dust magicDust = Dust.NewDustPerfect(position, 107);
-                        magicDust.velocity = angle.ToRotationVector2() * speed;
-                        magicDust.color = particleColor;
-                        magicDust.scale = scale;
-                        magicDust.noGravity = true; // 粒子无重力
+                        GlowSparkParticle spark = new GlowSparkParticle(
+                            spawnPos,
+                            velocity,
+                            false,
+                            Main.rand.Next(40, 50),
+                            Main.rand.NextFloat(0.08f, 0.12f),
+                            Color.Lerp(Color.ForestGreen, Color.Green, 0.5f) * 0.5f,
+                            new Vector2(0.4f, 1.2f)
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
                     }
                 }
-            }
 
-            // 生成更复杂的旋转法阵
-            for (int i = 0; i < 72; i++) // 粒子数量
-            {
-                float angle = MathHelper.TwoPi * i / 72f;
-                Vector2 position = center + angle.ToRotationVector2() * 25f;
 
-                Dust spinningDust = Dust.NewDustPerfect(position, 107);
-                spinningDust.velocity = angle.ToRotationVector2() * 6f; // 高速旋转
-                spinningDust.color = Color.GreenYellow;
-                spinningDust.scale = 1.5f; // 更大粒子
-                spinningDust.noGravity = true;
-            }
-
-            // 魔法阵式 SparkParticle 特效
-            int numRings = 3; // 魔法阵的环数
-            for (int ring = 0; ring < numRings; ring++)
-            {
-                float ringRadius = 50f + ring * 30f; // 每个环的半径递增
-                int particlesPerRing = 24; // 每个环的粒子数量
-                for (int i = 0; i < particlesPerRing; i++)
+                // ===================================
+                // 🚩【2️⃣ 有序 + 中和：森林符文十字星矩阵爆裂】
+                // ===================================
+                int starCount = 16;
+                for (int i = 0; i < starCount; i++)
                 {
-                    float angle = MathHelper.TwoPi * i / particlesPerRing;
-                    Vector2 position = center + angle.ToRotationVector2() * ringRadius;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f); // 随机速度
+                    float angle = MathHelper.TwoPi * i / starCount;
+                    Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 36f);
+                    Vector2 spawnPos = center + offset;
 
-                    Particle trail = new SparkParticle(position, velocity, false, 60, Main.rand.NextFloat(1.0f, 1.5f), Color.Green);
-                    GeneralParticleHandler.SpawnParticle(trail);
+                    GenericSparkle sparkle = new GenericSparkle(
+                        spawnPos,
+                        Vector2.Zero,
+                        Color.White,
+                        Color.LimeGreen,
+                        Main.rand.NextFloat(1.8f, 2.5f),
+                        10,
+                        Main.rand.NextFloat(-0.06f, 0.06f),
+                        1.9f
+                    );
+                    GeneralParticleHandler.SpawnParticle(sparkle);
                 }
+
+                // ===================================
+                // 🚩【3️⃣ 无序但流动：Dust 环形森林藤蔓】
+                // ===================================
+                int vineDustAmount = 180;
+                for (int i = 0; i < vineDustAmount; i++)
+                {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float radius = Main.rand.NextFloat(20f, 100f);
+                    Vector2 spawnPos = center + angle.ToRotationVector2() * radius;
+                    Vector2 velocity = angle.ToRotationVector2().RotatedBy(Math.Sin(time + i * 0.05f) * 0.3f) * Main.rand.NextFloat(3f, 8f);
+
+                    int dust = Dust.NewDust(spawnPos, 0, 0, DustID.Grass, velocity.X, velocity.Y, 100, Color.ForestGreen, Main.rand.NextFloat(1.0f, 1.6f));
+                    Main.dust[dust].noGravity = true;
+                }
+
+                // ===================================
+                // 🚩【4️⃣ 花瓣式森林藤蔓 SparkParticle 环形爆散（夸张版）】
+                // ===================================
+                int vineCount = 160;
+                float startRadius = 16f;
+                float endRadius = 96f;
+
+                for (int i = 0; i < vineCount; i++)
+                {
+                    float progress = i / (float)vineCount;
+                    float angle = MathHelper.TwoPi * progress * 8f + Main.GameUpdateCount * 0.08f; // 8 圈螺旋 + 更快动态
+
+                    // 花瓣形震荡加剧
+                    float flowerFactor = (float)Math.Sin(progress * MathHelper.TwoPi * 8f) * 0.4f;
+                    float radius = MathHelper.Lerp(startRadius, endRadius, progress) * (1f + flowerFactor);
+
+                    Vector2 spawnPos = center + angle.ToRotationVector2() * radius;
+
+                    // 藤蔓式曲折速度加大
+                    Vector2 dir = angle.ToRotationVector2().RotatedBy(Math.Sin(progress * MathHelper.TwoPi * 5f) * 0.4f);
+                    Vector2 velocity = dir * MathHelper.Lerp(6f, 18f, progress);
+
+                    Particle vineSpark = new SparkParticle(
+                        spawnPos,
+                        velocity,
+                        false,
+                        55,
+                        MathHelper.Lerp(0.05f, 0.15f, 1f - progress), // 内细外粗
+                        Color.Lerp(Color.ForestGreen, Color.LimeGreen, progress) * 0.7f
+                    );
+                    GeneralParticleHandler.SpawnParticle(vineSpark);
+                }
+
+
+
+
+                // ===================================
+                // 🚩【5️⃣ 有序收束：森林脉冲环爆发】
+                // ===================================
+                for (int i = 0; i < 14; i++)
+                {
+                    Color pulseColor = Main.rand.Next(3) switch
+                    {
+                        0 => Color.ForestGreen,
+                        1 => Color.LimeGreen,
+                        _ => Color.GreenYellow,
+                    };
+
+                    Particle pulse = new CustomPulse(
+                        center,
+                        Vector2.Zero,
+                        pulseColor * 0.5f,
+                        "CalamityThrowingSpear/Texture/KsTexture/light_03", 
+                        new Vector2(0.5f, 0.5f),
+                        Main.rand.NextFloat(-20f, 20f),
+                        0f,
+                        (5f - i * 0.25f) * 0.15f,
+                        50
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                }
+
             }
+
+            Vector2 center1 = target.Center;
 
             // 调用 TerraBeamStorm 方法，生成激光弹幕
-            TerraBeamStorm(center);
+            TerraBeamStorm(center1);
 
             // 在敌人中心生成 TerratomereExplosion 弹幕
             Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
-                center,
+                center1,
                 Vector2.Zero,
                 ModContent.ProjectileType<TerratomereExplosion>(),
                 (int)(Projectile.damage * 1.05f),

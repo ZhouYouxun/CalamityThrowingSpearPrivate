@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Build.Tasks;
 using CalamityThrowingSpear.Global;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -35,6 +36,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 4));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }
+        private const int RightClickCooldownMax = 180; // 右键冷却最大帧数
+        public int rightClickCooldownTimer = 0;        // 当前右键冷却计时
 
         public override void SetDefaults()
         {
@@ -60,18 +63,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         private int attackCounter = 0; // 攻击计数
         private int baseDamage = 600;  // 原始伤害
 
- 
+
         public override bool AltFunctionUse(Player player) => true;
+
+        public override void UpdateInventory(Player player)
+        {
+            if (rightClickCooldownTimer > 0)
+                rightClickCooldownTimer--;
+        }
+
+        public override void PostDrawInInventory(
+    SpriteBatch spriteBatch,
+    Vector2 position,
+    Rectangle frame,
+    Color drawColor,
+    Color itemColor,
+    Vector2 origin,
+    float scale)
+        {
+            if (rightClickCooldownTimer <= 0)
+                return; // 未冷却无需显示
+
+            // 加载 Calamity 的通用进度条贴图
+            var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
+            var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
+
+            float barScale = 0.8f;
+            Vector2 drawPos = position + Vector2.UnitY * (frame.Height - 4f) * scale;
+
+            // 冷却进度百分比（反向填充）
+            float progress = 1f - rightClickCooldownTimer / (float)RightClickCooldownMax;
+            Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
+
+            // 根据进度动态改变颜色（绿-黄-红）
+            Color barColor = progress < 0.33f ? Color.Green : (progress < 0.66f ? Color.Yellow : Color.Red);
+
+            // 绘制背景
+            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+            // 绘制填充
+            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+        }
+
+
         public override bool CanUseItem(Player player)
         {
+
             if (player.altFunctionUse == 2 && player.statLife >= 600) // 检测是否为右键使用
             {
+                if (rightClickCooldownTimer > 0)
+                    return false; // 冷却期间禁止右键使用
+
+
                 // 限制右键只能生成一个FinishingTouchDASH弹幕
                 if (player.ownedProjectileCounts[Item.shoot] > 0)
                     return false;
 
                 // 播放龙吼音效
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/YharonInfernadoNEW"), player.position);
+
+                rightClickCooldownTimer = RightClickCooldownMax; // 开始右键冷却
 
                 // 恢复为默认的右键蓄力冲刺弹幕
                 Item.shoot = ModContent.ProjectileType<FinishingTouchDASH>();

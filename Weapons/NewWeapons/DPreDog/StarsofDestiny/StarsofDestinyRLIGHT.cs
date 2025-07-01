@@ -9,12 +9,14 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
     public class StarsofDestinyRLIGHT : ModProjectile
     {
-        public override string Texture => "Terraria/Images/Item_4923";
+        //public override string Texture => "Terraria/Images/Item_4923"; // 星光
+        public override string Texture => "Terraria/Images/Extra_89";
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -23,9 +25,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle frame = texture.Frame();
+            Vector2 origin = frame.Size() * 0.5f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+            // 计算脉动透明度 (呼吸效果)
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI) * 0.15f + 0.85f;
+            Color pulseColor = Color.White * pulse;
+            pulseColor.A = 0;
+
+            // 绘制拖尾
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], pulseColor, 1);
+
+            // 绘制本体
+            Main.EntitySpriteDraw(texture, drawPos, frame, pulseColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+
             return false;
         }
+
 
         public override void SetDefaults()
         {
@@ -47,57 +65,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override void AI()
         {
-            // 保持弹幕旋转（对于倾斜走向的弹幕而言）
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // Lighting - 添加深橙色光源，光照强度为 0.55
-            Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
-
-            // 弹幕保持直线运动并逐渐加速
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4;
+            Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.6f);
             Projectile.velocity *= 1.01f;
 
-
-            //if (Projectile.numUpdates % 3 == 0)
-            //{
-            //    // 神圣粉红色火花
-            //    Color outerSparkColor = Color.Lerp(Color.Pink, Color.White, 0.5f); // 粉红到白色渐变
-            //    float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
-            //    float outerSparkScale = 1.25f + scaleBoost; // 放大倍率略微增加
-            //    SparkParticle spark = new SparkParticle(
-            //        Projectile.Center,
-            //        Projectile.velocity * Main.rand.NextFloat(0.5f, 1f), // 随机降低速度
-            //        false,
-            //        7,
-            //        outerSparkScale,
-            //        outerSparkColor
-            //    );
-            //    GeneralParticleHandler.SpawnParticle(spark);
-            //}
-
-
-            // 在飞行路径上生成双点转圈的粒子特效
-            if (Main.rand.NextBool(1)) // 控制粒子生成频率（1/X 概率）
+            // 生成白色科技流动粒子
+            if (Main.rand.NextBool(2))
             {
-                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(0, 360)); // 随机初始角度
-                for (int i = 0; i < 2; i++) // 双点对称生成
-                {
-                    float angle = angleOffset + MathHelper.Pi * i; // 相对角度
-                    Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * Main.rand.NextFloat(8f, 12f); // 偏移位置
+                Vector2 spawnOffset = Main.rand.NextVector2Circular(6f, 6f);
+                Vector2 velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 0.6f);
 
-                    Vector2 spawnPosition = Projectile.Center + offset;
-                    Vector2 velocity = offset * 0.05f; // 非常缓慢的初始速度
-
-                    int dustType = Main.rand.Next(new int[] { DustID.EnchantedNightcrawler, DustID.PinkTorch, DustID.CrystalPulse2 });
-                    Dust dust = Dust.NewDustPerfect(spawnPosition, dustType, velocity, 150, Color.Pink, Main.rand.NextFloat(1.25f, 1.75f)); // 大小随机化
-                    dust.noGravity = true; // 无重力效果
-                    dust.fadeIn = 1.5f; // 渐入效果
-                }
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center + spawnOffset,
+                    DustID.WhiteTorch,
+                    velocity,
+                    150,
+                    Color.White * 0.8f,
+                    Main.rand.NextFloat(1.0f, 1.4f)
+                );
+                d.noGravity = true;
+                d.fadeIn = 1.2f;
             }
 
-
+            // 可选：加入细线流动感 SparkParticle
+            if (Main.rand.NextBool(10))
+            {
+                SparkParticle spark = new SparkParticle(
+                    Projectile.Center,
+                    Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 0.6f),
+                    false,
+                    10,
+                    1.2f,
+                    Color.White
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
 
             Time++;
         }
+
+
+
+
         public ref float Time => ref Projectile.ai[1];
 
         public override bool? CanDamage() => Time >= 5f; // 初始的时候不会造成伤害，直到x为止

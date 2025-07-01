@@ -234,6 +234,57 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
 
+            // 在原 HeavySmokeParticle 和 NadirJavVoidEssence 生成后执行
+
+
+            // 深渊黑洞爆裂 Dust（强爆版）
+            int dustAmount = 550;
+            for (int i = 0; i < dustAmount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / dustAmount;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 25f); // 速度翻 5~6 倍
+                int type = Main.rand.Next(new int[] { DustID.Shadowflame, DustID.PurpleTorch, DustID.DarkCelestial });
+                int idx = Dust.NewDust(Projectile.Center, 0, 0, type, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(2.0f, 2.8f)); // 尺寸略大
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity *= Main.rand.NextFloat(1.02f, 1.05f); // 再加速
+            }
+
+            // 黑暗核心残留 Dust（强力版）
+            for (int i = 0; i < 15; i++)
+            {
+                Vector2 offset = Main.rand.NextVector2Circular(20f, 20f); // 扩散范围翻倍
+                Vector2 velocity = offset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 4f); // 速度提高
+                int type = DustID.DarkCelestial;
+                int idx = Dust.NewDust(Projectile.Center + offset, 0, 0, type, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(1.6f, 2.2f)); // 尺寸微调
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity *= Main.rand.NextFloat(0.8f, 1.2f);
+            }
+
+
+            // 3 放射型 SparkParticle 爆裂
+            int sparkAmount = 24;
+            for (int i = 0; i < sparkAmount; i++)
+            {
+                Vector2 sparkVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 4f);
+                Color sparkColor = Main.rand.NextBool() ? Color.Black * 0.9f : Color.DarkViolet * 0.8f;
+                SparkParticle spark = new SparkParticle(
+                    Projectile.Center,
+                    sparkVelocity,
+                    false,
+                    Main.rand.Next(8, 12),
+                    Main.rand.NextFloat(1.4f, 1.8f),
+                    sparkColor
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+
+
+
+
+
+
+
             // 计算圆圈中心（绝对正下方 50~60 格）
             Vector2 spawnCenter = Projectile.Center + new Vector2(0, Main.rand.NextFloat(50 * 16, 60 * 16));
 

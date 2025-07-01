@@ -21,7 +21,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
     public class FinishingTouchPlayer : ModPlayer
     {
         private bool hasPlayedSound = false;
+        private bool wasAliveLastFrame = true;
 
+        public override void PreUpdate()
+        {
+            if (!Player.dead && !wasAliveLastFrame)
+            {
+                wasAliveLastFrame = true;
+            }
+
+            if (Player.dead && wasAliveLastFrame)
+            {
+                wasAliveLastFrame = false;
+
+                // 遍历玩家背包，重置所有 FinishingTouch 冷却
+                for (int i = 0; i < Player.inventory.Length; i++)
+                {
+                    if (Player.inventory[i].ModItem is FinishingTouch ft && ft.rightClickCooldownTimer > 0)
+                    {
+                        ft.rightClickCooldownTimer = 0;
+                    }
+                }
+            }
+        }
         public override void PostItemCheck()
         {
             // 检查是否启用了独特音效播放的开关

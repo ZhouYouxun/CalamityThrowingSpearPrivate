@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityMod;
 using System;
+using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 {
@@ -16,6 +18,57 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            // 获取羽毛贴图
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() * 0.5f;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            float rotation = Projectile.rotation;
+            SpriteEffects effects = SpriteEffects.None;
+
+            // === 🚩 1️⃣ 绘制拖尾（原 Calamity 拖尾）===
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, (int)1.5f);
+
+            // === 🚩 2️⃣ 外层光脉动绘制 ===
+            // 计算呼吸脉动缩放（1.6x ~ 2.0x）
+            float pulsate = 1.6f + 0.4f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f); // 呼吸周期
+
+            // 设置蓝绿色淡光色
+            Color glowColor = Color.Cyan * 0.3f;
+
+            // 多层叠加轻微位移绘制，形成柔和蓝光晕
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 offset = (MathHelper.TwoPi * i / 4f).ToRotationVector2() * 2f;
+                Main.spriteBatch.Draw(
+                    texture,
+                    drawPosition + offset,
+                    null,
+                    glowColor,
+                    rotation,
+                    origin,
+                    pulsate,
+                    effects,
+                    0f
+                );
+            }
+
+            // === 🚩 3️⃣ 绘制本体（1.5x 大小）===
+            Main.spriteBatch.Draw(
+                texture,
+                drawPosition,
+                null,
+                lightColor,
+                rotation,
+                origin,
+                1.5f,
+                effects,
+                0f
+            );
+
+            return false;
+        }
 
         public override void SetDefaults()
         {
@@ -24,6 +77,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             Projectile.friendly = true;
             Projectile.penetrate = 3;
             Projectile.alpha = 255;
+            Projectile.extraUpdates = 10;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.aiStyle = ProjAIStyleID.Nail;
             AIType = ProjectileID.NailFriendly;
@@ -33,33 +87,84 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
         public override void AI()
         {
-            // 逐渐加速，每帧乘以
-            //Projectile.velocity *= 1.025f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4;
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-            // 每三帧执行一次追踪逻辑
-            if (Projectile.timeLeft % 3 == 0)
             {
-                // 查找范围内最近的敌人
-                NPC target = Projectile.Center.ClosestNPCAt(1800);
-                if (target != null)
+                // === 🚩 1️⃣ 高密度 Dust 蓝绿色流动 ===
+                int dustCount = 5;
+                for (int i = 0; i < dustCount; i++)
                 {
-                    // 计算目标方向和当前方向之间的夹角
-                    Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    float targetAngle = directionToTarget.ToRotation();
-                    float currentAngle = Projectile.velocity.ToRotation();
-                    float maxTurnAngle = MathHelper.ToRadians(1f); // 最大拐角为X度
+                    float spread = MathHelper.ToRadians(45f);
+                    float angle = Main.rand.NextFloat(-spread, spread);
+                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(4f, 10f);
+                    int type = Main.rand.NextFloat() < 0.7f ? DustID.BlueTorch : DustID.GreenTorch;
 
-                    // 限制转向角度
-                    float newAngle = MathHelper.Lerp(currentAngle, targetAngle, maxTurnAngle / Math.Abs(targetAngle - currentAngle));
-                    Projectile.velocity = newAngle.ToRotationVector2() * Projectile.velocity.Length(); // 更新速度向量
+                    Dust d = Dust.NewDustDirect(
+                        Projectile.Center,
+                        0, 0,
+                        type,
+                        velocity.X,
+                        velocity.Y,
+                        0,
+                        default, // 使用默认色以匹配 Dust 自身蓝绿
+                        Main.rand.NextFloat(1.2f, 2.5f)
+                    );
+                    d.noGravity = true;
+                }
+
+                // === 🚩 2️⃣ DirectionalPulseRing 蓝绿色脉冲波 ===
+                if (Main.GameUpdateCount % 5 == 0)
+                {
+                    int pulseLayers = 3;
+                    for (int i = 0; i < pulseLayers; i++)
+                    {
+                        Particle pulse = new DirectionalPulseRing(
+                            Projectile.Center + forward * (10f + i * 6f),
+                            forward * (2f + i * 0.8f),
+                            Color.Lerp(Color.DeepSkyBlue, Color.Cyan, i / (float)pulseLayers),
+                            new Vector2(0.8f, 1.8f + i * 0.3f),
+                            Projectile.rotation + MathHelper.PiOver4 + MathHelper.PiOver4,
+                            0.15f + i * 0.03f,
+                            0.025f,
+                            18
+                        );
+                        GeneralParticleHandler.SpawnParticle(pulse);
+                    }
+                }
+
+                // === 🚩 3️⃣ SparkParticle 蓝绿色射线 ===
+                if (Main.rand.NextBool(3))
+                {
+                    Particle spark = new SparkParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                        forward.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(3f, 8f),
+                        false,
+                        30,
+                        Main.rand.NextFloat(0.8f, 1.2f),
+                        Color.Lerp(Color.Aqua, Color.Cyan, Main.rand.NextFloat(0.3f, 0.7f))
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // === 🚩 4️⃣ AltSparkParticle 蓝绿色竹笋尾流 ===
+                if (Main.rand.NextBool(2))
+                {
+                    AltSparkParticle altSpark = new AltSparkParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
+                        Projectile.velocity * 0.05f,
+                        false,
+                        14,
+                        1.2f,
+                        Color.Cyan * 0.25f
+                    );
+                    GeneralParticleHandler.SpawnParticle(altSpark);
                 }
             }
 
-            if (Main.rand.NextBool(6))
-            {
-                Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.GreenTorch, Projectile.velocity.X * 1f, Projectile.velocity.Y * 1f);
-            }
+          
         }
+
 
         public override void OnKill(int timeLeft)
         {
@@ -96,10 +201,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
         {
             target.AddBuff(BuffID.Daybreak, 300); // 原版的破晓效果
         }
-        public override bool PreDraw(ref Color lightColor)
-        {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
-            return false;
-        }
+
     }
 }

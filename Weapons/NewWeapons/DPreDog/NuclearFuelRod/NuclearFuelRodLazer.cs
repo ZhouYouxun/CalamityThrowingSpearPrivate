@@ -27,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             set => Projectile.ai[0] = value;
         }
 
-        public override float MaxScale => 3f;
+        public override float MaxScale => 1.2f;
         public override float MaxLaserLength => 2000f;
         public override float Lifetime => 180; // 持续 X 帧
         public override Color LaserOverlayColor => new Color(150, 255, 150, 100); // 荧光绿色

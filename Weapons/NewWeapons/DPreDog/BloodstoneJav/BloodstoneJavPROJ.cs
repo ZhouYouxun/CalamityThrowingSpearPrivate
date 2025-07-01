@@ -119,26 +119,98 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         private void CreateChargeEffect()
         {
             Vector2 center = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 2f;
-            Color electricColor = Color.Red;
 
-            for (int i = 0; i < 6; i++)
+            // === 1️⃣ 血色闪电线性粒子 (SparkParticle) ★重制宏伟版===
+            int sparkLayers = 3;
+            int sparksPerLayer = 16;
+            for (int layer = 0; layer < sparkLayers; layer++)
             {
-                float angle = MathHelper.ToRadians(60 * i);
-                Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+                float radius = 12f + layer * 6f;
+                float speedMultiplier = 1f + layer * 0.5f;
+                float angleOffset = Main.GameUpdateCount * 0.05f * (layer % 2 == 0 ? 1 : -1); // 层间反向旋转
 
-                Particle electricParticle = new SparkParticle(
-                    center,
-                    direction * 2f,
-                    false,
-                    60,
-                    Main.rand.NextFloat(1.5f, 2.0f),
-                    electricColor
-                );
+                for (int i = 0; i < sparksPerLayer; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / sparksPerLayer + angleOffset;
+                    Vector2 direction = angle.ToRotationVector2();
+                    Vector2 velocity = direction * Main.rand.NextFloat(4f, 8f) * speedMultiplier;
 
-                GeneralParticleHandler.SpawnParticle(electricParticle);
+                    Particle spark = new SparkParticle(
+                        center + direction * radius,
+                        velocity,
+                        false,
+                        60,
+                        Main.rand.NextFloat(1.5f, 2.4f),
+                        Color.Lerp(Color.DarkRed, Color.Maroon, Main.rand.NextFloat(0.3f, 0.7f)) * 0.9f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
+
+            // === 2️⃣ 血色 Dust 爆散 (血雾微粒) ★重制宏伟版===
+            int dustLayers = 5;
+            int dustPerLayer = 30;
+            float baseRadius = 8f;
+            float radiusStep = 10f;
+            for (int layer = 0; layer < dustLayers; layer++)
+            {
+                float currentRadius = baseRadius + layer * radiusStep;
+                float angleOffset = Main.GameUpdateCount * 0.1f + layer * 0.5f;
+
+                for (int i = 0; i < dustPerLayer; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / dustPerLayer + angleOffset + Main.rand.NextFloat(-0.05f, 0.05f);
+                    Vector2 direction = angle.ToRotationVector2();
+                    Vector2 spawnPos = center + direction * currentRadius;
+                    Vector2 velocity = direction * Main.rand.NextFloat(3f, 9f) + Main.rand.NextVector2Circular(1f, 1f);
+
+                    Dust dust = Dust.NewDustPerfect(
+                        spawnPos,
+                        DustID.Blood,
+                        velocity,
+                        0,
+                        Color.DarkRed * 0.9f,
+                        Main.rand.NextFloat(1.3f, 2.2f)
+                    );
+                    dust.noGravity = true;
+                }
+            }
+
+            // === 3️⃣ 血阵冲击波收缩 (DirectionalPulseRing) ===
+            Particle pulse = new DirectionalPulseRing(
+                center,
+                Vector2.Zero,
+                Color.DarkRed * 0.8f,
+                new Vector2(1.0f, 1.0f),
+                4f,
+                0.05f,
+                3f,
+                40
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
+
+            // === 4️⃣ 红色血雾 HeavySmokeParticle ===
+            int smokeCount = 12;
+            for (int i = 0; i < smokeCount; i++)
+            {
+                Vector2 velocity = Main.rand.NextVector2Circular(2.5f, 2.5f);
+                Particle smoke = new HeavySmokeParticle(
+                    center,
+                    velocity,
+                    Color.DarkRed * 0.6f,
+                    40,
+                    Main.rand.NextFloat(1.0f, 1.6f),
+                    0.3f,
+                    Main.rand.NextFloat(-0.05f, 0.05f),
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(smoke);
+            }
+
+            // === 5️⃣ 播放血色献祭音效 ===
             SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
         }
+
 
         private void InflictChargePenalty()
         {
@@ -157,7 +229,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
             // 重置速度的逻辑
             {
-                float initialSpeed = 18f; // 设定初始速度值，可根据需求替换具体值
+                float initialSpeed = 31f; // 设定初始速度值，可根据需求替换具体值
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
 
@@ -165,40 +237,93 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.tileCollide = true;
 
-            // 飞行期间的粒子效果
-            Color bloodColor = Color.Red;
-            float scaleBoost = MathHelper.Clamp(chargeLevel * 0.005f, 0f, 2f);
-            float outerSparkScale = 1.5f + scaleBoost;
-            SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, bloodColor);
-            GeneralParticleHandler.SpawnParticle(spark);
-
-            // 每10帧生成血红色圆圈
-            if (Projectile.localAI[0] % 5 == 0)
+            // === 🚩🚩🚩 飞行期间特效【强化版】 ===
             {
-                for (int i = 0; i < 3; i++)
+                Color bloodColor = Color.Red;
+                float scaleBoost = MathHelper.Clamp(chargeLevel * 0.005f, 0f, 2f);
+                float outerSparkScale = 1.5f + scaleBoost;
+
+                // === 1️⃣ 大型血色 SparkParticle（保留） ===
+                SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, bloodColor);
+                GeneralParticleHandler.SpawnParticle(spark);
+
+                // === 2️⃣ 血红冲击波（保留） ===
+                if (Projectile.localAI[0] % 5 == 0)
                 {
-                    Particle pulse = new DirectionalPulseRing(Projectile.Center, Projectile.velocity * 0.75f, bloodColor, new Vector2(1f, 2.5f), Projectile.rotation - MathHelper.PiOver4, 0.2f, 0.03f, 20);
-                    GeneralParticleHandler.SpawnParticle(pulse);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Particle pulse = new DirectionalPulseRing(
+                            Projectile.Center,
+                            Projectile.velocity * 0.75f,
+                            bloodColor,
+                            new Vector2(1f, 2.5f),
+                            Projectile.rotation - MathHelper.PiOver4,
+                            0.2f,
+                            0.03f,
+                            20
+                        );
+                        GeneralParticleHandler.SpawnParticle(pulse);
+                    }
                 }
-            }
 
-            // 添加线性粒子特效
-            if (Projectile.localAI[0] % 5 == 0) // 每隔 5 帧生成一次
-            {
-                Vector2 particleVelocity = Projectile.velocity * 0.8f; // 粒子速度基于弹幕速度
-                Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f); // 粒子生成位置略有随机偏移
+                // === 3️⃣ 血线拖尾 LineParticle（保留） ===
+                if (Projectile.localAI[0] % 5 == 0)
+                {
+                    Vector2 particleVelocity = Projectile.velocity * 0.8f;
+                    Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+                    LineParticle bloodTrail = new LineParticle(
+                        particlePosition,
+                        particleVelocity,
+                        false,
+                        30,
+                        0.5f,
+                        Color.DarkRed
+                    );
+                    GeneralParticleHandler.SpawnParticle(bloodTrail);
+                }
 
-                // 生成粒子
-                LineParticle bloodTrail = new LineParticle(
-                    particlePosition,
-                    particleVelocity,
-                    false,
-                    30, // 粒子存活时间
-                    0.5f, // 粒子缩放大小
-                    Color.DarkRed // 粒子颜色为血红色
-                );
+                // === 4️⃣ 新增：侧向血雾 Dust 环绕射出 ===
+                if (Main.rand.NextBool(2))
+                {
+                    int dustPoints = 6;
+                    float radius = 12f;
+                    float angleOffset = Main.GameUpdateCount * 0.15f;
+                    for (int i = 0; i < dustPoints; i++)
+                    {
+                        float angle = MathHelper.TwoPi * i / dustPoints + angleOffset;
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+                        Vector2 spawnPos = Projectile.Center + offset;
+                        Vector2 velocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(Math.Sin(angle + Main.GameUpdateCount * 0.1f) * 0.2f) * Main.rand.NextFloat(2f, 5f);
 
-                GeneralParticleHandler.SpawnParticle(bloodTrail);
+                        Dust dust = Dust.NewDustPerfect(
+                            spawnPos,
+                            DustID.Blood,
+                            velocity,
+                            0,
+                            Color.DarkRed * 0.8f,
+                            Main.rand.NextFloat(1.0f, 1.4f)
+                        );
+                        dust.noGravity = true;
+                    }
+                }
+
+                // === 5️⃣ 新增：滞后型暗血 LineParticle（点缀残影） ===
+                if (Projectile.localAI[0] % 8 == 0)
+                {
+                    Vector2 lagVelocity = -Projectile.velocity.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(1f, 3f);
+                    Vector2 lagPos = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f);
+                    LineParticle darkBloodTrail = new LineParticle(
+                        lagPos,
+                        lagVelocity,
+                        false,
+                        40,
+                        0.4f,
+                        Color.Maroon * 0.7f
+                    );
+                    GeneralParticleHandler.SpawnParticle(darkBloodTrail);
+                }
+
+                Projectile.localAI[0]++;
             }
 
 
