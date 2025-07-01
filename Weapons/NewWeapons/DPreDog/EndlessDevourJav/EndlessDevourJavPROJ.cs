@@ -526,6 +526,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
             // 将比例缩放（例如除以 5），传给黑洞影响后续计算
             float transferredValue = chargeLevel1 / 5f;
+            //float finalDamage = chargeLevel1 * 0.1f;
 
             if (Main.myPlayer == Projectile.owner)
             {
@@ -534,6 +535,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
+                    //(int)(Projectile.damage * 1+finalDamage),
                     Projectile.damage,
                     Projectile.knockBack,
                     Projectile.owner,

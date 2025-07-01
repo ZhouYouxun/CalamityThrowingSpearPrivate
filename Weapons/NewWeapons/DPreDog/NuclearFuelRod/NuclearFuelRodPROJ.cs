@@ -87,7 +87,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         Projectile.Center,
                         Vector2.Zero, // 不用管速度
                         ModContent.ProjectileType<NuclearFuelRodLazer>(),
-                        Projectile.damage,
+                        (int)(Projectile.damage * 0.514),
                         Projectile.knockBack,
                         Projectile.owner,
                         Projectile.whoAmI); // ai[0] 存储父弹幕
@@ -132,7 +132,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                             gunTip,
                             dir1,
                             ModContent.ProjectileType<NuclearFuelRodM>(),
-                            Projectile.damage / 2,
+                            (int)(Projectile.damage * 0.1145),
                             2f,
                             Projectile.owner
                         );
@@ -142,7 +142,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                             gunTip,
                             dir2,
                             ModContent.ProjectileType<NuclearFuelRodM>(),
-                            Projectile.damage / 2,
+                            (int)(Projectile.damage * 0.1145),
                             2f,
                             Projectile.owner
                         );
@@ -164,7 +164,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                             gunTi2p,
                             velocity,
                             ModContent.ProjectileType<NuclearFuelRodL>(),
-                            Projectile.damage,
+                            (int)(Projectile.damage * 0.1145),
                             2f,
                             Projectile.owner
                         );
@@ -266,7 +266,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         gunTip,
                         velocity,
                         ModContent.ProjectileType<NuclearFuelRodSAM>(), // Acid Mist
-                        Projectile.damage / 2, // 酸雾伤害，可调
+                        (int)(Projectile.damage * 0.1145), // 酸雾伤害，可调
                         2f,
                         Projectile.owner
                     );

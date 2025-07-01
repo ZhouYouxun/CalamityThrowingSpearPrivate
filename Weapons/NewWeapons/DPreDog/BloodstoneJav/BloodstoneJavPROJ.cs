@@ -109,8 +109,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 CurrentState = BehaviorState.Dash;
                 Projectile.netUpdate = true;
                 Projectile.penetrate = 1 + chargeLevel; // 根据等级设置穿透次数
+                float finalDamage =  chargeLevel; //伤害提升
                 float speedBoost = 14f + chargeLevel * 0.2f; // 飞行速度提升
                 Projectile.velocity *= speedBoost;
+                Projectile.damage *= (int)(0.5f + finalDamage * 0.3f);
             }
 
             Projectile.localAI[0]++;
@@ -214,7 +216,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
         private void InflictChargePenalty()
         {
-            int damagePenalty = 8; // 每级扣除X点血量
+            int damagePenalty = 10; // 每级扣除X点血量
             Owner.statLife -= damagePenalty;
             CombatText.NewText(Owner.getRect(), Color.Lime, -damagePenalty); // 显示绿色负值
 
@@ -334,7 +336,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         {
             // 恢复玩家生命值
             Player player = Main.player[Projectile.owner];
-            float healMultiplier = 0.025f + chargeLevel * 0.001f; // 每级多增加0.1%回复
+            float healMultiplier = 0.01f + chargeLevel * 0.001f; // 每级多增加0.1%回复
             int healAmount = (int)(damageDone * healMultiplier);
             player.statLife += healAmount;
             player.HealEffect(healAmount);
@@ -374,7 +376,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Particle bloodsplosion2 = new CustomPulse(Projectile.Center, Vector2.Zero, new Color(255, 32, 32), "CalamityMod/Particles/DustyCircleHardEdge", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.03f, 0.155f, 40);
             GeneralParticleHandler.SpawnParticle(bloodsplosion2);
         }
-        public override bool? CanDamage()
+        /*public override bool? CanDamage()
         {
             // 如果是 Zenith World 天顶世界，无论何时都允许造成伤害
             if (Main.zenithWorld)
@@ -390,7 +392,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
             // 如果当前状态是冲刺状态，允许造成伤害
             return true;
-        }
+        }*/
 
         public override bool PreDraw(ref Color lightColor)
         {

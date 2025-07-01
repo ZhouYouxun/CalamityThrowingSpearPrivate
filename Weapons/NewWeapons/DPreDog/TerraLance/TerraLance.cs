@@ -24,7 +24,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 235; // 设置伤害值
+            Item.damage = 200; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -37,7 +37,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.shoot = ModContent.ProjectileType<TerraLancePROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 18f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
 
