@@ -7,7 +7,7 @@ using ReLogic.Content;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace CalamityRangerExpansion.LightingBolts.Shader
+namespace CalamityThrowingSpear.LightingBolts.Shader
 {
     public class ShaderGames : ModSystem
     {
@@ -42,6 +42,8 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
         public static Effect TrailBlazingFlame;
         public static Effect TrailWarpDistortion;
 
+        public static Effect BlackHoleDistortionShader;
+
 
 
 
@@ -75,6 +77,7 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
             AuroraWaveShader = AddShader("AuroraWaveShader"); // 南极极光
             PixelationShader = AddShader("PixelationShader"); // 马赛克
 
+            BlackHoleDistortionShader = AddShader("BlackHoleDistortion"); // 黑洞扭曲
 
 
 
@@ -156,7 +159,7 @@ namespace CalamityRangerExpansion.LightingBolts.Shader
         // 统一的 Shader 加载方法
         private static Effect AddShader(string name)
         {
-            string path = $"CalamityRangerExpansion/LightingBolts/Shader/XNBcoder/Effects/{name}";
+            string path = $"CalamityThrowingSpear/LightingBolts/Shader/XNBcoder/Effects/{name}";
             try
             {
                 Effect shader = ModContent.Request<Effect>(path, AssetRequestMode.ImmediateLoad).Value;

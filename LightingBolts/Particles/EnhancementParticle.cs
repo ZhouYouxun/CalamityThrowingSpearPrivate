@@ -34,15 +34,15 @@ namespace CalamityThrowingSpear.LightingBolts.Particles
         // 5 个可选贴图路径
         private static readonly string[] TexturePaths = new string[]
         {
-            "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle1",
-            "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle2",
-            "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle3",
-            "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle4",
-            "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle5"
+            "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle1",
+            "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle2",
+            "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle3",
+            "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle4",
+            "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle5"
         };
 
         // **修正关键点：保证 Mod 加载时 `Texture` 不为空**
-        public override string Texture => "CalamityRangerExpansion/LightingBolts/Particles/EnhancementParticle1";
+        public override string Texture => "CalamityThrowingSpear/LightingBolts/Particles/EnhancementParticle1";
 
         private string SelectedTexture;
 

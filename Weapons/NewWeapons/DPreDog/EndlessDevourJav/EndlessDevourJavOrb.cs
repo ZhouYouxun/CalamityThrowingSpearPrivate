@@ -40,6 +40,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             Projectile.tileCollide = false;
             Projectile.scale = 0.01f;
             Projectile.DamageType = DamageClass.Melee;
+
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override bool? CanHitNPC(NPC target)
@@ -70,25 +73,34 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 Main.dust[shadow].velocity *= 2f;
             }
         }
-
+        private bool weaponLost = false;
         public override void AI()
         {
             Player owner = Main.player[Projectile.owner];
 
             // === 查找是否存在处于 Aim 状态的 EndlessDevourJavPROJ ===
             Projectile targetProj = null;
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            if (!weaponLost) // 🚩 只要武器未丢失，才检测
             {
-                Projectile p = Main.projectile[i];
-                if (p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<EndlessDevourJavPROJ>())
+                for (int i = 0; i < Main.maxProjectiles; i++)
                 {
-                    if (p.ModProjectile is EndlessDevourJavPROJ ej && ej.CurrentState == EndlessDevourJavPROJ.BehaviorState.Aim)
+                    Projectile p = Main.projectile[i];
+                    if (p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<EndlessDevourJavPROJ>())
                     {
-                        targetProj = p;
-                        break;
+                        if (p.ModProjectile is EndlessDevourJavPROJ ej && ej.CurrentState == EndlessDevourJavPROJ.BehaviorState.Aim)
+                        {
+                            targetProj = p;
+                            break;
+                        }
                     }
                 }
+
+                if (targetProj == null)
+                {
+                    weaponLost = true; // 🚩 武器第一次消失后永久标记，之后不再追踪武器
+                }
             }
+
 
             NPC targetNPC = null;
             if (targetProj == null)

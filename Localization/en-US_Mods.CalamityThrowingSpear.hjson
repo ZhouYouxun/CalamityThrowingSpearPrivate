@@ -49,6 +49,8 @@ Projectiles: {
 			NuclearFuelRodSAM.DisplayName: Nuclear Fuel Rod S A M
 			StarsofDestinyINV.DisplayName: Starsof Destiny I N V
 			EndlessDevourJavBlackHole.DisplayName: Endless Devour Jav Black Hole
+			EndlessDevourJavBlackHoleIBV.DisplayName: Endless Devour Jav Black Hole I B V
+			EndlessDevourJavBlackHole2.DisplayName: Endless Devour Jav Black Hole2
 		}
 
 		BPrePlantera: {
@@ -240,6 +242,7 @@ Projectiles: {
 			StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
 			DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
 			DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
+			EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
 

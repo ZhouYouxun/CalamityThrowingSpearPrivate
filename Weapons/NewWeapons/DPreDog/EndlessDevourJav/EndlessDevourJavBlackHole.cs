@@ -13,13 +13,15 @@ using Microsoft.Xna.Framework;
 using CalamityMod.Particles;
 using CalamityMod;
 using Terraria.Audio;
+using CalamityThrowingSpear.LightingBolts.Shader;
+using CalamityMod.Graphics.Metaballs;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 {
     internal class EndlessDevourJavBlackHole : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";
-        public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
+        // public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
 
         public override void SetStaticDefaults()
         {
@@ -40,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
             // === 1️⃣ 外层亮橙色动态呼吸光环（SmallBloomRing） ===
             Texture2D smallRing = ModContent.Request<Texture2D>("CalamityMod/Particles/SmallBloomRing").Value;
-            Color ringColor = Color.Lerp(Color.OrangeRed, Color.Gold, 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f));
+            Color ringColor = Color.Lerp(Color.MediumPurple, Color.MediumPurple, 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f));
             ringColor *= 0.5f;
             ringColor.A = 0;
             Main.EntitySpriteDraw(
@@ -62,12 +64,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
     "CalamityThrowingSpear/Texture/KsTexture/twirl_02",
     "CalamityThrowingSpear/Texture/KsTexture/twirl_03"
             };
-
+            
             for (int layer = 0; layer < 3; layer++)
             {
                 Texture2D twirl = ModContent.Request<Texture2D>(twirlTextures[layer]).Value;
                 float angle = time * (1.2f + layer * 0.3f);
-                Color swirlColor = Color.Lerp(Color.Orange, Color.Gold, 0.5f + 0.5f * (float)Math.Sin(time * 3f + layer));
+                Color swirlColor = Color.Lerp(Color.MediumPurple, Color.MediumPurple, 0.5f + 0.5f * (float)Math.Sin(time * 3f + layer));
                 swirlColor *= 0.6f;
                 swirlColor.A = 0;
 
@@ -84,11 +86,80 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 );
             }
 
+            //Main.spriteBatch.End();
+            //// === 3️⃣ 绘制黑洞黑色圆（已修复锚点，防止漂移和拉条） ===
+            //Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            ////Texture2D blackPixel = TextureAssets.MagicPixel.Value;
+            //Texture2D blackCircle = ModContent.Request<Texture2D>("CalamityMod/Particles/LargeBloom").Value;
+            //Vector2 center1 = Projectile.Center - Main.screenPosition;
+            //float radius = 80f * Projectile.scale; // 黑洞半径
+
+            //Main.spriteBatch.Draw(
+            //    blackCircle,
+            //    center1,
+            //    null,
+            //    Color.Black,
+            //    0f,
+            //    blackCircle.Size() * 0.5f,
+            //    radius * 2f / blackCircle.Width, // 将直径除以贴图宽度（或高度，因其是正方形）
+            //    SpriteEffects.None,
+            //    0f
+            //);
 
 
+            Main.spriteBatch.End();
 
+            // === 应用扭曲着色器绘制弹幕自身贴图（略微夸张效果） ===
+            Effect shader = ShaderGames.BlackHoleDistortionShader;
+            if (shader == null)
+                return true;
+
+            shader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);
+
+            // 直接使用实时计算位置，避免锁定UV带来偏移问题
+            shader.Parameters["uCenter"].SetValue(
+                (Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY))
+                / new Vector2(Main.screenWidth, Main.screenHeight)
+            );
+
+            // 这个值影响的是"黑洞"的大小
+            //shader.Parameters["uRadius"].SetValue(0.5f);    // 略微夸张，可调范围（0.3~0.6）
+
+            // 这个值影响的是被拉伸的强度[调的越高，越是会被拉成更多圆环]
+            shader.Parameters["uStrength"].SetValue(12.0f);  // 略微夸张，可调强度（1.0~3.0）
+
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.Default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
+
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+
+            Main.spriteBatch.Draw(
+                texture,
+                drawPosition,
+                null,
+                Color.White,
+                Projectile.rotation,
+                texture.Size() * 0.5f,
+                Projectile.scale,
+                SpriteEffects.None,
+                0f
+            );
+
+            Main.spriteBatch.End();
+
+            // 恢复正常绘制状态供后续使用
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             return false;
+
+
+
+
         }
 
 
@@ -99,29 +170,50 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         private int soundTimer = 0;
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 16;
+            Projectile.width = Projectile.height = 160;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 240;
             Projectile.extraUpdates = 1;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 10;
-            Projectile.alpha = 255; // 完全透明
+            Projectile.alpha = 1; // 完全不透明
         }
+        private Vector2 lockedScreenPosition; // 黑洞生成时锁死的绘制位置
+        private Vector2 lockedScreenCenterUV;
+
         public override void OnSpawn(IEntitySource source)
         {
             base.OnSpawn(source);
 
+            lockedScreenPosition = Projectile.Center; // 记录生成时的固定位置（世界坐标）
+
+            lockedScreenCenterUV = (Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY)) / new Vector2(Main.screenWidth, Main.screenHeight);
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<EndlessDevourJavBlackHole2>(), // “2号黑洞”
+                    0,        // 伤
+                    0,        // 击
+                    Projectile.owner
+                );
+            }
+
+
             // === 黑洞诞生夸张超新星坍缩特效 ===
             Vector2 spawnPosition = Projectile.Center;
             Color blackColor = Color.Black;
-            float initialScale = 5.0f;        // 🚩 更大初始范围（可调）
+            float initialScale = 55.0f;        // 🚩 更大初始范围（可调）
             float finalScale = 1.0f;          // 🚩 缩小至的最终范围（可调）
-            int lifetime = 120;                // 🚩 持续帧数（可调）
+            int lifetime = 240;                // 🚩 持续帧数（可调）
             float rotationSpeed = Main.rand.NextFloat(-20f, 20f); // 🚩 更快随机旋转速度
 
             // 创建大范围黑洞坍缩特效
@@ -141,6 +233,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
         private int orbShootTimer = 0;
+        private int pulseTimer = 0;
 
         public override void AI()
         {
@@ -199,6 +292,68 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
 
+            {
+                // ===== 🌀 黑洞吸引附近敌怪（略微增强 Cyclone 吸力） =====
+                float attractionRange = 800f; // 吸引范围（可调）
+                float attractionStrength = 0.92f; // 吸引强度（Cyclone 原为 0.05f，此处增强）
+
+                for (int i = 0; i < Main.maxNPCs; i++)
+                {
+                    NPC npc = Main.npc[i];
+
+                    // 排除不可被追踪、无敌或 boss
+                    if (!npc.CanBeChasedBy(this, false) || npc.boss || npc.dontTakeDamage || npc.friendly)
+                        continue;
+
+                    // 检查距离范围
+                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
+                    if (distance < attractionRange)
+                    {
+                        // 计算方向
+                        Vector2 direction = (Projectile.Center - npc.Center).SafeNormalize(Vector2.Zero);
+
+                        // 吸引速度受距离影响（越近吸力越强）
+                        float distanceFactor = 1f - (distance / attractionRange); // 0 (远) ~ 1 (近)
+
+                        // 应用速度（加速度式，非直接重置速度）
+                        npc.velocity += direction * attractionStrength * distanceFactor;
+
+                        // 可选：限制最大加速度，避免超速
+                        float maxPullSpeed = 8f; // 可调
+                        if (npc.velocity.Length() > maxPullSpeed)
+                        {
+                            npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * maxPullSpeed;
+                        }
+                    }
+                }
+            }
+
+
+            
+            // 在黑洞的 AI() 内部添加：
+            pulseTimer++;
+            float progress1 = 1f - Projectile.timeLeft / 240; // 存在期间0~1
+
+            // 冲击波生成间隔随时间递减（从30帧递减到5帧）
+            int pulseInterval = (int)MathHelper.Lerp(30, 5, progress1);
+
+            if (pulseTimer >= pulseInterval)
+            {
+                Particle pulse = new CustomPulse(
+                    Projectile.Center,
+                    Vector2.Zero,
+                    Color.Lerp(Color.DarkViolet, Color.Black, 0.3f), // 暗紫色冲击波
+                    "CalamityMod/Particles/LargeBloom",
+                    new Vector2(1f, 1f),
+                    Main.rand.NextFloat(-10, 10), // 随机自转
+                    3.5f, // 起始缩放
+                    2f,   // 结束缩放
+                    20    // 寿命
+                );
+                GeneralParticleHandler.SpawnParticle(pulse);
+
+                pulseTimer = 0;
+            }
 
 
             {
@@ -215,10 +370,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     SoundEngine.PlaySound(SoundID.Item93 with { Pitch = pitch }, Projectile.Center);
                     soundTimer = 0;
                 }
-
             }
 
 
+            {
+                // ===== 4️⃣ SparkParticle 构建亮黄色吸积盘 =====
+                int particlesPerFrame = 44; // 每帧生成数量（可调）
+                float radius = 60f * Projectile.scale; // 黑洞贴图半径，按需调整
+                float angularSpeed = 2f; // 角速度，控制圆周移动速度（可调）
+
+                for (int i = 0; i < particlesPerFrame; i++)
+                {
+                    // 计算在圆周上的角度位置（基于时间偏移保证流动感）
+                    float angle = Main.GlobalTimeWrappedHourly * angularSpeed + MathHelper.TwoPi * i / particlesPerFrame;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    Vector2 spawnPos = Projectile.Center + offset;
+
+                    // 计算切向速度（与圆周切线方向一致，90°）
+                    Vector2 tangentialVelocity = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY) * 8f; // 可调速度
+
+                    SparkParticle spark = new SparkParticle(
+                        spawnPos,
+                        tangentialVelocity,
+                        false,
+                        Main.rand.Next(30, 50), // 寿命（可调）
+                        Main.rand.NextFloat(1.0f, 2.0f), // 大小（可调）
+                        Color.MediumPurple * 0.9f // 亮黄色吸积盘
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
 
             {
                 // ======== 黑洞持续吸引混乱恐怖特效（最终极明显强化版） ========
@@ -257,24 +438,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     {
                         SparkParticle spark = new SparkParticle(
                             spawnPos,
-                            velocity * 1.05f,
+                            velocity * 1.015f,
                             false,
-                            Main.rand.Next(40, 60), // 寿命保证拖尾可见
-                            Main.rand.NextFloat(1.0f, 5.0f), // 🚩 体积大
-                            Color.Orange * 0.9f // 深红拖尾可见
+                            Main.rand.Next(30, 40), // 寿命保证拖尾可见
+                            Main.rand.NextFloat(1.0f, 4.0f), // 🚩 体积大
+                            Color.MediumPurple * 0.9f 
                         );
                         GeneralParticleHandler.SpawnParticle(spark);
                     }
 
+                    Color smokeColor = Color.Lerp(Color.BlueViolet, Color.Black, 0.7f + 0.2f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f));
                     // === 3️⃣ HeavySmokeParticle（深色重烟） ===
                     if (Main.rand.NextBool(2)) // 半概率生成
                     {
                         Particle smokeH = new HeavySmokeParticle(
                             spawnPos,
                             velocity * 2.5f,
-                            Color.Orange, // 深蓝烟雾
+                            smokeColor, // 深蓝烟雾
                             Main.rand.Next(50, 70),
-                            Main.rand.NextFloat(2f, 3.5f), // 🚩 大体积
+                            Main.rand.NextFloat(1f, 2.5f), // 🚩 大体积
                             2.8f,
                             Main.rand.NextFloat(-0.02f, 0.02f),
                             true
@@ -284,9 +466,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 }
 
                 // 黑洞本体轻微旋转动感
-                Projectile.rotation += 0.02f;
+                //Projectile.rotation += 0.02f;
             }
-
 
 
 
@@ -296,11 +477,50 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
         }
 
-
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            Vector2 hitPosition = target.Center;
+            Vector2 projectileDirection = Projectile.velocity.SafeNormalize(Vector2.Zero);
 
+            // =============================== 1️⃣ 深蓝深紫 LavaMetaball 爆裂 ===============================
+            int lavaParticleCount = 20; // 🔹 Lava 粒子数量（可调）
+            float spawnRadiusMin = 60f; // 🔹 Lava 半径范围（可调）
+            float spawnRadiusMax = 100f;
+
+            for (int i = 0; i < lavaParticleCount; i++)
+            {
+                Vector2 spawnOffset = Main.rand.NextVector2Circular(32f, 32f); // 🔹 偏移范围（可调）
+                float radius = Main.rand.NextFloat(spawnRadiusMin, spawnRadiusMax);
+
+                // 颜色渲染改不了[大悲]
+                RancorLavaMetaball.SpawnParticle(
+                    hitPosition + spawnOffset,
+                    radius
+                );
+            }
+
+            // =============================== 2️⃣ Spark 粒子网从击中方向喷射 ===============================
+            int sparkCount = 60; // 🔹 Spark 粒子数量（可调）
+            float sparkSpeedMin = 8f; // 🔹 Spark 速度范围（可调）
+            float sparkSpeedMax = 16f;
+            Color sparkColor = Color.Lerp(Color.DarkViolet, Color.DarkBlue, 0.5f); // 深紫深蓝
+
+            for (int i = 0; i < sparkCount; i++)
+            {
+                // 生成从击中方向附近喷射的随机方向，带少量偏差
+                Vector2 direction = projectileDirection.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f));
+                Vector2 velocity = direction * Main.rand.NextFloat(sparkSpeedMin, sparkSpeedMax);
+
+                SparkParticle spark = new SparkParticle(
+                    hitPosition + Main.rand.NextVector2Circular(8f, 8f), // 🔹 生成位置略带偏移
+                    velocity,
+                    false,
+                    Main.rand.Next(20, 30),             // 寿命（可调）
+                    Main.rand.NextFloat(0.4f, 0.7f),    // 大小（可调）
+                    sparkColor * 0.8f                   // 颜色与透明度
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
         }
 
 
@@ -311,107 +531,109 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         {
             Vector2 center = Projectile.Center;
 
-            // 播放黑洞塌缩深沉音效
-            SoundEngine.PlaySound(SoundID.Item62, center);
 
-            // 屏幕震动极大
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = 20f;
 
-            // === 1️⃣ 大范围黑烟极速扩散 ===
-            for (int i = 0; i < 120; i++)
             {
-                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f, 60f);
-                Particle smoke = new HeavySmokeParticle(
-                    center + velocity * 0.3f,
-                    velocity,
-                    Color.Black,
-                    Main.rand.Next(40, 60),
-                    Main.rand.NextFloat(1.2f, 2.5f),
-                    0.6f,
-                    Main.rand.NextFloat(-0.1f, 0.1f),
-                    true
-                );
-                GeneralParticleHandler.SpawnParticle(smoke);
+
+                //// ========================== 🌌 黑洞超新星级重烟爆发（HeavySmokeParticle 强化） ==========================
+                //int smokeCount = 240; // 超新星原 30，我们提升 8 倍（可调）
+                //float smokeRadius = 400f; // 扩大生成环范围（可调）
+                //float smokeSpeed = 20f; // 略提速保持张力
+
+                //Color smokeColor = new Color(57, 46, 115) * 1.2f; 
+
+                //for (int i = 0; i < smokeCount; i++)
+                //{
+                //    Vector2 randVel = new Vector2(smokeRadius * 0.5f, smokeRadius * 0.5f).RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.8f, 1.4f);
+                //    Vector2 pos = center + randVel;
+                //    Vector2 vel = randVel.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, smokeSpeed); // 均匀四散
+
+                //    Particle smoke = new HeavySmokeParticle(
+                //        pos,
+                //        vel,
+                //        smokeColor,
+                //        Main.rand.Next(45, 60),          // 寿命保持长留
+                //        Main.rand.NextFloat(1.5f, 3.5f), // 体积适中偏大
+                //        8.6f,                             // 不透明度（清晰可见）
+                //        Main.rand.NextFloat(-0.03f, 0.03f), // 轻微自转
+                //        true
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(smoke);
+                //}
+
+                //// ========================== 🌌 六向真实 Supernova 规格 GlowSparkParticle 光柱 ==========================
+                //int beamDirections = 6; // 6 条主光柱
+                //List<float> angles = new List<float>();
+
+                //// 生成 6 个相隔足够远的方向（≥ 15°）
+                //while (angles.Count < beamDirections)
+                //{
+                //    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                //    if (!angles.Any(a => Math.Abs(MathHelper.WrapAngle(a - angle)) < MathHelper.ToRadians(15f)))
+                //        angles.Add(angle);
+                //}
+
+                //// 每条光柱方向
+                //foreach (float angle in angles)
+                //{
+                //    Vector2 dir = angle.ToRotationVector2();
+
+                //    for (int strand = -40; strand <= 40; strand += 8) // ✅ 完全与 Supernova 相同范围
+                //    {
+                //        // 内层密集短射线
+                //        GlowSparkParticle spark = new GlowSparkParticle(
+                //            center + dir.RotatedBy(MathHelper.PiOver2) * strand,
+                //            dir * Main.rand.NextFloat(1f, 20.5f),
+                //            false,
+                //            Main.rand.Next(40, 50),                      // 寿命完全一致
+                //            Main.rand.NextFloat(0.04f, 0.095f),          // 超小尺寸一致
+                //            Color.Red,                                   // Supernova 用色
+                //            new Vector2(0.3f, 1.6f),                     // 横向拉伸一致
+                //            true
+                //        );
+                //        GeneralParticleHandler.SpawnParticle(spark);
+
+                //        // 反向射线
+                //        GlowSparkParticle spark2 = new GlowSparkParticle(
+                //            center - dir.RotatedBy(MathHelper.PiOver2) * strand,
+                //            -dir * Main.rand.NextFloat(1f, 20.5f),
+                //            false,
+                //            Main.rand.Next(40, 50),
+                //            Main.rand.NextFloat(0.04f, 0.095f),
+                //            Color.MediumTurquoise,                       // Supernova 用色
+                //            new Vector2(0.3f, 1.6f),
+                //            true
+                //        );
+                //        GeneralParticleHandler.SpawnParticle(spark2);
+                //    }
+                //}
+
+
+                //// ========================== 4️⃣ 暗紫色冲击波（CustomPulse） ==========================
+                //for (int i = 0; i < 8; i++)
+                //{
+                //    Particle pulse = new CustomPulse(
+                //        center,
+                //        Vector2.Zero,
+                //        Color.Lerp(Color.DarkViolet, Color.Black, 0.3f),
+                //        "CalamityMod/Particles/LargeBloom",
+                //        new Vector2(1f, 1f),
+                //        Main.rand.NextFloat(-30f, 30f),
+                //        12f - i * 0.8f,
+                //        6f - i * 0.5f,
+                //        60
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(pulse);
+                //}
+
             }
 
-            // === 2️⃣ 大量高速 SparkParticle 黑色射线爆发 ===
-            for (int i = 0; i < 100; i++)
-            {
-                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(40f, 80f);
-                SparkParticle spark = new SparkParticle(
-                    center,
-                    velocity,
-                    false,
-                    Main.rand.Next(30, 50),
-                    Main.rand.NextFloat(0.8f, 1.4f),
-                    Color.Black * 0.95f
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
 
-            // === 3️⃣ 黑色 GlowSparkParticle 短速爆裂电火花 ===
-            for (int i = 0; i < 50; i++)
-            {
-                Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f, 90f);
-                GlowSparkParticle glowSpark = new GlowSparkParticle(
-                    center,
-                    velocity,
-                    false,
-                    Main.rand.Next(20, 30),
-                    Main.rand.NextFloat(0.15f, 0.25f),
-                    Color.Black,
-                    new Vector2(2f, 0.5f),
-                    true
-                );
-                GeneralParticleHandler.SpawnParticle(glowSpark);
-            }
+            //// 播放黑洞塌缩深沉音效
+            //SoundEngine.PlaySound(SoundID.Item62, center);
 
-            // === 4️⃣ 黑色 & 深紫 Dust 高速环状爆发 ===
-            for (int i = 0; i < 180; i++)
-            {
-                float angle = MathHelper.TwoPi * i / 180f + Main.rand.NextFloat(-0.05f, 0.05f);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(30f, 100f);
-                int dustType = Main.rand.NextBool() ? DustID.Shadowflame : DustID.DarkCelestial;
-                int dust = Dust.NewDust(center, 0, 0, dustType);
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = velocity;
-                Main.dust[dust].scale = Main.rand.NextFloat(1.2f, 2.2f);
-                Main.dust[dust].color = Color.Black;
-            }
-
-            // === 5️⃣ 黑色冲击波爆发（CustomPulse） ===
-            for (int i = 0; i < 6; i++)
-            {
-                Particle pulse = new CustomPulse(
-                    center,
-                    Vector2.Zero,
-                    Color.Black,
-                    "CalamityMod/Particles/LargeBloom",
-                    new Vector2(1f, 1f),
-                    Main.rand.NextFloat(-20f, 20f),
-                    6f - i * 0.4f,
-                    3f - i * 0.3f,
-                    40
-                );
-                GeneralParticleHandler.SpawnParticle(pulse);
-            }
-
-            // === 6️⃣ 黑色火焰爆裂（FlameExplosion） ===
-            for (int i = 0; i < 10; i++)
-            {
-                Particle flame = new CustomPulse(
-                    center,
-                    Vector2.Zero,
-                    Color.Black * 0.8f,
-                    "CalamityMod/Particles/FlameExplosion",
-                    new Vector2(1f, 1f),
-                    Main.rand.NextFloat(-15f, 15f),
-                    5f,
-                    0f,
-                    50
-                );
-                GeneralParticleHandler.SpawnParticle(flame);
-            }
+            //// 屏幕震动极大
+            //Main.LocalPlayer.Calamity().GeneralScreenShakePower = 20f;
         }
 
 

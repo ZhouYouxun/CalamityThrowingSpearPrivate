@@ -116,6 +116,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 10;
         }
+        private int currentSummonedOrbs = 0; // 当前已生成的 Orbs 数量
+        private const int MaxSummonedOrbs = 10; // 最大允许生成数量（可调）
 
         private void DoBehavior_Aim()
         {
@@ -137,41 +139,52 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             Owner.heldProj = Projectile.whoAmI;
 
 
-
             {
-                // === 追加：瞄准期间召唤随机远处弹幕打向自己（带偏差） ===
+                // === 瞄准期间定时在远处召唤弹幕打向自己（数量限制 & 延时启动） ===
 
-                // 仅在本地玩家执行生成
-                if (Main.myPlayer == Projectile.owner && Projectile.localAI[0] % 60f == 0) // 每 X 帧触发一次
+                float chargeTime = Projectile.localAI[1];
+
+                if (chargeTime >= 100f && Projectile.localAI[0] % 20f == 0) // 每 20 帧触发
                 {
-                    Vector2 playerCenter = Owner.Center;
+                    if (currentSummonedOrbs < MaxSummonedOrbs) // 未超出生成上限才生成
+                    {
+                        Vector2 playerCenter = Owner.Center;
 
-                    float spawnRadius = 1200f; // ✅ 半径很大（你可调，如 1200f）
-                    float damageMultiplier = 0.5f; // ✅ 伤害倍率（你可调）
+                        float spawnRadius = 1200f;
+                        float projectileSpeed = 18f;
 
-                    // 在大圆周上随机选取位置
-                    Vector2 randomOffset = Main.rand.NextVector2Unit() * spawnRadius;
-                    Vector2 spawnPosition = playerCenter + randomOffset;
+                        // 动态伤害倍率
+                        float minDamageMultiplier = 0.1f;
+                        float maxDamageMultiplier = 0.7f;
+                        float damageMultiplier = MathHelper.Lerp(
+                            minDamageMultiplier,
+                            maxDamageMultiplier,
+                            MathHelper.Clamp(chargeTime / 300f, 0f, 1f)
+                        );
 
-                    // 计算飞向投射物方向（略微偏离）
-                    Vector2 targetDirection = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.UnitY);
-                    targetDirection = targetDirection.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)); // ✅ 偏离范围（你可调）
-                    Vector2 velocity = targetDirection * 18f; // ✅ 速度（你可调）
+                        Vector2 randomOffset = Main.rand.NextVector2Unit() * spawnRadius;
+                        Vector2 spawnPosition = playerCenter + randomOffset;
 
-                    // 生成 EndlessDevourJavOrb
-                    Projectile.NewProjectile(
-                        Projectile.GetSource_FromThis(),
-                        spawnPosition,
-                        velocity,
-                        ModContent.ProjectileType<EndlessDevourJavOrb>(),
-                        (int)(Projectile.damage * damageMultiplier), // ✅ 伤害倍率（你可调）
-                        0f,
-                        Projectile.owner
-                    );
+                        Vector2 targetDirection = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.UnitY);
+                        targetDirection = targetDirection.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f));
+                        Vector2 velocity = targetDirection * projectileSpeed;
+
+                        int p = Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            spawnPosition,
+                            velocity,
+                            ModContent.ProjectileType<EndlessDevourJavOrb>(),
+                            (int)(Projectile.damage * damageMultiplier),
+                            0f,
+                            Projectile.owner
+                        );
+
+                        if (p.WithinBounds(Main.maxProjectiles))
+                            currentSummonedOrbs++; // 成功生成后计数
+                    }
                 }
 
-                Projectile.localAI[0]++; // ✅ 确保帧计数器增加以触发上述逻辑
-
+                Projectile.localAI[0]++; // 持续步进，保证蓄力与震动正常
             }
 
 
@@ -179,89 +192,246 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             {
                 Vector2 HeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 6f + Main.rand.NextVector2Circular(3f, 3f);
 
-                // =============== 1️⃣ 螺旋 Dust （高速度、轻量） ===============
-                int spiralDustCount = 24;
-                float spiralRadius = 100f;
+                float chargeTime = Projectile.localAI[1];
 
-                for (int i = 0; i < spiralDustCount; i++)
+                if (chargeTime < 300f)
                 {
-                    float angle = (MathHelper.TwoPi / spiralDustCount) * i + Projectile.localAI[0] * 0.04f;
-                    Vector2 offset = angle.ToRotationVector2() * spiralRadius * (1f - i / (float)spiralDustCount * 0.3f);
-                    Vector2 dustPos = HeadPosition + offset;
-
-                    Vector2 velocity = (HeadPosition - dustPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f); // 🚀 高速推进
-
-                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.DarkCelestial, velocity);
-                    dust.noGravity = true;
-                    dust.scale = Main.rand.NextFloat(0.8f, 1.2f); // 🚩 更小
-                    dust.fadeIn = 0.4f;                           // 🚩 更透明
-                    dust.alpha = 100;                             // 🚩 透明度
-                    dust.color = Color.Black;
-                }
-
-                // =============== 2️⃣ DirectionalPulseRing（节奏保持） ===============
-                if (Projectile.localAI[0] % 12 == 0)
-                {
-                    Particle shrinkPulse = new DirectionalPulseRing(
-                        HeadPosition,
-                        Vector2.Zero,
-                        Color.Black,
-                        new Vector2(2.8f, 2.8f),
-                        0f,
-                        2.0f,
-                        0.2f,
-                        45
-                    );
-                    GeneralParticleHandler.SpawnParticle(shrinkPulse);
-                }
-
-                // =============== 3️⃣ SparkParticle（高速度可达中心） ===============
-                if (Projectile.localAI[0] % 3 == 0)
-                {
-                    int sparkLines = 8;
-                    float sparkRadius = 80f;
-                    for (int i = 0; i < sparkLines; i++)
+                    // ================= 🌑 蓄力未满 300：播放弱化特效 =================
+                    if (Projectile.localAI[0] % 8 == 0)
                     {
-                        float angle = MathHelper.TwoPi / sparkLines * i;
-                        Vector2 spawnPos = HeadPosition + angle.ToRotationVector2() * sparkRadius;
-                        Vector2 velocity = (HeadPosition - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(12f, 22f); // 🚀 高速
+                        int dustCount = 12;
+                        float radius = 60f;
+                        for (int i = 0; i < dustCount; i++)
+                        {
+                            float angle = MathHelper.TwoPi / dustCount * i + Projectile.localAI[0] * 0.02f;
+                            Vector2 offset = angle.ToRotationVector2() * radius;
 
-                        SparkParticle spark = new SparkParticle(
-                            spawnPos,
-                            velocity,
-                            false,
-                            Main.rand.Next(18, 26),
-                            Main.rand.NextFloat(0.3f, 0.6f), // 🚩 更小
-                            Color.Black * 0.9f               // 🚩 稍透明
+                            // 🩶 计算枪头正上方位置
+                            Vector2 upward = -Vector2.UnitY.RotatedBy(Projectile.rotation);
+                            Vector2 pos = HeadPosition + upward * 24f + offset * 0.2f; // 在枪头上方偏移
+
+                            // 🩶 让 Dust 往正上方喷射
+                            Vector2 vel = upward * Main.rand.NextFloat(4f, 7f) + offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 2f);
+
+                            Dust dust = Dust.NewDustPerfect(pos, DustID.Shadowflame, vel);
+                            dust.noGravity = true;
+                            dust.scale = Main.rand.NextFloat(1.5f, 1.8f);
+                            dust.fadeIn = 0.3f;
+                            dust.alpha = 120;
+                            dust.color = Color.DarkViolet;
+                        }
+                    }
+
+                    // ================= 呼吸感弱烟（枪头正上方持续喷射） =================
+                    if (Projectile.localAI[0] % 10 == 0)
+                    {
+                        Vector2 upward = -Vector2.UnitY.RotatedBy(Projectile.rotation);
+
+                        Particle smoke = new HeavySmokeParticle(
+                            HeadPosition + upward * 24f + Main.rand.NextVector2Circular(6f, 6f), // 在枪头上方偏移
+                            upward * Main.rand.NextFloat(1f, 2f),                                // 🩶 往上喷射
+                            Color.DarkSlateBlue,
+                            20,
+                            Main.rand.NextFloat(0.2f, 0.4f),
+                            0.25f,
+                            Main.rand.NextFloat(-0.2f, 0.2f),
+                            false
                         );
-                        GeneralParticleHandler.SpawnParticle(spark);
+                        GeneralParticleHandler.SpawnParticle(smoke);
                     }
                 }
-
-                // =============== 4️⃣ 中心白烟（保持呼吸感，更小） ===============
-                if (Projectile.localAI[0] % 5 == 0)
+                else
                 {
-                    Particle smoke = new HeavySmokeParticle(
-                        HeadPosition,
-                        Main.rand.NextVector2Circular(0.1f, 0.1f),
-                        Color.WhiteSmoke,
-                        20,
-                        Main.rand.NextFloat(0.3f, 0.5f),
-                        0.35f,
-                        Main.rand.NextFloat(-0.3f, 0.3f),
-                        false
-                    );
-                    GeneralParticleHandler.SpawnParticle(smoke);
+                    // ================= 🌌 蓄力到达 300 时瞬间爆发一次强特效 =================
+                    if (Projectile.localAI[0] == 300)
+                    {
+                        int burstCount = 64;          // 🔹 粒子数量
+                        float burstRadius = 110f;     // 🔹 爆发环半径
+                        float speedMin = 20f;         // 🔹 最低速度
+                        float speedMax = 40f;         // 🔹 最高速度
+
+                        Color[] burstColors = new Color[]
+                        {
+        Color.DarkViolet,
+        Color.MediumPurple,
+        Color.BlueViolet,
+        Color.MediumSlateBlue,
+        Color.DeepSkyBlue,
+        Color.Cyan
+                        };
+
+                        for (int i = 0; i < burstCount; i++)
+                        {
+                            float angle = MathHelper.TwoPi * i / burstCount + Main.rand.NextFloat(-0.02f, 0.02f); // 微扰动避免呆板
+                            Vector2 dir = angle.ToRotationVector2();
+                            Vector2 spawnPos = HeadPosition + dir * burstRadius;
+                            Vector2 vel = dir * Main.rand.NextFloat(speedMin, speedMax);
+
+                            Color burstColor = burstColors[i % burstColors.Length] * 0.9f; // 彩色循环
+
+                            SparkParticle spark = new SparkParticle(
+                                spawnPos,
+                                vel,
+                                false,
+                                Main.rand.Next(40, 60),             // 寿命更长
+                                Main.rand.NextFloat(1.2f, 2.0f),    // 🚩 更大
+                                burstColor
+                            );
+                            GeneralParticleHandler.SpawnParticle(spark);
+                        }
+
+                        // 🌌 中心脉冲波环大范围闪光扩散
+                        for (int j = 0; j < 5; j++)
+                        {
+                            Particle ring = new DirectionalPulseRing(
+                                HeadPosition,
+                                Vector2.Zero,
+                                Color.Lerp(Color.DarkViolet, Color.Cyan, 0.5f),
+                                new Vector2(3.5f, 3.5f) * (1.2f - j * 0.15f), // 分层不同大小
+                                0f,
+                                2.5f + j * 0.4f, // 不同扩散速度
+                                0.3f,
+                                60
+                            );
+                            GeneralParticleHandler.SpawnParticle(ring);
+                        }
+
+                        // 🌌 星芒爆发高亮闪烁
+                        for (int k = 0; k < 12; k++)
+                        {
+                            GenericSparkle sparkle = new GenericSparkle(
+                                HeadPosition + Main.rand.NextVector2Circular(24f, 24f),
+                                Main.rand.NextVector2Circular(2f, 2f),
+                                Color.White,
+                                Color.Cyan,
+                                Main.rand.NextFloat(2.0f, 3.5f),
+                                Main.rand.Next(20, 30),
+                                Main.rand.NextFloat(-0.08f, 0.08f),
+                                2.0f
+                            );
+                            GeneralParticleHandler.SpawnParticle(sparkle);
+                        }
+
+                        // 播放瞬间爆发音效
+                        SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.3f, Volume = 0.8f }, HeadPosition);
+                    }
+
+
+                    // DirectionalPulseRing
+                    if (Projectile.localAI[0] == 300)
+                    {
+                        Particle shrinkPulse = new DirectionalPulseRing(
+                            HeadPosition,
+                            Vector2.Zero,
+                            Color.Purple * 1.2f,
+                            new Vector2(2.8f, 2.8f),
+                            0f,
+                            12.0f,
+                            0.2f,
+                            45
+                        );
+                        GeneralParticleHandler.SpawnParticle(shrinkPulse);
+                    }
+
+                    // ================= 🌌 蓄力到达 300 后持续播放完整强特效 =================
+
+                    // 螺旋 Dust（增强）
+                    if (Projectile.localAI[0] % 4 == 0)
+                    {
+                        int dustCount = 24;
+                        float radius = 100f;
+                        for (int i = 0; i < dustCount; i++)
+                        {
+                            float angle = MathHelper.TwoPi / dustCount * i + Projectile.localAI[0] * 0.04f;
+                            Vector2 offset = angle.ToRotationVector2() * radius * (1f - i / (float)dustCount * 0.3f);
+                            Vector2 pos = HeadPosition + offset;
+                            Vector2 vel = (HeadPosition - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 18f);
+
+                            Dust dust = Dust.NewDustPerfect(pos, DustID.DarkCelestial, vel);
+                            dust.noGravity = true;
+                            dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
+                            dust.fadeIn = 0.4f;
+                            dust.alpha = 100;
+                            dust.color = Color.Lerp(Color.DarkViolet, Color.DarkBlue, 0.5f);
+                        }
+                    }
+
+                    // ================= ⚡ SparkParticle 放射（枪头方向散射喷射） =================
+                    if (Projectile.localAI[0] % 5 == 0)
+                    {
+                        int sparkLines = 8;
+                        float sparkRadius = 80f;
+
+                        // 🩶 枪头方向
+                        Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                        for (int i = 0; i < sparkLines; i++)
+                        {
+                            float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-25f, 25f)); // 🔹 左右散射范围可调
+                            Vector2 direction = forward.RotatedBy(angleOffset);
+
+                            Vector2 spawnPos = HeadPosition + direction * sparkRadius * Main.rand.NextFloat(0.6f, 1.0f);
+                            Vector2 vel = direction * Main.rand.NextFloat(14f, 26f); // 🚩 更快射出速度
+
+                            SparkParticle spark = new SparkParticle(
+                                spawnPos,
+                                vel,
+                                false,
+                                Main.rand.Next(24, 34),             // 🚩 更长寿命
+                                Main.rand.NextFloat(0.6f, 1.0f),    // 🚩 更大
+                                Color.Lerp(Color.DarkViolet, Color.DarkBlue, 0.5f) * 0.9f
+                            );
+                            GeneralParticleHandler.SpawnParticle(spark);
+                        }
+                    }
+
+                    // ================= ⚡ 呼吸感中心烟雾（枪头方向喷射） =================
+                    if (Projectile.localAI[0] % 6 == 0)
+                    {
+                        // 🩶 枪头方向
+                        Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                        Particle smoke = new HeavySmokeParticle(
+                            HeadPosition + forward * 12f + Main.rand.NextVector2Circular(8f, 8f), // 稍微在前方生成
+                            forward * Main.rand.NextFloat(2f, 5f) + Main.rand.NextVector2Circular(0.5f, 0.5f), // 🚩 往前散射
+                            Color.Lerp(Color.DarkViolet, Color.DarkBlue, 0.5f),
+                            28,                                    // 🚩 更长寿命
+                            Main.rand.NextFloat(0.4f, 0.6f),       // 🚩 大小
+                            0.5f,                                   // 不透明度
+                            Main.rand.NextFloat(-0.2f, 0.2f),
+                            false
+                        );
+                        GeneralParticleHandler.SpawnParticle(smoke);
+                    }
+
                 }
 
-                // 屏幕震动保持
-                float shakePower = MathHelper.Clamp(Projectile.localAI[1] * 0.1f, 5f, 100f);
-                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+                {
+                    // 屏幕震动保持
+                    float shakePower;
+
+                    // 当蓄力未满 300 时，线性递增震动（最大 30）
+                    if (chargeTime < 300f)
+                    {
+                        shakePower = MathHelper.Lerp(0f, 30f, chargeTime / 300f);
+                    }
+                    else // 达到 300 后固定为 30
+                    {
+                        shakePower = 30f;
+                    }
+
+                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+                }
+            
+
+
+
 
                 Projectile.localAI[0]++;
-            }
+                Projectile.localAI[1]++;
 
+            }
 
 
 
@@ -302,7 +472,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
                 // =============== 1️⃣ 螺旋收缩 Dust（黑色 / 暗紫） ===============
                 int spiralDustCount = 18;
-                float spiralRadius = 80f;
+                float spiralRadius = 8f;
                 for (int i = 0; i < spiralDustCount; i++)
                 {
                     float angle = MathHelper.TwoPi / spiralDustCount * i + Projectile.localAI[0] * 0.04f;
@@ -411,19 +581,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         public override void OnKill(int timeLeft)
         {
             base.OnKill(timeLeft);
+            Vector2 center = Projectile.Center;
+
+
+           
+
 
 
             {
-                Vector2 center = Projectile.Center;
 
-                // 🩶 屏幕震动（固定最大狂野级别）
-                float shakePower = 80f;
+                // 🩶 屏幕震动
+                float shakePower = 8f;
                 float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
                 Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
                 int spiralCount = 60;
                 int sparkCount = 50;
-                int heavySmokeCount = 20;
+                int heavySmokeCount = 40;
                 int sparkleCount = 15;
 
                 // =============== 1️⃣ 黑洞螺旋 Dust 吸收（银河旋臂状） ===============
@@ -466,7 +640,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(60f, 100f);
                     Vector2 spawnPos = center + offset;
 
-                    Vector2 vel = offset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 6f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+                    Vector2 vel = offset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 6f) + Main.rand.NextVector2Circular(1.5f, 1.5f);
 
                     Particle smokeH = new HeavySmokeParticle(
                         spawnPos,
@@ -520,27 +694,68 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
 
-           
-            // 计算蓄力强度（假设最大 100，最小 1）
-            float chargeLevel1 = MathHelper.Clamp(Projectile.localAI[1], 1f, 100f);
 
-            // 将比例缩放（例如除以 5），传给黑洞影响后续计算
-            float transferredValue = chargeLevel1 / 5f;
+            // 计算实际蓄力时长（这里假设 localAI[1] 存储了蓄力时长）
+            float chargeTime = Projectile.localAI[1];
 
-            if (Main.myPlayer == Projectile.owner)
+            if (chargeTime >= 300f)
             {
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    Vector2.Zero,
-                    ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
-                    Projectile.damage,
-                    Projectile.knockBack,
-                    Projectile.owner,
-                    transferredValue // 通过 ai[0] 传入
-                );
+                // =============== 蓄力足够时：生成黑洞 ===============
+                if (Main.myPlayer == Projectile.owner)
+                {
+                    // 可根据需求调整传入的黑洞参数（这里传入缩放强度等）
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
+                        Projectile.damage,
+                        Projectile.knockBack,
+                        Projectile.owner,
+                        chargeTime / 5f // 通过 ai[0] 传入黑洞影响后续强度
+                    );
+                }
             }
-           
+            else
+            {
+                // =============== 🌫️ 蓄力不足时：在周围圆周上生成 EndlessDevourJavOrbSmall ===============
+
+                int orbCount = 8; // 🔹 生成数量（可调）
+                float spawnRadius = 50f; // 🔹 圆周半径（可调）
+                float orbSpeed = 10f; // 🔹 移动速度（可调）
+
+                // 伤害倍率，蓄力 0~300 对应 0.2x ~ 0.8x（可调）
+                float minDamageMultiplier = 0.2f;
+                float maxDamageMultiplier = 0.8f;
+                float chargeTime1 = Projectile.localAI[1];
+                float damageMultiplier = MathHelper.Lerp(minDamageMultiplier, maxDamageMultiplier, chargeTime1 / 300f);
+
+                for (int i = 0; i < orbCount; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / orbCount;
+                    Vector2 offset = angle.ToRotationVector2() * spawnRadius;
+
+                    // 🚩 计算切线方向（沿圆周方向乘 90°）
+                    Vector2 direction = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
+                    Vector2 velocity = direction * orbSpeed;
+
+                    if (Main.myPlayer == Projectile.owner)
+                    {
+                        Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            center + offset, // 在圆周上生成
+                            velocity,        // 切线方向移动
+                            ModContent.ProjectileType<EndlessDevourJavOrbSmall>(),
+                            (int)(Projectile.damage * damageMultiplier),
+                            0f,
+                            Projectile.owner
+                        );
+                    }
+                }
+            }
+
+
+
 
 
         }

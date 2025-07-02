@@ -9,6 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="KaiJuXiaoZhiTiao.png" />
+	  <None Remove="lightingbolts\shader\xnbcoder\effects\BlackHoldShader.fx" />
 	  <None Remove="Localization\zh-Hans_Mods.CalamityThrowingSpear.hjson" />
 	  <None Remove="TheSkillAcc.png" />
 	  <None Remove="Weapons\ChangedWeapons\APreHardMode\AmidiasTridentC\AmidiasTridentJavWhirlpool.png" />
@@ -130,6 +131,7 @@
 	  <None Remove="Weapons\NewWeapons\DPreDog\ChaosWindJav\Projectile_465.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\ElementalArkJav\XiaoZhiTiaoEA.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\EndlessDevourJav\EndlessDevourJav.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\EndlessDevourJav\EndlessDevourJavBlackHole.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\BlackSLASH.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\InfiniteDarknessJav\InfiniteDarknessJav.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\NuclearFuelRod\NuclearFuelRodL.png" />
