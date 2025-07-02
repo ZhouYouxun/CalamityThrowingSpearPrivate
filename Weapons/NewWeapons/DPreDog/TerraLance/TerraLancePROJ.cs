@@ -139,10 +139,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 
 
             // 阶段控制
-            if (Projectile.ai[0] < 25) // 第一阶段：加速阶段
+            if (Projectile.ai[0] < 25)
             {
-                float accelerationFactor = Main.rand.NextFloat(1.01f, 1.08f); // 随机加速度
-                Projectile.velocity *= accelerationFactor; // 增加速度
                 Projectile.penetrate = -1; // 无限穿透
                 
                 // 加速期间超大型粒子特效
@@ -252,7 +250,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             }
             else // 第二阶段：追踪敌人
             {
-                // 切换为单体穿透
+                // 切换为单体穿透并逐渐加速
+                float accelerationFactor = Main.rand.NextFloat(1.01f, 1.04f); // 随机加速度
+                Projectile.velocity *= accelerationFactor; // 增加速度
                 Projectile.penetrate = 1;
 
                 // 开始追踪最近的敌人

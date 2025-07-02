@@ -85,7 +85,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 spawnPosition,
                 spawnVelocity,
                 ModContent.ProjectileType<FinishingTouchDragon>(),
-                (int)(Projectile.damage * 1.0),
+                (int)(Projectile.damage * 5.0),
                 Projectile.knockBack,
                 Projectile.owner
             );

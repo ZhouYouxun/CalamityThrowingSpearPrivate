@@ -163,7 +163,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             {
                 // 恢复玩家生命值
                 Player player = Main.player[Projectile.owner];
-                float healMultiplier = Main.zenithWorld ? 100f : 0.025f; // 根据是否启用 zenithWorld 设置恢复倍率
+                float healMultiplier = Main.zenithWorld ? 100f : 0.008f; // 根据是否启用 zenithWorld 设置恢复倍率
                 int healAmount = (int)(damageDone * healMultiplier);
                 player.statLife += healAmount;
                 player.HealEffect(healAmount);
@@ -192,7 +192,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<VisceraBoom>(),
-                    (int)(Projectile.damage * 0.75f),
+                    Projectile.damage,
                     Projectile.knockBack * 4,
                     Projectile.owner
                 );

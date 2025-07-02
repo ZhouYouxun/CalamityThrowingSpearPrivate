@@ -697,6 +697,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
             // 计算实际蓄力时长（这里假设 localAI[1] 存储了蓄力时长）
             float chargeTime = Projectile.localAI[1];
+            // 将比例缩放（例如除以 5），传给黑洞影响后续计算
+            //float transferredValue = chargeLevel1 / 5f;
+            float transferredValue = 5f;
+            //float finalDamage = chargeLevel1 * 0.1f;
 
             if (chargeTime >= 300f)
             {
@@ -712,9 +716,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                         Projectile.damage,
                         Projectile.knockBack,
                         Projectile.owner,
-                        chargeTime / 5f // 通过 ai[0] 传入黑洞影响后续强度
+                        chargeTime / 5f // 通过 ai[0] 传入黑洞影响后续强度[暂时没用到]
                     );
                 }
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
+                    //(int)(Projectile.damage * 1+finalDamage),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner,
+                    transferredValue // 通过 ai[0] 传入
+                );
             }
             else
             {
