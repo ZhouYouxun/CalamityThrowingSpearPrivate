@@ -89,7 +89,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     {
                         if (p.ModProjectile is EndlessDevourJavPROJ ej && ej.CurrentState == EndlessDevourJavPROJ.BehaviorState.Aim)
                         {
-                            targetProj = p;
+                            //targetProj = p;
                             break;
                         }
                     }

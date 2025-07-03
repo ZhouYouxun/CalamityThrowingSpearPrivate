@@ -1032,3 +1032,744 @@ Message at 7/1/2025 7:11:24 PM: Compiling TrailWarpDistortion.xnb
 Message at 7/1/2025 7:11:24 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
 Message at 7/1/2025 7:11:24 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
 Message at 7/1/2025 7:11:24 PM: Compiling WormShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 1:25:44 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 1:25:44 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 1:25:44 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 1:25:44 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling TailModern.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 1:25:44 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 1:25:44 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 1:25:44 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 1:25:44 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 1:25:44 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 1:25:44 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 1:25:44 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 1:25:44 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 1:25:44 PM: Compiling WormShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 3:35:00 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 3:35:00 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 3:35:00 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 3:35:00 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 3:35:00 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling TailModern.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 3:35:00 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:00 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 3:35:00 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 3:35:00 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 3:35:00 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 3:35:00 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 3:35:00 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:00 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:01 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 3:35:01 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 3:35:01 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 3:35:01 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:03:41 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:03:41 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:03:41 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:03:41 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:03:41 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:03:41 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:03:41 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:03:41 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:03:41 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:03:41 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:03:41 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:03:41 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:03:41 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:03:41 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:15:46 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:15:46 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:15:46 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:15:46 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:15:46 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:15:46 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:15:46 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:15:46 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:46 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:15:46 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:46 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:15:46 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:15:46 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:15:47 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:47 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:15:47 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:15:47 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:15:47 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:47 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:15:47 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:15:47 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:15:47 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:15:47 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:47 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:47 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:15:47 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:15:47 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:15:47 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:21:49 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:21:49 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:21:49 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:21:49 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:21:49 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:21:49 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:21:49 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:21:49 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:21:49 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:21:49 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:21:49 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:21:49 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:21:49 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:21:49 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:31:29 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:29 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:31:30 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:31:30 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:31:30 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:31:30 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:31:30 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:31:30 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:31:30 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:31:30 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:31:30 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:31:30 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:31:30 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:31:30 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:31:30 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:31:30 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:35:22 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:35:22 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:35:22 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:35:22 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:35:22 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:35:22 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:35:22 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:35:22 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:35:22 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:35:22 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:35:22 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:35:22 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:35:22 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:35:22 PM: Compiling WormShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing ArtAttackTrail.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling ArtAttackTrail.xnb
+Message at 7/2/2025 4:37:55 PM: Importing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing AuroraWaveShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling AuroraWaveShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing BlackHoleDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling BlackHoleDistortion.xnb
+Message at 7/2/2025 4:37:55 PM: Importing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing CyberNeonGlow.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling CyberNeonGlow.xnb
+Message at 7/2/2025 4:37:55 PM: Importing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing DistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling DistortionShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing EdgeGlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling EdgeGlowShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing EnchantmentShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling EnchantmentShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing FireBurnShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling FireBurnShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing GlassRefractionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling GlassRefractionShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing GlitchBlocksShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling GlitchBlocksShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing GrayscaleShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling GrayscaleShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing KaleidoscopeScreenShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling KaleidoscopeScreenShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing KaleidoscopeShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling KaleidoscopeShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing LiquidFlowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling LiquidFlowShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing MagnifyDistortionShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling MagnifyDistortionShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing PixelationShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling PixelationShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing RainbowShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling RainbowShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing ScanlineShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling ScanlineShader.xnb
+Message at 7/2/2025 4:37:55 PM: Importing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing ScreenSimplyDistorted.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling ScreenSimplyDistorted.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TailFirst.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailFirst.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:37:55 PM: Compiling TailFirst.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TailMagic.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling TailMagic.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TailModern.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling TailModern.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TailSecond.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TailSecond.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:37:55 PM: Compiling TailSecond.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TailTechnology.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling TailTechnology.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TrailBlazingFlame.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailBlazingFlame.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:37:55 PM: Compiling TrailBlazingFlame.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TrailFrostCrystal.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailFrostCrystal.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:37:55 PM: Compiling TrailFrostCrystal.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TrailGhostlyPhantom.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Warning at 7/2/2025 4:37:55 PM: Warning compiling D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\LightingBolts\Shader\XNBcoder\Effects\TrailGhostlyPhantom.fx: warning X3571: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them
+Message at 7/2/2025 4:37:55 PM: Compiling TrailGhostlyPhantom.xnb
+Message at 7/2/2025 4:37:55 PM: Importing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing TrailWarpDistortion.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling TrailWarpDistortion.xnb
+Message at 7/2/2025 4:37:55 PM: Importing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 7/2/2025 4:37:55 PM: Processing WormShader.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 7/2/2025 4:37:55 PM: Compiling WormShader.xnb

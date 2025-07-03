@@ -1,0 +1,116 @@
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityThrowingSpear.Projectiles.Tutorial
+{
+    public class TutorialChargingProjectile : ModProjectile
+    {
+        public override void SetDefaults()
+        {
+            Projectile.width = Projectile.height = 16;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+            Projectile.extraUpdates = 1; // 调高这个值可以让弹幕更加顺滑的跟随鼠标
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+        }
+
+        public enum BehaviorState
+        {
+            Aim,
+            Dash
+        }
+
+        public BehaviorState CurrentState
+        {
+            get => (BehaviorState)Projectile.ai[0];
+            set => Projectile.ai[0] = (int)value;
+        }
+
+        public Player Owner => Main.player[Projectile.owner];
+
+        public override void AI()
+        {
+            switch (CurrentState)
+            {
+                case BehaviorState.Aim:
+                    DoBehavior_Aim();
+                    break;
+                case BehaviorState.Dash:
+                    DoBehavior_Dash();
+                    break;
+            }
+        }
+
+        private void DoBehavior_Aim() // 瞄准阶段
+        {
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.timeLeft = 300;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
+            }
+
+            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width);
+            Owner.heldProj = Projectile.whoAmI;
+
+            // 枪头位置 [这很重要，因为许多特效都需要和他相关]
+            Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
+
+            // 如果武器自身会高速旋转 [比如巨龙之怒] ，那么枪头需要改成这个来适配
+            float fixedRotation = Projectile.rotation; // 可根据需求加减角度偏移
+            Vector2 headPosition = Projectile.Center + new Vector2(16f * 3f, 0f).RotatedBy(fixedRotation);
+
+
+
+            // 松手后进入 Dash
+            if (!Owner.channel)
+            {
+                Projectile.netUpdate = true;
+                Projectile.timeLeft = 300;
+                Projectile.penetrate = 10; // 可调穿透次数
+
+                CurrentState = BehaviorState.Dash;
+            }
+        }
+
+        private void DoBehavior_Dash() // 冲刺阶段
+        {
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.tileCollide = true;
+
+            // 设置冲刺速度
+            float initialSpeed = 15f;
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * initialSpeed;
+
+
+
+
+
+
+
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+
+        }
+
+
+
+    }
+}

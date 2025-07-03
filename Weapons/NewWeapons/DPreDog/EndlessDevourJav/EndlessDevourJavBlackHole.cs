@@ -108,38 +108,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             //);
 
 
+
+
+
             Main.spriteBatch.End();
 
-            // === 应用扭曲着色器绘制弹幕自身贴图（略微夸张效果） ===
+            // === 应用【黑洞扭曲】着色器，绘制弹幕自身贴图 ===
             Effect shader = ShaderGames.BlackHoleDistortionShader;
             if (shader == null)
                 return true;
 
-            shader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);
+            // 传入时间（用于动态螺旋流动）
+            shader.Parameters["uTime"].SetValue(Main.GameUpdateCount / 60f);
 
-            // 直接使用实时计算位置，避免锁定UV带来偏移问题
-            shader.Parameters["uCenter"].SetValue(
-                (Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY))
-                / new Vector2(Main.screenWidth, Main.screenHeight)
-            );
+            // 🚩 使用不会偏移的中心写法：
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            //shader.Parameters["uCenter"].SetValue(
+            //    drawPos / new Vector2(Main.screenWidth, Main.screenHeight)
+            //);
+            shader.Parameters["uCenter"].SetValue(new Vector2(0.5f, 0.5f));
 
-            // 这个值影响的是"黑洞"的大小
-            //shader.Parameters["uRadius"].SetValue(0.5f);    // 略微夸张，可调范围（0.3~0.6）
 
-            // 这个值影响的是被拉伸的强度[调的越高，越是会被拉成更多圆环]
-            shader.Parameters["uStrength"].SetValue(12.0f);  // 略微夸张，可调强度（1.0~3.0）
+            // 🚩 暴露可调参数（建议范围）：
+            float blackHoleRadius = 0.25f;   // 影响黑洞吞噬范围（0.2 ~ 0.4）
+            float blackHoleStrength = 0.12f; // 扭曲强度（0.05 ~ 0.2）
+            shader.Parameters["uRadius"].SetValue(blackHoleRadius);
+            shader.Parameters["uStrength"].SetValue(blackHoleStrength);
 
             shader.CurrentTechnique.Passes[0].Apply();
 
+            // 启动 SpriteBatch 使用 Shader
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.Default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
 
+            // 🚩 使用修正后位置绘制弹幕本体
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
 
             Main.spriteBatch.Draw(
                 texture,
-                drawPosition,
+                drawPos,
                 null,
                 Color.White,
                 Projectile.rotation,
@@ -151,11 +158,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
             Main.spriteBatch.End();
 
-            // 恢复正常绘制状态供后续使用
+            // 恢复后续绘制状态
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             return false;
+
 
 
 
@@ -257,27 +265,58 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
             {
+                // ========================== 🌌 黑洞持续“吸吐”机制 ==========================
                 orbShootTimer++;
 
-                // 计算当前射击间隔（随时间缩短）
-                float progress = 1f - Projectile.timeLeft / 120f; // 0~1
-                int shootInterval = (int)MathHelper.Lerp(45, 6, progress); // 从45帧加快到6帧
+                // 计算随时间递增的速度和频率
+                float progress = 1f - Projectile.timeLeft / 600f; // 可调黑洞存在时长，如 600（0~1）
+                float minSpeedSmall = MathHelper.Lerp(8f, 18f, progress);  // EndlessDevourJavOrbSmall
+                float maxSpeedSmall = MathHelper.Lerp(14f, 28f, progress);
+                float minSpeedLarge = MathHelper.Lerp(10f, 10f, progress); // EndlessDevourJavOrb
+                float maxSpeedLarge = MathHelper.Lerp(12f, 12f, progress);
 
-                if (orbShootTimer >= shootInterval)
+                // 吐（高频率） - EndlessDevourJavOrbSmall
+                int smallShootInterval = (int)MathHelper.Lerp(20, 5, progress); // 从20帧加快到5帧
+
+                if (orbShootTimer % smallShootInterval == 0)
                 {
-                    // 基础速度区间随时间增加（越来越快）
-                    float minSpeed = MathHelper.Lerp(12f, 20f, progress);
-                    float maxSpeed = MathHelper.Lerp(20f, 40f, progress);
-
-                    for (int i = 0; i < 3; i++)
+                    int shootCount = 4; // 同时喷射数（可调）
+                    for (int i = 0; i < shootCount; i++)
                     {
-                        // 每发略微偏移，形成多向放射效果
-                        Vector2 direction = Main.rand.NextVector2Unit().RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f));
-                        Vector2 velocity = direction * Main.rand.NextFloat(minSpeed, maxSpeed);
+                        Vector2 direction = Main.rand.NextVector2Unit();
+                        Vector2 velocity = direction * Main.rand.NextFloat(minSpeedSmall, maxSpeedSmall);
 
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             Projectile.Center,
+                            velocity,
+                            ModContent.ProjectileType<EndlessDevourJavOrbSmall>(),
+                            Projectile.damage / 3, // 可调伤害倍率
+                            0f,
+                            Projectile.owner
+                        );
+                    }
+                }
+
+                // 吸（低频率） - EndlessDevourJavOrb
+                int largeShootInterval = (int)MathHelper.Lerp(60, 20, progress); // 从60帧加快到20帧
+
+                if (orbShootTimer % largeShootInterval == 0)
+                {
+                    int spawnCount = 2; // 每次生成数量（可调）
+                    float spawnRadius = 800f; // 在外圈生成半径（可调）
+
+                    for (int i = 0; i < spawnCount; i++)
+                    {
+                        Vector2 randomOffset = Main.rand.NextVector2Unit() * spawnRadius;
+                        Vector2 spawnPosition = Projectile.Center + randomOffset;
+
+                        Vector2 directionToBlackHole = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.UnitY);
+                        Vector2 velocity = directionToBlackHole * Main.rand.NextFloat(minSpeedLarge, maxSpeedLarge);
+
+                        Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            spawnPosition,
                             velocity,
                             ModContent.ProjectileType<EndlessDevourJavOrb>(),
                             Projectile.damage / 2, // 可调伤害倍率
@@ -285,9 +324,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                             Projectile.owner
                         );
                     }
-
-                    orbShootTimer = 0;
                 }
+
             }
 
 

@@ -1,0 +1,58 @@
+// 教学武器：专门用于【蓄力型长枪】标准化模板
+
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
+
+namespace CalamityThrowingSpear.Weapons.Tutorial
+{
+    public class TutorialChargingLance : ModItem
+    {
+        public override void SetDefaults()
+        {
+            Item.width = 44;
+            Item.height = 50;
+            Item.damage = 100; // 示例伤害
+            Item.DamageType = DamageClass.Melee;
+            Item.knockBack = 6.5f;
+            Item.useTime = Item.useAnimation = 30; // 决定挥舞速度（影响开枪速率）
+            Item.noUseGraphic = true; // 持枪时隐藏物品贴图（使用弹幕显示）
+            Item.noMelee = true; // 不直接造成近战伤害（由弹幕控制）
+
+            Item.UseSound = SoundID.Item1;
+
+            Item.shoot = ModContent.ProjectileType<XXXXX>(); // 调用专用【蓄力型弹幕】
+            Item.shootSpeed = 6f; // 初始速度，真实速度由弹幕控制
+            Item.rare = ItemRarityID.LightRed;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+
+            Item.useStyle = ItemUseStyleID.Shoot; // 以投掷方式显示持枪动作[这很重要，否则手会一直挥!]
+            Item.autoReuse = true; // 这很重要，否则他会直接飞出去
+            Item.channel = true; // 这是最重要的，这是核心
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            // 防止连续生成多个蓄力弹幕（除非你想出现多把标枪堆叠在一起，然后一起射出多个）
+            foreach (Projectile proj in Main.projectile)
+            {
+                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
+                {
+                    if (proj.ModProjectile is XXXXX p && p.CurrentState == XXXXX.BehaviorState.Aim)
+                        return false; // 已有蓄力状态弹幕存在时阻止生成新弹幕
+                }
+            }
+
+            // 正常生成用于蓄力的弹幕
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false; // 阻止默认射弹，完全交由弹幕逻辑管理
+        }
+
+
+
+
+
+    }
+}

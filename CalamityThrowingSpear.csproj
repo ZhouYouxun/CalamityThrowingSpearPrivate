@@ -10,6 +10,7 @@
 	<ItemGroup>
 	  <None Remove="KaiJuXiaoZhiTiao.png" />
 	  <None Remove="lightingbolts\shader\xnbcoder\effects\BlackHoldShader.fx" />
+	  <None Remove="lightingbolts\shader\xnbcoder\effects\ScreenSimplyDistorted.fx" />
 	  <None Remove="Localization\zh-Hans_Mods.CalamityThrowingSpear.hjson" />
 	  <None Remove="TheSkillAcc.png" />
 	  <None Remove="Weapons\ChangedWeapons\APreHardMode\AmidiasTridentC\AmidiasTridentJavWhirlpool.png" />

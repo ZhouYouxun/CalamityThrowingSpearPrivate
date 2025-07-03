@@ -118,6 +118,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         }
         private int currentSummonedOrbs = 0; // 当前已生成的 Orbs 数量
         private const int MaxSummonedOrbs = 10; // 最大允许生成数量（可调）
+        private int soundTimer = 0;
 
         private void DoBehavior_Aim()
         {
@@ -169,20 +170,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                         targetDirection = targetDirection.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f));
                         Vector2 velocity = targetDirection * projectileSpeed;
 
-                        int p = Projectile.NewProjectile(
-                            Projectile.GetSource_FromThis(),
-                            spawnPosition,
-                            velocity,
-                            ModContent.ProjectileType<EndlessDevourJavOrb>(),
-                            (int)(Projectile.damage * damageMultiplier),
-                            0f,
-                            Projectile.owner
-                        );
+                        // 让他在持续期间不要再生成任何弹幕了
 
-                        if (p.WithinBounds(Main.maxProjectiles))
-                            currentSummonedOrbs++; // 成功生成后计数
+                        //int p = Projectile.NewProjectile(
+                        //    Projectile.GetSource_FromThis(),
+                        //    spawnPosition,
+                        //    velocity,
+                        //    ModContent.ProjectileType<EndlessDevourJavOrb>(),
+                        //    (int)(Projectile.damage * damageMultiplier),
+                        //    0f,
+                        //    Projectile.owner
+                        //);
+
+                        //if (p.WithinBounds(Main.maxProjectiles))
+                        //    currentSummonedOrbs++; // 成功生成后计数
                     }
                 }
+
+
+
+                // === 🌌 蓄力期间自动播放越来越尖锐的音效 ===
+                soundTimer++;
+                if (soundTimer > 8) // 每 8 帧播放一次，可调整
+                {
+                    float chargeTime3 = Projectile.localAI[1];
+                    float progress = MathHelper.Clamp(chargeTime3 / 300f, 0f, 1f); // 0~1, 超过300后锁定1
+                    float pitch = MathHelper.Lerp(-0.5f, 0.4f, progress); // 音调从低到高
+
+                    SoundEngine.PlaySound(SoundID.Item4 with { Pitch = pitch, Volume = 0.7f }, Projectile.Center);
+
+                    soundTimer = 0;
+                }
+
 
                 Projectile.localAI[0]++; // 持续步进，保证蓄力与震动正常
             }
@@ -313,7 +332,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                         }
 
                         // 播放瞬间爆发音效
-                        SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.3f, Volume = 0.8f }, HeadPosition);
+                        SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.3f, Volume = 2.8f }, HeadPosition);
                     }
 
 

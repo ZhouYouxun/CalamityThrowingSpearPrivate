@@ -17,6 +17,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using CalamityMod.Particles;
 using Terraria.GameContent.Drawing;
+using CalamityMod.Graphics.Metaballs;
 
 
 
@@ -288,7 +289,6 @@ namespace CalamityThrowingSpear
             // 11.四方粒子🔳---------------------------------
             // 原灾示范：肾上腺素期间，
             // 适用于科技风格武器、能量构造、数字化特效等
-
             SquareParticle squareParticle = new SquareParticle(
                 Projectile.Center, // 粒子生成位置
                 Projectile.velocity * 0.5f, // 设定粒子的移动速度
@@ -297,9 +297,31 @@ namespace CalamityThrowingSpear
                 1.7f + Main.rand.NextFloat(0.6f), // 设定粒子的大小，增加随机性
                 Color.Cyan * 1.5f // 粒子的颜色（可调整）
             );
-
             // 生成四方形粒子
             GeneralParticleHandler.SpawnParticle(squareParticle);
+
+
+            // 12.熔岩 Metaball 🌋---------------------------------
+            // 原灾示范：怨戾激光喷射后留下的橙色熔岩滞留光效
+            // 适用于持续领域伤害、能量残留、地面烙印等
+            RancorLavaMetaball.SpawnParticle(
+                Projectile.Center + Main.rand.NextVector2Circular(32f, 32f), // 粒子生成位置（弹幕中心 + 偏移）
+                Main.rand.NextFloat(60f, 100f) // 粒子大小（半径）
+            );
+
+            // 13.宇宙 Metaball 🌌---------------------------------
+            // 原灾示范：宇宙暗流三叉戟命中后的紫色烟雾
+            // 适用于宇宙能量残留、黑洞边缘、深渊气场
+            StreamGougeMetaball.SpawnParticle(
+                Projectile.Center, // 粒子生成位置（弹幕中心）
+                Vector2.Zero, // 粒子速度（静止）
+                30f // 粒子大小（半径）
+            );
+
+
+
+
+
 
 
 
@@ -312,7 +334,6 @@ namespace CalamityThrowingSpear
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             base.OnHitNPC(target, hit, damageDone);
-
 
             // 原版内置了很多很多的特效【它们可以通过 ParticleOrchestrator.RequestParticleSpawn() 进行调用】，你可以直接检查相关文件来获得相关信息，包括但不限于：
             // 可以看一下这一段：https://gist.github.com/Rijam/971b5252707860b65b582093580aa49c

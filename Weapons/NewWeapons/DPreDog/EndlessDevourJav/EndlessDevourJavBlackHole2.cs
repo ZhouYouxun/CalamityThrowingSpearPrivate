@@ -20,8 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
         public override void SetDefaults()
         {
-            Projectile.width = 90;
-            Projectile.height = 90;
+            Projectile.width = Projectile.height = 16;
             Projectile.timeLeft = 250;
             Projectile.extraUpdates = 1;
             Projectile.tileCollide = false;
@@ -39,6 +38,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             // 寻找唯一存在的黑洞并紧贴
             int blackHoleType = ModContent.ProjectileType<EndlessDevourJavBlackHole>(); // 黑洞弹幕
             Projectile blackHole = Main.projectile.FirstOrDefault(p => p.active && p.type == blackHoleType && p.owner == Projectile.owner);
+
+
+            // === 🌌 让体积从 16x16 平滑增大到 1600x1600，且中心固定 ===
+
+            float lifeProgress = 1f - (Projectile.timeLeft / 250f); // 0 ~ 1
+            float scaleFactor = MathHelper.Lerp(16f, 1600f, lifeProgress);
+
+            Vector2 centerBefore = Projectile.Center; // 🚩 记录修改前中心
+            Projectile.width = (int)scaleFactor;
+            Projectile.height = (int)scaleFactor;
+            Projectile.Center = centerBefore;         // 🚩 重置回中心
 
         }
 
@@ -64,7 +74,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 // 主暗紫色烟雾（呼吸色）
                 Color smokeColor = Color.Lerp(
                     Color.MidnightBlue,
-                    Color.Indigo,
+                    Color.Indigo, // 原本是Color.Indigo,
                     0.5f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f)
                 );
 

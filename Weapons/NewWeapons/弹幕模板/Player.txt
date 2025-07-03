@@ -1,0 +1,191 @@
+﻿using Terraria;
+using Terraria.ModLoader;
+using Terraria.ID;
+using Microsoft.Xna.Framework;
+
+namespace CalamityThrowingSpear.Players
+{
+    public class TutorialPlayer : ModPlayer
+     {
+        // === 基础字段区 ===
+        public bool exampleBoolFlag; // 示例布尔状态，可用于 Buff/特效启用
+        public int exampleCounter;   // 示例计数器，用于时序控制
+
+        // === 1️⃣ ResetEffects ===
+        public override void ResetEffects()
+        {
+            // 每帧被调用，用于重置布尔状态（如技能是否激活、Buff状态等）
+            // 常用于每帧清空 Player 上的开关状态
+        }
+
+        // === 2️⃣ PreUpdate ===
+        public override void PreUpdate()
+        {
+            // 每帧在 Update 之前调用
+            // 常用于控制计时器累加、延迟判定、状态推进
+        }
+
+        // === 3️⃣ PostUpdate ===
+        public override void PostUpdate()
+        {
+            // 每帧在 Update 之后调用
+            // 常用于清理/最终同步状态
+        }
+
+
+
+
+
+        // === 4️⃣ PreUpdateBuffs ===
+        public override void PreUpdateBuffs()
+        {
+            // 每帧在 Buff 更新前调用
+            // 可用于控制是否允许某些 Buff 继续存在
+        }
+
+        // === 5️⃣ PostUpdateBuffs ===
+        public override void PostUpdateBuffs()
+        {
+            // 每帧在 Buff 更新后调用
+            // 可用于在 Buff 应用完后执行特效，如闪光、粒子等
+        }
+
+
+
+
+
+        // === 6️⃣ PreUpdateMovement ===
+        public override void PreUpdateMovement()
+        {
+            // 每帧在玩家移动更新前调用
+            // 可用于修改玩家速度、摩擦力、移动方式（滑行等）
+        }
+
+        // === 7️⃣ PostUpdateRunSpeeds ===
+        public override void PostUpdateRunSpeeds()
+        {
+            // 每帧在玩家速度更新后调用
+            // 可用于限制最高速度、滑行、飞行速度调整
+        }
+
+
+
+        // === 8️⃣ UpdateBadLifeRegen ===
+        public override void UpdateBadLifeRegen()
+        {
+            // 玩家持续受到伤害时调用（如出血/中毒）
+            // 可用于加快或减少负生命恢复
+        }
+
+        // === 9️⃣ UpdateLifeRegen ===
+        public override void UpdateLifeRegen()
+        {
+            // 每帧调用，用于调整正生命恢复速度
+            // 可用于增加/减少生命恢复效果
+        }
+
+        // === 10️⃣ GetHealLife ===
+        public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
+        {
+            // 玩家使用治疗道具时触发
+            // 可用于修改治疗量，如受饰品影响加成
+        }
+
+
+
+
+
+        // === 11️⃣ ModifyHitByNPC ===
+        public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
+        {
+            // 玩家被 NPC 攻击时触发
+            // 可用于减少或增加所受伤害、无敌时间等
+        }
+
+        // === 12️⃣ ModifyHitByProjectile ===
+        public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
+        {
+            // 玩家被弹幕击中时触发
+            // 可用于防御机制/反弹机制等
+        }
+
+        // === 13️⃣ OnHitByNPC ===
+        public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
+        {
+            // 玩家被 NPC 攻击命中后触发
+            // 可用于播放音效、触发粒子、计数等
+        }
+
+        // === 14️⃣ OnHitByProjectile ===
+        public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
+        {
+            // 玩家被弹幕攻击命中后触发
+            // 可用于触发特效、扣除资源等
+        }
+
+        // === 15️⃣ ModifyHitNPC ===
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            // 玩家攻击 NPC 前触发
+            // 可用于增加/减少造成的伤害、暴击率、击退
+        }
+
+
+
+
+
+
+
+        // === 19️⃣ PostUpdateEquips ===
+        public override void PostUpdateEquips()
+        {
+            // 每帧装备更新后调用
+            // 可用于对装备/饰品产生的被动效果进行操作
+        }
+
+
+
+        // === 21️⃣ UpdateEquips ===
+        public override void UpdateEquips()
+        {
+            // 每帧更新装备时调用，可用于检测装备条件执行被动
+        }
+
+
+
+
+
+        // === 22️⃣ PreSavePlayer ===
+        public override void PreSavePlayer()
+        {
+            // 玩家存档前调用，可用于存储临时数据
+        }
+
+        // === 23️⃣ CopyClientState / SyncPlayer ===
+        public override void CopyClientState(ModPlayer targetCopy)
+        {
+            // 同步多人游戏状态（拷贝本地状态至目标 ModPlayer）
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            // 多人同步状态时调用，用于发送数据包同步重要变量
+        }
+
+        // === 24️⃣ SaveData / LoadData ===
+        public override void SaveData(TagCompound tag)
+        {
+            // 存档时写入数据
+            // tag["YourData"] = value;
+        }
+
+        public override void LoadData(TagCompound tag)
+        {
+            // 读取存档数据
+            // value = tag.Get<Type>("YourData");
+        }
+    }
+}
+
+
+

@@ -53,6 +53,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         {
             Projectile.ai[0]++;
 
+            // 若场上存在 EndlessDevourJavBlackHole，则跳过复杂飞行，仅保持直线飞行
+            if (Main.projectile.Any(p => p.active && p.type == ModContent.ProjectileType<EndlessDevourJavBlackHole>()))
+            {
+                // 可选：若想保持原速度恒定（不受减速影响）
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * Projectile.velocity.Length();
+
+                // 可选：若想在此期间保持可攻击
+                Projectile.friendly = true;
+
+                return; // 不执行后续飞行逻辑，直接保持直线飞行
+            }
+
+
             // === 飞行模式切换控制 ===
             // 每 60 帧切换一次模式：
             // 模式 0: 直线飞行（20 帧）

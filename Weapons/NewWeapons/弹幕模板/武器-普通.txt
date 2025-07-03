@@ -1,0 +1,88 @@
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
+
+namespace CalamityThrowingSpear.Weapons.Tutorial
+{
+    public class TutorialWeapon : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true; // 允许开启右键攻击
+            
+            
+            // 注册四帧动画，每六帧切换一次
+            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 4));
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
+        }
+
+        public override void SetDefaults()
+        {
+            // 设置武器属性，如伤害、类型、尺寸、使用方式、冷却、射速、是否显示持枪、是否自动连发等
+            Item.width = 40;
+            Item.height = 40;
+            Item.damage = 50;
+            Item.DamageType = DamageClass.Melee;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.useTime = Item.useAnimation = 20;
+            Item.knockBack = 5f;
+            Item.value = Item.buyPrice(0, 1, 0, 0);
+            Item.rare = ItemRarityID.Green;
+            Item.shoot = ModContent.ProjectileType<XXXXX>(); // 发射的弹幕类型
+            Item.shootSpeed = 10f;
+            Item.UseSound = SoundID.Item1;
+            Item.noMelee = true; // 不直接造成近战伤害
+            Item.autoReuse = true; // 可自动连发
+        }
+
+
+        public override bool AltFunctionUse(Player player) => true; // 与前者搭配，开启右键攻击
+        public override bool CanUseItem(Player player)
+        {
+            // 当需要左右键的时候，可以在这里更改
+            if (player.altFunctionUse == 2) // 右键按下时
+            {
+                // 设置右键模式下武器属性
+                Item.useTime = 40;
+                Item.useAnimation = 40;
+                Item.shoot = ModContent.ProjectileType<TutorialProjectileAlt>(); // 发射不同弹幕
+                Item.shootSpeed = 8f;
+                Item.UseSound = SoundID.Item71;
+            }
+            else // 左键按下时
+            {
+                // 设置左键模式下武器属性
+                Item.useTime = 20;
+                Item.useAnimation = 20;
+                Item.shoot = ModContent.ProjectileType<TutorialProjectile>(); // 发射主弹幕
+                Item.shootSpeed = 12f;
+                Item.UseSound = SoundID.Item1;
+            }
+            return base.CanUseItem(player);
+        }
+
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            // 在射击时调用，控制弹幕生成方式、方向随机偏移、生成粒子特效等
+            return true; // 返回 true 表示使用默认弹幕生成，返回 false 则不生成默认弹幕（需手动生成）
+        }
+
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient<AuricBar>(5); // 模组的物品
+            recipe.AddIngredient(ItemID.SoulofLight, 1); // 原版的物品
+            recipe.AddTile<CosmicAnvil>(); // 模组的工作站
+            recipe.AddTile(TileID.DemonAltar); // 原版的工作站
+            recipe.AddCondition(Condition.Thunderstorm); // 原版的额外条件 [这里是雷暴雨天，还可以有别的，比如击败克苏鲁之脑DownedBrainOfCthulhu]
+            recipe.Register();
+        }
+
+
+
+    }
+}

@@ -1,0 +1,72 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.Graphics.Shaders;
+using CalamityMod.Graphics.Primitives;
+
+namespace CalamityThrowingSpear.Projectiles.Tutorial
+{
+    public class TutorialLightEnergyProjectile : ModProjectile
+    {
+        public override string Texture => "CalamityMod/Projectiles/InvisibleProj"; // 使用透明贴图
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = Projectile.height = 24;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.timeLeft = 300;
+            Projectile.penetrate = -1;
+        }
+
+        public override void AI()
+        {
+            // 可选：保持直线飞行
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+            // 可在此处添加轻微抖动或旋转特效以丰富光能表现
+        }
+
+        private float PrimitiveWidthFunction(float completionRatio)
+        {
+            // 定义轨迹宽度变化
+            return MathHelper.Lerp(6f, 20f, completionRatio);
+        }
+
+        private Color PrimitiveColorFunction(float completionRatio)
+        {
+            // 定义轨迹颜色渐变（示例蓝紫色调）
+            Color startColor = new Color(40, 0, 80);
+            Color endColor = new Color(0, 0, 0);
+            return Color.Lerp(startColor, endColor, completionRatio);
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/spark_07"));
+            Vector2 offset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => offset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), 50);
+            return false;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            // 命中敌人时可触发的特效或附加效果
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            // 弹幕消失时可生成粒子或光效
+        }
+    }
+}

@@ -44,6 +44,7 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
 
         public static Effect BlackHoleDistortionShader;
 
+        public static Effect ScreenSimplyDistortedShader;
 
 
 
@@ -80,10 +81,19 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
             BlackHoleDistortionShader = AddShader("BlackHoleDistortion"); // 黑洞扭曲
 
 
+            //ScreenSimplyDistortedShader = AddShader("ScreenSimplyDistorted");
+            //Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"] = new Filter(
+            //    new ScreenShaderData(new Ref<Effect>(ScreenSimplyDistortedShader), "Technique1"),
+            //    EffectPriority.Medium
+            //);
+            //Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"].Load();
 
-
-
-
+            ScreenSimplyDistortedShader = ModContent.Request<Effect>("CalamityThrowingSpear/LightingBolts/Shader/XNBcoder/Effects/ScreenSimplyDistorted").Value;
+            Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"] = new Filter(
+                new ScreenShaderData(new Ref<Effect>(ScreenSimplyDistortedShader), "Technique1"),
+                EffectPriority.Medium
+            );
+            Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"].Load();
 
 
             TailFirst = AddShader("TailFirst"); // 1号拖尾
