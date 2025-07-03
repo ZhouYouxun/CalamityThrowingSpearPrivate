@@ -13,6 +13,7 @@ using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using CalamityMod;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
 {
@@ -86,6 +87,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             if (Projectile.timeLeft <= 80)
                 Projectile.velocity *= 0.96f; // 缓慢减小弹幕速度
         }
+
+
+        public override void OnKill(int timeLeft)
+        {
+            Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY); // 死亡时朝向
+            float spreadAngle = MathHelper.ToRadians(25f); // 扇形角度范围 ±25°
+
+            for (int i = 0; i < 30; i++)
+            {
+                // 在 ±25° 内随机偏移
+                float randomRotation = Main.rand.NextFloat(-spreadAngle, spreadAngle);
+                Vector2 dir = baseDirection.RotatedBy(randomRotation) * Main.rand.NextFloat(8f, 14f); // 速度范围 8-14
+
+                Particle spark = new SparkParticle(
+                    Projectile.Center,
+                    dir,
+                    false,
+                    30,
+                    Main.rand.NextFloat(0.9f, 1.5f),
+                    Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.7f))
+                );
+
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+        }
+
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

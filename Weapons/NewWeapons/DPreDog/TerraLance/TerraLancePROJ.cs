@@ -289,7 +289,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                 }
                 // 中心再调用一次
                 CTSLightingBoltsSystem.Spawn_TerraLanceForestSpirals(center);
-
+                
 
                 float time = Main.GameUpdateCount * 0.05f;
 

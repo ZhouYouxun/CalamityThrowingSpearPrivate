@@ -123,6 +123,62 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
             }
 
+
+
+
+
+
+
+            {
+                // 每 6 帧生成冲击波
+                if (Main.GameUpdateCount % 6 == 0)
+                {
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * -20f,
+                        Projectile.velocity.SafeNormalize(Vector2.UnitY) * -3f,
+                        Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()),
+                        new Vector2(1f, 2.5f),
+                        Projectile.rotation - MathHelper.PiOver4,
+                        0.2f,
+                        0.02f,
+                        25
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                }
+
+                // 每帧生成火花拖尾
+                for (int i = 0; i < 2; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2Circular(6f, 6f);
+                    AltSparkParticle spark = new AltSparkParticle(
+                        Projectile.Center + offset,
+                        Projectile.velocity * -0.05f,
+                        false,
+                        15,
+                        1.3f,
+                        Color.OrangeRed * 0.25f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 每 20 帧生成重型烟雾
+                if (Main.GameUpdateCount % 20 == 0)
+                {
+                    Particle heavySmoke = new HeavySmokeParticle(
+                        Projectile.Center,
+                        Projectile.velocity.SafeNormalize(Vector2.UnitY) * -4f + Main.rand.NextVector2Circular(1f, 1f),
+                        Main.rand.NextBool() ? Color.Orange : Color.Red,
+                        40,
+                        Main.rand.NextFloat(0.9f, 1.4f),
+                        1f,
+                        Main.rand.NextFloat(-0.05f, 0.05f),
+                        required: false
+                    );
+                    GeneralParticleHandler.SpawnParticle(heavySmoke);
+                }
+
+            }
+
         }
 
         public override void OnKill(int timeLeft)
@@ -226,6 +282,66 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             // 打开碰撞开关
             hasCollidedWithTile = true;
+
+            {
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 2.5f }, Projectile.Center);
+
+                // ==================== 播放一次性极限爆炸视觉特效 ====================
+
+                // 大量 Dust 火花极速爆炸
+                for (int i = 0; i < 300; i++)
+                {
+                    float angle = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi);
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 45f);
+                    int dustType = Main.rand.NextFloat() < 0.7f ? DustID.OrangeTorch : DustID.FlameBurst;
+                    Dust d = Dust.NewDustDirect(
+                        Projectile.Center,
+                        0, 0,
+                        dustType,
+                        velocity.X,
+                        velocity.Y,
+                        0,
+                        Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(1.8f, 3.5f)
+                    );
+                    d.noGravity = true;
+                }
+
+                // 多层方向性冲击波
+                for (int i = 0; i < 5; i++)
+                {
+                    Particle puls2e = new DirectionalPulseRing(
+                        Projectile.Center,
+                        Vector2.Zero,
+                        Color.Lerp(Color.OrangeRed, Color.Yellow, i / 5f),
+                        new Vector2(2f + i * 0.5f, 4f + i * 0.6f),
+                        Main.rand.NextFloat(0f, MathHelper.TwoPi),
+                        0.25f + i * 0.05f,
+                        0.02f,
+                        35
+                    );
+                    GeneralParticleHandler.SpawnParticle(puls2e);
+                }
+
+                // 多向 SparkParticle 喷射
+                int sparkCount = 80;
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float angle = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi);
+                    Vector2 dir = angle.ToRotationVector2();
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        dir * Main.rand.NextFloat(18f, 40f),
+                        false,
+                        60,
+                        Main.rand.NextFloat(1.2f, 2f),
+                        Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat())
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+            }
+
 
             return false; // 保持弹帧不被销毁
         }

@@ -777,7 +777,92 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
+        // 星流1
+        public static void Spawn_PlasmaScatter(Vector2 position)
+        {
+            int count = Main.rand.Next(12, 18);
+            for (int i = 0; i < count; i++)
+            {
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = Main.rand.NextBool() ? Color.Cyan : Color.White;
+                p.LocalPosition = position + Main.rand.NextVector2Circular(40f, 40f);
+                p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                p.Scale = new Vector2(1.8f, 0.8f);
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.TimeToLive = 40;
+                p.FadeOutEnd = 40;
+                p.FadeInEnd = 10;
+                p.FadeOutStart = 25;
+                p.AdditiveAmount = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
 
+
+        // 星流2
+        public static void Spawn_ParallelPlasmaLines(Vector2 center, Vector2 dirShort, Vector2 dirLong)
+        {
+            Color[] colors = {
+        new Color(200, 255, 255),
+        new Color(255, 240, 180),
+        new Color(220, 220, 255)
+    };
+
+            float shortSpacing = 10f;
+            int shortPoints = 3;
+
+            float longSpacing = 12f;
+            int longPoints = 5;
+
+            // 1️⃣ 短线（多排，形成收敛“条纹”）
+            for (int row = -1; row <= 1; row++)
+            {
+                for (int i = 0; i < shortPoints; i++)
+                {
+                    float offsetFactor = i - (shortPoints - 1) / 2f; // -1, 0, 1
+                    Vector2 offset = dirShort.RotatedBy(row * 0.08f) * shortSpacing * offsetFactor + dirShort.RotatedBy(MathHelper.PiOver2) * row * 4f;
+
+                    PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                    p.ColorTint = colors[Main.rand.Next(colors.Length)];
+                    p.LocalPosition = center + offset;
+                    p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                    p.Scale = new Vector2(1.5f, 0.6f);
+                    p.FadeInNormalizedTime = 0.01f;
+                    p.FadeOutNormalizedTime = 0.95f;
+                    p.TimeToLive = 36;
+                    p.FadeOutEnd = 36;
+                    p.FadeInEnd = 10;
+                    p.FadeOutStart = 20;
+                    p.AdditiveAmount = 0.5f;
+                    Main.ParticleSystem_World_OverPlayers.Add(p);
+                }
+            }
+
+            // 2️⃣ 长线（多排，形成收敛“射线”）
+            for (int row = -1; row <= 1; row++)
+            {
+                for (int i = 0; i < longPoints; i++)
+                {
+                    float offsetFactor = i - (longPoints - 1) / 2f; // -2, -1, 0, 1, 2
+                    Vector2 offset = dirLong.RotatedBy(row * 0.06f) * longSpacing * offsetFactor + dirLong.RotatedBy(MathHelper.PiOver2) * row * 5f;
+
+                    PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                    p.ColorTint = colors[Main.rand.Next(colors.Length)];
+                    p.LocalPosition = center + offset;
+                    p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                    p.Scale = new Vector2(1.8f, 0.7f);
+                    p.FadeInNormalizedTime = 0.01f;
+                    p.FadeOutNormalizedTime = 0.95f;
+                    p.TimeToLive = 40;
+                    p.FadeOutEnd = 40;
+                    p.FadeInEnd = 12;
+                    p.FadeOutStart = 24;
+                    p.AdditiveAmount = 0.55f;
+                    Main.ParticleSystem_World_OverPlayers.Add(p);
+                }
+            }
+        }
 
 
 

@@ -13,6 +13,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Buffs.StatDebuffs;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
 {
@@ -80,6 +81,55 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             DelegateMethods.v3_1 = energyColor.ToVector3();
             Utils.PlotTileLine(tipPosition - verticalOffset, tipPosition + verticalOffset, 10f, DelegateMethods.CastLightOpen);
             Lighting.AddLight(tipPosition, energyColor.ToVector3());
+
+            {
+                // MiracleMatterJav 高科技飞行有序特效
+
+                float time = Main.GameUpdateCount * 0.1f;
+                float radius = 12f;
+                int points = 5; // 五点环形
+
+                for (int i = 0; i < points; i++)
+                {
+                    float angle = time + MathHelper.TwoPi / points * i;
+                    Vector2 offset = angle.ToRotationVector2() * radius * Main.rand.NextFloat(0.9f, 1.1f);
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center + offset,
+                        DustID.Electric,
+                        -Projectile.velocity * 0.05f,
+                        150,
+                        Color.Cyan,
+                        Main.rand.NextFloat(0.6f, 1.0f)
+                    );
+                    dust.noGravity = true;
+                }
+
+                // 外层更大半径三点柔和环
+                if (Main.GameUpdateCount % 5 == 0)
+                {
+                    float outerRadius = 24f;
+                    int outerPoints = 3;
+                    for (int i = 0; i < outerPoints; i++)
+                    {
+                        float angle = -time * 0.8f + MathHelper.TwoPi / outerPoints * i;
+                        Vector2 offset = angle.ToRotationVector2() * outerRadius;
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            DustID.BlueCrystalShard,
+                            Vector2.Zero,
+                            100,
+                            Color.LightBlue,
+                            Main.rand.NextFloat(0.8f, 1.2f)
+                        );
+                        dust.noGravity = true;
+                    }
+                }
+
+                // 在飞行期间稳定维持有序科技感螺旋光点
+                CTSLightingBoltsSystem.Spawn_SagittariusFlightSpiral(Projectile.Center, Main.GameUpdateCount * 0.03f);
+            }
+
+
 
 
 
@@ -215,153 +265,146 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<MiracleMatterJavLight>(), (int)(Projectile.damage * 1.2f), Projectile.knockBack, Main.myPlayer);
             }
 
-            // 1. 生成较小的橙黄色和淡黄色爆炸特效（超新星的那个光圈逐渐缩小的特效）
-            Vector2 spawnPosition = Projectile.Center;
-            Color lightYellowColor = Color.LightYellow;
-            float smallerScale = 1.5f; // 较小的扩散大小
-            float rotationSpeed = Main.rand.NextFloat(-10f, 10f); // 随机旋转速度
-            // 创建爆炸粒子，颜色为X色
-            Particle yellowExplosion = new CustomPulse(spawnPosition, Vector2.Zero, lightYellowColor, "CalamityMod/Particles/LargeBloom", new Vector2(0.5f, 0.5f), -rotationSpeed, smallerScale, smallerScale - 0.5f, 15);
-            GeneralParticleHandler.SpawnParticle(yellowExplosion);
 
-            // 2. 发射25个大小和速度差异明显的线性粒子特效
-            for (int i = 0; i < 25; i++)
             {
-                // 粒子生成位置为弹幕中心，带有小范围随机偏移
-                Vector2 spawnPosition2 = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
+                // 定义随机三角朝向
+                float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float[] triangleOffsets = { 0f, MathHelper.TwoPi / 3f, MathHelper.TwoPi * 2f / 3f };
 
-                // 随机生成粒子的速度和方向
-                Vector2 velocity = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.5f, 3f);
+                for (int i = 0; i < 30; i++)
+                {
+                    float triAngle = baseAngle + triangleOffsets[i % 3] + Main.rand.NextFloat(-0.2f, 0.2f);
+                    Vector2 dir = triAngle.ToRotationVector2() * Main.rand.NextFloat(10f, 20f);
+                    Particle smoke = new HeavySmokeParticle(
+                        Projectile.Center + dir,
+                        dir * 0.3f,
+                        new Color(140, 220, 255) * 0.8f,
+                        Main.rand.Next(25, 36),
+                        Main.rand.NextFloat(1.0f, 2.5f),
+                        0.4f,
+                        Main.rand.NextFloat(-0.05f, 0.05f),
+                        required: true
+                    );
+                    GeneralParticleHandler.SpawnParticle(smoke);
+                }
 
-                // 粒子大小和颜色
-                float trailScale = Main.rand.NextFloat(0.5f, 1.5f);
-                Color trailColor = Color.Lerp(Color.White, Color.Red, Main.rand.NextFloat());
+                CTSLightingBoltsSystem.Spawn_PlasmaScatter(Projectile.Center);
 
-                // 创建并生成粒子
-                Particle trail = new SparkParticle(spawnPosition2, velocity, false, 60, trailScale, trailColor);
-                GeneralParticleHandler.SpawnParticle(trail);
             }
 
 
-            // 3. 魔法尘埃特效（六芒星特效）
-            int vertices = 6; // 六芒星的顶点数
-            int particlesPerEdge = 12; // 每条边的粒子数
-            float radius = 75f; // 六芒星的半径
 
-            for (int edge = 0; edge < vertices; edge++)
             {
-                // 当前顶点和下一个顶点的角度
-                float currentAngle = MathHelper.TwoPi / vertices * edge;
-                float nextAngle = MathHelper.TwoPi / vertices * (edge + 1);
+                // 1. 生成较小的橙黄色和淡黄色爆炸特效（超新星的那个光圈逐渐缩小的特效）
+                Vector2 spawnPosition = Projectile.Center;
+                Color lightYellowColor = Color.LightYellow;
+                float smallerScale = 1.5f; // 较小的扩散大小
+                float rotationSpeed = Main.rand.NextFloat(-10f, 10f); // 随机旋转速度
+                                                                      // 创建爆炸粒子，颜色为X色
+                Particle yellowExplosion = new CustomPulse(spawnPosition, Vector2.Zero, lightYellowColor, "CalamityMod/Particles/LargeBloom", new Vector2(0.5f, 0.5f), -rotationSpeed, smallerScale, smallerScale - 0.5f, 15);
+                GeneralParticleHandler.SpawnParticle(yellowExplosion);
 
-                // 当前顶点和下一个顶点的坐标
-                Vector2 startPoint = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * radius;
-                Vector2 endPoint = new Vector2((float)Math.Cos(nextAngle), (float)Math.Sin(nextAngle)) * radius;
-
-                // 在当前边上生成粒子
-                for (int i = 0; i <= particlesPerEdge; i++)
+                // 2. 发射25个大小和速度差异明显的线性粒子特效
+                for (int i = 0; i < 25; i++)
                 {
-                    float progress = i / (float)particlesPerEdge;
-                    Vector2 position = Vector2.Lerp(startPoint, endPoint, progress); // 插值计算粒子位置
-                    Vector2 velocity = position.SafeNormalize(Vector2.Zero) * 5f; // 粒子速度
+                    // 粒子生成位置为弹幕中心，带有小范围随机偏移
+                    Vector2 spawnPosition2 = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
 
-                    Dust magic = Dust.NewDustPerfect(Projectile.Center + position, 267, velocity); // 267为魔法尘埃类型
-                    magic.scale = 2.2f;  // 调整大小，更加显眼
-                    magic.fadeIn = 0.7f; // 渐入效果更强
-                    magic.color = CalamityUtils.MulticolorLerp(progress, CalamityUtils.ExoPalette); // 使用 ExoPalette 的渐变效果
-                    magic.noGravity = true;
+                    // 随机生成粒子的速度和方向
+                    Vector2 velocity = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.5f, 3f);
 
-                    // 在特定位置添加额外粒子，增强视觉效果
-                    if (i % (particlesPerEdge / 3) == 0) // 每条边的 1/3 点添加旋转粒子
+                    // 粒子大小和颜色
+                    float trailScale = Main.rand.NextFloat(0.5f, 1.5f);
+                    Color trailColor = Color.Lerp(Color.White, Color.Red, Main.rand.NextFloat());
+
+                    // 创建并生成粒子
+                    Particle trail = new SparkParticle(spawnPosition2, velocity, false, 60, trailScale, trailColor);
+                    GeneralParticleHandler.SpawnParticle(trail);
+                }
+                {
+                    // 🌐 高科技有序图形整体随机朝向
+                    float baseRotation = Main.rand.NextFloat(MathHelper.TwoPi);
+
+                    // 1️⃣ 六芒星 Dust 阵列
+                    int vertices = 6; // 六芒星顶点数
+                    int particlesPerEdge = 12;
+                    float radius = 75f;
+
+                    for (int edge = 0; edge < vertices; edge++)
                     {
-                        Vector2 extraVelocity = velocity.RotatedBy(MathHelper.PiOver4) * 0.5f;
-                        Dust extraMagic = Dust.NewDustPerfect(Projectile.Center + position, 267, extraVelocity);
-                        extraMagic.scale = 1.5f;
-                        extraMagic.fadeIn = 0.3f;
-                        extraMagic.color = magic.color * 0.8f;
-                        extraMagic.noGravity = true;
+                        float currentAngle = MathHelper.TwoPi / vertices * edge + baseRotation;
+                        float nextAngle = MathHelper.TwoPi / vertices * ((edge + 1) % vertices) + baseRotation;
+
+                        Vector2 startPoint = currentAngle.ToRotationVector2() * radius;
+                        Vector2 endPoint = nextAngle.ToRotationVector2() * radius;
+
+                        for (int i = 0; i <= particlesPerEdge; i++)
+                        {
+                            float progress = i / (float)particlesPerEdge;
+                            Vector2 position = Vector2.Lerp(startPoint, endPoint, progress);
+                            Vector2 velocity = position.SafeNormalize(Vector2.Zero) * 5f;
+
+                            Dust magic = Dust.NewDustPerfect(Projectile.Center + position, 267, velocity);
+                            magic.scale = 2.2f;
+                            magic.fadeIn = 0.7f;
+                            magic.color = CalamityUtils.MulticolorLerp(progress, CalamityUtils.ExoPalette);
+                            magic.noGravity = true;
+
+                            if (i % (particlesPerEdge / 3) == 0)
+                            {
+                                Vector2 extraVelocity = velocity.RotatedBy(MathHelper.PiOver4) * 0.5f;
+                                Dust extraMagic = Dust.NewDustPerfect(Projectile.Center + position, 267, extraVelocity);
+                                extraMagic.scale = 1.5f;
+                                extraMagic.fadeIn = 0.3f;
+                                extraMagic.color = magic.color * 0.8f;
+                                extraMagic.noGravity = true;
+                            }
+                        }
+                    }
+
+                    // 2️⃣ 双椭圆 Dust 阵列
+                    int ellipseParticleCount = 100;
+                    float longAxisLength = 150f; // 75 * 2
+                    float shortAxisLength = 75f;
+
+                    float ellipseRotation1 = baseRotation + MathHelper.PiOver4; // 45°相对于整体旋转
+                    float ellipseRotation2 = baseRotation - MathHelper.PiOver4; // -45°
+
+                    for (int i = 0; i < ellipseParticleCount; i++)
+                    {
+                        float angle = MathHelper.TwoPi * i / ellipseParticleCount;
+
+                        // 第一个椭圆
+                        Vector2 ellipse1Offset = new Vector2(
+                            (float)Math.Cos(angle) * longAxisLength,
+                            (float)Math.Sin(angle) * shortAxisLength
+                        ).RotatedBy(ellipseRotation1);
+
+                        Vector2 ellipse1Velocity = ellipse1Offset * 0.02f;
+                        Dust ellipse1Dust = Dust.NewDustPerfect(Projectile.Center + ellipse1Offset, 267, ellipse1Velocity);
+                        ellipse1Dust.scale = Main.rand.NextFloat(1.5f, 2f);
+                        ellipse1Dust.fadeIn = 0.5f;
+                        ellipse1Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
+                        ellipse1Dust.noGravity = true;
+
+                        // 第二个椭圆
+                        Vector2 ellipse2Offset = new Vector2(
+                            (float)Math.Cos(angle) * longAxisLength,
+                            (float)Math.Sin(angle) * shortAxisLength
+                        ).RotatedBy(ellipseRotation2);
+
+                        Vector2 ellipse2Velocity = ellipse2Offset * 0.02f;
+                        Dust ellipse2Dust = Dust.NewDustPerfect(Projectile.Center + ellipse2Offset, 267, ellipse2Velocity);
+                        ellipse2Dust.scale = Main.rand.NextFloat(1.5f, 2f);
+                        ellipse2Dust.fadeIn = 0.5f;
+                        ellipse2Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
+                        ellipse2Dust.noGravity = true;
                     }
                 }
+
+
+
             }
-
-
-            //// 4. 新增两个椭圆粒子特效
-            //int ellipseParticleCount = 100;
-            //float longAxisLength = 75f * 2;  // 长轴
-            //float shortAxisLength = 75f * 1; // 短轴
-
-            //// 随机生成初始角度，保证两个椭圆互相垂直
-            //float baseRotation = Main.rand.NextFloat(MathHelper.TwoPi); // 随机初始角度
-            //float perpendicularRotation = baseRotation + MathHelper.PiOver2; // 垂直的角度
-
-            //for (int i = 0; i < ellipseParticleCount; i++)
-            //{
-            //    // 第一个椭圆
-            //    float angle1 = MathHelper.TwoPi * i / ellipseParticleCount;
-            //    Vector2 ellipse1Offset = new Vector2(
-            //        (float)Math.Cos(angle1) * longAxisLength,
-            //        (float)Math.Sin(angle1) * shortAxisLength
-            //    ).RotatedBy(baseRotation); // 旋转随机的角度
-
-            //    Vector2 ellipse1Velocity = ellipse1Offset * 0.02f; // 缓慢扩散
-            //    Dust ellipse1Dust = Dust.NewDustPerfect(Projectile.Center + ellipse1Offset, 267, ellipse1Velocity);
-            //    ellipse1Dust.scale = Main.rand.NextFloat(1.5f, 2f);
-            //    ellipse1Dust.fadeIn = 0.5f;
-            //    ellipse1Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
-            //    ellipse1Dust.noGravity = true;
-
-            //    // 第二个椭圆
-            //    float angle2 = MathHelper.TwoPi * i / ellipseParticleCount;
-            //    Vector2 ellipse2Offset = new Vector2(
-            //        (float)Math.Cos(angle2) * shortAxisLength,
-            //        (float)Math.Sin(angle2) * longAxisLength
-            //    ).RotatedBy(perpendicularRotation); // 旋转垂直的角度
-
-            //    Vector2 ellipse2Velocity = ellipse2Offset * 0.02f; // 缓慢扩散
-            //    Dust ellipse2Dust = Dust.NewDustPerfect(Projectile.Center + ellipse2Offset, 267, ellipse2Velocity);
-            //    ellipse2Dust.scale = Main.rand.NextFloat(1.5f, 2f);
-            //    ellipse2Dust.fadeIn = 0.5f;
-            //    ellipse2Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
-            //    ellipse2Dust.noGravity = true;
-            //}
-
-
-            // 4. 新增两个椭圆粒子特效
-            int ellipseParticleCount = 100;
-            float longAxisLength = 75f * 2f;  // 长轴为菱形半径的4倍
-            float shortAxisLength = 75f * 1f; // 短轴为菱形半径的2倍
-
-            for (int i = 0; i < ellipseParticleCount; i++)
-            {
-                // 第一个椭圆
-                float angle1 = MathHelper.TwoPi * i / ellipseParticleCount;
-                Vector2 ellipse1Offset = new Vector2(
-                    (float)Math.Cos(angle1) * longAxisLength,
-                    (float)Math.Sin(angle1) * shortAxisLength
-                ).RotatedBy(MathHelper.PiOver4); // 椭圆旋转45度
-
-                Vector2 ellipse1Velocity = ellipse1Offset * 0.02f; // 缓慢扩散
-                Dust ellipse1Dust = Dust.NewDustPerfect(Projectile.Center + ellipse1Offset, 267, ellipse1Velocity);
-                ellipse1Dust.scale = Main.rand.NextFloat(1.5f, 2f);
-                ellipse1Dust.fadeIn = 0.5f;
-                ellipse1Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
-                ellipse1Dust.noGravity = true;
-
-                // 第二个椭圆
-                float angle2 = MathHelper.TwoPi * i / ellipseParticleCount;
-                Vector2 ellipse2Offset = new Vector2(
-                    (float)Math.Cos(angle2) * longAxisLength,
-                    (float)Math.Sin(angle2) * shortAxisLength
-                ).RotatedBy(-MathHelper.PiOver4); // 椭圆旋转-45度
-
-                Vector2 ellipse2Velocity = ellipse2Offset * 0.02f; // 缓慢扩散
-                Dust ellipse2Dust = Dust.NewDustPerfect(Projectile.Center + ellipse2Offset, 267, ellipse2Velocity);
-                ellipse2Dust.scale = Main.rand.NextFloat(1.5f, 2f);
-                ellipse2Dust.fadeIn = 0.5f;
-                ellipse2Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
-                ellipse2Dust.noGravity = true;
-            }
-
 
         }
 

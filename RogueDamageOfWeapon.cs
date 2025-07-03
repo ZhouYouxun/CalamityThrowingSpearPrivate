@@ -98,7 +98,6 @@ namespace CalamityThrowingSpear
             ModContent.ProjectileType<TerraLanceBEAM>(), // 泰拉巨枪光束
             ModContent.ProjectileType<TerraLancePROJ>(), // 泰拉巨枪
 
-            ModContent.ProjectileType<SunEssenceJavBEAM>(), // 光耀日激光
             ModContent.ProjectileType<ChaosEssenceJavFIRE>(), // 凯奥斯焰
             ModContent.ProjectileType<HeartSwordPROJ>(), // 心之刺剑
             ModContent.ProjectileType<PolarEssenceJavPROJ>(), // 霜雪川
