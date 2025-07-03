@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
 
         public static int MaxUpdate = 7;
-        private int Lifetime = 310;
+        private int Lifetime = 1100;
 
         private static Color ShaderColorOne = Color.DarkRed;
         private static Color ShaderColorTwo = Color.Black;
@@ -57,11 +57,32 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
             // 前 120 帧不会追踪敌人，也不会造成伤害，只是按照初始方向飞行
             if (Projectile.ai[0] <= 120)
             {
-                Projectile.friendly = false; // 暂时关闭伤害判定
-                                             // 每一帧向左旋转 5 度
-                Projectile.velocity = Projectile.velocity.RotatedBy(-MathHelper.ToRadians(5));
-                return; // 终止后续逻辑，继续按照原有方向运动
+                Projectile.friendly = false;
+
+                float time = Projectile.ai[0];
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                float speed = Projectile.velocity.Length();
+
+                // === 正弦抖动偏移形成蛇形 ===
+                float waveFrequency = 0.15f + (time % 60f) / 600f; // 每 60 帧微调频率
+                float waveAmplitude = 0.5f + (time % 60f) / 60f * 0.3f; // 每 60 帧振幅从 0.5 -> 0.8
+
+                // 使用 sin(time) 制造横向漂移
+                Vector2 waveOffset = forward.RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(time * waveFrequency) * waveAmplitude;
+
+                // === 微弱螺旋式转动叠加 ===
+                float spiralAngle = (float)Math.Cos(time * 0.05f) * MathHelper.ToRadians(1.2f);
+                Vector2 spiralVelocity = Projectile.velocity.RotatedBy(spiralAngle);
+
+                // === 合成最终速度向量 ===
+                Projectile.velocity = (spiralVelocity + waveOffset).SafeNormalize(Vector2.UnitY) * speed;
+
+                // === 可选：微弱减速做尾迹残留 ===
+                Projectile.velocity *= 0.995f;
+
+                return;
             }
+
 
             // 超过 120 帧后，开始追踪敌人并恢复伤害判定
             Projectile.friendly = true;
@@ -74,16 +95,72 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
                 dust.color = Color.DarkRed; // 设置灰尘颜色为深红色
             }
 
-            // 追踪逻辑：在超过 120 帧后开始寻找并追踪最近的敌人
+            // === ViolenceJavLight 在超过 120 帧 螺旋式分段追踪（快速完整公转） ===
             if (Projectile.ai[0] > 120)
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找半径 1800 内最近的敌人
+                NPC target = Projectile.Center.ClosestNPCAt(1800);
                 if (target != null)
                 {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero); // 计算指向目标的单位方向向量
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 12f, 0.08f); // 以平滑插值的方式调整速度方向，追踪目标
+                    float spiralAnglePerFrame = MathHelper.ToRadians(90f); // 每帧旋转 90°，4 帧完成一周
+                    float homingStrength = 0.15f; // 追踪强度
+                    float targetSpeed = Projectile.velocity.Length();
+
+                    Projectile.localAI[1]++;
+                    if (Projectile.localAI[1] >= 20f)
+                        Projectile.localAI[1] = 0f;
+
+                    if (Projectile.localAI[1] < 16f)
+                    {
+                        // === 16 帧线性追踪 ===
+                        Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                        Vector2 homingAdjustment = toTarget * targetSpeed;
+                        Projectile.velocity = Vector2.Lerp(Projectile.velocity, homingAdjustment, homingStrength);
+                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * targetSpeed;
+                    }
+                    else
+                    {
+                        // === 4 帧完整 360° 公转 ===
+                        Projectile.velocity = Projectile.velocity.RotatedBy(-spiralAnglePerFrame);
+                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * targetSpeed;
+                    }
                 }
             }
+
+            {
+                // === ViolenceJavLight 复杂三角函数 Dust 飞行特效 ===
+
+                int dustPoints = 8; // 点数量
+                float baseRadius = 14f; // 基础半径
+
+                for (int i = 0; i < dustPoints; i++)
+                {
+                    // 利用时间 + 位置索引让每个点略有不同相位
+                    float time = Main.GlobalTimeWrappedHourly * 4f + i;
+
+                    // 半径随 sin 波动（形成呼吸感）
+                    float radius = baseRadius + (float)Math.Sin(time * 2f) * 5f;
+
+                    // 动态角度，形成螺旋
+                    float angle = time + Projectile.ai[0] * 0.05f; // ai[0] 时间偏移增强动态感
+
+                    // 偏移位置：围绕子弹位置环绕
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+
+                    // 创建 Dust
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center + offset,
+                        DustID.Blood,
+                        -offset.SafeNormalize(Vector2.Zero) * 0.5f, // 让 Dust 微微向内收缩
+                        100,
+                        Color.Lerp(Color.DarkRed, Color.Red, 0.5f),
+                        0.8f
+                    );
+                    dust.noGravity = true;
+                }
+
+            }
+
+
 
             // 在弹幕剩余寿命小于或等于 80 帧时逐渐减速
             if (Projectile.timeLeft <= 80)
