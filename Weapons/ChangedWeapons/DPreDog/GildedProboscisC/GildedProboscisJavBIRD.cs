@@ -74,54 +74,201 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
                 isDashing = true; // 设置为冲刺状态
                 canDealDamage = true; // 允许造成伤害
                 Projectile.timeLeft = 600; // 设置冲刺后的存活时间为 600 帧
+
+                {
+                    // === 冲刺瞬间 Dust + Spark 混合尾焰 ===
+                    Vector2 backward = -Projectile.velocity.SafeNormalize(Vector2.Zero);
+                    for (int i = 0; i < 12; i++)
+                    {
+                        float angleOffset = MathHelper.Lerp(-0.4f, 0.4f, i / 11f);
+                        Vector2 dir = backward.RotatedBy(angleOffset) * Main.rand.NextFloat(4f, 8f);
+
+                        // Gold Dust
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center,
+                            DustID.GoldFlame,
+                            dir * 0.5f,
+                            150,
+                            Color.Gold,
+                            1.0f
+                        );
+                        dust.noGravity = true;
+
+                        // Spark
+                        Particle spark = new SparkParticle(
+                            Projectile.Center,
+                            dir,
+                            false,
+                            20,
+                            Main.rand.NextFloat(0.8f, 1.2f),
+                            Color.Lerp(Color.Yellow, Color.LightYellow, Main.rand.NextFloat(0.3f, 0.7f))
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                }
             }
         }
 
         public override void AI()
         {
+            //if (!isDashing)
+            //{
+            //    Player player = Main.player[Projectile.owner];
+            //    Vector2 idlePosition = player.Center;
+
+            //    // 给弹幕添加一个随机的偏移量，使其在玩家周围自由移动
+            //    idlePosition.X += Main.rand.NextFloat(-1250f, 1250f);
+            //    idlePosition.Y += Main.rand.NextFloat(-1200f, 1200f);
+
+            //    Vector2 directionToIdlePosition = idlePosition - Projectile.Center;
+            //    float distanceToIdlePosition = directionToIdlePosition.Length();
+
+            //    // 如果距离过大，逐步加速朝向玩家移动
+            //    if (distanceToIdlePosition > 600f)
+            //    {
+            //        // 归一化方向向量
+            //        directionToIdlePosition.Normalize();
+            //        float maxSpeed = 20f; // 设定一个上限速度
+            //        float accelerationFactor = 0.5f; // 控制加速度的因子，可以调整以使其更平滑
+            //        Vector2 acceleration = directionToIdlePosition * accelerationFactor;
+
+            //        // 逐步增加速度，限制最大速度
+            //        Projectile.velocity += acceleration;
+            //        if (Projectile.velocity.Length() > maxSpeed)
+            //        {
+            //            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
+            //        }
+            //    }
+            //    else if (distanceToIdlePosition > 20f)
+            //    {
+            //        // 轻微调整位置，模拟绕玩家自由运动
+            //        directionToIdlePosition.Normalize();
+            //        Projectile.velocity = (Projectile.velocity * (30f - 1) + directionToIdlePosition * 8f) / 30f;
+            //    }
+            //    else
+            //    {
+            //        // 保持位置不动，但稍微调整运动，防止完全静止
+            //        Projectile.velocity *= 0.96f;
+            //        Projectile.velocity += new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.5f, 0.5f));
+            //    }
+
+            //    {
+            //        // === 金色 Dust 尾迹 ===
+            //        if (Main.GameUpdateCount % 6 == 0)
+            //        {
+            //            Vector2 tailPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f;
+            //            Dust dust = Dust.NewDustPerfect(
+            //                tailPos,
+            //                DustID.GoldFlame,
+            //                Projectile.velocity * -0.2f + Main.rand.NextVector2Circular(1f, 1f),
+            //                150,
+            //                Color.Gold,
+            //                1.2f
+            //            );
+            //            dust.noGravity = true;
+            //        }
+
+            //    }
+
+
+            //    // 在盘旋状态下，不允许造成伤害
+            //    canDealDamage = false;
+            //}
+
+
+            // 笑死我了，这是什么牛逼的螺旋运转
+            //if (!isDashing)
+            //{
+            //    Player player = Main.player[Projectile.owner];
+
+            //    Projectile.localAI[0] += 1f;
+            //    float angularSpeed = 0.04f; // 转速，可根据实际微调
+            //    float baseRadius = 180f; // 基础半径
+
+            //    // 半径轻微波动，模拟灵动感
+            //    float radiusVariation = baseRadius * 0.1f;
+            //    float radius = baseRadius + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + Projectile.whoAmI) * radiusVariation;
+
+            //    float angle = Projectile.localAI[0] * angularSpeed;
+            //    Vector2 offset = angle.ToRotationVector2() * radius;
+
+            //    Vector2 targetPosition = player.Center + offset;
+            //    Vector2 toTarget = targetPosition - Projectile.Center;
+            //    float speed = 10f;
+            //    Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speed, 0.1f);
+
+            //    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            //    // === 金色 Dust 尾迹 ===
+            //    if (Main.GameUpdateCount % 6 == 0)
+            //    {
+            //        Vector2 tailPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f;
+            //        Dust dust = Dust.NewDustPerfect(
+            //            tailPos,
+            //            DustID.GoldFlame,
+            //            Projectile.velocity * -0.2f + Main.rand.NextVector2Circular(1f, 1f),
+            //            150,
+            //            Color.Gold,
+            //            1.2f
+            //        );
+            //        dust.noGravity = true;
+            //    }
+
+            //    canDealDamage = false; // 盘旋期间不造成伤害
+            //}
+
+
+
+
+
+
+
+            // 这个更是绷不住了，这个太好笑了，就这个吧
             if (!isDashing)
             {
                 Player player = Main.player[Projectile.owner];
-                Vector2 idlePosition = player.Center;
+                Projectile.localAI[0]++;
 
-                // 给弹幕添加一个随机的偏移量，使其在玩家周围自由移动
-                idlePosition.X += Main.rand.NextFloat(-1250f, 1250f);
-                idlePosition.Y += Main.rand.NextFloat(-1200f, 1200f);
-
-                Vector2 directionToIdlePosition = idlePosition - Projectile.Center;
-                float distanceToIdlePosition = directionToIdlePosition.Length();
-
-                // 如果距离过大，逐步加速朝向玩家移动
-                if (distanceToIdlePosition > 600f)
+                // 每 180 帧随机选择新的巡航目标位置
+                if (Projectile.localAI[0] % 180f == 0f || Projectile.localAI[1] == 0f)
                 {
-                    // 归一化方向向量
-                    directionToIdlePosition.Normalize();
-                    float maxSpeed = 20f; // 设定一个上限速度
-                    float accelerationFactor = 0.5f; // 控制加速度的因子，可以调整以使其更平滑
-                    Vector2 acceleration = directionToIdlePosition * accelerationFactor;
-
-                    // 逐步增加速度，限制最大速度
-                    Projectile.velocity += acceleration;
-                    if (Projectile.velocity.Length() > maxSpeed)
-                    {
-                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
-                    }
-                }
-                else if (distanceToIdlePosition > 20f)
-                {
-                    // 轻微调整位置，模拟绕玩家自由运动
-                    directionToIdlePosition.Normalize();
-                    Projectile.velocity = (Projectile.velocity * (30f - 1) + directionToIdlePosition * 8f) / 30f;
-                }
-                else
-                {
-                    // 保持位置不动，但稍微调整运动，防止完全静止
-                    Projectile.velocity *= 0.96f;
-                    Projectile.velocity += new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.5f, 0.5f));
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float radius = Main.rand.NextFloat(200f, 360f);
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    Projectile.localAI[1] = angle; // 记录角度用于视觉参考
+                    Projectile.localAI[2] = radius; // 记录半径
+                    Projectile.ai[1] = Main.GameUpdateCount; // 重置切换时间
                 }
 
-                // 在盘旋状态下，不允许造成伤害
-                canDealDamage = false;
+                // 持续向目标位置插值飞行
+                float currentAngle = Projectile.localAI[1];
+                float currentRadius = Projectile.localAI[2];
+
+                Vector2 targetPosition = player.Center + currentAngle.ToRotationVector2() * currentRadius;
+                Vector2 toTarget = targetPosition - Projectile.Center;
+                float flySpeed = 10f;
+
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.UnitY) * flySpeed, 0.05f);
+
+                // 保持飞行朝向
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+                // 生成轻量金色 Dust 尾迹
+                if (Main.GameUpdateCount % 10 == 0)
+                {
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        DustID.GoldFlame,
+                        Projectile.velocity * -0.2f + Main.rand.NextVector2Circular(1.5f, 1.5f),
+                        100,
+                        Color.Gold,
+                        1.0f
+                    );
+                    dust.noGravity = true;
+                }
+
+                canDealDamage = false; // 巡航时不攻击
             }
             else
             {

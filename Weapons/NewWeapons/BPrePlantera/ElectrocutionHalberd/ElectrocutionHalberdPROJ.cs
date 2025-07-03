@@ -118,6 +118,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
         public Player Owner => Main.player[Projectile.owner];
         private float chargeTimer; // 蓄力计时器
+        private int soundTimer = 0;
 
         public override void AI()
         {
@@ -204,6 +205,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 }
             }
 
+            // === 🌌 蓄力期间自动播放越来越尖锐的音效 ===
+            soundTimer++;
+            if (soundTimer > 8) // 每 8 帧播放一次，可调整
+            {
+                float chargeTime3 = Projectile.localAI[1];
+                float progress = MathHelper.Clamp(chargeTime3 / 300f, 0f, 1f); // 0~1, 超过300后锁定1
+                float pitch = MathHelper.Lerp(-0.5f, 0.4f, progress); // 音调从低到高
+
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/拉链闪电") with { Pitch = pitch, Volume = 1.7f }, Projectile.Center);
+    
+                soundTimer = 0;
+            }
+
             // 检测松手
             if (!Owner.channel)
             {
@@ -226,7 +240,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
             // 重置速度的逻辑
             {
-                float initialSpeed = 15f; // 设定初始速度值，可根据需求替换具体值
+                float initialSpeed = 25f; // 设定初始速度值，可根据需求替换具体值
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
 

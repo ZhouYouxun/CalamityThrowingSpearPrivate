@@ -8,6 +8,8 @@ using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.ID;
+using Terraria.DataStructures;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 {
@@ -27,7 +29,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             base.Projectile.tileCollide = false;
             AIType = ProjectileID.WoodenArrowFriendly;
         }
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/钻地武器进入地面的音效"), Projectile.Center);
+        }
         public override void AI()
         {
             Projectile.rotation += Projectile.velocity.Y;

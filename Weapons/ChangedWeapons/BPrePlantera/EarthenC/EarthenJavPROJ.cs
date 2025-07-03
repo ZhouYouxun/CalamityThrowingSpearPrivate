@@ -171,6 +171,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 
         public override void OnKill(int timeLeft)
         {
+
             // 爆炸弹幕：X个 EarthenJavSHARD 弹片
             for (int i = 0; i < 3; i++)
             {
@@ -198,7 +199,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             }
 
             // 可选：爆炸声
-            SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+            //SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/钻地武器进入地面的音效"), Projectile.Center);
+
         }
 
 

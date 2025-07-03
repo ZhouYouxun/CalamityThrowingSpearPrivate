@@ -15,6 +15,7 @@ using CalamityMod.Particles;
 using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Projectiles.Magic;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
 {
@@ -119,134 +120,173 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
         {
             target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
 
-            // 100% 概率召唤 GildedProboscisJavBIRD
-            if (Main.rand.NextFloat() < 1f && Projectile.owner == Main.myPlayer)
+            int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
+
+            if (Projectile.owner == Main.myPlayer && currentBirdCount < 21)
             {
-                // 最多只能同时存在21只小鸟
-                int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
-                if (phase == 1 && currentBirdCount < 50)
-                {
-                    Vector2 spawnPosition = Main.player[Projectile.owner].Center + Main.rand.NextVector2Circular(80f, 80f); // 随机位置
-                    int birdDamage = (int)(Projectile.damage * 1); // 使用本体的伤害作为小鸟的伤害 * 0.415
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<GildedProboscisJavBIRD>(), birdDamage, 0f, Projectile.owner);
-                  
-                }
+                // 使用当前伤害 * 0.415 作为小鸟伤害基准
+                int birdDamage = (int)(Projectile.damage * 0.415f);
+
+                // 在命中位置生成 GildedProboscisJavINV，承担攻击传递
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero, // INV 弹幕初速可自行在 AI 内设定
+                    ModContent.ProjectileType<GildedProboscisJavINV>(),
+                    birdDamage,
+                    0f,
+                    Projectile.owner
+                );
             }
-            
         }
+
 
         //public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         //{
-            // 检查当前小鸟数量
-            //int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
-            //if (currentBirdCount >= 21)
-            //{
-                // 小鸟数量达到上限时，增加1.5倍伤害
-                //modifiers.FinalDamage *= 1.5f;
-                //int birdDamage = (int)(Projectile.damage * 2);
-            //}
+        // 检查当前小鸟数量
+        //int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
+        //if (currentBirdCount >= 21)
+        //{
+        // 小鸟数量达到上限时，增加1.5倍伤害
+        //modifiers.FinalDamage *= 1.5f;
+        //int birdDamage = (int)(Projectile.damage * 2);
+        //}
         //}
 
         public override void OnKill(int timeLeft)
         {
-            // 获取当前小鸟的数量
-            int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
 
-            if (currentBirdCount < 50)
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/拉链闪电"), Projectile.position);
+
+
+
             {
-                // 粒子特效生成（前后方向）
-                for (int i = 0; i < 6; i++) // 生成6对尖刺粒子
-                {
-                    // 生成反方向的粒子
-                    Vector2 particleVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * -0.5f; // 反方向并稍微散开
-                    Vector2 position = Projectile.Center - Projectile.velocity + particleVelocity;
-                    PointParticle spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed); // 增大粒子尺寸，颜色为橙红色
-                    GeneralParticleHandler.SpawnParticle(spark);
+                // === GildedProboscisJav 命中特效（完全体整合：有序正方形 GlowOrb + 无序 Spark/Dust + 尖刺） ===
 
-                    // 生成正方向的粒子
-                    particleVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * 0.5f;
-                    position = Projectile.Center + Projectile.velocity + particleVelocity;
-                    spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                // 获取当前小鸟的数量
+                int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
+
+                // 基础参数
+                Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                float speedBase = Projectile.velocity.Length();
+                Color sparkColor = Color.Gold;
+                Color squareColor = Color.Lerp(Color.Yellow, Color.Gold, 0.5f);
+                Color dustColor = Color.Gold;
+
+                // === 1️⃣ 有序正方形 GlowOrbParticle ===
+                Color glowColor = Color.Lerp(Color.Gold, Color.White, 0.3f);
+                float sideLength = (currentBirdCount < 50) ? 14f : 28f;
+                int particlesPerSide = (currentBirdCount < 50) ? 10 : 18;
+                float expansionRate = (currentBirdCount < 50) ? 4f : 7f;
+                int totalParticles = particlesPerSide * 4;
+
+                for (int i = 0; i < totalParticles; i++)
+                {
+                    float progress = (i / (float)particlesPerSide) % 4f;
+                    Vector2 position;
+
+                    if (progress < 1f) // 顶边
+                    {
+                        position = Projectile.Center + new Vector2(-sideLength / 2f + progress * sideLength, -sideLength / 2f);
+                    }
+                    else if (progress < 2f) // 右边
+                    {
+                        position = Projectile.Center + new Vector2(sideLength / 2f, -sideLength / 2f + (progress - 1f) * sideLength);
+                    }
+                    else if (progress < 3f) // 底边
+                    {
+                        position = Projectile.Center + new Vector2(sideLength / 2f - (progress - 2f) * sideLength, sideLength / 2f);
+                    }
+                    else // 左边
+                    {
+                        position = Projectile.Center + new Vector2(-sideLength / 2f, sideLength / 2f - (progress - 3f) * sideLength);
+                    }
+
+                    Vector2 velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * expansionRate * Main.rand.NextFloat(0.8f, 1.2f);
+
+                    GlowOrbParticle glow = new GlowOrbParticle(
+                        position,
+                        velocity,
+                        false,
+                        18,
+                        Main.rand.NextFloat(0.6f, 0.9f),
+                        glowColor,
+                        true,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(glow);
                 }
+
+                // === 2️⃣ 尖刺 PointParticle + SparkParticle + Dust 无序流动 ===
+                int scatterCount = (currentBirdCount < 50) ? 12 : 20;
+                for (int i = 0; i < scatterCount; i++)
+                {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 dir = angle.ToRotationVector2();
+                    Vector2 spawnPos = Projectile.Center + dir * Main.rand.NextFloat(4f, 12f);
+                    Vector2 velocity = dir * Main.rand.NextFloat(3f, 7f);
+
+                    // PointParticle 尖刺（电击碎片）
+                    if (Main.rand.NextBool(2))
+                    {
+                        PointParticle spike = new PointParticle(
+                            spawnPos,
+                            velocity,
+                            false,
+                            12,
+                            1.2f,
+                            sparkColor
+                        );
+                        GeneralParticleHandler.SpawnParticle(spike);
+                    }
+
+                    // SparkParticle （电火花流动）
+                    if (Main.rand.NextBool(2))
+                    {
+                        Particle spark = new SparkParticle(
+                            spawnPos,
+                            velocity,
+                            false,
+                            16,
+                            0.9f,
+                            sparkColor
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    // 金色 Dust
+                    if (Main.rand.NextBool(2))
+                    {
+                        Dust dust = Dust.NewDustPerfect(
+                            spawnPos,
+                            DustID.GoldFlame,
+                            velocity * 0.4f,
+                            100,
+                            dustColor,
+                            Main.rand.NextFloat(0.8f, 1.3f)
+                        );
+                        dust.noGravity = true;
+                    }
+                }
+
             }
-            else
-            {
-                // 粒子特效生成（前后左右四个方向）
-                for (int i = 0; i < 6; i++) // 生成6对尖刺粒子
-                {
-                    // 生成反方向的粒子
-                    Vector2 particleVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * -0.5f; // 反方向并稍微散开
-                    Vector2 position = Projectile.Center - Projectile.velocity + particleVelocity;
-                    PointParticle spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed); // 增大粒子尺寸，颜色为橙红色
-                    GeneralParticleHandler.SpawnParticle(spark);
-
-                    // 生成正方向的粒子
-                    particleVelocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30)) * 0.5f;
-                    position = Projectile.Center + Projectile.velocity + particleVelocity;
-                    spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
-
-                    // 生成左方向的粒子
-                    particleVelocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2).RotatedByRandom(MathHelper.ToRadians(30)) * 0.5f; // 左侧方向
-                    position = Projectile.Center + particleVelocity;
-                    spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
-
-                    // 生成右方向的粒子
-                    particleVelocity = Projectile.velocity.RotatedBy(-MathHelper.PiOver2).RotatedByRandom(MathHelper.ToRadians(30)) * 0.5f; // 右侧方向
-                    position = Projectile.Center + particleVelocity;
-                    spark = new PointParticle(position, particleVelocity, false, 7, 1.5f, Color.OrangeRed);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-            }
 
 
-            // 获取当前小鸟的数量
-            //int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
 
-            // 设置特效颜色和扩散范围
-            Color baseColor = Color.Red;
-            float sideLength = (currentBirdCount < 50) ? 10f : 25f; // 正常状态边长10，增强状态边长25
-            int particlesPerSide = (currentBirdCount < 50) ? 10 : 25; // 每条边的粒子数量
-            float expansionRate = (currentBirdCount < 50) ? 5f : 8f; // 正常状态和增强状态的扩散速度
 
-            // 计算总粒子数量
-            int totalParticles = (int)(particlesPerSide * 4); // 正方形四条边
 
-            // 绘制正方形
-            for (int i = 0; i < totalParticles; i++)
-            {
-                // 确定粒子在正方形的哪个边上
-                float progress = (i / (float)particlesPerSide) % 4; // 每条边的进度
-                Vector2 position;
 
-                if (progress < 1f) // 顶边
-                {
-                    position = Projectile.Center + new Vector2(-sideLength / 2 + progress * sideLength, -sideLength / 2);
-                }
-                else if (progress < 2f) // 右边
-                {
-                    position = Projectile.Center + new Vector2(sideLength / 2, -sideLength / 2 + (progress - 1f) * sideLength);
-                }
-                else if (progress < 3f) // 底边
-                {
-                    position = Projectile.Center + new Vector2(sideLength / 2 - (progress - 2f) * sideLength, sideLength / 2);
-                }
-                else // 左边
-                {
-                    position = Projectile.Center + new Vector2(-sideLength / 2, sideLength / 2 - (progress - 3f) * sideLength);
-                }
 
-                // 计算粒子速度
-                Vector2 velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * expansionRate;
 
-                // 生成粒子
-                GlowOrbParticle squareParticle = new GlowOrbParticle(
-                    position, velocity, false, 5, 0.7f, baseColor, true, true
-                );
-                GeneralParticleHandler.SpawnParticle(squareParticle);
-            }
+
+
         }
+
+
+
+
+
+
+
     }
 }

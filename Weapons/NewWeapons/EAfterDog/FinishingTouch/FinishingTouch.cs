@@ -119,7 +119,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     return false;
 
                 // 播放龙吼音效
-                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/YharonInfernadoNEW"), player.position);
+                //SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/YharonInfernadoNEW"), player.position);
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/画龙点睛冲刺"), player.position);
 
                 rightClickCooldownTimer = RightClickCooldownMax; // 开始右键冷却
 
