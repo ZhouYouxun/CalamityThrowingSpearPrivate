@@ -28,6 +28,7 @@ using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
 using CalamityRangerExpansion.LightingBolts;
 using Terraria.Graphics.Renderers;
+using CalamityMod.Prefixes;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -96,6 +97,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 (Main.projectile[proj].ModProjectile as FinishingTouchDragon)?.SetBPlan(true);
             }
         }
+        private bool ShouldSpawnPulse(float chargeTime)
+        {
+            // 在蓄力 0~60 帧内：
+            // 开始时每 8 帧生成一次，后期每 3 帧生成一次
+            // 根据时间线性插值帧间隔
+            float progress = chargeTime / 60f;
+            float frameInterval = MathHelper.Lerp(8f, 3f, progress);
+
+            return chargeTime % frameInterval < 1f;
+        }
+        private float pulseTimer = 0f;
 
         public override void AI()
         {
@@ -151,6 +163,100 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     Projectile.ai[0]++;
                 }
+
+
+  
+                {
+                    //Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 13f;
+
+                    // 蓄力期间它的速度为零，因此这一段会失效用这一段
+                    Vector2 direction = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    Vector2 headPosition = Projectile.Center + direction * 16f * 10f;
+
+
+                    pulseTimer++;
+                    if (ShouldSpawnPulse(pulseTimer))
+                    {
+                        Particle shrinkingpulse = new DirectionalPulseRing(
+                            headPosition,
+                            Vector2.Zero,
+                            Color.Orange,
+                            new Vector2(1f, 1f),
+                            Main.rand.NextFloat(8f, 12f),
+                            0.05f,
+                            3f,
+                            15
+                        );
+                        GeneralParticleHandler.SpawnParticle(shrinkingpulse);
+                    }
+
+                    if (Main.GameUpdateCount % 2 == 0)
+                    {
+                        Vector2 smokeVelocity = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(2f, 4f));
+
+                        Particle heavySmoke = new HeavySmokeParticle(
+                            headPosition + Main.rand.NextVector2Circular(4f, 4f),
+                            smokeVelocity,
+                            new Color(255, 140, 0) * 0.8f,
+                            Main.rand.Next(25, 35),
+                            Main.rand.NextFloat(0.8f, 1.3f),
+                            0.4f,
+                            Main.rand.NextFloat(-0.03f, 0.03f),
+                            false
+                        );
+                        GeneralParticleHandler.SpawnParticle(heavySmoke);
+
+                        Dust fireDust = Dust.NewDustPerfect(
+                            headPosition + Main.rand.NextVector2Circular(6f, 6f),
+                            DustID.Torch,
+                            smokeVelocity * 0.6f,
+                            100,
+                            Color.OrangeRed,
+                            Main.rand.NextFloat(0.9f, 1.3f)
+                        );
+                        fireDust.noGravity = true;
+                    }
+
+                    // === 蓄力期间从随机位置向枪头位置发射 28 发 FinishingTouchDASHINV ===
+                    if (Projectile.localAI[1] < 28 && Projectile.localAI[0] % 3f == 0f) // 每3帧发射1发
+                    {
+                        if (Projectile.owner == Main.myPlayer)
+                        {
+                            // 随机角度和距离围绕枪头位置生成
+                            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                            float distance = 16f * 35f + Main.rand.NextFloat(-30f, 30f);
+                            Vector2 spawnOffset = angle.ToRotationVector2() * distance;
+                            Vector2 spawnPosition = headPosition + spawnOffset;
+
+                            // 方向指向枪头位置
+                            Vector2 toHead = (headPosition - spawnPosition).SafeNormalize(Vector2.UnitY);
+                            float shootSpeed = 16f;
+                            Vector2 velocity = toHead * shootSpeed;
+
+                            // 发射 FinishingTouchDASHINV
+                            Projectile.NewProjectile(
+                                Projectile.GetSource_FromThis(),
+                                spawnPosition,
+                                velocity,
+                                ModContent.ProjectileType<FinishingTouchDASHINV>(),
+                                Projectile.damage,
+                                0f,
+                                Projectile.owner
+                            );
+                        }
+
+                        Projectile.localAI[1] += 1f; // 每次发射1发
+                    }
+
+
+
+
+
+
+                }
+
+
+
 
                 if (!hasSaidPhrase)
                 {

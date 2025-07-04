@@ -45,7 +45,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             //    //if (gravityTimer >= gravityDuration)
             //    //{
             //    //    gravityTimer = 0;
-
+            
             //    //    // 每次周期结束，反转重力方向
             //    //    gravityDirection *= -1f;
 

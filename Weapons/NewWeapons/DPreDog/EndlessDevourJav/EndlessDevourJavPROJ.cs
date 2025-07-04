@@ -463,6 +463,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             // 检测松手
             if (!Owner.channel)
             {
+                if (Projectile.localAI[1] < 150f)
+                {
+                    // 🌑 蓄力不足 150 帧时，松手直接销毁弹幕，什么都不做
+                    Projectile.Kill();
+                    return;
+                }
+
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 300; // 冲刺阶段持续时间
                 Projectile.penetrate = 1; // 设置冲刺阶段的穿透次数

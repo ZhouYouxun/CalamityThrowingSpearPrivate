@@ -326,6 +326,8 @@ Projectiles: {
 	BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
 	FinishingTouchDragon.DisplayName: Finishing Touch Dragon
 	GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
+	FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
+	FinishingTouchDASHLocater.DisplayName: Finishing Touch D A S H Locater
 }
 
 Projectile: {

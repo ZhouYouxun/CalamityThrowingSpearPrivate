@@ -8,6 +8,7 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Sounds;
 using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
@@ -36,7 +37,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
         private float mFireTimer = 0f; // M弹幕机枪计时
         private float mAngleOffset = 0f; // 顺时针旋转角
         private float mAngleOffset2 = 0f; // 逆时针旋转角
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            //SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/核燃料棒音效"), Projectile.Center);
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            base.ModifyHitNPC(target, ref modifiers);
+        }
         public override void AI()
         {
             Player player = Main.player[Projectile.owner];
@@ -62,7 +70,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                 }
 
                 phaseTimer++;
-                if (phaseTimer >= 30)
+                if (phaseTimer >= 30) // 控制第1阶段蓄力时长
                 {
                     phase++;
                     phaseTimer = 0;

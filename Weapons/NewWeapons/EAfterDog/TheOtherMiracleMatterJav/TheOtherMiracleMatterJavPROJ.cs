@@ -326,7 +326,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
                     // 播放越来越快、音调越来越高的音效
                     soundTimer++;
                     int maxInterval = 20; // 初始间隔（帧）
-                    int minInterval = 4;  // 最快间隔（帧）
+                    int minInterval = 8;  // 最快间隔（帧）
                     float progress = MathHelper.Clamp(stageTimer / 120f, 0f, 1f); // 0~1 over 120 frames
 
                     int currentInterval = (int)MathHelper.Lerp(maxInterval, minInterval, progress);

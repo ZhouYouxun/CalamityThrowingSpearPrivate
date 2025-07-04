@@ -64,6 +64,9 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
 using CalamityMod.Items.Accessories;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS;
 
 
 namespace CalamityThrowingSpear
@@ -108,6 +111,8 @@ namespace CalamityThrowingSpear
             typeof(GraniteJav), // 花岗岩
             typeof(RedtideJav), // 赤潮
             typeof(WulfrimJav), // 钨钢
+            typeof(TheBroken), // 破损
+            typeof(DLOAS), // 画蛇添足
 
             typeof(ChaosEssenceJav), // 混沌精华
             typeof(ElectrocutionHalberd), // 电磁长矛
@@ -118,6 +123,7 @@ namespace CalamityThrowingSpear
             typeof(SunEssenceJav), // 日光精华
 
             typeof(FestiveHalberd), // 节日长枪
+            typeof(Surfeiter), // 巴蛇吞象
 
             typeof(BloodstoneJav), // 血岩
             typeof(ChaosWindJav), // 狂风
@@ -146,7 +152,7 @@ namespace CalamityThrowingSpear
 
         static MeleeSpeedOfThrowingSpear()
         {
-            Mod calamitySpearMod = ModContent.GetInstance<CalamityThrowingSpearMod>(); // 确保你的 Mod 主类已改名
+            Mod calamitySpearMod = ModContent.GetInstance<CalamityThrowingSpearMod>();
             foreach (var modItem in calamitySpearMod.GetContent<ModItem>())
             {
                 Item item = modItem.Item;
@@ -194,23 +200,44 @@ namespace CalamityThrowingSpear
         //}
 
 
+
+
+
+        //public override void SetDefaults(Item item)
+        //{
+        //    // 检查当前物品类型是否在容器中
+        //    if (WeaponSetA.Contains(item.ModItem?.GetType()))
+        //    //if (ThisModWeaponTypes.Contains(item.type))
+        //    {
+        //        // 根据 CTSConfigs.EnableMeleeSpeed 的状态设置 BonusAttackSpeedMultiplier
+        //        if (ModContent.GetInstance<CTSConfigs>().EnableMeleeSpeed)
+        //        {
+        //            // 启用全局攻速加成禁用
+        //            ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 0.000f;
+        //        }
+        //        else
+        //        {
+        //            // 禁用状态下恢复正常    
+        //            ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 1.000f;
+        //        }
+        //    }
+        //}
+
+
+
         public override void SetDefaults(Item item)
         {
-            // 检查当前物品类型是否在容器中
-            if (WeaponSetA.Contains(item.ModItem?.GetType()))
-            //if (ThisModWeaponTypes.Contains(item.type))
+            // 自动判断是否为本模组近战武器：damage > 0 且 maxStack == 1 且 !accessory 且 属于本模组
+            if (item.ModItem != null &&
+                item.ModItem.Mod == ModContent.GetInstance<CalamityThrowingSpearMod>() &&
+                item.damage > 0 &&
+                item.maxStack == 1 &&
+                !item.accessory)
             {
-                // 根据 CTSConfigs.EnableMeleeSpeed 的状态设置 BonusAttackSpeedMultiplier
                 if (ModContent.GetInstance<CTSConfigs>().EnableMeleeSpeed)
-                {
-                    // 启用全局攻速加成禁用
                     ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 0.000f;
-                }
                 else
-                {
-                    // 禁用状态下恢复正常    
                     ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 1.000f;
-                }
             }
         }
 
