@@ -15,6 +15,7 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.Melee;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMakerC
 {
@@ -70,6 +71,38 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
                 GeneralParticleHandler.SpawnParticle(trail);
             }
 
+            // 滴血效果（低概率大血滴）
+            if (Main.rand.NextBool(1))
+            {
+                Vector2 bloodVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f));
+                Dust bloodDrop = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, bloodVel, 100, Color.DarkRed, Main.rand.NextFloat(1.2f, 1.8f));
+                bloodDrop.noGravity = false; // 模拟滴落
+            }
+
+            // 血气环绕（有序血色特效）
+            if (Main.GameUpdateCount % 5 == 0)
+            {
+                int points = 6;
+                float radius = 12f;
+                float baseAngle = Main.GlobalTimeWrappedHourly * 2f;
+                for (int i = 0; i < points; i++)
+                {
+                    float angle = baseAngle + MathHelper.TwoPi * i / points;
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * radius;
+                    Vector2 vel = angle.ToRotationVector2() * 0.5f;
+                    Dust bloodAura = Dust.NewDustPerfect(pos, DustID.Blood, vel, 80, Color.Red * 0.8f, 0.9f);
+                    bloodAura.noGravity = true;
+                }
+            }
+
+            // 微小血雾弥漫（淡血红）
+            if (Main.rand.NextBool(10))
+            {
+                Dust mist = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke, Vector2.Zero, 100, Color.DarkRed * 0.5f, 1.0f);
+                mist.noGravity = true;
+            }
+
+
 
             // 每帧增加 ai[x] 计数
             Projectile.ai[1]++;
@@ -114,6 +147,50 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
                 Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * 5f; // 将速度统一为5
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, randomVelocity,
                     ModContent.ProjectileType<Blood2>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+            }
+
+
+            {
+                // 播放血肉撕裂音效
+                SoundEngine.PlaySound(SoundID.NPCHit8 with { Volume = 0.7f, Pitch = -0.2f }, Projectile.Center);
+
+                // 大量血液尘爆发
+                for (int i = 0; i < 40; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
+                    Dust blood = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, velocity, 50, Color.Red, Main.rand.NextFloat(1.2f, 2.0f));
+                    blood.noGravity = true;
+                }
+
+                // 血色冲击波（环状）
+                for (int i = 0; i < 20; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 20f;
+                    Vector2 dir = angle.ToRotationVector2();
+                    Dust ring = Dust.NewDustPerfect(Projectile.Center + dir * 8f, DustID.Blood, dir * 5f, 80, Color.DarkRed, 1.5f);
+                    ring.noGravity = true;
+                }
+
+                // 血腥爆发时产生夸张的线性粒子喷射（SparkParticle）
+                for (int i = 0; i < 12; i++)
+                {
+                    Vector2 direction = Main.rand.NextVector2CircularEdge(1f, 1f).SafeNormalize(Vector2.UnitY);
+                    Vector2 velocity = direction * Main.rand.NextFloat(7f, 17f); // 极高速爆射
+
+                    Color bloodRed = Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f));
+
+                    Particle bloodLine = new SparkParticle(
+                        Projectile.Center,
+                        velocity,
+                        false, // 不受重力影响
+                        45, // 存活帧数，保证爆射过程可见
+                        Main.rand.NextFloat(1.8f, 2.5f), // 粗壮血线
+                        bloodRed
+                    );
+                    GeneralParticleHandler.SpawnParticle(bloodLine);
+                }
+
+
             }
 
         }

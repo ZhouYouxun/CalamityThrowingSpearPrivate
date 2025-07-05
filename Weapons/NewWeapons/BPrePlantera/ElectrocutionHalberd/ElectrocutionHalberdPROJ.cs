@@ -244,21 +244,70 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
 
-            // 生成摆动特效
-            float swingAngle = (float)Math.Sin(Main.GameUpdateCount * 0.5f) * MathHelper.ToRadians(30); // 左右摆动
-            Vector2 swingVelocity = Projectile.velocity.RotatedBy(swingAngle) * 0.5f;
-            PointParticle spark = new PointParticle(Projectile.Center - Projectile.velocity, swingVelocity, false, 15, 1.1f, Color.Red);
-            GeneralParticleHandler.SpawnParticle(spark);
+            {
+                // ⚡ 高阶冲刺飞行特效（红尖刺 + 银 Spark + 蓝 Electric Dust）
 
-            //// 为箭矢本体后面添加光束特效
-            //if (Projectile.numUpdates % 3 == 0)
-            //{
-            //    Color outerSparkColor = new Color(255, 0, 0); // 改为鲜红色
-            //    float scaleBoost = MathHelper.Clamp(Projectile.ai[0] * 0.005f, 0f, 2f);
-            //    float outerSparkScale = 1.2f + scaleBoost;
-            //    SparkParticle spark2 = new SparkParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-            //    GeneralParticleHandler.SpawnParticle(spark2);
-            //}
+                // === 🔴 红色尖刺（李萨如曲线 + 矩阵旋转扰动） ===
+                float t = Main.GameUpdateCount * 0.25f;
+                float lissX = (float)Math.Sin(3 * t);
+                float lissY = (float)Math.Sin(2 * t + MathHelper.PiOver4);
+                Vector2 lissOffset = new Vector2(lissX, lissY) * 12f;
+                Vector2 redVelocity = (Projectile.velocity.SafeNormalize(Vector2.UnitY) * 0.8f).RotatedBy(Math.Sin(t) * 0.3f);
+                PointParticle redSpark = new PointParticle(Projectile.Center + lissOffset, redVelocity, false, 20, 1.3f, Color.Red);
+                GeneralParticleHandler.SpawnParticle(redSpark);
+
+                // === ⚪ 银色 SparkParticle（黄金角螺旋散射） ===
+                float goldenAngle = MathHelper.ToRadians(137.5f);
+                int sparkCount = 3;
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float angle = i * goldenAngle + Main.GameUpdateCount * 0.05f;
+                    Vector2 sparkVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+                    SparkParticle silverSpark = new SparkParticle(
+                        Projectile.Center,
+                        sparkVelocity,
+                        false,
+                        20,
+                        1.0f,
+                        Color.Silver
+                    );
+                    GeneralParticleHandler.SpawnParticle(silverSpark);
+                }
+
+                // === 🔵 蓝色 Electric Dust（双阿基米德螺旋扩散，交替方向） ===
+                if (Main.GameUpdateCount % 1 == 0) // 提升密度
+                {
+                    float spiralT = Main.GameUpdateCount * 0.1f;
+                    float spiralR = 2f + 0.15f * spiralT; // 适当减少增长率防止飞太远
+
+                    // 正向螺旋
+                    Vector2 spiralVelocity1 = spiralT.ToRotationVector2() * spiralR;
+                    Dust electricDust1 = Dust.NewDustPerfect(
+                        Projectile.Center + spiralVelocity1,
+                        DustID.Electric,
+                        spiralVelocity1 * 0.03f,
+                        100,
+                        Color.Blue,
+                        1.2f
+                    );
+                    electricDust1.noGravity = true;
+
+                    // 反向螺旋（交替方向）
+                    Vector2 spiralVelocity2 = (-spiralT).ToRotationVector2() * spiralR;
+                    Dust electricDust2 = Dust.NewDustPerfect(
+                        Projectile.Center + spiralVelocity2,
+                        DustID.Electric,
+                        spiralVelocity2 * 0.73f,
+                        100,
+                        Color.Blue,
+                        1.2f
+                    );
+                    electricDust2.noGravity = true;
+                }
+
+
+            }
+
 
             // 弹幕保持旋转并持续加速
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);

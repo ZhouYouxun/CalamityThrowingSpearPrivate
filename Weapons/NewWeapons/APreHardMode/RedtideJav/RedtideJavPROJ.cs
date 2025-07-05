@@ -57,14 +57,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
             // 弹幕保持直线运动并逐渐加速
             Projectile.velocity *= 1.003f;
 
-            // 每隔一段时间生成水泡特效
-            if (Main.rand.NextBool(5)) // 每5帧有20%概率生成一次水泡
+
+
             {
-                Gore bubble = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), Projectile.position, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
-                bubble.timeLeft = 8 + Main.rand.Next(6);
-                bubble.scale = Main.rand.NextFloat(0.6f, 1f) * (1 + Projectile.timeLeft / (float)Projectile.timeLeft);
-                bubble.type = Main.rand.NextBool(3) ? 412 : 411;
+                // 每隔一段时间生成水泡特效
+                if (Main.rand.NextBool(5)) // 每5帧有20%概率生成一次水泡
+                {
+                    Gore bubble = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), Projectile.position, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
+                    bubble.timeLeft = 8 + Main.rand.Next(6);
+                    bubble.scale = Main.rand.NextFloat(0.6f, 1f) * (1 + Projectile.timeLeft / (float)Projectile.timeLeft);
+                    bubble.type = Main.rand.NextBool(3) ? 412 : 411;
+                }
+
+                // 🌊 双螺旋水珠 Dust（飞行特效）
+                float spiralRadius = 10f;
+                float spiralSpeed = 0.15f;
+                float time = Main.GameUpdateCount * spiralSpeed;
+
+                for (int s = 0; s < 12; s++)
+                {
+                    float spiralOffset = s * MathHelper.Pi;
+                    float angle = time + spiralOffset;
+                    Vector2 offset = angle.ToRotationVector2() * spiralRadius;
+
+                    if (Main.rand.NextBool(2))
+                    {
+                        Dust d = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            Main.rand.NextBool() ? DustID.Water : DustID.GemSapphire,
+                            -Projectile.velocity * 0.1f + offset.SafeNormalize(Vector2.Zero) * 0.5f,
+                            100,
+                            Color.White,
+                            1.1f
+                        );
+                        d.noGravity = true;
+                    }
+                }
             }
+
+
 
 
             // 每帧增加 ai[x] 计数
@@ -83,14 +114,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 
         public override void OnKill(int timeLeft)
         {
-            // 销毁时生成更强的水泡爆炸效果
-            int bubbleCount = 40 + Main.rand.Next(20); // 更多的泡泡
-            for (int i = 0; i <= bubbleCount; i++)
             {
-                Gore bubble = Gore.NewGorePerfect(Projectile.GetSource_Death(), Projectile.position, Projectile.velocity * 1.5f + Main.rand.NextVector2Circular(4f, 4f), 411);
-                bubble.timeLeft = 8 + Main.rand.Next(6);
-                bubble.scale = Main.rand.NextFloat(0.8f, 1.5f); // 更大的泡泡
-                bubble.type = Main.rand.NextBool(3) ? 412 : 411;
+                // 🌊 喷射型水花死亡特效
+                int particles = 60;
+                for (int i = 0; i < particles; i++)
+                {
+                    // 使用双曲线扇形喷射
+                    float t = i / (float)particles;
+                    float angle = t * MathHelper.TwoPi;
+                    float spiralFactor = (float)Math.Tan(t * Math.PI); // 双曲线
+                    float speed = 8f + spiralFactor * 2f; // 喷射速度
+
+                    Vector2 velocity = angle.ToRotationVector2() * speed;
+
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        Main.rand.NextBool() ? DustID.Water : DustID.GemDiamond,
+                        velocity,
+                        100,
+                        Color.White,
+                        Main.rand.NextFloat(1.2f, 1.8f)
+                    );
+                    d.noGravity = false;
+                }
+
+                // 补充高速淡蓝 SparkParticle 喷射（外层水花微光）
+                int sparkCount = 80;
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float t = i / (float)sparkCount;
+                    float angle = t * MathHelper.TwoPi + Main.rand.NextFloat(-0.1f, 0.1f);
+                    float speed = 12f + (float)Math.Sin(t * 6.28f) * 3f; // 动态变化速度
+                    Vector2 velocity = angle.ToRotationVector2() * speed;
+
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        velocity,
+                        false,
+                        30,
+                        1.2f,
+                        Color.DarkBlue
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 保留原气泡爆发（建议适当减量防止过乱）
+                int bubbleCount = 30 + Main.rand.Next(10);
+                for (int i = 0; i < bubbleCount; i++)
+                {
+                    Gore bubble = Gore.NewGorePerfect(
+                        Projectile.GetSource_Death(),
+                        Projectile.position,
+                        Projectile.velocity * 1.2f + Main.rand.NextVector2Circular(3f, 3f),
+                        411
+                    );
+                    bubble.timeLeft = 8 + Main.rand.Next(6);
+                    bubble.scale = Main.rand.NextFloat(0.8f, 1.4f);
+                    bubble.type = Main.rand.NextBool(3) ? 412 : 411;
+                }
+
             }
 
             // 在当前弹幕的位置生成 RedtideJavEXP 弹幕
@@ -104,21 +186,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
                 Projectile.owner                      // 当前弹幕的所有者
             );
 
-            //// 释放伤害，半径为5格的范围内所有敌人受到弹幕的伤害
-            //float explosionRadius = 5 * 16; // 5格（每格16像素）
-            //foreach (NPC target in Main.npc.Where(n => n.active && !n.friendly))
-            //{
-            //    float dist = Vector2.Distance(Projectile.Center, target.Center);
-            //    if (dist <= explosionRadius)
-            //    {
-            //        int damage = Projectile.damage; // 1倍伤害
-            //        bool crit = Main.rand.Next(100) <= Main.player[Projectile.owner].GetCritChance<MeleeDamageClass>();
-            //        target.StrikeNPC(target.CalculateHitInfo(damage, 0, crit, 0));
-
-            //        if (Main.netMode != NetmodeID.SinglePlayer)
-            //            NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, target.whoAmI, damage, 0f, 0f, crit ? 1 : 0);
-            //    }
-            //}
 
         }
 

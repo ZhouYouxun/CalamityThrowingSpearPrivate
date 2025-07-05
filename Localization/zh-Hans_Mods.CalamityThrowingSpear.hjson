@@ -724,7 +724,7 @@ NewWeapons: {
 				'''
 				击中一次后获得弱追踪能力
 				消失时释放一片追踪雪花片
-				[c/b06dc3:“钫，更加纯净的钫”]
+				[c/b06dc3:“比她的两个哥哥要文静很多”]
 				'''
 		}
 
@@ -747,7 +747,7 @@ NewWeapons: {
 				'''
 				击中敌人后在原地高速旋转并尝试跟上这个敌人
 				旋转期间从上空召唤许多天龙之羽
-				[c/fffaa3:“这把矛进入了换羽期”]
+				[c/fffaa3:“超音速羽毛 如何呢？”]
 				'''
 		}
 
@@ -1387,81 +1387,3 @@ Buffs: {
 }
 
 TheSpecialText.ElementalArkJav2: 摄入了过量的色素
-
-NewSpears: {
-	APreHardMode: {
-		WulfrimSpear: {
-			// Tooltip: ""
-			// DisplayName: Wulfrim Spear
-		}
-
-		GraniteSpear: {
-			// Tooltip: ""
-			// DisplayName: Granite Spear
-		}
-
-		BraisedPorkSpear: {
-			// Tooltip: ""
-			// DisplayName: Braised Pork Spear
-		}
-
-		ElectrocoagulationTenmonSpear: {
-			// DisplayName: Electrocoagulation Tenmon Spear
-			// Tooltip: ""
-		}
-
-		DLOASSpear: {
-			// Tooltip: ""
-			// DisplayName: D L O A S Spear
-		}
-
-		BloodstoneSpear: {
-			// DisplayName: Bloodstone Spear
-			// Tooltip: ""
-		}
-
-		TerraLanceSpear: {
-			// DisplayName: Terra Lance Spear
-			// Tooltip: ""
-		}
-	}
-
-	DPreDog: {
-		InfiniteDarknessSpear: {
-			// DisplayName: Infinite Darkness Spear
-			// Tooltip: ""
-		}
-
-		ChaosWindSpear: {
-			// DisplayName: Chaos Wind Spear
-			// Tooltip: ""
-		}
-
-		BloodstoneSpear: {
-			// DisplayName: Bloodstone Spear
-			// Tooltip: ""
-		}
-
-		TerraLanceSpear: {
-			// DisplayName: Terra Lance Spear
-			// Tooltip: ""
-		}
-	}
-
-	BPrePlantera: {
-		PolarEssenceSpear: {
-			// DisplayName: Polar Essence Spear
-			// Tooltip: ""
-		}
-
-		SunEssenceSpear: {
-			// DisplayName: Sun Essence Spear
-			// Tooltip: ""
-		}
-
-		ChaosEssenceSpear: {
-			// DisplayName: Chaos Essence Spear
-			// Tooltip: ""
-		}
-	}
-}

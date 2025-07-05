@@ -15,6 +15,8 @@ using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.DataStructures;
+using CalamityMod.Particles;
+using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 {
@@ -259,6 +261,69 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
                     ModContent.ProjectileType<PearlwoodJavPROJINV>(), Projectile.damage, 0f, Projectile.owner);
             }
+
+
+            {
+                // === 🌈 PearlwoodJavPROJ 飞行特效（AI 内） ===
+
+                // 周期性彩虹圣光螺旋光点（已封装）
+                if (Main.GameUpdateCount % 30 == 0)
+                {
+                    CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
+                }
+
+                // 持续外围粉红 Dust
+                if (Main.rand.NextBool(3))
+                {
+                    int dustID = DustID.PinkTorch;
+                    Vector2 dustVelocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
+                    int dust = Dust.NewDust(Projectile.Center, 0, 0, dustID, dustVelocity.X, dustVelocity.Y, 100, default, 1.2f);
+                    Main.dust[dust].noGravity = true;
+                    Main.dust[dust].fadeIn = 0.5f;
+                }
+
+                // 粉红色 SparkParticle 轻线性拖尾
+                if (Main.rand.NextBool(5))
+                {
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        Projectile.velocity * -0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f),
+                        false,
+                        30,
+                        1.0f,
+                        Color.LightPink
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 🌈 七彩有序尘埃环绕（飞行期间的有序部分）
+                if (Main.GameUpdateCount % 2 == 0) // 每 12 帧生成一圈
+                {
+                    Color[] rainbowColors = new Color[]
+                    {
+        Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet
+                    };
+
+                    float radius = 20f + Main.rand.NextFloat(-2f, 2f); // 微微抖动圆环大小
+                    float baseAngle = Main.GlobalTimeWrappedHourly * 3f; // 随时间旋转
+
+                    for (int i = 0; i < rainbowColors.Length; i++)
+                    {
+                        float angle = baseAngle + MathHelper.TwoPi * i / rainbowColors.Length;
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+                        Vector2 spawnPos = Projectile.Center + offset;
+                        Vector2 velocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.5f, 0.5f); // 缓慢平移
+
+                        int dustID = DustID.RainbowTorch;
+                        int dust = Dust.NewDust(spawnPos, 0, 0, dustID, velocity.X, velocity.Y, 100, rainbowColors[i], 0.8f);
+                        Main.dust[dust].noGravity = true;
+                        Main.dust[dust].fadeIn = 0.6f;
+                        Main.dust[dust].scale = 1.1f;
+                    }
+                }
+
+
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
@@ -271,10 +336,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.Item67, Projectile.Center); // 播放彩虹枪的音效
+            // === 🌈 PearlwoodJavPROJ 死亡特效（OnKill 内调用） ===
+            SoundEngine.PlaySound(SoundID.Item67, Projectile.Center); // 彩虹枪音效
+
+            // 触发粉色圣洁光点爆发（柔和补充）
+            CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);
 
 
+            {
+                // 🌟 极限夸张的七彩虹尘爆发
+                int totalBursts = 70; // 尘埃数量极大化
+                for (int i = 0; i < totalBursts; i++)
+                {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 36f); // 超高速爆炸
+                    int dustID = DustID.RainbowTorch;
+                    int dustIndex = Dust.NewDust(Projectile.Center, 0, 0, dustID, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(1.2f, 2.4f));
+                    Main.dust[dustIndex].noGravity = true;
+                    Main.dust[dustIndex].fadeIn = Main.rand.NextFloat(0.5f, 1.2f);
+                }
 
+                // 💖 粉色柔和尘雾环绕柔化视觉冲击
+                for (int i = 0; i < 30; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2Circular(48f, 48f);
+                    Vector2 vel = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 4f);
+                    int dustID = DustID.PinkTorch;
+                    int dustIndex = Dust.NewDust(Projectile.Center + offset, 0, 0, dustID, vel.X, vel.Y, 150, default, Main.rand.NextFloat(1.5f, 2.5f));
+                    Main.dust[dustIndex].noGravity = true;
+                    Main.dust[dustIndex].fadeIn = Main.rand.NextFloat(0.3f, 0.8f);
+                }
+
+            }
 
 
         }
@@ -287,6 +380,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             {
                 player.IncrementHitCounter();
             }
+            CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

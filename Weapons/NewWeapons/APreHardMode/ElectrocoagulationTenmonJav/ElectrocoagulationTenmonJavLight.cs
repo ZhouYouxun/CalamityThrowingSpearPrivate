@@ -22,6 +22,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityMod;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav
 {
@@ -77,6 +78,56 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
                 dust.alpha = 235; // 设置粒子的透明度
                 dust.color = Color.White; // 强制设置为深绿色
             }
+
+            {
+                // 双螺旋白色 Dust + Spark 飞行环绕特效
+                float spiralRadius = 12f;
+                float spiralSpeed = 0.25f; // 控制螺旋速度
+                float globalTime = Main.GameUpdateCount * spiralSpeed;
+
+                for (int spiral = 0; spiral < 2; spiral++)
+                {
+                    float spiralOffset = spiral * MathHelper.Pi; // 两螺旋相差 180°
+                    float angle = globalTime + spiralOffset;
+                    Vector2 offset = angle.ToRotationVector2() * spiralRadius;
+
+                    // Dust 环绕
+                    if (Main.rand.NextBool(2)) // 控制密度
+                    {
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            DustID.GemDiamond,
+                            Vector2.Zero,
+                            150,
+                            Color.White,
+                            1.0f
+                        );
+                        dust.noGravity = true;
+                        dust.fadeIn = 0.5f;
+                    }
+
+                    // SparkParticle 环绕
+                    if (Main.rand.NextBool(4)) // 控制密度
+                    {
+                        Vector2 perpendicularVel = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(-1f, 1f);
+
+                        Particle spark = new SparkParticle(
+                            Projectile.Center + offset,
+                            perpendicularVel,
+                            false,
+                            20, // 生命周期
+                            0.5f, // 大小
+                            Color.White
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+                }
+
+            }
+
+
+
+
 
             if (Projectile.timeLeft <= 80) // 如果弹幕剩余时间小于等于80
                 Projectile.velocity *= 0.97f; // 缓慢减小弹幕速度

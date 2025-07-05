@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
 using CalamityMod.Buffs.DamageOverTime;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
 {
@@ -57,21 +58,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
             // 弹幕保持直线运动并逐渐加速
             Projectile.velocity *= 1.01f;
 
-            // 生成尾迹烟雾效果，每隔6帧生成一次
-            Projectile.ai[0] += 1f;
-            if (Projectile.ai[0] > 6f)
+
+
             {
-                for (int d = 0; d < 5; d++)
+                // 优化后的飞行期间尾迹腐化紫黑烟雾
+                for (int d = 0; d < 3; d++) // 数量小幅减少防止堆积，但每帧触发
                 {
-                    Dust dust = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.DemonTorch, Projectile.velocity.X, Projectile.velocity.Y, 100, default, 1f)];
-                    dust.velocity = Vector2.Zero;
-                    dust.position -= Projectile.velocity / 5f * d;
+                    int dustIndex = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.DemonTorch, 0f, -Main.rand.NextFloat(0.5f, 1.2f), 80, default, 0.35f);
+                    Dust dust = Main.dust[dustIndex];
+
+                    dust.velocity = Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f); // 始终正上方
+                    dust.position -= Projectile.velocity / 4f * d; // 延展拖尾
                     dust.noGravity = true;
-                    dust.scale = 0.65f;
+                    dust.scale = Main.rand.NextFloat(0.3f, 0.45f); // 大幅缩小体积
                     dust.noLight = true;
-                    dust.color = Color.Lerp(Color.Purple, Color.Black, 0.5f); // 紫黑色
+                    dust.color = Color.Lerp(Color.Purple, Color.Black, 0.5f); // 紫黑腐化色
                 }
+
+                // 紫黑腐化轻烟雾尾迹（多、小、柔）
+                if (Main.rand.NextBool(2)) // 高密度
+                {
+                    Vector2 vel = -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f);
+                    Dust smoke = Dust.NewDustPerfect(Projectile.Center, DustID.Demonite, vel, 100, Color.Lerp(Color.Purple, Color.Black, 0.5f), Main.rand.NextFloat(0.6f, 0.9f));
+                    smoke.noGravity = true;
+                }
+
+                // 周期性生成小型 HeavySmokeParticle 扩散漂浮
+                if (Main.GameUpdateCount % 2 == 0)
+                {
+                    Particle darkSmoke = new HeavySmokeParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
+                        Main.rand.NextVector2Circular(0.5f, 0.5f),
+                        Color.Lerp(Color.Purple, Color.Black, 0.6f),
+                        Main.rand.Next(20, 32), // 生命周期
+                        Main.rand.NextFloat(0.4f, 0.7f), // 小体积
+                        0.8f, // 轻度透明
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        false
+                    );
+                    GeneralParticleHandler.SpawnParticle(darkSmoke);
+                }
+
             }
+
 
 
             // 每帧增加 ai[x] 计数
@@ -93,10 +122,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
             target.AddBuff(ModContent.BuffType<BrainRot>(), 300);
             // 生成 BraisedPorkJavCloud 弹幕
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BraisedPorkJavCloud>(), damageDone, Projectile.knockBack, Projectile.owner, 0f, 1.0f);
+
+            {
+                // 替代原浓烟：生成大量小体积黑色浓烟
+                for (int i = 0; i < 20; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2Circular(6f, 6f);
+                    Particle smallSmoke = new HeavySmokeParticle(
+                        Projectile.Center + offset,
+                        new Vector2(0, -Main.rand.NextFloat(1f, 2f)),
+                        Color.Lerp(Color.Purple, Color.Black, 0.7f),
+                        Main.rand.Next(20, 35),
+                        Main.rand.NextFloat(0.4f, 0.6f),
+                        0.9f,
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        false
+                    );
+                    GeneralParticleHandler.SpawnParticle(smallSmoke);
+                }
+            }
         }
 
         public override void OnKill(int timeLeft)
         {
+            // 播放独特腐化死亡音效，音量放大至 2.2 倍
+            SoundStyle loudDeathSound = SoundID.NPCDeath9 with
+            {
+                Volume = 2.2f
+            };
+            SoundEngine.PlaySound(loudDeathSound, Projectile.Center);
+
             // 抛射一连串紫黑色的重型烟雾粒子
             Color smokeColor = Color.Lerp(Color.Purple, Color.Black, 0.5f); // 紫黑色
             int particleCount = 5; // 生成的粒子数量
@@ -108,6 +163,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
                 Vector2 offset = new Vector2(0, -1) * (5f + i * delay);
                 Particle smoke = new HeavySmokeParticle(Projectile.Center + offset, new Vector2(0, -1) * 5f, smokeColor, 30, Projectile.scale * Main.rand.NextFloat(0.7f, 1.3f), 1.0f, MathHelper.ToRadians(2f), required: true);
                 GeneralParticleHandler.SpawnParticle(smoke);
+            }
+
+            {
+                // 腐化紫黑尘埃爆发
+                for (int i = 0; i < 50; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
+                    Dust corruptionDust = Dust.NewDustPerfect(Projectile.Center, DustID.CorruptGibs, velocity, 80, Color.Purple, Main.rand.NextFloat(0.8f, 1.4f));
+                    corruptionDust.noGravity = true;
+                }
+
+              
+
+
             }
         }
 

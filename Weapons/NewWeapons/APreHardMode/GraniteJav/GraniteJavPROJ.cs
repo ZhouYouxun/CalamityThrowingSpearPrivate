@@ -56,10 +56,46 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             // 弹幕保持直线运动并逐渐加速
             Projectile.velocity *= 1.01f;
 
-            // 添加深蓝色粒子效果，随机出现在弹幕附近
-            if (Main.rand.NextBool(3))
             {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch, 0f, 0f, 150, default, 1.2f);
+                // 🪨 GraniteJav 飞行特效：李萨如曲线动态 Dust + 双螺旋环绕
+                float t = Main.GameUpdateCount * 0.15f;
+                float lissX = 8f * (float)Math.Sin(3 * t);
+                float lissY = 8f * (float)Math.Sin(2 * t + MathHelper.PiOver4);
+                Vector2 lissajousOffset = new Vector2(lissX, lissY);
+
+                // 每帧微抖动尾迹
+                Dust d1 = Dust.NewDustPerfect(
+                    Projectile.Center + lissajousOffset,
+                    DustID.GemSapphire,
+                    -Projectile.velocity * 0.1f,
+                    100,
+                    Color.CornflowerBlue,
+                    1.0f
+                );
+                d1.noGravity = true;
+
+                // 每 5 帧生成螺旋环绕 Dust
+                if (Main.GameUpdateCount % 5 == 0)
+                {
+                    float spiralRadius = 10f;
+                    float spiralAngle = Main.GameUpdateCount * 0.2f;
+                    for (int s = 0; s < 2; s++)
+                    {
+                        float offsetAngle = spiralAngle + s * MathHelper.Pi;
+                        Vector2 offset = offsetAngle.ToRotationVector2() * spiralRadius;
+
+                        Dust d2 = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            DustID.BlueTorch,
+                            offset.RotatedBy(MathHelper.PiOver2) * 0.2f,
+                            120,
+                            Color.LightBlue,
+                            1.2f
+                        );
+                        d2.noGravity = true;
+                    }
+                }
+
             }
 
 
@@ -90,20 +126,64 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
 
-            // 在弹幕消失时释放深蓝色粒子特效
-            for (int i = 0; i < 15; i++)
+
             {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f, 150, default, 2.2f);
+                // 🪨 GraniteJav 命中特效：花岗岩爆裂散射 Dust（玫瑰曲线 + 双曲线）
+                int petals = 60;
+                for (int i = 0; i < petals; i++)
+                {
+                    float theta = MathHelper.TwoPi * i / petals;
+                    float r = 6f * (1 + 0.5f * (float)Math.Sin(5 * theta)); // 五瓣玫瑰
+
+                    // 使用双曲线变形增强离散感
+                    float modifier = (float)Math.Tan(theta * 1.5f) * 0.1f;
+                    modifier = MathHelper.Clamp(modifier, -1f, 1f); // 防止爆炸性发散
+
+                    Vector2 velocity = theta.ToRotationVector2() * r * (1 + modifier);
+
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        DustID.Electric,
+                        velocity,
+                        100,
+                        Color.RoyalBlue,
+                        1.4f
+                    );
+                    d.noGravity = true;
+                }
+
             }
+
+
         }
 
         public override void OnKill(int timeLeft)
         {
-            // 在弹幕消失时释放深蓝色粒子特效
-            for (int i = 0; i < 15; i++)
+
+
             {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f, 150, default, 2.2f);
+                // 🪨 GraniteJav 死亡特效：螺旋爆散 Dust（阿基米德螺旋）
+                int spiralDusts = 80;
+                for (int i = 0; i < spiralDusts; i++)
+                {
+                    float t = i / (float)spiralDusts * 6f * MathHelper.Pi;
+                    float r = 2f + 0.5f * t; // 螺旋半径递增
+                    Vector2 velocity = t.ToRotationVector2() * r;
+
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        DustID.BlueTorch,
+                        velocity,
+                        100,
+                        Color.MediumBlue,
+                        1.3f
+                    );
+                    d.noGravity = false;
+                }
+
             }
+
+
         }
 
 

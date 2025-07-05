@@ -64,11 +64,39 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             //// 弹幕保持直线运动并逐渐加速
             //Projectile.velocity *= 1.01f;
 
-            // 添加粒子效果 - 深红色和深绿色粒子
-            if (Main.rand.NextBool(3)) // 以1/3的概率生成深红色或深绿色粒子
-            {
-                int dustType = Main.rand.NextBool() ? DustID.RedTorch : DustID.GreenTorch; // 红色或绿色粒子
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+            {            
+                // 添加粒子效果 - 深红色和深绿色粒子
+                if (Main.rand.NextBool(3)) // 以1/3的概率生成深红色或深绿色粒子
+                {
+                    int dustType = Main.rand.NextBool() ? DustID.RedTorch : DustID.GreenTorch; // 红色或绿色粒子
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                }
+
+                // 🌹 优美螺旋花瓣尾迹
+                float spiralRadius = 6f;
+                float spiralSpeed = 0.2f;
+                float time = Main.GameUpdateCount * spiralSpeed;
+
+                for (int s = 0; s < 2; s++)
+                {
+                    float spiralOffset = s * MathHelper.Pi;
+                    float angle = time + spiralOffset;
+                    Vector2 offset = angle.ToRotationVector2() * spiralRadius;
+
+                    if (Main.rand.NextBool(2))
+                    {
+                        int dustType = Main.rand.Next(new int[] { DustID.RedTorch, DustID.GreenTorch, DustID.Dirt });
+                        Dust d = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            dustType,
+                            -Projectile.velocity * 0.1f,
+                            100,
+                            Color.White,
+                            1.2f
+                        );
+                        d.noGravity = true;
+                    }
+                }
             }
 
             if (Projectile.localAI[0] > 20f)
@@ -83,6 +111,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            SpawnRoseBloomDust(Projectile.Center);
+
             Projectile.penetrate--;
             if (Projectile.penetrate <= 0)
             {
@@ -100,20 +130,18 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 使敌人中毒，持续 180 帧
-            target.AddBuff(BuffID.Poisoned, 180);
-
             // 释放独特的草音效	
             SoundEngine.PlaySound(SoundID.Grass, Projectile.position);
-            //// 粘附到敌人，持续造成伤害
-            //Projectile.ModifyHitNPCSticky(20);
+
+            // 使敌人中毒，持续 180 帧
+            target.AddBuff(BuffID.Poisoned, 180);
         }
 
 
         public override void OnKill(int timeLeft)
         {
-            // 释放独特的草音效	
-            SoundEngine.PlaySound(SoundID.Grass, Projectile.position);
+            SpawnRoseBloomDust(Projectile.Center);
+
 
             int dustType = Main.rand.NextBool() ? DustID.RedTorch : DustID.GreenTorch; // 红色或绿色粒子
             for (int i = 0; i < 30; i++)
@@ -130,6 +158,69 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
         }
 
 
+        private void SpawnRoseBloomDust(Vector2 center)
+        {
+            // 播放独特草音效
+            SoundEngine.PlaySound(SoundID.Grass, Projectile.position);
+
+            int petals = 100;
+
+            // 🌹 层 1：花蕊（中心微颗粒，快散）
+            for (int i = 0; i < petals; i++)
+            {
+                float t = MathHelper.TwoPi * i / petals;
+                float r = 2f + 0.5f * (float)Math.Sin(6 * t);
+
+                Vector2 velocity = t.ToRotationVector2() * r * 1.5f;
+
+                Dust d = Dust.NewDustPerfect(
+                    center,
+                    DustID.Grass,
+                    velocity,
+                    100,
+                    Color.GreenYellow,
+                    1.0f
+                );
+                d.noGravity = true;
+            }
+
+            // 🌹 层 2：花瓣（五瓣玫瑰曲线，中速）
+            for (int i = 0; i < petals; i++)
+            {
+                float t = MathHelper.TwoPi * i / petals;
+                float r = 6f * (1 + 0.4f * (float)Math.Sin(5 * t));
+
+                Vector2 velocity = t.ToRotationVector2() * r;
+
+                Dust d = Dust.NewDustPerfect(
+                    center,
+                    DustID.GrassBlades,
+                    velocity,
+                    100,
+                    Color.Green,
+                    1.3f
+                );
+                d.noGravity = true;
+            }
+
+            // 🌿 层 3：绿叶（大弧度，慢速，外围叶片结构）
+            for (int i = 0; i < petals / 2; i++)
+            {
+                float t = MathHelper.TwoPi * i / (petals / 2);
+                float leafShape = 8f * (1 + 0.3f * (float)Math.Sin(3 * t)); // 三叶模式
+                Vector2 velocity = t.ToRotationVector2() * leafShape * 0.7f;
+
+                Dust d = Dust.NewDustPerfect(
+                    center,
+                    DustID.GrassBlades,
+                    velocity,
+                    100,
+                    Color.ForestGreen,
+                    1.7f
+                );
+                d.noGravity = false;
+            }
+        }
 
 
 

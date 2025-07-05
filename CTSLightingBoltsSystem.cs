@@ -868,6 +868,104 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
+        // === 💖 CTSLightingBoltsSystem 新增函数 Spawn_PinkHolyExplosion ===
+        public static void Spawn_PinkHolyExplosion(Vector2 position)
+        {
+            int count = Main.rand.Next(8, 12); // 光点数量
+            for (int i = 0; i < count; i++)
+            {
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = Main.rand.NextBool() ? new Color(1f, 0.6f, 0.8f, 1f) : new Color(1f, 0.8f, 0.9f, 1f); // 粉红 / 浅粉
+                p.LocalPosition = position + Main.rand.NextVector2Circular(32f, 32f); // 爆发范围
+                p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                p.Scale = new Vector2(2f, 1f);
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.TimeToLive = Main.rand.Next(36, 50);
+                p.FadeOutEnd = p.TimeToLive;
+                p.FadeInEnd = 12;
+                p.FadeOutStart = 24;
+                p.AdditiveAmount = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+
+
+
+        public static void Spawn_RainbowHolySpirals(Vector2 position)
+        {
+            Color[] rainbowColors = new Color[]
+            {
+        Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet
+            };
+
+            float baseAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+            float radius = 24f;
+
+            for (int i = 0; i < rainbowColors.Length; i++)
+            {
+                float angle = baseAngle + i * MathHelper.TwoPi / rainbowColors.Length;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = rainbowColors[i];
+                p.LocalPosition = position + offset;
+                p.Rotation = angle;
+                p.Scale = new Vector2(1.8f, 0.8f);
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.TimeToLive = 40;
+                p.FadeOutEnd = 40;
+                p.FadeInEnd = 12;
+                p.FadeOutStart = 24;
+                p.AdditiveAmount = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+
+        public static void Spawn_StaticElectricSparkle(Vector2 center, float radius = 24f, float rotationOffset = 0f)
+        {
+            int count = 10; // 严格保持 ≤10 颗光点
+            Color[] colors = new Color[]
+            {
+        new Color(255, 182, 193), // 浅粉红
+        new Color(173, 216, 230), // 浅蓝
+            };
+
+            float angleStep = MathHelper.TwoPi / count;
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = rotationOffset + angleStep * i;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle spark = _poolPrettySparkle.RequestParticle();
+                spark.ColorTint = colors[i % colors.Length];
+                spark.LocalPosition = center + offset;
+                spark.Rotation = angle;
+                spark.Scale = new Vector2(1.5f, 0.7f);
+                spark.FadeInNormalizedTime = 0.02f;
+                spark.FadeOutNormalizedTime = 0.92f;
+                spark.TimeToLive = Main.rand.Next(36, 48);
+                spark.FadeOutEnd = spark.TimeToLive;
+                spark.FadeInEnd = 8;
+                spark.FadeOutStart = 24;
+                spark.AdditiveAmount = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(spark);
+            }
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }
+

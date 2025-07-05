@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 {
@@ -36,6 +37,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         }
 
         //public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
+        public override bool CanUseItem(Player player)
+        {
+            // 如果需要仅播放一次（防止多次播放），可使用局部变量或 player.GetModPlayer<>().bool
+            SoundStyle useSound = SoundID.Item68 with
+            {
+                Volume = 0.3f // 降低至 30% 音量
+            };
+            SoundEngine.PlaySound(useSound, player.Center);
+
+            // 静音原始 UseSound
+            Item.UseSound = null;
+
+            return base.CanUseItem(player);
+        }
 
         public override void AddRecipes()
         {

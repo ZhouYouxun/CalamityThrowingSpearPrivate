@@ -11,6 +11,9 @@ using Terraria;
 using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
+using CalamityMod.Particles;
+using CalamityRangerExpansion.LightingBolts;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav
 {
@@ -137,60 +140,97 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
 
         public override void OnKill(int timeLeft)
         {
-
-            // 粉红色粒子 - 向上和向下发射
-            int numParticles = 7;
-            for (int i = 0; i < numParticles; i++)
             {
-                float speedFactor = 3f + i * 0.2f; // 控制速度，使粒子平摊成链状
+                // 粉蓝静电光点多层环状爆发（随机整体旋转）
+                int layers = 2;
+                float baseRadius = 24f;
+                float radiusStep = 24f;
+                float randomGlobalRotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                for (int i = 0; i < layers; i++)
+                {
+                    float radius = baseRadius + i * radiusStep;
+                    float rotationOffset = randomGlobalRotation + MathHelper.TwoPi / layers * i;
+                    CTSLightingBoltsSystem.Spawn_StaticElectricSparkle(Projectile.Center, radius, rotationOffset);
+                }
 
-                // 向上发射
-                Vector2 velocityUp = new Vector2(0, -speedFactor);
-                Dust pinkDustUp = Dust.NewDustPerfect(Projectile.Center, DustID.PinkTorch, velocityUp, 0, Color.Pink, 1.5f);
-                pinkDustUp.noGravity = true;
+                // 外圈 Dust 有序多圈爆散（纯白，高速，随机性方向）
+                int dustCircles = 3;
+                int dustPerCircle = 12;
+                float baseDustRadius = 6f;
+                float dustRadiusStep = 10f;
+                for (int c = 0; c < dustCircles; c++)
+                {
+                    float currentRadius = baseDustRadius + c * dustRadiusStep;
+                    for (int i = 0; i < dustPerCircle; i++)
+                    {
+                        float angle = MathHelper.TwoPi * i / dustPerCircle + Main.rand.NextFloat(-0.1f, 0.1f);
+                        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 18f); // 高速（原速的3~4倍）
 
-                // 向下发射
-                Vector2 velocityDown = new Vector2(0, speedFactor);
-                Dust pinkDustDown = Dust.NewDustPerfect(Projectile.Center, DustID.PinkTorch, velocityDown, 0, Color.Pink, 1.5f);
-                pinkDustDown.noGravity = true;
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center,
+                            DustID.GemDiamond,
+                            velocity,
+                            80,
+                            Color.White,
+                            Main.rand.NextFloat(1.2f, 1.6f)
+                        );
+                        dust.noGravity = true;
+                    }
+                }
+
+                // 外圈 SparkParticle 形成漩涡旋转感（纯白）
+                int sparkCount = 20;
+                float spiralRadius = 48f;
+                float spiralRotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                for (int i = 0; i < sparkCount; i++)
+                {
+                    float angle = spiralRotation + MathHelper.TwoPi * i / sparkCount;
+                    Vector2 baseVector = angle.ToRotationVector2() * spiralRadius;
+                    Vector2 perpendicular = baseVector.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.UnitY);
+                    Vector2 velocity = perpendicular * Main.rand.NextFloat(2f, 5f); // 形成绕中心旋转感
+
+                    Particle spark = new SparkParticle(
+                        Projectile.Center + baseVector,
+                        velocity,
+                        false,
+                        45,
+                        1.4f,
+                        Color.White
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
-
-            // 白色粒子 - 向左和向右发射
-            for (int i = 0; i < numParticles; i++)
-            {
-                float speedFactor = 1f + i * 0.2f; // 控制速度，使粒子平摊成链状
-
-                // 向左发射
-                Vector2 velocityLeft = new Vector2(-speedFactor, 0);
-                Dust whiteDustLeft = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, velocityLeft, 0, Color.White, 1.5f);
-                whiteDustLeft.noGravity = true;
-
-                // 向右发射
-                Vector2 velocityRight = new Vector2(speedFactor, 0);
-                Dust whiteDustRight = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, velocityRight, 0, Color.White, 1.5f);
-                whiteDustRight.noGravity = true;
-            }
-
-            
-
+            // 可选柔和电鸣音效
+            SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.7f, Pitch = 0.3f }, Projectile.Center);
         }
+
 
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Slimed, 300); // 原版的史莱姆效果
 
-            // 计算发射方向：正上方、正下方、正左方和正右方
-            Vector2 upDirection = new Vector2(0, -1);
-            Vector2 downDirection = new Vector2(0, 1);
-            Vector2 leftDirection = new Vector2(-1, 0);
-            Vector2 rightDirection = new Vector2(1, 0);
+            // 四向发射 ElectrocoagulationTenmonJavLight 弹幕（循环简化）
+            Vector2[] directions = new Vector2[]
+            {
+        Vector2.UnitY * -1f, // 上
+        Vector2.UnitY,       // 下
+        Vector2.UnitX * -1f, // 左
+        Vector2.UnitX        // 右
+            };
 
-            // 发射四个方向的 ElectrocoagulationTenmonJavLight 弹幕，伤害倍率为 0.33 倍
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, upDirection * 10f, ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, downDirection * 10f, ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftDirection * 10f, ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightDirection * 10f, ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
+            foreach (Vector2 dir in directions)
+            {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    dir * 10f,
+                    ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>(),
+                    (int)(Projectile.damage * 0.33f),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items.Weapons.Magic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -57,14 +58,31 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // Makes a dust effect.
-            for (int dustIndex = 0; dustIndex < 40; dustIndex++)
+            // 恶心腐化毒雾特效
+            for (int i = 0; i < 50; i++)
             {
-                // I choose .position (Which is the top left) instead of .Center because Dust.NewDust was made to spawn given .position.
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Demonite, 0, 0, 0, default, 0.5f);
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(3f, 3f) * Main.rand.NextFloat(0.8f, 1.5f);
+
+                // 紫黑与腐绿交替混色
+                Color color = Main.rand.NextBool()
+                    ? Color.Lerp(new Color(80, 0, 100), Color.Black, 0.4f) // 紫黑
+                    : Color.Lerp(new Color(50, 150, 50), Color.Black, 0.3f); // 腐绿
+
+                Dust pusDust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Demonite,
+                    velocity,
+                    80,
+                    color,
+                    Main.rand.NextFloat(1.4f, 1.7f)
+                );
+                pusDust.noGravity = true;
             }
 
             target.AddBuff(ModContent.BuffType<BrainRot>(), 120);
         }
+
+
+
     }
 }

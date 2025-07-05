@@ -15,6 +15,7 @@ using CalamityMod.Buffs.StatDebuffs;
 using Terraria.GameContent;
 using Terraria.Graphics.Renderers;
 using Terraria.GameContent.Drawing;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 {
@@ -88,6 +89,34 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 }
             }
 
+
+            {
+                // 🌋 飞行期间猛烈土石尘尾
+                if (Main.rand.NextBool(1)) // 每帧
+                {
+                    int dustType = Main.rand.Next(new int[] { DustID.Dirt, DustID.Stone, DustID.Sand });
+                    Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f), dustType);
+                    d.velocity = -Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1.5f, 1.5f);
+                    d.scale = Main.rand.NextFloat(0.8f, 1.4f);
+                    d.noGravity = Main.rand.NextBool(3); // 部分无重力
+                }              
+
+                // 深棕色 SparkParticle 模拟碎石飞溅
+                if (Main.rand.NextBool(6))
+                {
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        Main.rand.NextVector2Circular(2f, 2f),
+                        false,
+                        30,
+                        1.0f,
+                        new Color(90, 60, 40) // 深棕色
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+            }
+
             // 模拟重力效果
             if (Projectile.velocity.Y < 24f)
             {
@@ -145,16 +174,42 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 // 朝向判定（只允许水平两方向）
                 spawnDirection = cachedDirection.X < 0 ? -Vector2.UnitX : Vector2.UnitX;
 
-                // 触发音效 & 粒子 & 震屏
-                SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
-                for (int i = 0; i < 10; i++)
                 {
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0, 0, 150, default, 1.2f);
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0, 0, 150, default, 1.2f);
+                    // 粉碎土石尘暴爆发
+                    for (int i = 0; i < 25; i++)
+                    {
+                        int dustType = Main.rand.Next(new int[] { DustID.Dirt, DustID.Stone, DustID.Sand });
+                        Dust d = Dust.NewDustPerfect(Projectile.Center, dustType);
+                        d.velocity = Main.rand.NextVector2Circular(6f, 6f);
+                        d.scale = Main.rand.NextFloat(1.2f, 1.8f);
+                        d.noGravity = Main.rand.NextBool();
+                    }
+
+                    // 重型烟雾环绕
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Particle smoke = new HeavySmokeParticle(
+                            Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                            Main.rand.NextVector2Circular(1.5f, 1.5f),
+                            Color.SandyBrown,
+                            Main.rand.Next(25, 40),
+                            Main.rand.NextFloat(0.6f, 0.9f),
+                            0.8f,
+                            Main.rand.NextFloat(-0.02f, 0.02f),
+                            false
+                        );
+                        GeneralParticleHandler.SpawnParticle(smoke);
+                    }
+
+                    // 强烈“咚”声
+                    SoundEngine.PlaySound(SoundID.Item70, Projectile.position);
+
+                    // 增强震屏
+                    float shakePower = 5f; // 强烈震动
+                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
                 }
-                float shakePower = 1.5f;
-                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
             }
             return false;
         }
@@ -187,16 +242,42 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 );
             }
 
-            // 粒子特效：泥土 + 石头 + 沙尘混合
-            int dustAmount = 18;
-            for (int i = 0; i < dustAmount; i++)
             {
-                int dustType = Main.rand.Next(new int[] { DustID.Dirt, DustID.Stone, DustID.Sand, DustID.SandstormInABottle });
-                Dust d = Dust.NewDustPerfect(Projectile.Center, dustType);
-                d.velocity = Main.rand.NextVector2Circular(3.5f, 3.5f);
-                d.scale = Main.rand.NextFloat(1.3f, 2.0f);
-                d.noGravity = Main.rand.NextBool();
+                // 大量泥土尘爆发
+                for (int i = 0; i < 60; i++)
+                {
+                    int dustType = Main.rand.Next(new int[] { DustID.Dirt, DustID.Stone, DustID.Sand });
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, dustType);
+                    d.velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    d.scale = Main.rand.NextFloat(1.3f, 2.2f);
+                    d.noGravity = Main.rand.NextBool();
+                }
+
+                // 土石碎片飞散（SparkParticle）
+                for (int i = 0; i < 12; i++)
+                {
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        Main.rand.NextVector2Circular(10f, 10f),
+                        false,
+                        40,
+                        1.2f,
+                        new Color(120, 72, 40)
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 强爆炸声
+                SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.8f }, Projectile.Center);
+
+                // 强震动
+                float shakePower = 6f;
+                float distanceFactor = Utils.GetLerpValue(1200f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
             }
+
+
 
             // 可选：爆炸声
             //SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);

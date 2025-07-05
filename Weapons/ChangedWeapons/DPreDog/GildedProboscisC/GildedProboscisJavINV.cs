@@ -95,7 +95,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
 
 
             {
-                // === GlowOrbParticle 有序圆周轨迹 ===
                 // === GlowOrbParticle 单/双螺旋特效 ===
                 if (Main.GameUpdateCount % 1 == 0)
                 {
@@ -122,7 +121,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
                     GeneralParticleHandler.SpawnParticle(orb);
 
                     // 可选：双螺旋（取消注释即可）
-                    /*
+
                     Vector2 offset2 = right * MathF.Sin(time * frequency + MathHelper.Pi) * amplitude;
 
                     GlowOrbParticle orb2 = new GlowOrbParticle(
@@ -136,34 +135,34 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
                         true
                     );
                     GeneralParticleHandler.SpawnParticle(orb2);
-                    */
+
                 }
 
 
-                // === Dust 狂野随机点缀特效 ===
-                if (Main.GameUpdateCount % 2 == 0)
-                {
-                    Vector2 randomVelocity = Main.rand.NextVector2Circular(2f, 2f);
-                    Dust goldDust = Dust.NewDustPerfect(
-                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        DustID.GoldFlame,
-                        randomVelocity,
-                        150,
-                        Color.Gold,
-                        Main.rand.NextFloat(0.8f, 1.3f)
-                    );
-                    goldDust.noGravity = true;
+                //// === Dust 狂野随机点缀特效 ===
+                //if (Main.GameUpdateCount % 2 == 0)
+                //{
+                //    Vector2 randomVelocity = Main.rand.NextVector2Circular(2f, 2f);
+                //    Dust goldDust = Dust.NewDustPerfect(
+                //        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                //        DustID.GoldFlame,
+                //        randomVelocity,
+                //        150,
+                //        Color.Gold,
+                //        Main.rand.NextFloat(0.8f, 1.3f)
+                //    );
+                //    goldDust.noGravity = true;
 
-                    Dust redDust = Dust.NewDustPerfect(
-                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        DustID.Blood,
-                        randomVelocity * 0.8f,
-                        150,
-                        Color.Red,
-                        Main.rand.NextFloat(0.8f, 1.3f)
-                    );
-                    redDust.noGravity = true;
-                }
+                //    Dust redDust = Dust.NewDustPerfect(
+                //        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                //        DustID.Blood,
+                //        randomVelocity * 0.8f,
+                //        150,
+                //        Color.Red,
+                //        Main.rand.NextFloat(0.8f, 1.3f)
+                //    );
+                //    redDust.noGravity = true;
+                //}
 
             }
 

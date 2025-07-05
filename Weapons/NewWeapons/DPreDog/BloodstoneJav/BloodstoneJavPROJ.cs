@@ -375,7 +375,121 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             GeneralParticleHandler.SpawnParticle(bloodsplosion);
             Particle bloodsplosion2 = new CustomPulse(Projectile.Center, Vector2.Zero, new Color(255, 32, 32), "CalamityMod/Particles/DustyCircleHardEdge", Vector2.One, Main.rand.NextFloat(-15f, 15f), 0.03f, 0.155f, 40);
             GeneralParticleHandler.SpawnParticle(bloodsplosion2);
+
+            // === 🩸 高级血腥爆炸特效：微分方程场 + 螺旋 + 玫瑰曲线 ===
+
+            int particleCount = 50; // 高密度
+            float goldenAngle = MathHelper.ToRadians(137.5f);
+
+            for (int i = 0; i < particleCount; i++)
+            {
+                float t = i / (float)particleCount * 6f * MathHelper.Pi;
+                float r = 2f + 0.3f * t; // 阿基米德螺旋递增
+                Vector2 spiralVelocity = t.ToRotationVector2() * r * Main.rand.NextFloat(2f, 4f); // 两倍速度范围
+
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Blood,
+                    spiralVelocity,
+                    0,
+                    Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f)),
+                    Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                d.noGravity = true;
+            }
+
+            // 玫瑰曲线爆裂血雾
+            int rosePetals = 60;
+            for (int i = 0; i < rosePetals; i++)
+            {
+                float theta = MathHelper.TwoPi * i / rosePetals;
+                float roseRadius = 8f * (1 + 0.4f * (float)Math.Sin(6 * theta)); // 六瓣花
+                Vector2 velocity = theta.ToRotationVector2() * roseRadius * Main.rand.NextFloat(1.5f, 3f);
+
+                Dust roseDust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Blood,
+                    velocity,
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.4f, 2.0f)
+                );
+                roseDust.noGravity = false;
+            }
+
+            // 黄金角螺旋微血滴点缀（点状扩散，增加动态）
+            int drops = 30;
+            for (int i = 0; i < drops; i++)
+            {
+                float angle = i * goldenAngle;
+                Vector2 direction = angle.ToRotationVector2();
+                Vector2 velocity = direction * Main.rand.NextFloat(3f, 6f);
+
+                Dust dropDust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Blood,
+                    velocity,
+                    0,
+                    Color.Lerp(Color.Red, Color.DarkRed, 0.5f),
+                    1.0f
+                );
+                dropDust.noGravity = true;
+            }
+
+            // === 🩸 离谱血色 SparkParticle 数学爆裂特效 ===
+
+            int totalSparks = 72; // 高密度
+            goldenAngle = MathHelper.ToRadians(137.5f);
+            Vector2 center = Projectile.Center;
+
+            for (int i = 0; i < totalSparks; i++)
+            {
+                // === 🌺 玫瑰曲线半径计算（五瓣） ===
+                float theta = MathHelper.TwoPi * i / totalSparks;
+                float roseRadius = 8f * (1 + 0.4f * (float)Math.Sin(5 * theta));
+
+                // === 🌀 阿基米德螺旋递增爆散速度 ===
+                float spiralT = i * 0.3f;
+                float spiralRadius = 3f + 0.25f * spiralT;
+
+                // === 黄金角偏移分层旋转 ===
+                float angle = i * goldenAngle + Main.GameUpdateCount * 0.05f;
+
+                Vector2 velocity = angle.ToRotationVector2() * (roseRadius + spiralRadius) * Main.rand.NextFloat(0.8f, 1.6f);
+
+                // 主导红色 SparkParticle 爆裂
+                SparkParticle spark = new SparkParticle(
+                    center,
+                    velocity,
+                    false,
+                    Main.rand.Next(40, 60), // 生命周期拉长，延续残影感
+                    Main.rand.NextFloat(1.8f, 2.8f), // 大型可见
+                    Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.2f, 0.6f)) * 0.9f
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+            // === 点缀极小血色 Spark 星屑（提升闪烁感） ===
+            int starSparks = 40;
+            for (int i = 0; i < starSparks; i++)
+            {
+                float angle = i * goldenAngle * 0.5f + Main.GameUpdateCount * 0.1f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
+
+                SparkParticle starSpark = new SparkParticle(
+                    center,
+                    velocity,
+                    false,
+                    Main.rand.Next(20, 35),
+                    Main.rand.NextFloat(0.6f, 1.0f),
+                    Color.Red * 0.7f
+                );
+                GeneralParticleHandler.SpawnParticle(starSpark);
+            }
+
+
         }
+
         /*public override bool? CanDamage()
         {
             // 如果是 Zenith World 天顶世界，无论何时都允许造成伤害
@@ -393,6 +507,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             // 如果当前状态是冲刺状态，允许造成伤害
             return true;
         }*/
+
+        public override void OnKill(int timeLeft)
+        {
+            CreateImpactEffects();
+        }
 
         public override bool PreDraw(ref Color lightColor)
         {

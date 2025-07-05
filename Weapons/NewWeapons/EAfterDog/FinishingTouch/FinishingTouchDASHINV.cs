@@ -43,7 +43,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Vector2 playerPos = player.Center;
                 Vector2 mouseWorld = Main.MouseWorld;
                 Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
-                Vector2 targetPosition = playerPos + directionToMouse * 16f * 6f;
+                Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
 
                 // 计算目标方向向量
                 Vector2 toTarget = targetPosition - Projectile.Center;
@@ -64,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
 
                 // 目标点 = 玩家位置 + (方向 * 16 * 6)
-                Vector2 targetPosition = playerPos + directionToMouse * 16f * 6f;
+                Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
 
                 // 计算方向并平滑追踪
                 Vector2 toTarget = targetPosition - Projectile.Center;
