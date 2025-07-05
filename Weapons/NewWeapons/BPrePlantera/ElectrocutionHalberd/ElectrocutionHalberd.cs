@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 107; // 设置伤害值
+            Item.damage = 125; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -107,7 +107,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 35; // 设置伤害值
+                Item.damage = 30; // 设置伤害值
                 Item.useTime = 50;
                 Item.useAnimation = 50;
                 Item.useLimitPerAnimation = 1;
@@ -119,7 +119,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             }
             else // 左键
             {
-                Item.damage = 122;
+                Item.damage = 125;
                 Item.useTime = Item.useAnimation = 70;
                 Item.shootSpeed = 10f;
                 Item.shoot = ModContent.ProjectileType<ElectrocutionHalberdPROJ>();

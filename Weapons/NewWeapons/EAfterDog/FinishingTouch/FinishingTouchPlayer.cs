@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.GameInput;
-using Terraria.Audio;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
-using CalamityThrowingSpear.Global;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.NPCs.Yharon;
+using CalamityThrowingSpear.Global;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
+using Microsoft.Xna.Framework;
+using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameInput;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -70,23 +72,37 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
         }
 
+        public override void PostUpdateEquips()
+        {
+            Player player = Main.LocalPlayer;
+
+            if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
+            {
+                player.statDefense += 25;
+                player.endurance += 0.25f;
+                player.lifeRegen += 30;
+            }
+
+        }
+
         // 当玩家被 NPC 攻击时调用
         public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
         {
             if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
             {
-                int buffDuration = 5 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
-                Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), buffDuration);
+                int buffDuration = 10 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
+                Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
             }
         }
+        
 
         // 当玩家被投射物击中时调用
         public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
         {
             if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
             {
-                int buffDuration = 5 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
-                Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), buffDuration);
+                int buffDuration = 10 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
+                Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
             }
         }
 
@@ -501,12 +517,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             {
                 ShowCombatTextWithSound();
             }
+            
         }
 
         public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
         {
             bool hasFinishingTouch = Player.inventory.Any(item => item.type == ModContent.ItemType<FinishingTouch>());
-            if (hasFinishingTouch)//if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
+            if (hasFinishingTouch)
             {
                 ShowCombatTextWithSound();
             }
