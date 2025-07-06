@@ -19,7 +19,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
 
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";
         private bool hasGainedHoming = false;
-        private bool dnaEffectActive = true;
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -66,16 +65,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
             {
                 Projectile.velocity *= 1.005f;
 
-                // DNA 双链粒子特效
-                if (dnaEffectActive)
-                {
-                    //float offset = (float)Math.Sin(Projectile.localAI[0] * 0.1f) * 5f; // 将振幅从10f减小到5f
-                    //Vector2 dnaPos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
-                    //Vector2 dnaPos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
 
-                    //Dust.NewDustPerfect(dnaPos1, DustID.BlueCrystalShard, Vector2.Zero).noGravity = true;
-                    //Dust.NewDustPerfect(dnaPos2, DustID.WhiteTorch, Vector2.Zero).noGravity = true;
-                }
             }
             else
             {
@@ -110,10 +100,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
             if (!hasGainedHoming)
             {
                 hasGainedHoming = true;
-                dnaEffectActive = false; // 停止 DNA 双链粒子特效
                 Projectile.velocity *= 0.8f; // 模仿穿过敌人后的减速效果
+
+                // === ❄️ 命中后随机 ±？0° 偏转角度 ===
+                float randomRotation = Main.rand.NextFloat(-MathHelper.ToRadians(10f), MathHelper.ToRadians(10f));
+                Projectile.velocity = Projectile.velocity.RotatedBy(randomRotation);
+
             }
+
+            {
+                int totalParticles = 120;
+                float goldenAngle = MathHelper.ToRadians(137.5f);
+                Vector2 sprayDirection = Main.rand.NextVector2CircularEdge(1f, 1f).SafeNormalize(Vector2.UnitY); // 随机喷射方向
+
+                for (int i = 0; i < totalParticles; i++)
+                {
+                    // 核心射流方向加黄金角散射
+                    float angle = i * goldenAngle * 0.15f; // 缩小黄金角扩散幅度形成更集中束
+                    Vector2 baseDirection = sprayDirection.RotatedBy(angle);
+
+                    // 玫瑰曲线调节喷射速度（速度波动）
+                    float theta = MathHelper.TwoPi * i / totalParticles;
+                    float roseFactor = 1f + 0.3f * (float)Math.Sin(6 * theta); // 六瓣波动
+
+                    // 阿基米德螺旋递增
+                    float spiralT = i * 0.15f;
+                    float spiralRadius = 3f + 0.15f * spiralT;
+
+                    Vector2 velocity = baseDirection * spiralRadius * roseFactor * Main.rand.NextFloat(2f, 5f);
+
+                    int dustType = Main.rand.Next(new int[] { DustID.Ice, DustID.BlueCrystalShard, DustID.Snow, DustID.SnowBlock });
+                    Color dustColor = Color.Lerp(Color.LightBlue, Color.White, Main.rand.NextFloat(0.3f, 0.7f));
+
+                    Dust snowDust = Dust.NewDustPerfect(
+                        target.Center,
+                        dustType,
+                        velocity,
+                        100,
+                        dustColor,
+                        Main.rand.NextFloat(1.3f, 1.7f)
+                    );
+                    snowDust.noGravity = true;
+                }
+            }
+
+
+
         }
+
 
         public override void OnKill(int timeLeft)
         {

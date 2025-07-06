@@ -297,7 +297,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                     Dust electricDust2 = Dust.NewDustPerfect(
                         Projectile.Center + spiralVelocity2,
                         DustID.Electric,
-                        spiralVelocity2 * 0.73f,
+                        spiralVelocity2 * 0.03f,
                         100,
                         Color.Blue,
                         1.2f

@@ -298,6 +298,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Zett"), Player.Center);
                     }
 
+                    // 给所有玩家添加 10 秒 FinishingTouch10PBuff
+                    for (int i = 0; i < Main.maxPlayers; i++)
+                    {
+                        Player p = Main.player[i];
+                        if (p.active && !p.dead)
+                        {
+                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), 600); // 600 = 10秒
+                        }
+                    }
+
                     // 设置标记为已触发
                     hasTriggeredLowHealthEvent = true;
                 }

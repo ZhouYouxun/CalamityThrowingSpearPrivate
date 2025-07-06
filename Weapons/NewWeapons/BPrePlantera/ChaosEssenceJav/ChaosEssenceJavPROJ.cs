@@ -170,7 +170,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 }
 
                 // 3️⃣ 大范围黑红烟雾升腾
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     Particle smoke = new HeavySmokeParticle(
                         Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),

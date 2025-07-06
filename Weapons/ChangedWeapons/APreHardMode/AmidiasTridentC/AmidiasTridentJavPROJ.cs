@@ -16,91 +16,280 @@ using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Graphics.Primitives;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.Graphics.Shaders;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC
 {
     public class AmidiasTridentJavPROJ : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/APreHardMode/AmidiasTridentC/AmidiasTridentJav";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.APreHardMode";
+
+        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/APreHardMode/AmidiasTridentC/AmidiasTridentJav";
+        private bool stuck;
+        private NPC stuckTarget;
+        private bool returning;
+        private float lockedRotation;
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 38;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
+
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Main.spriteBatch.EnterShaderRegion();
+
+            GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
+                .SetShaderTexture(ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/window_04"))
+                .UseColor(new Color(120, 220, 255))            // 浅海蓝
+                .UseSecondaryColor(new Color(180, 255, 255))   // 极浅蓝青
+                .Apply();
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    ratio => MathHelper.SmoothStep(12f, 2f, ratio),
+                    _ => Color.Cyan,
+                    _ => Projectile.Size * 0.5f,
+                    shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
+                ),
+                100
+            );
+
+            Main.spriteBatch.ExitShaderRegion();
+
+            // 绘制本体（稳定简洁版）
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle frame = texture.Frame();
+            Vector2 origin = frame.Size() / 2f;
+            SpriteEffects effects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            // 稳定轻微缩放呼吸（可选）
+            float time = Main.GameUpdateCount * 0.05f;
+            float scale = Projectile.scale * (1f + (float)Math.Sin(time * 1.2f) * 0.02f); // 仅 ±2% 呼吸
+
+            Main.EntitySpriteDraw(
+                texture,
+                Projectile.Center - Main.screenPosition,
+                frame,
+                Projectile.GetAlpha(lightColor), // 使用 lightColor，无额外染色
+                Projectile.rotation,
+                origin,
+                scale,
+                effects,
+                0
+            );
+
             return false;
         }
-
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 允许无限制伤害
-            Projectile.timeLeft = 30;
+            Projectile.penetrate = 11; // 伤害次数
+            Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 不穿透物块
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.aiStyle = ProjAIStyleID.Arrow;
+
+        }
+        public override void OnSpawn(IEntitySource source)
+        {
+            // 为每颗弹幕生成独立的随机相位偏移 [0, 2π)
+            Projectile.localAI[0] = Main.rand.NextFloat(0f, MathHelper.TwoPi);
         }
 
         public override void AI()
         {
-            // 保持弹幕旋转
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Lighting.AddLight(Projectile.Center, Color.DeepSkyBlue.ToVector3() * 0.6f);
 
-            // Lighting - 添加海蓝色光源
-            Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3() * 0.55f);
-
-            // 释放海蓝色的粒子特效
-            if (Main.rand.NextBool(5))
+            if (stuck && stuckTarget != null && stuckTarget.active)
             {
-                Dust dust = Main.dust[Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.Water, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f)];
-                dust.noGravity = true;
-                dust.scale = 1.2f;
+                Projectile.Center = stuckTarget.Center;
+                Projectile.velocity = Vector2.Zero;
             }
+            else if (stuck && stuckTarget == null)
+            {
+                Projectile.velocity = Vector2.Zero;
+            }
+
+            if (!stuck && !returning)
+            {
+                {
+                    // 海蓝三螺旋粒子特效（混合 SparkParticle）
+                    float time = Main.GameUpdateCount * 0.12f; // 稍慢旋转速率
+                    int spiralCount = 3; // 三螺旋
+                    float radius = 14f;
+
+                    for (int i = 0; i < spiralCount; i++)
+                    {
+                        float angle = time + MathHelper.TwoPi / spiralCount * i;
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+
+                        // Dust 粒子（33号烟雾，透明度高，柔和）
+                        Dust d = Dust.NewDustPerfect(
+                            Projectile.Center + offset,
+                            33,
+                            -Projectile.velocity * 0.05f,
+                            100,
+                            Color.Cyan * 0.8f,
+                            Main.rand.NextFloat(0.8f, 1.2f)
+                        );
+                        d.noGravity = true;
+
+                        // 混合 SparkParticle
+                        if (Main.rand.NextBool(3))
+                        {
+                            SparkParticle spark = new SparkParticle(
+                                Projectile.Center + offset,
+                                offset.SafeNormalize(Vector2.Zero) * 0.5f,
+                                false,
+                                20,
+                                Main.rand.NextFloat(0.5f, 0.8f),
+                                Color.Lerp(Color.Cyan, Color.White, 0.3f)
+                            );
+                            GeneralParticleHandler.SpawnParticle(spark);
+                        }
+                    }
+
+                }
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            }
+            else
+            {
+                Projectile.rotation = lockedRotation;
+            }
+
+            if (Main.player[Projectile.owner].controlUseTile && stuck && !returning)
+            {
+                returning = true;
+                stuck = false;
+                Projectile.tileCollide = false;
+                Projectile.velocity = (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.UnitY) * 20f;
+            }
+
+            if (returning)
+            {
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+                Player player = Main.player[Projectile.owner];
+                Vector2 toPlayer = player.Center - Projectile.Center;
+                float distance = toPlayer.Length();
+                Vector2 direction = toPlayer.SafeNormalize(Vector2.UnitY);
+
+                // 设置基础飞行速度更快（28f，可调）
+                float speed = 28f;
+
+                // 螺旋参数
+                float spiralRadius = MathHelper.Clamp(distance * 0.1f, 8f, 48f); // 根据距离动态缩放螺旋半径
+                float spiralSpeed = Main.GameUpdateCount * 0.4f + Projectile.localAI[0]; // 螺旋角度随时间变化
+
+                Vector2 spiralOffset = new Vector2(
+                    (float)Math.Cos(spiralSpeed),
+                    (float)Math.Sin(spiralSpeed)
+                ) * spiralRadius;
+
+                // 综合速度向量
+                Projectile.velocity = (direction * speed + spiralOffset * 0.5f).SafeNormalize(Vector2.UnitY) * speed;
+
+                if (Projectile.Hitbox.Intersects(player.Hitbox))
+                {
+                    {
+                        int whirlpoolCount = Main.rand.Next(1, 3);
+
+                        for (int i = 0; i < whirlpoolCount; i++)
+                        {
+                            Vector2 direction1 = Main.rand.NextVector2Unit();
+                            Vector2 spawnPos = player.Center + direction1 * 20f + Main.rand.NextVector2Circular(8f, 8f);
+                            Vector2 velocity = direction1.RotatedByRandom(MathHelper.ToRadians(8)) * Main.rand.NextFloat(8f, 12f);
+
+                            Projectile.NewProjectile(
+                                Projectile.GetSource_FromThis(),
+                                spawnPos,
+                                velocity,
+                                ModContent.ProjectileType<AmidiasTridentJavWhirlpool>(),
+                                (int)(Projectile.damage * 1.2f),
+                                2f,
+                                Projectile.owner
+                            );
+                        }
+                    }
+                    Projectile.Kill();
+                }
+
+            }
+
+
+
+
         }
 
-        public override void OnKill(int timeLeft)
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            // 生成四个夹角为90度的AmidiasTridentJavWhirlpool弹幕
-            for (int i = 0; i < 4; i++)
+            if (!stuck)
             {
-                // 以初始角度进行不同的偏移，确保弹幕之间有角度差异
-                float angle = MathHelper.ToRadians(90) * i;  // 90度的角度差
-                Vector2 direction = angle.ToRotationVector2();  // 根据角度计算方向向量
-                Vector2 whirlpoolVelocity = direction * Projectile.velocity.Length();  // 基于原始速度的长度生成不同方向的速度
-
-                // 生成带有不同方向的弹幕
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, whirlpoolVelocity,
-                    ModContent.ProjectileType<AmidiasTridentJavWhirlpool>(), (int)((Projectile.damage)*1.5), Projectile.knockBack, Projectile.owner);
+                stuck = true;
+                lockedRotation = Projectile.rotation;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 900;
             }
-
-
-            // 释放随机的线性海蓝色粒子特效
-            int points = 25;
-            float radians = MathHelper.TwoPi / points;
-            Vector2 spinningPoint = Vector2.Normalize(new Vector2(-1f, -1f));
-            float rotRando = Main.rand.NextFloat(0.1f, 2.5f);
-            for (int k = 0; k < points; k++)
-            {
-                Vector2 velocity = spinningPoint.RotatedBy(radians * k).RotatedBy(-0.45f * rotRando);
-                LineParticle subTrail = new LineParticle(Projectile.Center + velocity * 20.5f, velocity * 15, false, 30, 0.75f, Color.CadetBlue);
-                GeneralParticleHandler.SpawnParticle(subTrail);
-            }
+            return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<RiptideDebuff>(), 180); // 激流
+
+            if (!stuck && !returning)
+            {
+                stuck = true;
+                stuckTarget = target;
+                lockedRotation = Projectile.rotation;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 900;
+            }
         }
+
+        public override void OnKill(int timeLeft)
+        {
+            if (stuckTarget != null)
+            {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AmidiasTridentJavWaterWall>(), (int)(Projectile.damage * 1.8f), 5f, Projectile.owner);
+            }
+            else if (stuck)
+            {
+                Vector2 spawnPosition = Projectile.Center + new Vector2(Main.rand.NextFloat(-50, 50), -800);
+                Vector2 velocity = Vector2.UnitY * 20f;
+                int lightningProjectile = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, ProjectileID.CultistBossLightningOrbArc, (int)(Projectile.damage * 2.1f), 0f, Projectile.owner, MathHelper.PiOver2, Main.rand.Next(100));
+                Projectile proj = Main.projectile[lightningProjectile];
+                proj.friendly = true;
+                proj.hostile = false;
+                proj.penetrate = -1;
+                proj.localNPCHitCooldown = 60;
+                proj.usesLocalNPCImmunity = true;
+                proj.extraUpdates = 4;
+            }
+
+            // 复杂的海蓝色特效
+            for (int i = 0; i < 40; i++)
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Water, Main.rand.NextVector2Circular(10f, 10f), 150, Color.Cyan, 1.5f);
+                d.noGravity = true;
+            }
+        }
+
+
 
     }
 }

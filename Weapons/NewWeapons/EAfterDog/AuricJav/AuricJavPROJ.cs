@@ -180,7 +180,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         {
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
-            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/QuasarExploded"));
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/QuasarExploded") with { Volume = 0.7f, Pitch = -0.2f }, Projectile.Center);
 
             //SoundStyle boom = new SoundStyle("CalamityThrowingSpear/Sound/QuasarExploded")
             //{
@@ -190,7 +190,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
             //SoundEngine.PlaySound(boom, Projectile.Center);
 
-            
+
             // 获取弹幕中心位置
             Vector2 spawnPosition = Projectile.Center;
             ProduceHexagonEffect(spawnPosition); // 释放小阵法

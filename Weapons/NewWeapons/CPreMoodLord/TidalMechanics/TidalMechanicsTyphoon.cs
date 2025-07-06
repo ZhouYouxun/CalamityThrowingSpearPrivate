@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -132,10 +133,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 
         private void CreateWaterDust()
         {
-            Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi / 3 * Main.rand.Next(3)) * 10f;
-            Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Water, null, 0, Color.CadetBlue, 1.5f);
-            dust.noGravity = true;
+            if (Main.GameUpdateCount % 1 == 0) // 每帧高密度触发
+            {
+                int particles = 12; // 高密度方形粒子
+                float goldenAngle = MathHelper.ToRadians(137.5f);
+                Vector2 basePos = Projectile.Center;
+
+                for (int i = 0; i < particles; i++)
+                {
+                    // === 黄金角散射 ===
+                    float angle = i * goldenAngle + Main.GameUpdateCount * 0.1f;
+                    Vector2 dir = angle.ToRotationVector2();
+
+                    // === 阿基米德螺旋递增速度 ===
+                    float spiralT = Main.GameUpdateCount * 0.15f + i * 0.3f;
+                    float spiralRadius = 2f + 0.2f * spiralT;
+                    Vector2 velocity = dir * spiralRadius * Main.rand.NextFloat(0.08f, 0.16f);
+
+                    // === 方形粒子（主导） ===
+                    Particle square = new SquareParticle(
+                        basePos + dir * Main.rand.NextFloat(4f, 8f), // 在周围环状喷发
+                        velocity,
+                        false,
+                        Main.rand.Next(15, 25), // lifetime
+                        Main.rand.NextFloat(1.2f, 1.8f), // scale
+                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.2f, 0.6f)) // color
+                    );
+                    GeneralParticleHandler.SpawnParticle(square);
+
+                    // === Dust 辅助填充 ===
+                    if (Main.rand.NextBool(2))
+                    {
+                        Dust d = Dust.NewDustPerfect(
+                            basePos + dir * Main.rand.NextFloat(4f, 8f),
+                            Main.rand.Next(new int[] { DustID.Ice, DustID.BlueCrystalShard, DustID.WhiteTorch }),
+                            velocity * 0.5f,
+                            0,
+                            Color.Lerp(Color.LightBlue, Color.White, Main.rand.NextFloat(0.3f, 0.8f)),
+                            Main.rand.NextFloat(0.8f, 1.3f)
+                        );
+                        d.noGravity = true;
+                    }
+                }
+            }
+
         }
+
+
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<CrushDepth>(), 300); // 深渊水压

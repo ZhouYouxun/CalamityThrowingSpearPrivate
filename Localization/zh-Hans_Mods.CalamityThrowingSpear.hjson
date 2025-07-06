@@ -170,6 +170,7 @@ Projectiles: {
 			YateveoBloomJavPROJ.DisplayName: 绽花毒藤
 			// GoldplumeJavWind.DisplayName: Goldplume Jav Wind
 			// GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
+			// AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
 		}
 
 		BPrePlantera: {
@@ -1298,6 +1299,11 @@ ModBuff: {
 			其过往在陆地上逝去，当下与未来亦无意义。
 			唯有海洋，杀死海洋。			
 			'''
+	}
+
+	FinishingTouch10PBuff: {
+		// DisplayName: Finishing Touch10 P Buff
+		// Description: Mods.CalamityThrowingSpear.ModBuff.FinishingTouch10PBuff.Description
 	}
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using CalamityMod.Buffs.DamageOverTime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -16,7 +17,38 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
+        public override bool PreDraw(ref Color lightColor)
+        {
+            // 绘制本体（带独特数学效果）
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle frame = texture.Frame();
+            Vector2 origin = frame.Size() / 2f;
+            SpriteEffects effects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+            // 独特数学扰动：基于时间和位置制造微小闪烁漂移（看起来像“时空扭曲”）
+            float time = Main.GameUpdateCount * 0.05f;
+            Vector2 waveOffset = new Vector2(
+                (float)Math.Sin(time + Projectile.Center.Y * 0.05f),
+                (float)Math.Cos(time + Projectile.Center.X * 0.05f)
+            ) * 3f;
+
+            // 独特颜色变换：基于 Sin 时间函数在蓝色-青色之间呼吸变色
+            float colorFactor = (float)Math.Sin(time * 2f) * 0.5f + 0.5f;
+            Color drawColor = Color.Lerp(Color.DeepSkyBlue, Color.Cyan, colorFactor) * 0.8f;
+
+            Main.EntitySpriteDraw(
+                texture,
+                Projectile.Center - Main.screenPosition + waveOffset,
+                frame,
+                drawColor,
+                Projectile.rotation + (float)Math.Sin(time) * 0.05f, // 微小旋转扰动
+                origin,
+                Projectile.scale * (1f + (float)Math.Sin(time * 1.5f) * 0.05f), // 微小缩放脉动
+                effects,
+                0
+            );
+            return false;
+        }
         public override void SetDefaults()
         {
             Projectile.width = 58;
@@ -24,98 +56,72 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Projectile.friendly = true;
             Projectile.penetrate = 1;
             Projectile.extraUpdates = 1;
-            Projectile.alpha = 100;
+            Projectile.alpha = 300;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 270;
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
 
         }
 
         public override void AI()
         {
-            // 如果是第一次执行，记录生成时的初始位置和角度，确保每个弹幕有自己的初始角度
-            if (Projectile.localAI[0] == 0)
-            {
-                Projectile.localAI[0] = 1;  // 标记为已经初始化
-                Projectile.ai[0] = Projectile.Center.X;  // 保存初始X坐标
-                Projectile.ai[1] = Projectile.Center.Y;  // 保存初始Y坐标
+            // 一直缓慢自身旋转
+            Projectile.rotation += 0.1f;
 
-                // 为每个弹幕分配一个独立的角度偏移
-                Projectile.ai[2] = Main.rand.NextFloat(0f, MathHelper.TwoPi);  // 随机生成初始角度偏移
+            // 查找最近敌人用于优雅锁定
+            NPC target = null;
+            float maxDistance = 600f;
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy() && !npc.friendly)
+                {
+                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
+                    if (distance < maxDistance)
+                    {
+                        maxDistance = distance;
+                        target = npc;
+                    }
+                }
             }
 
-            // 获取生成点作为旋转的圆心
-            Vector2 initialCenter = new Vector2(Projectile.ai[0], Projectile.ai[1]);
-
-            // 旋转上升轨迹，围绕生成点螺旋，包含初始角度偏移
-            if (Projectile.timeLeft > 200)
+            if (target != null)
             {
-                Projectile.localAI[1] += 1f / 60f;  // 增加时间因子
-                float radius = 100f;  // 定义旋转的半径
+                // 优雅插值追踪：使用 Lerp 平滑过渡方向
+                Vector2 desiredVelocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 9f; // 最大追踪速度
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, 0.05f); // 平滑跟踪
 
-                // 每帧递增角度，计算新的旋转位置，包含初始角度偏移
-                float angle = Projectile.localAI[1] * MathHelper.TwoPi + Projectile.ai[2];  // 加入初始角度偏移
-                Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+                // 产生精美海蓝螺旋 Dust 特效
+                float time = Main.GameUpdateCount * 0.15f;
+                int points = 6;
+                float radius = 24f;
+                for (int i = 0; i < points; i++)
+                {
+                    float angle = time + MathHelper.TwoPi / points * i;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    Dust d = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Water, offset.SafeNormalize(Vector2.Zero) * 0.5f, 100, Color.Aqua, 1.1f);
+                    d.noGravity = true;
+                }
 
-                // 更新弹幕位置，使其沿着圆心螺旋上升
-                Projectile.Center = initialCenter + offset;
-
-                // 让弹幕逐渐上升
-                Projectile.velocity = new Vector2(0, -1);  // 只上升，不水平移动
+                // 气泡粒子混用
+                if (Main.rand.NextBool(4))
+                {
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WaterCandle, Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(1f, 3f), 80, Color.LightBlue, Main.rand.NextFloat(0.8f, 1.2f));
+                    d.noGravity = true;
+                }
             }
             else
             {
-                Projectile.velocity *= 1.05f;
-
-                // 开始追踪最近的敌人，螺旋上升后才执行
-                NPC target = null;
-                float maxDistance = 800f;  // 半径50个方块（800像素）
-
-                foreach (NPC npc in Main.npc)
-                {
-                    if (npc.CanBeChasedBy() && !npc.friendly)
-                    {
-                        float distanceToNPC = Vector2.Distance(Projectile.Center, npc.Center);
-                        if (distanceToNPC < maxDistance)
-                        {
-                            maxDistance = distanceToNPC;
-                            target = npc;
-                        }
-                    }
-                }
-
-                if (target != null)
-                {
-                    // 在追踪敌人时生成海蓝色小三角形特效
-                    for (int i = 0; i < 3; i++)
-                    {
-                        Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi / 3 * i) * 10f;
-                        Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Water, null, 0, Color.CadetBlue, 1.5f);
-                        dust.noGravity = true;
-                    }
-
-                    // 追踪敌人
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = direction * 5f;  // 追踪速度
-                }
-                else
-                {
-                    // 如果没有找到任何敌人，销毁弹幕
-                    Projectile.Kill();
-                }
-
-
+                // 无敌人则缓慢漂移，速度极低
+                Projectile.velocity *= 0.98f;
             }
 
-            // 释放海蓝色粒子特效
-            if (Main.rand.NextBool(5))
-            {
-                Dust dust = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Water, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f)];
-                dust.noGravity = true;
-                dust.scale = 1.2f;
-            }
+            // 柔和光效
+            Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() * 0.4f);
         }
+
 
 
         // 阻止前30帧内对敌人造成伤害

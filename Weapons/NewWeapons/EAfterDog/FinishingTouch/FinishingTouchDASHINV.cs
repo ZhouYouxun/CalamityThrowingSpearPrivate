@@ -7,6 +7,7 @@ using CalamityMod.Particles;
 using CalamityMod.Graphics.Primitives;
 using Terraria.Graphics.Shaders;
 using System;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -23,13 +24,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 220;
             Projectile.extraUpdates = 1;
 
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.alpha = 0;
         }
+        // 在类内声明用于唯一化每个弹幕的李萨如参数：
+        private float phaseOffset;
+        private float freqOffset;
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            phaseOffset = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+            freqOffset = Main.rand.NextFloat(0.85f, 1.15f);
+
+            // 给每个弹幕分配唯一索引（建议通过 Projectile.whoAmI % 总数量 或直接分配）
+            orbitIndex = Main.rand.Next(0, 12); // 若生成12个则在生成时传入索引以实现严格平分
+        }
+        private int orbitIndex; // 在类内添加
+
+
 
         public override void AI()
         {
@@ -38,45 +54,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             if (trackTimer < 60)
             {
-                // 计算目标方向（玩家指向鼠标）
                 Player player = Main.player[Projectile.owner];
                 Vector2 playerPos = player.Center;
                 Vector2 mouseWorld = Main.MouseWorld;
                 Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
                 Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
 
-                // 计算目标方向向量
                 Vector2 toTarget = targetPosition - Projectile.Center;
                 float desiredSpeed = Projectile.velocity.Length() + 0.8f;
 
-                // 在前 60 帧内缓慢转向目标方向（实现拐弯）
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.UnitY) * desiredSpeed, 0.06f);
+                // === 李萨如轨迹偏移（确保每个弹幕独立） ===
+                float t = Main.GameUpdateCount * 0.15f * freqOffset;
+                float A = 24f; // 横向振幅（适度）
+                float B = 16f; // 纵向振幅
+                float a = 2f;
+                float b = 3f;
+
+                Vector2 lissOffset = new Vector2(
+                    A * (float)Math.Sin(a * t + phaseOffset),
+                    B * (float)Math.Sin(b * t)
+                );
+
+                // 综合目标位置加李萨如偏移形成动态追踪
+                Vector2 dynamicTarget = targetPosition + lissOffset;
+                Vector2 dynamicToTarget = dynamicTarget - Projectile.Center;
+
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, dynamicToTarget.SafeNormalize(Vector2.UnitY) * desiredSpeed, 0.06f);
 
                 trackTimer++;
             }
             else
             {
                 Player player = Main.player[Projectile.owner];
-                Vector2 playerPos = player.Center;
-                Vector2 mouseWorld = Main.MouseWorld;
 
-                // 计算玩家到鼠标的方向
-                Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
+                // 同步速度
+                Projectile.velocity = player.velocity;
 
-                // 目标点 = 玩家位置 + (方向 * 16 * 6)
-                Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
+                // === 椭圆公转环绕枪头 ===
+                float angle = Main.GameUpdateCount * 0.1f + orbitIndex * MathHelper.TwoPi / 12f; // 平分12个弹幕
+                float radiusX = 10f * 16f; // X轴半径
+                float radiusY = 10f * 16f; // Y轴半径
+                Vector2 orbitOffset = new Vector2(
+                    radiusX * (float)Math.Cos(angle),
+                    radiusY * (float)Math.Sin(angle)
+                );
 
-                // 计算方向并平滑追踪
-                Vector2 toTarget = targetPosition - Projectile.Center;
-                float desiredSpeed = Projectile.velocity.Length() + 0.8f; // 平滑加速
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.UnitY) * desiredSpeed, 0.08f);
-
-                // 当接近目标点时自动销毁
-                if (toTarget.Length() < 12f) // 接近阈值可微调
-                {
-                    Projectile.Kill();
-                }
+                Projectile.Center = player.Center + orbitOffset;
             }
+
 
 
             // === 飞行特效 ===
@@ -138,7 +163,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
 
             // 爆发火花
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 18; i++)
             {
                 Particle p = new SparkParticle(
                     Projectile.Center,
@@ -152,18 +177,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
 
             // 爆发橙色收缩光环
-            Particle ring = new CustomPulse(
-                Projectile.Center,
-                Vector2.Zero,
-                Color.Orange,
-                "CalamityMod/Particles/HighResHollowCircleHardEdge",
-                Vector2.One,
-                Main.rand.NextFloat(-5f, 5f),
-                0.05f,
-                0.2f,
-                20
-            );
-            GeneralParticleHandler.SpawnParticle(ring);
+            //Particle ring = new CustomPulse(
+            //    Projectile.Center,
+            //    Vector2.Zero,
+            //    Color.Orange,
+            //    "CalamityMod/Particles/HighResHollowCircleHardEdge",
+            //    Vector2.One,
+            //    Main.rand.NextFloat(-5f, 5f),
+            //    0.05f,
+            //    0.2f,
+            //    20
+            //);
+            //GeneralParticleHandler.SpawnParticle(ring);
         }
 
         public override bool PreDraw(ref Color lightColor)

@@ -170,6 +170,7 @@ Projectiles: {
 			YateveoBloomJavPROJ.DisplayName: Blooming Poison Vine
 			GoldplumeJavWind.DisplayName: Goldplume Jav Wind
 			GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
+			AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
 		}
 
 		BPrePlantera: {
@@ -1255,6 +1256,11 @@ ModBuff: {
 			The past died on the land, and neither the present nor the future have any meaning. 
 			Only the ocean; kill the ocean. 
 			'''
+	}
+
+	FinishingTouch10PBuff: {
+		DisplayName: Finishing Touch10 P Buff
+		Description: Mods.CalamityThrowingSpear.ModBuff.FinishingTouch10PBuff.Description
 	}
 }
 
