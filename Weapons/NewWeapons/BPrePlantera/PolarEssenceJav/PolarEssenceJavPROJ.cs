@@ -237,7 +237,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                 bool isInTundra = owner != null && owner.ZoneSnow; // 检测玩家是否在苔原区域
 
                 // 生成 CoolWhipProj
-                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 917, (int)(Projectile.damage * 1.5f), 0, Projectile.owner);
+                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 917, (int)(Projectile.damage * 0.6f), 0, Projectile.owner);
 
                 // 修改生成投射物的属性
                 if (projID != Main.maxProjectiles)
@@ -246,10 +246,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                     if (newProj != null && newProj.active)
                     {
                         //newProj.timeLeft = isInTundra ? 600 : 300; // 如果在苔原，持续时间为 600 帧，否则为 300 帧
+                        newProj.extraUpdates = 1;
                         newProj.timeLeft = 600; // 直接就600，没有加强和减弱的不同版本
                         newProj.usesLocalNPCImmunity = true; // 启用局部无敌帧
                                                              //newProj.localNPCHitCooldown = isInTundra ? 10 : 20; // 如果在苔原，冷却时间设置为 10 帧，否则为 20 帧
-                        newProj.localNPCHitCooldown = 10;
+                        newProj.localNPCHitCooldown = 20;
                     }
 
                     // 生成 X 形粒子特效链

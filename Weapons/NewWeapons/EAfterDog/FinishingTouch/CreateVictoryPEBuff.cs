@@ -49,7 +49,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
         }
 
-
         public override void Update(Player player, ref int buffIndex)
         {
             // 每秒流失 50 点生命值
@@ -60,10 +59,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} 创业未半而中道崩殂."), 10.0, 0);
             }*/
 
-            // 增加 40 点防御
-            player.statDefense += 40;
-            player.endurance += 0.3f;
-            player.lifeRegen += 12;
+            player.statDefense += 25;
+            player.endurance += 0.25f;
+            player.lifeRegen += 20;
 
             // 生成橙色 "V" 形粒子特效
             Vector2 playerCenter = player.Center; // 以玩家为中心

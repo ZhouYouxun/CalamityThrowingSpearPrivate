@@ -287,7 +287,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                         lightningSpawnPosition,
                         lightningShootVelocity,
                         ModContent.ProjectileType<ElectrocutionHalberdLIGHTING>(),
-                        (int)(Projectile.damage * 0.5), // 伤害倍率为1.0倍
+                        (int)(Projectile.damage * 0.8), // 伤害倍率为1.0倍
                         0f,
                         Projectile.owner
                     );

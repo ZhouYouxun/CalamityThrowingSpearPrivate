@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 35; // 设置伤害值
+            Item.damage = 42; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;

@@ -347,7 +347,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 Projectile.Center,
                 Vector2.Zero, // 初始速度为0
                 ModContent.ProjectileType<ElectrocutionHalberdField>(),
-                (int)(Projectile.damage * 1.2f), // 伤害倍率为2.0倍
+                (int)(Projectile.damage * 1.5f), // 伤害倍率为2.0倍
                 Projectile.knockBack,
                 Projectile.owner
             );

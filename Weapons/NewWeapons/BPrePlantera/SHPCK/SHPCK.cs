@@ -54,9 +54,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 35; // 设置伤害值
-                Item.useTime = 13; // 右键攻击速度更快
-                Item.useAnimation = 13;
+                Item.damage = 12; // 设置伤害值
+                Item.useTime = 20; // 右键攻击速度更快
+                Item.useAnimation = 20;
                 Item.shoot = ModContent.ProjectileType<SHPCKFast>(); // 右键使用SHPCKFast弹幕
                 Item.shootSpeed = 30f; // 更改使用时的武器弹幕飞行速度
                 //Item.UseSound = SoundID.Item92;
@@ -65,7 +65,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             }
             else // 左键
             {
-                Item.damage = 70; // 设置伤害值
+                Item.damage = 75; // 设置伤害值
                 Item.useTime = 60; // 左键保持现有的攻击速度
                 Item.useAnimation = 60;
                 Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
