@@ -18,6 +18,7 @@ using CalamityMod.Projectiles.Pets;
 using CalamityMod;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {
@@ -41,7 +42,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
             Item.useTime = Item.useAnimation = 12; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
-            Item.UseSound = SoundID.Item1;
+
+            Item.UseSound = new SoundStyle("CalamityThrowingSpear/Sound/Windows/WindowsBackground")
+            {
+                Volume = 1.0f,
+                Pitch = 0f
+            };
+
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ModContent.RarityType<HotPink>();
