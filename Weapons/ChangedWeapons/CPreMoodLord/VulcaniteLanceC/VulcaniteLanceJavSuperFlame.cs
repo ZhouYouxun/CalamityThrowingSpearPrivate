@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.ID;
+using Terraria.DataStructures;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
 {
@@ -38,7 +40,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 modifiers.FinalDamage *= 1.5f; // 如果目标不是 Boss，造成 1.5 倍伤害
             }
         }
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/火山音效") with { Volume = 2.0f, Pitch = 0.0f }, Projectile.Center);
+        }
         public override void AI()
         {
             // 顺时针旋转的角度

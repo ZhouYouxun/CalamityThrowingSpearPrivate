@@ -140,6 +140,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
 
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/十文字音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
             {
                 // 粉蓝静电光点多层环状爆发（随机整体旋转）
                 int layers = 2;

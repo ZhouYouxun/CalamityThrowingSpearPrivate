@@ -156,18 +156,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                 }
             }
 
-            // 每15帧生成水剑弹幕
-            if (Projectile.localAI[0] % 15 == 0)
-            {
-
-            }
-
             // 检测松手
             if (!Owner.channel)
             {
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 300; // 冲刺阶段持续时间
                 Projectile.penetrate = 20; // 设置冲刺阶段的穿透次数
+
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/深渊潮涌音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
                 // 屏幕震动
                 float shakePower = 2f;

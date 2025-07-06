@@ -154,6 +154,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
         {
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item39, Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/金羽音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
             if (collided)
             {

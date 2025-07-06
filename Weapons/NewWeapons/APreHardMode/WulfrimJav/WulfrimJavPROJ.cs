@@ -137,6 +137,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
         {
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item15, Projectile.position);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/钨钢矛击中1") with { Volume = 1.0f, Pitch = -0.75f }, Projectile.Center);
 
             // 定义damage和knockback，使用当前弹幕的数值
             int damage = Projectile.damage; // 获取当前弹幕的伤害值

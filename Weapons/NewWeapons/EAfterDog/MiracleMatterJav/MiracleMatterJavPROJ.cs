@@ -255,6 +255,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
 
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/恒辉之矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
 
             // 0. 随机选择2~4个角度发射2~4个 MiracleMatterJavLight 弹幕
             int numProjectiles = Main.rand.Next(4, 7);  // 随机选择发射4到6个弹幕

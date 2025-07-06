@@ -115,6 +115,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
             // 当命中敌人时，弹幕向上飞行，且带有一定的左右偏移
             float angle = MathHelper.ToRadians(Main.rand.Next(-10, 10)); // 在正上方左右10度范围内取随机角度
             Vector2 upwardVelocity = new Vector2(0, -8f).RotatedBy(angle); // 初始向上飞行的速度

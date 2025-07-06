@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 {
@@ -105,6 +106,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                         }
 
                     }
+
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/巴蛇吞象音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
 
                     // 释放泥土粒子
                     for (int i = 0; i < Main.rand.Next(50, 101); i++)
