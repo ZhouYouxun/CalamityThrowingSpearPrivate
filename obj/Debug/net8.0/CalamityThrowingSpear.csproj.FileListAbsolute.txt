@@ -233,3 +233,12 @@ D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\D
 D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\refint\CalamityThrowingSpear.dll
 D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.pdb
 D:\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\ref\CalamityThrowingSpear.dll
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.csproj.AssemblyReference.cache
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.AssemblyInfoInputs.cache
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.AssemblyInfo.cs
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.csproj.CoreCompileInputs.cache
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.sourcelink.json
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.dll
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\refint\CalamityThrowingSpear.dll
+C:\Users\yubaihui\Documents\My Games\Terraria\tModLoader\ModSources\CalamityThrowingSpear\obj\Debug\net8.0\CalamityThrowingSpear.pdb

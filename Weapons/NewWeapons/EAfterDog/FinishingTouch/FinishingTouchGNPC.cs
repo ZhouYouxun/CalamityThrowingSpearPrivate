@@ -8,7 +8,8 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.Yharon;
-using CalamityMod.NPCs.DevourerofGods; // 引用 CalamityMod 的 NPCs 命名空间
+using CalamityMod.NPCs.DevourerofGods;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS; // 引用 CalamityMod 的 NPCs 命名空间
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -25,7 +26,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             // 获取 Yharon 的类型 ID
             int yharonType = ModContent.NPCType<Yharon>(); // 使用 CalamityMod 中 Yharon 的类获取类型 ID
-
             // 检查 NPC 是否是 Yharon 并且符合条件
             if (!eventTriggered && npc.type == yharonType && npc.life <= npc.lifeMax * 0.55f && !yharonTriggered)
             {

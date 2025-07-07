@@ -53,7 +53,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                     lightColor,
                     Projectile.rotation,
                     texture.Size() * 0.5f,
-                    5f,
+                    2f,
                     0,
                     0
                 );
@@ -63,7 +63,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 // 脉动因子（周期 120 帧，每秒 2 次呼吸）
                 float pulsate = 1f + 0.1f * (float)Math.Sin(Main.GameUpdateCount * 0.105f);
                 // 外层缩放为 5 倍基础上略大（1.1 倍基础呼吸脉动）
-                float outerScale = 5f * 1.1f * pulsate;
+                float outerScale = 2f * 1.2f * pulsate;
 
                 // 外层颜色（淡蓝色 + 透明度呼吸）
                 Color outerColor = Color.Cyan * 0.4f * (0.7f + 0.3f * (float)Math.Sin(Main.GameUpdateCount * 0.105f));
@@ -132,8 +132,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 // 进入准备阶段：禁用绘制，瞬移
                 Projectile.hide = true;
                 Player player = Main.player[Projectile.owner];
-                float xOffset = Main.rand.NextFloat(-800f, 800f);
-                float yOffset = Main.rand.NextFloat(-50f, 50f);
+                float xOffset = Main.rand.NextFloat(-1000f, 1000f);
+                float yOffset = Main.rand.NextFloat(-100f, 100f);
                 Projectile.Center = player.Center + new Vector2(xOffset, -400f + yOffset);
 
                 // 锁定目标并计算冲击速度
@@ -141,7 +141,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 if (target != null)
                 {
                     Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                    strikeVelocity = direction * Projectile.velocity.Length() * 7f; // 三倍速度砸下
+                    strikeVelocity = direction * Projectile.velocity.Length() * 6f; // 三倍速度砸下
                 }
                 else
                 {
@@ -176,14 +176,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             // 🚩 1️⃣ 水烟粒子：范围与缩放翻 5 倍
             Vector2 smokeVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(
                 isEnlarged ? 2f : 0.4f,
-                isEnlarged ? 4f : 0.8f
+                isEnlarged ? 3f : 0.8f
             );
             Particle waterSmoke = new HeavySmokeParticle(
                 center,
                 smokeVelocity,
                 isEnlarged ? Color.Cyan : Color.LightBlue, // 更亮更夸张
                 isEnlarged ? 30 : 18,                      // 寿命更长
-                isEnlarged ? 4f : 0.8f,                    // 缩放大 5 倍
+                isEnlarged ? 3f : 0.8f,                    // 缩放大 5 倍
                 isEnlarged ? 0.8f : 0.4f,                  // 不透明度略增
                 isEnlarged ? 0.3f : 0.15f,                 // 旋转更快
                 true

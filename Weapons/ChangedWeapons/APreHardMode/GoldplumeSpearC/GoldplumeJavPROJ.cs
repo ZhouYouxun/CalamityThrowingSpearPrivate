@@ -102,6 +102,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                             {
                                 collided = true; // 标记为已碰撞
                                 Projectile.timeLeft = 80; // 设置持续时间
+                                Projectile.penetrate = -1;
+                                Projectile.usesLocalNPCImmunity = true; 
+                                Projectile.localNPCHitCooldown = 18; //让它在公转期间也能造成多次伤害
                                 Projectile.velocity = Vector2.Zero; // 初始速度归零
 
                                 // 开始围绕 GoldplumeJavWind 做圆周运动

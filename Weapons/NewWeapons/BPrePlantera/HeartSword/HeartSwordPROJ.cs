@@ -180,7 +180,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             Player player = Main.player[Projectile.owner];
 
             // 回复玩家生命值
-            int healAmount = (int)(damageDone * 0.04f);
+            int healAmount = (int)(damageDone * 0.05f);
             player.statLife += healAmount;
             player.HealEffect(healAmount);
 

@@ -18,7 +18,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 9; // 设置伤害值
+            Item.damage = 8; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
