@@ -45,7 +45,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 
             Item.UseSound = new SoundStyle("CalamityThrowingSpear/Sound/Windows/WindowsBackground")
             {
-                Volume = 1.0f,
+                Volume = 3.0f,
                 Pitch = 0f
             };
 

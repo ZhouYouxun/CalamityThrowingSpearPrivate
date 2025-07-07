@@ -161,6 +161,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
 
             {

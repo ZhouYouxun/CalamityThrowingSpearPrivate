@@ -150,19 +150,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                     float spiralRadius = 2f + 0.2f * spiralT;
                     Vector2 velocity = dir * spiralRadius * Main.rand.NextFloat(0.08f, 0.16f);
 
-                    // === 方形粒子（主导） ===
-                    Particle square = new SquareParticle(
-                        basePos + dir * Main.rand.NextFloat(4f, 8f), // 在周围环状喷发
-                        velocity,
-                        false,
-                        Main.rand.Next(15, 25), // lifetime
-                        Main.rand.NextFloat(1.2f, 1.8f), // scale
-                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.2f, 0.6f)) // color
-                    );
-                    GeneralParticleHandler.SpawnParticle(square);
-
+                    if (Main.rand.NextBool(3))
+                    {
+                        // === 方形粒子（主导） ===
+                        Particle square = new SquareParticle(
+                            basePos + dir * Main.rand.NextFloat(1f, 3f), // 在周围环状喷发
+                            velocity,
+                            false,
+                            Main.rand.Next(15, 25), // lifetime
+                            Main.rand.NextFloat(0.2f, 0.8f), // scale
+                            Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.2f, 0.6f)) // color
+                        );
+                        GeneralParticleHandler.SpawnParticle(square);
+                    }
                     // === Dust 辅助填充 ===
-                    if (Main.rand.NextBool(2))
+                    if (Main.rand.NextBool(1))
                     {
                         Dust d = Dust.NewDustPerfect(
                             basePos + dir * Main.rand.NextFloat(4f, 8f),
