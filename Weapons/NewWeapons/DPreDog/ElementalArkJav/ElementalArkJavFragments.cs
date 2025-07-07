@@ -83,6 +83,133 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             {
                 Projectile.velocity *= 0.995f;
             }
+
+            {
+                // 超音速喷气式战机特效
+
+                if (Main.rand.NextBool(2))
+                {
+                    // 重型淡烟雾轨迹
+                    Vector2 smokePosition = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitY) * 8f;
+                    Vector2 smokeVelocity = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 1.2f);
+                    Color smokeColor = Color.Lerp(Color.LightBlue, Color.White, Main.rand.NextFloat(0.3f, 0.7f));
+
+                    Particle smoke = new HeavySmokeParticle(
+                        smokePosition,
+                        smokeVelocity,
+                        smokeColor,
+                        24,
+                        Main.rand.NextFloat(0.6f, 1.0f),
+                        0.3f,
+                        0,
+                        false,
+                        0.02f,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(smoke);
+
+                    // Spark（尾焰火花）
+                    Particle spark = new SparkParticle(
+                        smokePosition,
+                        -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.5f, 4.5f),
+                        false,
+                        16,
+                        Main.rand.NextFloat(0.4f, 0.7f),
+                        Color.LightYellow
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // CritSpark（保留并增强） 
+                if (Main.rand.NextBool(3))
+                {
+                    Vector2 particlePosition = Projectile.Center - Projectile.velocity * Main.rand.NextFloat(0.4f, 1.0f);
+                    Color particleColor = Main.rand.NextBool() ? Color.White : Color.LightYellow;
+                    float particleScale = Main.rand.NextFloat(0.4f, 0.7f);
+
+                    Particle critSpark = new CritSpark(
+                        particlePosition,
+                        -Projectile.velocity * Main.rand.NextFloat(1.5f, 3.0f),
+                        Color.White,
+                        particleColor,
+                        particleScale * 5f,
+                        Main.rand.Next(18, 26),
+                        0.08f,
+                        3
+                    );
+                    GeneralParticleHandler.SpawnParticle(critSpark);
+
+                    // Dust（空气撕裂感）
+                    Vector2 dustVelocity = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.0f, 4.0f);
+                    Dust trailDust = Dust.NewDustPerfect(
+                        particlePosition,
+                        DustID.WhiteTorch,
+                        dustVelocity,
+                        100,
+                        Color.White,
+                        Main.rand.NextFloat(0.8f, 1.2f)
+                    );
+                    trailDust.noGravity = true;
+                }
+
+                // === 环状冲击感追加特效 ===
+                if (Main.rand.NextBool(3))
+                {
+                    float time = Main.GameUpdateCount * 0.15f;
+                    int ringParticles = 4; // 每次生成4个环形点
+                    float baseRadius = 20f + Main.rand.NextFloat(5f, 10f); // 环形基础半径
+
+                    for (int i = 0; i < ringParticles; i++)
+                    {
+                        float angle = time + MathHelper.TwoPi / ringParticles * i;
+                        Vector2 offset = angle.ToRotationVector2() * baseRadius;
+
+                        Vector2 spawnPosition = Projectile.Center + offset;
+                        Vector2 outwardVelocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.0f, 2.5f);
+
+                        // Spark (环形冲击波火花)
+                        Particle ringSpark = new SparkParticle(
+                            spawnPosition,
+                            outwardVelocity,
+                            false,
+                            16,
+                            Main.rand.NextFloat(0.4f, 0.7f),
+                            Color.LightYellow
+                        );
+                        GeneralParticleHandler.SpawnParticle(ringSpark);
+
+                        // CritSpark (环形冲击波闪光)
+                        Particle ringCritSpark = new CritSpark(
+                            spawnPosition,
+                            outwardVelocity * 0.8f,
+                            Color.White,
+                            Color.LightYellow,
+                            Main.rand.NextFloat(0.5f, 0.8f),
+                            Main.rand.Next(12, 20),
+                            0.06f,
+                            3
+                        );
+                        GeneralParticleHandler.SpawnParticle(ringCritSpark);
+
+                        // Dust (空气撕裂感)
+                        Dust ringDust = Dust.NewDustPerfect(
+                            spawnPosition,
+                            DustID.GoldFlame,
+                            outwardVelocity * 0.5f,
+                            100,
+                            Color.White,
+                            Main.rand.NextFloat(0.6f, 1.0f)
+                        );
+                        ringDust.noGravity = true;
+                    }
+                }
+
+
+            }
+
+
+
+
         }
 
 

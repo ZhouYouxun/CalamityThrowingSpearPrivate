@@ -88,16 +88,94 @@ namespace CalamityMod.Projectiles.Melee
             // 前15帧不追踪，之后开始追踪敌人
             if (Projectile.ai[1] > 15)
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找范围内最近的敌人
-                if (target != null)
+
+
+                // 状态机：0=追踪，1=转方块
+                if (Projectile.localAI[1] == 0)
                 {
-                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 12f, 0.08f); // 追踪速度为12f
+                    // 正常追踪阶段（持续 60 帧）
+                    Projectile.localAI[0]++;
+                    if (Projectile.localAI[0] >= 60)
+                    {
+                        Projectile.localAI[0] = 0;
+                        Projectile.localAI[1] = 1; // 切换至转方块模式
+                        Projectile.localAI[2] = 0; // 重置已转次数
+                    }
+                    else
+                    {
+                        NPC target = Projectile.Center.ClosestNPCAt(1800);
+                        if (target != null)
+                        {
+                            Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                            Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 12f, 0.08f);
+                        }
+                    }
                 }
+                else if (Projectile.localAI[1] == 1)
+                {
+                    // 转方块模式（转 4 次，每次间隔 5 帧）
+                    Projectile.localAI[0]++;
+                    if (Projectile.localAI[0] % 5 == 0 && Projectile.localAI[2] < 4)
+                    {
+                        // 执行左转 90°
+                        Projectile.velocity = Projectile.velocity.RotatedBy(-MathHelper.PiOver2);
+
+                        // 触发独特特效（使用两种内置特效）
+                        // 特效 1：Dust (白色高速)
+                        for (int i = 0; i < 8; i++)
+                        {
+                            Dust d = Dust.NewDustPerfect(
+                                Projectile.Center,
+                                DustID.GoldFlame,
+                                Main.rand.NextVector2Circular(4f, 4f),
+                                150,
+                                Color.White,
+                                Main.rand.NextFloat(0.8f, 1.2f)
+                            );
+                            d.noGravity = true;
+                        }
+
+                        // 特效 2：SparkParticle（白黄光点）
+                        Particle spark = new SparkParticle(
+                            Projectile.Center,
+                            Main.rand.NextVector2Circular(2f, 2f),
+                            false,
+                            18,
+                            Main.rand.NextFloat(0.5f, 0.8f),
+                            Color.LightYellow
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+
+                        Projectile.localAI[2]++; // 已转次数 +1
+                    }
+
+                    if (Projectile.localAI[2] >= 4)
+                    {
+                        // 完成 4 次转方块后切回追踪
+                        Projectile.localAI[0] = 0;
+                        Projectile.localAI[1] = 0;
+                    }
+                }
+
+
+
             }
             else
             {
                 Projectile.ai[1]++;
+
+
+                // 在前15帧做“横向微幅抖动”
+                float frequency = 0.6f; // 振荡频率
+                float amplitude = 2.5f; // 振幅像素
+                float sinWave = (float)Math.Sin(Main.GameUpdateCount * frequency) * amplitude;
+
+                Vector2 orthogonal = new Vector2(-Projectile.velocity.Y, Projectile.velocity.X).SafeNormalize(Vector2.Zero);
+                Vector2 offset = orthogonal * sinWave * 0.1f; // 控制实际偏移量
+
+                Projectile.position += offset;
+
+
             }
         }
 

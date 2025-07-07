@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 using static CalamityMod.CalamityUtils;
 using static Terraria.ModLoader.ModContent;
 using CalamityMod;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
 {
@@ -90,7 +91,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             return HoldProgress > 0;
         }
 
-        
+        public override void OnSpawn(IEntitySource source)
+        {
+            base.OnSpawn(source);
+        }
+
         // 撞击判断，使用线性碰撞来模拟撕裂路径
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
@@ -115,6 +120,55 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 initialized = true;
                 Projectile.netUpdate = true;
+
+                // === 微分方程 · 冲击型法阵特效 ===
+                for (int i = 0; i < 50; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 20f;
+                    Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(40f, 80f); // 法阵环大小
+
+                    Vector2 spawnPosition = Projectile.Center + offset;
+
+                    // CritSpark（闪光碎片，关闭 Bloom）
+                    Particle critSpark = new CritSpark(
+                        spawnPosition,
+                        offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 7f),
+                        Color.White,
+                        Color.LightYellow,
+                        Main.rand.NextFloat(0.8f, 1.2f),
+                        Main.rand.Next(18, 28),
+                        0.08f,        // rotationSpeed
+                        0f            // bloomScale (👈关闭 Bloom)
+                    );
+                    GeneralParticleHandler.SpawnParticle(critSpark);
+
+
+                    // Spark（能量碎屑）
+                    Particle spark = new SparkParticle(
+                        spawnPosition,
+                        offset.SafeNormalize(Vector2.Zero).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(3f, 6f),
+                        false,
+                        25,
+                        Main.rand.NextFloat(1.6f, 1.8f),
+                        Color.LightGoldenrodYellow
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+
+                    // Dust（等离子体微粒）
+                    int dustIndex = Dust.NewDust(
+                        spawnPosition,
+                        0,
+                        0,
+                        DustID.GoldFlame,
+                        offset.SafeNormalize(Vector2.Zero).X * Main.rand.NextFloat(2f, 4f),
+                        offset.SafeNormalize(Vector2.Zero).Y * Main.rand.NextFloat(2f, 4f),
+                        80,
+                        Color.White,
+                        Main.rand.NextFloat(1.8f, 1.9f)
+                    );
+                    Main.dust[dustIndex].noGravity = true;
+                }
+
             }
 
             // 计算玩家和弹幕的实际距离
@@ -174,6 +228,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                     float positionAlongLine = (ThrustDisplaceRatio() * 242f / (float)maxStitches * 0.5f) + MathHelper.Lerp(0f, ThrustDisplaceRatio() * 242f, i / (float)maxStitches);
                     Vector2 stitchCenter = Projectile.Center + Projectile.velocity * positionAlongLine;
                     GeneralParticleHandler.SpawnParticle(new CritSpark(stitchCenter, Vector2.Zero, Color.White, Color.Cyan, 3f, 8, 0.1f, 3));
+
+                    {
+                        // === 撕裂路径增强特效（狂野且有序） ===
+
+                        // 计算垂直方向
+                        Vector2 perpendicular = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
+
+                        for (int j = -1; j <= 1; j += 2) // 两侧各喷一次
+                        {
+                            // SparkParticle（更快，更有序的飞散火花）
+                            Particle spark = new SparkParticle(
+                                stitchCenter,
+                                (Projectile.velocity * Main.rand.NextFloat(3f, 6f) + perpendicular * j * Main.rand.NextFloat(2f, 4f)) * 0.5f,
+                                false,
+                                20,
+                                Main.rand.NextFloat(0.5f, 0.8f),
+                                Color.LightYellow
+                            );
+                            GeneralParticleHandler.SpawnParticle(spark);
+
+                            // Dust（更快更亮更可见的飞尘）
+                            int dustIndex = Dust.NewDust(
+                                stitchCenter,
+                                0,
+                                0,
+                                DustID.Smoke,
+                                (Projectile.velocity.X + perpendicular.X * j * Main.rand.NextFloat(1f, 2f)) * Main.rand.NextFloat(0.4f, 0.8f),
+                                (Projectile.velocity.Y + perpendicular.Y * j * Main.rand.NextFloat(1f, 2f)) * Main.rand.NextFloat(0.4f, 0.8f),
+                                60,
+                                Color.White,
+                                Main.rand.NextFloat(1.0f, 1.5f)
+                            );
+                            Main.dust[dustIndex].noGravity = true;
+                            Main.dust[dustIndex].scale = Main.rand.NextFloat(0.8f, 1.2f);
+                        }
+                    }
+
+
+
                 }
                 StitchLifetimes[i]++;
             }

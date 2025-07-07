@@ -119,38 +119,102 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
 
                 }
 
-
-
-                // 每 2 帧生成粒子特效
-                if (frameCounter % 2 == 0) // 每两帧生成一次粒子
+                // 每 2 帧生成“等离子体喷射”粒子特效
+                if (frameCounter % 2 == 0)
                 {
-                    // 确定粒子生成的方向
-                    float baseAngle = Projectile.rotation - MathHelper.PiOver4; // 矫正角度，减去45度以匹配实际方向
-                    float randomOffset = Main.rand.NextBool() ? -MathHelper.ToRadians(15) : MathHelper.ToRadians(15); // 随机选择左或右偏移 15 度
-                    float spawnAngle = baseAngle + randomOffset; // 计算生成粒子的角度
+                    // 使用更可见、更浓烈色彩
+                    Color[] plasmaColors = { Color.Yellow, Color.Orange, Color.OrangeRed, Color.LightYellow, Color.LightSkyBlue };
+                    Color smokeColor = plasmaColors[Main.rand.Next(plasmaColors.Length)];
 
-                    Vector2 velocity = new Vector2((float)Math.Cos(spawnAngle), (float)Math.Sin(spawnAngle)) * Main.rand.NextFloat(4f, 6f); // 设定粒子的速度
+                    // 保持锐角喷射方向
+                    float baseAngle = Projectile.rotation - MathHelper.PiOver4;
+                    // 小范围动态扰动（仅 ±3°）
+                    float waveOffset = (float)Math.Sin(Main.GameUpdateCount * 0.4f) * MathHelper.ToRadians(3f);
+                    float spawnAngle = baseAngle + waveOffset;
 
-                    // 生成宇宙主题的重型烟雾粒子
-                    Color[] cosmicColors = { Color.Yellow, Color.Orange, Color.OrangeRed, Color.LightYellow, Color.Yellow, Color.Orange, Color.OrangeRed, Color.LightSkyBlue }; // 宇宙相关的颜色数组
-                    Color smokeColor = cosmicColors[Main.rand.Next(cosmicColors.Length)]; // 随机选择一种颜色
+                    Vector2 direction = spawnAngle.ToRotationVector2();
+                    float spawnDistance = Main.rand.NextFloat(80f, 120f);
+                    Vector2 spawnPosition = Projectile.Center + direction * spawnDistance;
+                    Vector2 velocity = direction * Main.rand.NextFloat(15f, 25f); // 基础喷射速度
+
+                    // 🌀 重型浓烈烟雾（等离子体核心喷射）
                     Particle smoke = new HeavySmokeParticle(
-                        Projectile.Center, // 粒子的生成位置
-                        velocity * 2f, // 设置粒子速度为之前的两倍
-                        smokeColor, // 粒子的颜色
-                        60, // 粒子的存活时间
-                        Projectile.scale * Main.rand.NextFloat(0.7f, 1.3f), // 粒子的缩放比例
-                        1.2f, // 粒子的缩放速度
-                        MathHelper.ToRadians(2f), // 粒子的旋转幅度
-                        required: true // 强制生成
+                        spawnPosition,
+                        velocity * 1.2f,
+                        smokeColor,
+                        60,
+                        Projectile.scale * Main.rand.NextFloat(0.5f, 1.8f),
+                        1.2f,
+                        MathHelper.ToRadians(1f),
+                        false,
+                        0f,
+                        true
                     );
-                    GeneralParticleHandler.SpawnParticle(smoke); // 生成重型烟雾粒子
+                    GeneralParticleHandler.SpawnParticle(smoke);
 
-                    // 生成原版的 Dust 粒子
-                    int dustIndex = Dust.NewDust(Projectile.Center, 0, 0, DustID.FireworkFountain_Pink, velocity.X, velocity.Y, 100, default, 1.5f); // 生成 Dust 粒子
-                    Main.dust[dustIndex].noGravity = true; // 设定 Dust 粒子不受重力影响
-                    Main.dust[dustIndex].scale = 1.2f; // 设置 Dust 粒子的缩放比例
+                    // === 高速扩散散射特效（CritSpark + Dust 独立循环） ===
+                    int scatterPoints = 6; // 控制数量
+
+                    for (int i = 0; i < scatterPoints; i++)
+                    {
+                        float scatterAngle = baseAngle + MathHelper.ToRadians(Main.rand.NextFloat(-60f, 60f));
+                        Vector2 scatterDirection = scatterAngle.ToRotationVector2();
+
+                        float scatterDistance = Main.rand.NextFloat(80f, 120f);
+                        Vector2 scatterPosition = Projectile.Center + scatterDirection * scatterDistance;
+                        Vector2 scatterVelocity = scatterDirection * Main.rand.NextFloat(30f, 50f); // 更高速散射
+
+                        // ⚡ CritSpark 高亮闪光点
+                        if (Main.rand.NextBool(1))
+                        {
+                            Particle critSpark = new CritSpark(
+                                scatterPosition,
+                                scatterVelocity * 0.8f,
+                                Color.White,
+                                Color.Yellow,
+                                Main.rand.NextFloat(1.50f, 1.95f),
+                                Main.rand.Next(16, 24),
+                                0.08f,
+                                0f // 关闭 Bloom
+                            );
+                            GeneralParticleHandler.SpawnParticle(critSpark);
+                        }
+
+
+                        // ✨ 小型 GenericBloom 等离子体喷射特效（频率降低 1/3，方向修正 180°）
+                        if (frameCounter % 6 == 0) // 频率降低到当前的 1/3
+                        {
+                            // 左右偏移 ±20°，整体转 180° 修正方向
+                            float correctedAngle = MathHelper.ToRadians(180) + MathHelper.ToRadians(Main.rand.Next(-20, 20));
+                            Vector2 directio1n = correctedAngle.ToRotationVector2();
+
+                            Vector2 spawnPositi2on = Projectile.Center + directio1n * Main.rand.NextFloat(40f, 60f);
+
+                            Color particleColor = Main.rand.NextBool() ? Color.OrangeRed : Color.Yellow;
+                            float particleScale = Main.rand.NextFloat(0.3f, 0.6f); // 小型
+
+                            // 小型 GenericBloom（发散）
+                            GeneralParticleHandler.SpawnParticle(
+                                new GenericBloom(
+                                    spawnPositi2on,
+                                    directio1n * Main.rand.NextFloat(6f, 10f),
+                                    particleColor,
+                                    particleScale,
+                                    Main.rand.Next(20, 30)
+                                )
+                            );
+                        }
+
+
+                    }
+
                 }
+
+
+
+
+
+
             }
             else if (Projectile.ai[1] == 1) // 阶段 1：减速阶段
             {

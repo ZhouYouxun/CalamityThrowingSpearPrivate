@@ -117,19 +117,78 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             Projectile.rotation += 0.2f;
             Lighting.AddLight(Projectile.Center, Color.DeepSkyBlue.ToVector3() * 0.75f);
 
-            if (Main.rand.NextBool(3))
             {
-                Vector2 particleVelocity = Main.rand.NextVector2Circular(1f, 1f) * 2;
-                Dust.NewDustPerfect(Projectile.Center, DustID.Firework_Blue, particleVelocity, 150, Color.White, 1.2f);
-            }
 
-            if (Time % 3 == 0)
-            {
-                Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-                particleOffset.X += Main.rand.NextFloat(-3f, 3f);
-                Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
-                Particle Smear = new CircularSmearVFX(particlePosition, Color.LightYellow * Main.rand.NextFloat(0.78f, 0.85f), Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(1.2f, 1.3f));
-                GeneralParticleHandler.SpawnParticle(Smear);
+                if (Main.rand.NextBool(2))
+                {
+                    // 黄金螺旋特效
+                    float time = Main.GameUpdateCount * 0.08f; // 慢速旋转黄金角
+                    float goldenAngle = MathHelper.ToRadians(137.5f); // 黄金角
+                    int spiralPoints = 4; // 更多点充实大范围
+
+                    for (int i = 0; i < spiralPoints; i++)
+                    {
+                        float angle = time + goldenAngle * i;
+                        float radius = 36f + 12f * (float)Math.Sin(time + i); // 扩大半径范围
+
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+
+                        // CritSpark (加大尺寸和速度)
+                        Particle critSpark = new CritSpark(
+                            Projectile.Center + offset,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3.5f),
+                            Color.White,
+                            Color.LightYellow,
+                            Main.rand.NextFloat(1.2f, 1.8f),
+                            Main.rand.Next(18, 26),
+                            0.12f,
+                            3
+                        );
+                        GeneralParticleHandler.SpawnParticle(critSpark);
+
+                        // Spark (加大尺寸和速度)
+                        Particle spark = new SparkParticle(
+                            Projectile.Center + offset * 0.7f,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.0f, 2.0f),
+                            false,
+                            20,
+                            Main.rand.NextFloat(0.8f, 1.4f),
+                            Color.White
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+
+                        // Dust (金色)
+                        Vector2 dustVelocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.2f, 2.4f);
+                        Dust goldDust = Dust.NewDustPerfect(
+                            Projectile.Center + offset * 0.9f,
+                            DustID.GoldCoin,
+                            dustVelocity,
+                            100,
+                            Color.White,
+                            Main.rand.NextFloat(1.2f, 1.8f)
+                        );
+                        goldDust.noGravity = true;
+                    }
+                }
+
+                if (Time % 3 == 0)
+                {
+                    // 保留 CircularSmearVFX 不变
+                    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+                    particleOffset.X += Main.rand.NextFloat(-3f, 3f);
+                    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+
+                    Particle Smear = new CircularSmearVFX(
+                        particlePosition,
+                        Color.LightYellow * Main.rand.NextFloat(0.78f, 0.85f),
+                        Main.rand.NextFloat(-8, 8),
+                        Main.rand.NextFloat(1.2f, 1.3f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(Smear);
+                }
+
+
+
             }
 
             Time++;

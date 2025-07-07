@@ -120,50 +120,126 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             // 旋转和粒子效果
             Projectile.rotation += 0.2f;
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.75f);
-
-            if (Main.rand.NextBool(3))
-            {
-                Vector2 particleVelocity = Main.rand.NextVector2Circular(1f, 1f) * 2;
-                Dust.NewDustPerfect(Projectile.Center, DustID.Firework_Blue, particleVelocity, 150, Color.White, 1.2f);
-            }
-
-            // 光环特效
-            if (Time % 3 == 0)
-            {
-                Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-                particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
-                Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
-                Particle Smear = new CircularSmearVFX(particlePosition, Color.White * Main.rand.NextFloat(0.78f, 0.85f), Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(1.2f, 1.3f));
-                GeneralParticleHandler.SpawnParticle(Smear);
-            }
-
             Time++;
 
-            // 每隔3帧生成粒子效果（小光点，大光点，十字光点）
-            if (Main.rand.NextBool(3))
+
             {
-                Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f);
-                Color particleColor = Main.rand.NextBool() ? Color.OrangeRed : Main.rand.NextBool() ? Color.White : Color.Orange;
-                float particleScale = Main.rand.NextFloat(0.2f, 0.5f);
-
-                // 随机选择粒子生成方式并生成粒子
-                int particleType = Main.rand.Next(3);
-                switch (particleType)
+                // 黄金螺旋 · 狂野增强版
+                if (Main.rand.NextBool(2))
                 {
-                    case 0:
-                        Vector2 strongBloomVelocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(2f, 4f) * 0.33f; // 减少速度为原来的33%
-                        GeneralParticleHandler.SpawnParticle(new StrongBloom(particlePosition, strongBloomVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
-                        break;
+                    float time = Main.GameUpdateCount * 0.12f;
+                    float goldenAngle = MathHelper.ToRadians(137.5f);
+                    int spiralPoints = 5; // 增加爆发感
 
-                    case 1:
-                        Vector2 genericBloomVelocity = Main.rand.NextVector2Circular(3f, 3f) * 0.33f;
-                        GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, genericBloomVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
-                        break;
-                    case 2:                       
-                        Vector2 critSparkVelocity = -Projectile.velocity * Main.rand.NextFloat(0.5f, 1.5f) * 0.33f;
-                        GeneralParticleHandler.SpawnParticle(new CritSpark(particlePosition, critSparkVelocity, Color.White, particleColor, particleScale * 5f, Main.rand.Next(20) + 10, 0.1f, 3));
-                        break;
+                    for (int i = 0; i < spiralPoints; i++)
+                    {
+                        float angle = time + goldenAngle * i;
+                        float radius = 48f + 16f * (float)Math.Sin(time + i * 0.5f); // 扩大范围
+
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+
+                        // CritSpark
+                        Particle critSpark = new CritSpark(
+                            Projectile.Center + offset,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.5f, 4.5f),
+                            Color.White,
+                            Color.Gold,
+                            Main.rand.NextFloat(1.2f, 2.0f),
+                            Main.rand.Next(18, 28),
+                            0.14f,
+                            3
+                        );
+                        GeneralParticleHandler.SpawnParticle(critSpark);
+
+                        // Spark
+                        Particle spark = new SparkParticle(
+                            Projectile.Center + offset * 0.7f,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.8f, 3.2f),
+                            false,
+                            24,
+                            Main.rand.NextFloat(0.9f, 1.5f),
+                            Color.Gold
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+
+                        // Dust
+                        Vector2 dustVelocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.8f, 3.0f);
+                        Dust goldDust = Dust.NewDustPerfect(
+                            Projectile.Center + offset * 0.85f,
+                            DustID.GoldCoin,
+                            dustVelocity,
+                            100,
+                            Color.White,
+                            Main.rand.NextFloat(1.5f, 2.2f)
+                        );
+                        goldDust.noGravity = true;
+                    }
                 }
+
+                // 光环特效保持不变
+                if (Time % 3 == 0)
+                {
+                    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+                    particleOffset.X += Main.rand.NextFloat(-3f, 3f);
+                    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+                    Particle Smear = new CircularSmearVFX(
+                        particlePosition,
+                        Color.White * Main.rand.NextFloat(0.78f, 0.85f),
+                        Main.rand.NextFloat(-8, 8),
+                        Main.rand.NextFloat(1.2f, 1.3f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(Smear);
+                }
+
+                // 狂野随机方向动态释放的 3选1增强替换
+                if (Main.rand.NextBool(2))
+                {
+                    float time = Main.GameUpdateCount * 0.2f;
+                    float dynamicAngle = time + Main.rand.NextFloat(MathHelper.TwoPi);
+                    float dynamicRadius = Main.rand.NextFloat(24f, 48f);
+                    Vector2 dynamicOffset = dynamicAngle.ToRotationVector2() * dynamicRadius;
+                    Vector2 particlePosition = Projectile.Center + dynamicOffset;
+                    Vector2 dynamicVelocity = dynamicOffset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.5f, 4.5f);
+
+                    int particleType = Main.rand.Next(3);
+                    switch (particleType)
+                    {
+                        case 0:
+                            GeneralParticleHandler.SpawnParticle(new StrongBloom(
+                                particlePosition,
+                                dynamicVelocity * 0.6f,
+                                Color.Gold,
+                                Main.rand.NextFloat(0.36f, 0.72f),
+                                Main.rand.Next(20, 30)
+                            ));
+                            break;
+
+                        case 1:
+                            GeneralParticleHandler.SpawnParticle(new SparkParticle(
+                                particlePosition,
+                                dynamicVelocity * 0.8f,
+                                false,
+                                22,
+                                Main.rand.NextFloat(0.8f, 1.4f),
+                                Color.Yellow
+                            ));
+                            break;
+
+                        case 2:
+                            GeneralParticleHandler.SpawnParticle(new CritSpark(
+                                particlePosition,
+                                dynamicVelocity,
+                                Color.White,
+                                Color.Gold,
+                                Main.rand.NextFloat(1.0f, 1.6f),
+                                Main.rand.Next(16, 24),
+                                0.12f,
+                                3
+                            ));
+                            break;
+                    }
+                }
+
             }
 
 
