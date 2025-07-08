@@ -43,6 +43,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false; // 能够穿透方块
             Projectile.extraUpdates = 6; // 额外更新次数
+            Projectile.ArmorPenetration = 5;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
 

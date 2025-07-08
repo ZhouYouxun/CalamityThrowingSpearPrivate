@@ -58,13 +58,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1; // 允许1次伤害
-            Projectile.timeLeft = 900;
+            Projectile.timeLeft = 960;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false; // 能够穿透方块
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 25; // 无敌帧冷却时间为25帧
+            Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为25帧
             Projectile.alpha = 235;
             //// 设置充能长枪的伤害为原始伤害的5倍
             //Projectile.damage *= 5;
@@ -186,7 +186,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 SoundEngine.PlaySound(SoundID.Item108, Projectile.Center);
 
                 // 根据是否启用 Main.zenithWorld 决定召唤数量
-                int splitCount = Main.zenithWorld ? 10 : 2;
+                int splitCount = Main.zenithWorld ? 10 : 3;
 
                 for (int i = 0; i < splitCount; i++)
                 {

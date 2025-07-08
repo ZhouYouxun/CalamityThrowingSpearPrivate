@@ -127,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
                 Projectile.Center,
                 bubbleDirection * 5f, // 调整速度大小
                 ModContent.ProjectileType<TyphonsGreedJavBubble>(),
-                Projectile.damage,
+                (int)(Projectile.damage * 0.8),
                 Projectile.knockBack,
                 Projectile.owner
             );
@@ -214,7 +214,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
             for (int i = 0; i < bubbleCount; i++)
             {
                 Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, randomDirection * 5f, ModContent.ProjectileType<TyphonsGreedJavBubble>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, randomDirection * 5f, ModContent.ProjectileType<TyphonsGreedJavBubble>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
             }
         }
         public override void OnKill(int timeLeft)

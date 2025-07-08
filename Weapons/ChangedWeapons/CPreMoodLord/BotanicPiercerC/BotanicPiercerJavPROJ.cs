@@ -141,8 +141,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
             // 发射两个 BotanicPiercerJavPROJSPLIT 分裂弹幕
             Vector2 vel1 = Projectile.velocity.RotatedBy(MathHelper.ToRadians(5)) * 0.9f;
             Vector2 vel2 = Projectile.velocity.RotatedBy(MathHelper.ToRadians(-5)) * 0.9f;
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel1, ModContent.ProjectileType<BotanicPiercerJavPROJSPLIT>(), (int)(Projectile.damage * 0.70f), 0f, Projectile.owner);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel2, ModContent.ProjectileType<BotanicPiercerJavPROJSPLIT>(), (int)(Projectile.damage * 0.70f), 0f, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel1, ModContent.ProjectileType<BotanicPiercerJavPROJSPLIT>(), (int)(Projectile.damage * 0.75f), 0f, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel2, ModContent.ProjectileType<BotanicPiercerJavPROJSPLIT>(), (int)(Projectile.damage * 0.75f), 0f, Projectile.owner);
 
 
             {

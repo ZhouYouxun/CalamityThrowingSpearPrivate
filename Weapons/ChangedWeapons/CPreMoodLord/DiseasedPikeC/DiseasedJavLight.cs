@@ -108,6 +108,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
             Projectile.timeLeft = Lifetime;
             Projectile.MaxUpdates = MaxUpdate;
             Projectile.penetrate = 2;
+            Projectile.ArmorPenetration = 15;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 60;
         }

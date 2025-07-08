@@ -138,7 +138,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
             {
                 float angle = MathHelper.TwoPi / 3 * i;
                 Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * 5f, ModContent.ProjectileType<DiseasedJavLight>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * 5f, ModContent.ProjectileType<DiseasedJavLight>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
 
             Particle blastRing = new CustomPulse(
@@ -154,7 +154,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
                 Projectile.Center,
                 Vector2.Zero, // 静止在原地
                 ModContent.ProjectileType<DiseasedJavEXP>(),
-                (int)(Projectile.damage * 0.75f), // 伤害倍率为 0.75
+                (int)(Projectile.damage * 0.2f), // 伤害倍率为 0.75
                 Projectile.knockBack,
                 Projectile.owner
             );

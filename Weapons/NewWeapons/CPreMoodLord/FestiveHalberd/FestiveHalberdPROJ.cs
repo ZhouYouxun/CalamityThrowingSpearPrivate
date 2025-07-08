@@ -114,7 +114,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
                     Projectile.Center,
                     upwardDirection * (Projectile.velocity.Length() * 1.6f), // 速度为弹幕速度的1.6倍
                     335,
-                    (int)(Projectile.damage * 0.625f),
+                    (int)(Projectile.damage * 0.6f),
                     Projectile.knockBack,
                     Projectile.owner
                 );

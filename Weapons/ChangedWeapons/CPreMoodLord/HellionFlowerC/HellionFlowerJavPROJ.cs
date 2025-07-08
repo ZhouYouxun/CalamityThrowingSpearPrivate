@@ -97,7 +97,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 24; // 无敌帧冷却时间为14帧
         }
         public override void OnSpawn(IEntitySource source)
         {
@@ -156,7 +156,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
                         spawnPosition,
                         velocityToSelf,
                         ModContent.ProjectileType<HellionFlowerJavAbsorb>(),
-                        (int)(Projectile.damage * 0.75f), // 伤害倍率 0.75
+                        (int)(Projectile.damage * 0.6f), // 伤害倍率 0.75
                         Projectile.knockBack,
                         Main.myPlayer
                     );
@@ -180,8 +180,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
                 Vector2 leftVelocity = baseVelocity.RotatedBy(-MathHelper.PiOver2); // 左侧
                 Vector2 rightVelocity = baseVelocity.RotatedBy(MathHelper.PiOver2); // 右侧
 
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<HellionFlowerJavSPIT>(), (int)(Projectile.damage * 0.45f), 0f, Main.myPlayer);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<HellionFlowerJavSPIT>(), (int)(Projectile.damage * 0.45f), 0f, Main.myPlayer);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<HellionFlowerJavSPIT>(), (int)(Projectile.damage * 0.4f), 0f, Main.myPlayer);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<HellionFlowerJavSPIT>(), (int)(Projectile.damage * 0.4f), 0f, Main.myPlayer);
             }
 
             // 尖端生成粒子特效
