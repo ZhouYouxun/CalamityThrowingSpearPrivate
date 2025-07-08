@@ -8,6 +8,7 @@ using CalamityMod.Graphics.Primitives;
 using Terraria.Graphics.Shaders;
 using System;
 using Terraria.DataStructures;
+using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -21,15 +22,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 24;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 220;
+            Projectile.timeLeft = 420;
             Projectile.extraUpdates = 1;
 
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.alpha = 0;
+
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 60; // 无敌帧冷却时间为60帧
         }
         // 在类内声明用于唯一化每个弹幕的李萨如参数：
         private float phaseOffset;
@@ -49,62 +53,132 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public override void AI()
         {
-            // === 飞行追踪 FinishingTouchJav ===
-            Projectile.velocity *= 1.01f; // 逐渐加速
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            if (trackTimer < 60)
+            // 检测是否存在 FinishingTouchDASH 弹幕
+            bool dashExists = false;
+            for (int i = 0; i < Main.maxProjectiles; i++)
             {
-                Player player = Main.player[Projectile.owner];
-                Vector2 playerPos = player.Center;
-                Vector2 mouseWorld = Main.MouseWorld;
-                Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
-                Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<FinishingTouchDASH>())
+                {
+                    dashExists = true;
+                    break;
+                }
+            }
 
-                Vector2 toTarget = targetPosition - Projectile.Center;
-                float desiredSpeed = Projectile.velocity.Length() + 0.8f;
+            if (dashExists)
+            {
+                // === 保持原公转逻辑 ===
+                Projectile.velocity *= 1.01f; // 逐渐加速
 
-                // === 李萨如轨迹偏移（确保每个弹幕独立） ===
-                float t = Main.GameUpdateCount * 0.15f * freqOffset;
-                float A = 24f; // 横向振幅（适度）
-                float B = 16f; // 纵向振幅
-                float a = 2f;
-                float b = 3f;
+                if (trackTimer < 60)
+                {
+                    Player player = Main.player[Projectile.owner];
+                    Vector2 playerPos = player.Center;
+                    Vector2 mouseWorld = Main.MouseWorld;
+                    Vector2 directionToMouse = (mouseWorld - playerPos).SafeNormalize(Vector2.UnitY);
+                    Vector2 targetPosition = playerPos + directionToMouse * 16f * 3f;
 
-                Vector2 lissOffset = new Vector2(
-                    A * (float)Math.Sin(a * t + phaseOffset),
-                    B * (float)Math.Sin(b * t)
-                );
+                    Vector2 toTarget = targetPosition - Projectile.Center;
+                    float desiredSpeed = Projectile.velocity.Length() + 0.8f;
 
-                // 综合目标位置加李萨如偏移形成动态追踪
-                Vector2 dynamicTarget = targetPosition + lissOffset;
-                Vector2 dynamicToTarget = dynamicTarget - Projectile.Center;
+                    float t = Main.GameUpdateCount * 0.15f * freqOffset;
+                    float A = 24f;
+                    float B = 16f;
+                    float a = 2f;
+                    float b = 3f;
 
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, dynamicToTarget.SafeNormalize(Vector2.UnitY) * desiredSpeed, 0.06f);
+                    Vector2 lissOffset = new Vector2(
+                        A * (float)Math.Sin(a * t + phaseOffset),
+                        B * (float)Math.Sin(b * t)
+                    );
 
-                trackTimer++;
+                    Vector2 dynamicTarget = targetPosition + lissOffset;
+                    Vector2 dynamicToTarget = dynamicTarget - Projectile.Center;
+
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, dynamicToTarget.SafeNormalize(Vector2.UnitY) * desiredSpeed, 0.06f);
+
+                    trackTimer++;
+                }
+                else
+                {
+                    Player player = Main.player[Projectile.owner];
+                    Projectile.velocity = player.velocity;
+
+                    float angle = Main.GameUpdateCount * 0.1f + orbitIndex * MathHelper.TwoPi / 12f;
+                    float radiusX = 10f * 16f;
+                    float radiusY = 10f * 16f;
+                    Vector2 orbitOffset = new Vector2(
+                        radiusX * (float)Math.Cos(angle),
+                        radiusY * (float)Math.Sin(angle)
+                    );
+
+                    Projectile.Center = player.Center + orbitOffset;
+                }
             }
             else
             {
-                Player player = Main.player[Projectile.owner];
+                // === DASH 不存在后的逻辑 ===
+                Projectile.ai[0]++; // 用于计时
 
-                // 同步速度
-                Projectile.velocity = player.velocity;
+                if (Projectile.ai[0] < 40)
+                {
+                    // === 多元微积分扰动飞行 ===
 
-                // === 椭圆公转环绕枪头 ===
-                float angle = Main.GameUpdateCount * 0.1f + orbitIndex * MathHelper.TwoPi / 12f; // 平分12个弹幕
-                float radiusX = 10f * 16f; // X轴半径
-                float radiusY = 10f * 16f; // Y轴半径
-                Vector2 orbitOffset = new Vector2(
-                    radiusX * (float)Math.Cos(angle),
-                    radiusY * (float)Math.Sin(angle)
-                );
+                    // t 随时间变化，用于微扰
+                    float t = Projectile.ai[0] / 40f * MathHelper.TwoPi * Main.rand.NextFloat(0.8f, 1.2f);
 
-                Projectile.Center = player.Center + orbitOffset;
+                    // 微扰半径范围
+                    float radius = 4f + 2f * (float)Math.Sin(Projectile.ai[0] * 0.3f + Main.rand.NextFloat(0f, MathHelper.TwoPi));
+
+                    // 多元扰动向量
+                    Vector2 perturbation =
+                        new Vector2(
+                            (float)Math.Sin(t * Main.rand.NextFloat(0.8f, 1.2f)),
+                            (float)Math.Cos(t * Main.rand.NextFloat(0.8f, 1.2f))
+                        ).SafeNormalize(Vector2.Zero) * radius;
+
+                    // 平滑叠加扰动，不破坏原方向
+                    Projectile.position += perturbation * 0.2f;
+                }
+                else
+                {
+                    // === 周期性随机感追踪 ===
+
+                    int cycle = 30; // 每30帧为一个周期
+                    int phase = (int)(Projectile.ai[0] % cycle);
+
+                    if (phase < 20) // 前？追踪
+                    {
+                        NPC target = Projectile.Center.ClosestNPCAt(5600f);
+                        if (target != null && target.CanBeChasedBy())
+                        {
+                            Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+
+                            // 在追踪方向上加轻微随机扰动
+                            float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(-5f, 5f));
+                            toTarget = toTarget.RotatedBy(randomAngle);
+
+                            float desiredSpeed = 20f + Main.rand.NextFloat(-22f, 22f); // 速度轻微浮动
+                            Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * desiredSpeed, 0.08f);
+                        }
+                    }
+                    else
+                    {
+                        // 后半周期保持当前速度直线飞行，形成节奏感
+                        // 可选：轻微减速或保持速度不变
+                        Projectile.velocity *= 0.995f; // 可选减速微调
+                    }
+
+
+                }
+
+
             }
 
+            // === 保留原有飞行特效部分不变 ===
 
-
-            // === 飞行特效 ===
             // Spark 橙色火花
             if (Main.rand.NextBool(3))
             {
@@ -151,6 +225,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 GeneralParticleHandler.SpawnParticle(orb);
             }
         }
+
 
         public override void OnKill(int timeLeft)
         {

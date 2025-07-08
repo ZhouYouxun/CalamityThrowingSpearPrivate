@@ -414,6 +414,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public override void OnKill(int timeLeft)
         {
+            // 屏幕震动效果
+            float shakePower = 5f; // 设置震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
             //// 确保在弹幕死亡时清除无敌状态
             //Player owner = Main.player[Projectile.owner];
             //owner.immune = false;

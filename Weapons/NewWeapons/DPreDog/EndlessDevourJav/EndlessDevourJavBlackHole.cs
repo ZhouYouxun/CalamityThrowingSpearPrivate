@@ -281,6 +281,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 if (orbShootTimer % smallShootInterval == 0)
                 {
                     int shootCount = 4; // 同时喷射数（可调）
+
+                    // 🚩 计算递增伤害倍率
+                    float progressDamage = 1f - Projectile.timeLeft / 600f; // 0 ~ 1
+                    float damageMultiplier = MathHelper.Lerp(0.1f, 3.5f, progressDamage);
+
+                    // 限制最大倍率 = 3.5f
+                    damageMultiplier = Math.Min(damageMultiplier, 3.5f);
+
                     for (int i = 0; i < shootCount; i++)
                     {
                         Vector2 direction = Main.rand.NextVector2Unit();
@@ -291,7 +299,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                             Projectile.Center,
                             velocity,
                             ModContent.ProjectileType<EndlessDevourJavOrbSmall>(),
-                            Projectile.damage / 3, // 可调伤害倍率
+                            (int)(Projectile.damage * damageMultiplier), // 🚩 递增伤害
                             0f,
                             Projectile.owner
                         );

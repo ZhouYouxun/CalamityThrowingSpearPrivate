@@ -30,12 +30,26 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
 
         public override void AI()
         {
-            if (Projectile.timeLeft % 1 == 0) // 每2帧生成一次
+            if (Projectile.timeLeft % 1 == 0) // 保持高密度生成
             {
                 for (int i = 0; i < 20; i++)
                 {
-                    Vector2 spawnPos = Projectile.Center + new Vector2(Main.rand.NextFloat(-Projectile.width * 0.5f, Projectile.width * 0.5f), Main.rand.NextFloat(-Projectile.height * 0.5f, Projectile.height * 0.5f));
-                    Vector2 velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-8f, -12f)); // 几乎向上
+                    // 在水墙宽度范围内分布
+                    float xOffset = Main.rand.NextFloat(-Projectile.width * 0.5f, Projectile.width * 0.5f);
+
+                    // 使用抛物线分布高度：y = -a(x^2) + c
+                    float normalizedX = xOffset / (Projectile.width * 0.5f); // -1 ~ 1
+                    float a = Main.rand.NextFloat(0.8f, 1.2f); // 抛物线开口大小微扰
+                    float c = Main.rand.NextFloat(-Projectile.height * 0.5f, Projectile.height * 0.5f); // 抛物线上移微扰
+                    float yOffset = -a * normalizedX * normalizedX * (Projectile.height * 0.4f) + c;
+
+                    Vector2 spawnPos = Projectile.Center + new Vector2(xOffset, yOffset);
+
+                    // 形成向上微扩散抛物线速度：
+                    float speedY = Main.rand.NextFloat(-10f, -14f); // 向上速度
+                    float speedX = normalizedX * Main.rand.NextFloat(0.5f, 2.5f); // 左右微偏
+
+                    Vector2 velocity = new Vector2(speedX, speedY);
 
                     // 混合使用 DustID.Water 和 DustID.BlueCrystalShard
                     int type = Main.rand.NextBool() ? DustID.Water : DustID.BlueCrystalShard;
@@ -45,9 +59,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
                 }
             }
 
-            // 加入柔和光效
+            // 柔和光效不变
             Lighting.AddLight(Projectile.Center, Color.DeepSkyBlue.ToVector3() * 0.4f);
         }
+
 
         public override bool PreDraw(ref Color lightColor)
         {
