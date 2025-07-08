@@ -98,7 +98,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     spawnPosition,
                     velocity,
                     ModContent.ProjectileType<BrimlanceStandingFire>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.6),
                     Projectile.knockBack,
                     Projectile.owner
                 );

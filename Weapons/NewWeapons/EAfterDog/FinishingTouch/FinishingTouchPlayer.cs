@@ -320,7 +320,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         Player p = Main.player[i];
                         if (p.active && !p.dead)
                         {
-                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), 600); // 600 = 10秒
+                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), 900); // 600 = 10秒
                         }
                     }
 

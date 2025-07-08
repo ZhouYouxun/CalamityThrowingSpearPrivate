@@ -24,9 +24,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public override void Update(Player player, ref int buffIndex)
         {
+            player.GetDamage(DamageClass.Melee) *= 1.2f;
+            player.statDefense += 50;
+            player.endurance += 1.00f;
+
             // === 在玩家周围以半径 ~48 的环上分布特效中心 ===
             float offsetAngle = Main.GameUpdateCount * 0.04f + player.whoAmI; // 保证不同玩家不同
-            Vector2 ringOffset = offsetAngle.ToRotationVector2() * 48f;
+            Vector2 ringOffset = offsetAngle.ToRotationVector2() * 0f;
             Vector2 center = player.Center + ringOffset;
 
             if (Main.GameUpdateCount % 2 == 0) // 控制密度
@@ -38,10 +42,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     // 玫瑰曲线半径
                     float theta = MathHelper.TwoPi * i / petals;
-                    float roseRadius = 14f * (1 + 0.3f * (float)Math.Sin(6 * theta));
+                    float roseRadius = 32f * (1 + 0.3f * (float)Math.Sin(6 * theta));
 
                     // 螺旋半径
-                    float spiralT = Main.GameUpdateCount * 0.15f;
+                    float spiralT = Main.GameUpdateCount * 0.32f;
                     float spiralRadius = 3f + 0.15f * spiralT;
 
                     // 黄金角偏移喷射方向
@@ -51,7 +55,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     Vector2 velocity = direction * roseRadius * 0.25f + direction.RotatedBy(MathHelper.PiOver4) * spiralRadius * 0.15f;
 
                     int dustType = Main.rand.Next(new int[] { DustID.Blood, DustID.RedTorch });
-                    Color dustColor = Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f));
+                    Color dustColor = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat(0.3f, 0.7f));
 
                     Dust d = Dust.NewDustPerfect(center, dustType, velocity, 100, dustColor, Main.rand.NextFloat(1.2f, 1.8f));
                     d.noGravity = true;
@@ -60,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             if (Main.GameUpdateCount % 3 == 0) // 高速火花放射
             {
-                int sparks = 8;
+                int sparks = 12;
                 float baseAngle = Main.GameUpdateCount * 0.05f;
 
                 for (int i = 0; i < sparks; i++)

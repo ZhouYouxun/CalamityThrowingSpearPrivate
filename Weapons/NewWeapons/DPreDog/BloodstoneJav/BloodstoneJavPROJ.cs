@@ -95,8 +95,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
             Owner.heldProj = Projectile.whoAmI;
 
-            // 每45帧提升蓄力等级
-            if (Projectile.localAI[0] % 45 == 0 && chargeLevel < MaxChargeLevel)
+            // 每60帧提升蓄力等级
+            if (Projectile.localAI[0] % 60 == 0 && chargeLevel < MaxChargeLevel)
             {
                 chargeLevel++;
                 CreateChargeEffect();
@@ -112,7 +112,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 float finalDamage =  chargeLevel; //伤害提升
                 float speedBoost = 14f + chargeLevel * 0.2f; // 飞行速度提升
                 Projectile.velocity *= speedBoost;
-                Projectile.damage *= (int)(0.5f + finalDamage * 0.3f);
+                Projectile.damage *= (int)(1f + finalDamage * 0.3f);
             }
 
             Projectile.localAI[0]++;
@@ -216,7 +216,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
         private void InflictChargePenalty()
         {
-            int damagePenalty = 10; // 每级扣除X点血量
+            int damagePenalty = 15; // 每级扣除X点血量
             Owner.statLife -= damagePenalty;
             CombatText.NewText(Owner.getRect(), Color.Lime, -damagePenalty); // 显示绿色负值
 
@@ -262,7 +262,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                             Projectile.rotation - MathHelper.PiOver4,
                             0.2f,
                             0.03f,
-                            20
+                            32
                         );
                         GeneralParticleHandler.SpawnParticle(pulse);
                     }
@@ -271,14 +271,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 // === 3️⃣ 血线拖尾 LineParticle（保留） ===
                 if (Projectile.localAI[0] % 5 == 0)
                 {
-                    Vector2 particleVelocity = Projectile.velocity * 0.8f;
+                    Vector2 particleVelocity = Projectile.velocity * 2.8f;
                     Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
                     LineParticle bloodTrail = new LineParticle(
                         particlePosition,
                         particleVelocity,
                         false,
                         30,
-                        0.5f,
+                        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5,
                         Color.DarkRed
                     );
                     GeneralParticleHandler.SpawnParticle(bloodTrail);
@@ -288,7 +288,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 if (Main.rand.NextBool(2))
                 {
                     int dustPoints = 6;
-                    float radius = 12f;
+                    float radius = 16f;
                     float angleOffset = Main.GameUpdateCount * 0.15f;
                     for (int i = 0; i < dustPoints; i++)
                     {

@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 2; // 允许？次伤害
+            Projectile.penetrate = 1; // 允许？次伤害
             Projectile.timeLeft = 120;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -70,10 +70,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
             }
 
             GenerateDirtParticles(); // 调用粒子生成
-            FireAdditionalProjectiles(); // 检测是否需要发射额外弹幕
+            //FireAdditionalProjectiles(); // 检测是否需要发射额外弹幕
         }
 
-        private bool hasFiredAdditionalProjectiles = false; // 开关，防止重复触发
+       /* private bool hasFiredAdditionalProjectiles = false; // 开关，防止重复触发
 
         private void FireAdditionalProjectiles()
         {
@@ -92,7 +92,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, Main.rand.Next(projectileTypes), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
                 }
             }
-        }
+        }*/
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

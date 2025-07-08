@@ -92,14 +92,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 11; // 伤害次数
-            Projectile.timeLeft = 300;
+            Projectile.penetrate = 9; // 伤害次数
+            Projectile.timeLeft = 450;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 不穿透物块
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为14帧
             Projectile.aiStyle = ProjAIStyleID.Arrow;
 
         }
@@ -265,7 +265,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
         {
             if (stuckTarget != null)
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AmidiasTridentJavWaterWall>(), (int)(Projectile.damage * 1.8f), 5f, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AmidiasTridentJavWaterWall>(), (int)(Projectile.damage * 1.5f), 5f, Projectile.owner);
             }
             else if (stuck)
             {

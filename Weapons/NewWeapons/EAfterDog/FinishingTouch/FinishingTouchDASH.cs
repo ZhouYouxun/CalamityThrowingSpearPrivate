@@ -240,7 +240,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                                 velocity,
                                 ModContent.ProjectileType<FinishingTouchDASHINV>(),
                                 Projectile.damage,
-                                0f,
+                                Projectile.knockBack,
                                 Projectile.owner
                             );
                         }
@@ -263,14 +263,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     // 文本数组
                     string[] phrases = new string[]
                     {
-        "FINISH TIME!!!",
+        //"FINISH TIME!!!",
         "画龙点睛！",
                     };
 
                     // 对应的音效路径数组
                     string[] soundPaths = new string[]
                     {
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/FinishTIME",
+        //"CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/FinishTIME",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/RayquazaRoar",
         
                     };
@@ -294,11 +294,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
 
                 // 如果在 Main.zenithWorld 模式下，每帧回复2生命
-                if (Main.zenithWorld)
+                /*if (Main.zenithWorld)
                 {
                     owner.statLife += 2000;
                     owner.HealEffect(2000);
-                }
+                }*/
             }
             else // 冲刺阶段
             {

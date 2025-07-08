@@ -47,7 +47,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = 90;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
@@ -110,7 +110,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                         Projectile.Center,
                         Vector2.Zero,
                         ModContent.ProjectileType<BrimlanceJavFireWall>(),
-                        Projectile.damage,
+                        (int)(Projectile.damage * 0.75),
                         Projectile.knockBack,
                         Projectile.owner
                     );
