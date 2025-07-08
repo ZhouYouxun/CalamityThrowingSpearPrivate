@@ -47,7 +47,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false; // 允许与方块碰撞
+            Projectile.tileCollide = true; // 不允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
@@ -73,7 +73,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                     Projectile.Center,
                     velocity,
                     ModContent.ProjectileType<VulcaniteLanceJavTinyFlare>(),
-                    (int)(Projectile.damage * 0.45f), // 伤害倍率为 0.45
+                    (int)(Projectile.damage * 0.75f), // 伤害倍率为 0.45
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -131,7 +131,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 Projectile.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<FuckYou>(),
-                (int)(Projectile.damage * damageMultiplier),
+                (int)(Projectile.damage * 0.125f),
                 Projectile.knockBack,
                 Projectile.owner
             );
@@ -158,7 +158,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 Projectile.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<VulcaniteLanceJavSuperFlame>(),
-                Projectile.damage,
+                (int)(Projectile.damage * 0.3),
                 Projectile.knockBack,
                 Projectile.owner
             );
@@ -174,7 +174,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<VulcaniteLanceJavFlame>(),
-                    (int)(Projectile.damage * 15f),
+                    (int)(Projectile.damage * 7.5f),
                     Projectile.knockBack,
                     Projectile.owner
                 );
