@@ -127,6 +127,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             // 其他阶段允许造成伤害
             return base.CanDamage();
         }
+        private List<SparkParticle> ownedSparkParticles = new();
+        private List<AltSparkParticle> ownedAltSparkParticles = new();
 
         public override void AI()
         {
@@ -263,6 +265,61 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                     Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero); // 目标方向
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, directionToTarget * 18f, 0.08f); // 平滑追踪目标
                 }
+
+
+                {
+                    // 每 ？ 帧释放 Spark，会飞出去后转向追踪自己
+                    if (Projectile.ai[0] % 1 == 0)
+                    {
+                        Vector2 velocity = Main.rand.NextVector2CircularEdge(4f, 4f);
+                        SparkParticle spark = new SparkParticle(
+                            Projectile.Center,
+                            velocity,
+                            false,
+                            60,
+                            Main.rand.NextFloat(0.8f, 1.4f),
+                            Color.LimeGreen
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                        ownedSparkParticles.Add(spark);
+                    }
+
+                    // 每 ？ 帧释放 AltSparkParticle，加长流体粒子并旋转
+                    if (Projectile.ai[0] % 1 == 0)
+                    {
+                        Vector2 velocity = Main.rand.NextVector2CircularEdge(2f, 2f);
+                        AltSparkParticle trail = new AltSparkParticle(
+                            Projectile.Center,
+                            velocity,
+                            false,
+                            45,
+                            1.4f,
+                            Color.LimeGreen * 0.2f
+                        );
+                        GeneralParticleHandler.SpawnParticle(trail);
+                        ownedAltSparkParticles.Add(trail);
+                    }
+
+                    // 每 2 帧生成绿色 Dust 爆发
+                    if (Projectile.ai[0] % 2 == 0)
+                    {
+                        Dust dust = Dust.NewDustPerfect(
+                            Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
+                            107,
+                            Main.rand.NextVector2Circular(2f, 4f),
+                            150,
+                            Color.LimeGreen,
+                            Main.rand.NextFloat(1.0f, 1.6f)
+                        );
+                        dust.noGravity = true;
+                        dust.fadeIn = Main.rand.NextFloat(0.5f, 1.0f);
+                    }
+
+                }
+
+
+
+
             }
 
             // 更新计数器
@@ -270,6 +327,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 
             Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
             Projectile.rotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
+
+            {
+                // 管理 SparkParticle 吸引回本体
+                for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
+                {
+                    SparkParticle p = ownedSparkParticles[i];
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedSparkParticles.RemoveAt(i);
+                        continue;
+                    }
+                    // 计算朝向本体的方向
+                    Vector2 toSelf = (Projectile.Center - p.Position).SafeNormalize(Vector2.Zero);
+                    p.Velocity = Vector2.Lerp(p.Velocity, toSelf * 8f, 0.06f);
+                    p.Velocity *= 1.02f; // 缓慢加速
+                }
+
+                // 管理 AltSparkParticle 旋转
+                for (int i = ownedAltSparkParticles.Count - 1; i >= 0; i--)
+                {
+                    AltSparkParticle p = ownedAltSparkParticles[i];
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedAltSparkParticles.RemoveAt(i);
+                        continue;
+                    }
+                    p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(2f));
+                }
+
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

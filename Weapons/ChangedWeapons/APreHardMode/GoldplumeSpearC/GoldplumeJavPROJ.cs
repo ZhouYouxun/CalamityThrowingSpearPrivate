@@ -54,6 +54,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
 
         }
         private bool collided = false; // 标记是否发生碰撞
+        private List<SparkParticle> ownedSparkParticles = new();
 
         public override void AI()
         {
@@ -148,8 +149,53 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                     // 计算新的位置
                     Projectile.Center = targetWind.Center + new Vector2(Projectile.ai[0], 0f).RotatedBy(angle);
                     Projectile.rotation = (Projectile.Center - targetWind.Center).ToRotation() + MathHelper.PiOver2;
+
+                    {
+                        // 计算当前正前方方向（白色 Spark 初始方向）
+                        Vector2 forward = Projectile.rotation.ToRotationVector2();
+
+                        // 创建 SparkParticle
+                        Particle spark = new SparkParticle(
+                            Projectile.Center,
+                            forward * 3f, // 初速度，适中即可
+                            false, // 不受重力
+                            60,    // 生命周期
+                            1.2f,  // 缩放
+                            Color.White // 颜色
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                        ownedSparkParticles.Add((SparkParticle)spark);
+
+                    }
                 }
+
+                // === Spark 右拐轨迹控制 ===
+                for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
+                {
+                    SparkParticle p = ownedSparkParticles[i];
+
+                    // 超时销毁时移除引用
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedSparkParticles.RemoveAt(i);
+                        continue;
+                    }
+
+                    // 每帧持续右转（3°）
+                    float rotateAmount = MathHelper.ToRadians(3f);
+                    p.Velocity = p.Velocity.RotatedBy(rotateAmount);
+
+                    // （可选）微弱加速
+                    // p.Velocity *= 1.01f;
+                }
+
+
             }
+
+
+          
+
+
         }
 
 

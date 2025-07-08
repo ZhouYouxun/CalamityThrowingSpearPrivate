@@ -8,6 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
 {
@@ -53,6 +54,40 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 Projectile.position.Y -= Projectile.height / 2; //position adjustments
                 Projectile.localAI[0] = 1f;
             }
+
+            {
+                // Dust 火山熔岩喷射效果（受到重力影响）
+                for (int i = 0; i < 28; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
+                    velocity.Y -= Main.rand.NextFloat(16f, 22f); // 强烈向上
+                    velocity = velocity.RotatedBy(Main.rand.NextFloat(-MathHelper.ToRadians(10f), MathHelper.ToRadians(15f))); // 限制在正上方正负X度
+                    int dustID = Dust.NewDust(
+                        Projectile.Center,
+                        0, 0,
+                        Main.rand.NextBool() ? DustID.Torch : DustID.InfernoFork,
+                        velocity.X, velocity.Y,
+                        100,
+                        Color.Orange,
+                        Main.rand.NextFloat(1.5f, 2.4f)
+                    );
+                    Main.dust[dustID].noGravity = false; // 保留重力影响
+                }
+
+                Color sparkColor = Color.Yellow; // 或 Color.OrangeYellow
+                Vector2 sparkVelocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-14f, -7f)); // 强烈向上，范围±10度内
+
+                SparkParticle spark = new SparkParticle(
+                    Projectile.Center,
+                    sparkVelocity,
+                    true, // affectedByGravity: 开启重力
+                    Main.rand.Next(15, 25), // lifetime
+                    Main.rand.NextFloat(1.5f, 2.2f), // scale
+                    Color.Yellow // color
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
         }
 
         public override bool PreDraw(ref Color lightColor)

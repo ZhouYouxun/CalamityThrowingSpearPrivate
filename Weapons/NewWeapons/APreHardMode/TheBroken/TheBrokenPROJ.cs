@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 {
@@ -71,6 +72,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 
             GenerateDirtParticles(); // 调用粒子生成
             //FireAdditionalProjectiles(); // 检测是否需要发射额外弹幕
+
+            {
+
+
+
+
+            }
+
+
+
         }
 
        /* private bool hasFiredAdditionalProjectiles = false; // 开关，防止重复触发

@@ -192,6 +192,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             }
 
             Time++;
+
+            //if (Time % 15 == 0)
+            //{
+            //    SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/VividClarityBeamAppear")
+            //    {
+            //        Pitch = 0.3f,
+            //        Volume = 1.6f
+            //    }, Projectile.Center);
+            //}
+
         }
 
 

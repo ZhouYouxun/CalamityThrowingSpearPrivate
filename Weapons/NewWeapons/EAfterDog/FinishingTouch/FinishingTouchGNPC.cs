@@ -9,7 +9,9 @@ using Microsoft.Xna.Framework;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.NPCs.DevourerofGods;
-using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS; // 引用 CalamityMod 的 NPCs 命名空间
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS;
+using CalamityMod.Particles;
+using Terraria.ID; // 引用 CalamityMod 的 NPCs 命名空间
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -40,6 +42,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
                 // 在玩家头顶 100 个方块的位置生成弹幕
                 Vector2 spawnPosition = player.Center - new Vector2(0, 100 * 16); // 100 个方块高
+                                                                                  // 检查场上是否有任意玩家手持 DLOAS
+                bool dloasFound = false;
+                Player dloasHolder = null;
+
+                for (int i = 0; i < Main.maxPlayers; i++)
+                {
+                    Player p = Main.player[i];
+                    if (p.active && !p.dead && p.HeldItem != null && p.HeldItem.type == ModContent.ItemType<DLOAS>())
+                    {
+                        dloasFound = true;
+                        dloasHolder = p;
+                        break;
+                    }
+                }
+
+                if (!dloasFound)
+                {
+                    return; // 若无人持有 DLOAS，则不生成 FinishingTouchEPROJ 弹幕
+                }
+
+                // 若找到玩家持有 DLOAS：
+                if (dloasHolder != null)
+                {
+                    // 摧毁玩家手中的 DLOAS（直接移除持有物）
+                    dloasHolder.inventory[dloasHolder.selectedItem].TurnToAir();
+
+                    // 在玩家位置生成紫色风格 Spark 与 Dust 特效
+                    for (int i = 0; i < 40; i++)
+                    {
+                        Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f) * Main.rand.NextFloat(0.5f, 2.5f);
+                        Color sparkColor = Color.Lerp(Color.MediumPurple, Color.Violet, Main.rand.NextFloat());
+
+                        Particle spark = new SparkParticle(
+                            dloasHolder.Center,
+                            velocity,
+                            false,
+                            35,
+                            Main.rand.NextFloat(1.0f, 1.6f),
+                            sparkColor
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    for (int i = 0; i < 80; i++)
+                    {
+                        Vector2 dustVelocity = Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 3.0f);
+                        Dust d = Dust.NewDustPerfect(
+                            dloasHolder.Center,
+                            DustID.PurpleTorch,
+                            dustVelocity,
+                            100,
+                            Color.MediumPurple,
+                            Main.rand.NextFloat(1.2f, 2.0f)
+                        );
+                        d.noGravity = true;
+                    }
+                }
+
+                // 在玩家头顶 100 个方块处生成 FinishingTouchEPROJ 弹幕（原有逻辑）
                 Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPosition, new Vector2(0, 40), ModContent.ProjectileType<FinishingTouchEPROJ>(), projectileDamage, 0, player.whoAmI);
 
                 // 添加生成物品的逻辑

@@ -197,20 +197,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                             new Vector2(1f, 2.5f),
                             Projectile.rotation - MathHelper.PiOver4,
                             0.2f,
-                            0.03f,
+                            0.5f,
                             20
                         );
                         GeneralParticleHandler.SpawnParticle(pulse);
 
-                        Particle trail = new SparkParticle(
-                            gunTip,
-                            sprayDirection * 15f + Main.rand.NextVector2Circular(2f, 2f), // 3f -> 15f (5倍)，扰动加大
-                            false,
-                            60,
-                            1.0f,
-                            Color.LimeGreen
-                        );
-                        GeneralParticleHandler.SpawnParticle(trail);
+                        for (int j = 0; j < 3; j++)
+                        {
+                            Particle trail = new SparkParticle(
+gunTip,
+sprayDirection * 15f + Main.rand.NextVector2Circular(12f, 12f), // 3f -> 15f (5倍)，扰动加大
+false,
+60,
+1.8f,
+Color.LimeGreen
+);
+                            GeneralParticleHandler.SpawnParticle(trail);
+                        }
+
                     }
 
                     int[] dustTypes = new int[] { 74, 75, 107, 110 };

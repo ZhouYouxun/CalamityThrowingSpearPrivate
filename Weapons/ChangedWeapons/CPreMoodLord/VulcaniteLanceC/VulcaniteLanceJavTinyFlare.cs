@@ -6,6 +6,7 @@ using CalamityMod;
 using System;
 using CalamityMod.Particles;
 using Terraria.Audio;
+using Terraria.DataStructures;
 
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLanceC
@@ -32,6 +33,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
         }
 
         public override bool? CanHitNPC(NPC target) => Projectile.timeLeft < 150 && target.CanBeChasedBy(Projectile);
+        public override void OnSpawn(IEntitySource source)
+        {
+          
+        }
 
         public override void AI()
         {
@@ -41,6 +46,36 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             {
                 rotationAngle -= MathHelper.TwoPi;
             }
+
+            if (Projectile.timeLeft == 325)
+            {
+                int points = 5;
+                float radius = 24f; // 大小
+                for (int i = 0; i < points; i++)
+                {
+                    // 内旋五角星公式 theta = 4π/5 * i
+                    float angle = MathHelper.TwoPi * 2f / 5f * i;
+                    Vector2 position = Projectile.Center + angle.ToRotationVector2() * radius;
+
+                    // Dust 火花
+                    int dust = Dust.NewDust(position, 0, 0, DustID.InfernoFork, 0, 0, 100, Color.Orange, Main.rand.NextFloat(1.8f, 2.4f));
+                    Main.dust[dust].noGravity = false;
+                    Main.dust[dust].velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+
+                    // Spark 熔岩滴落
+                    Vector2 sparkVelocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 7f);
+                    SparkParticle spark = new SparkParticle(
+                        position,
+                        sparkVelocity,
+                        true, // gravity
+                        Main.rand.Next(20, 30),
+                        Main.rand.NextFloat(1.5f, 2.2f),
+                        Color.Yellow
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
 
             // 在 `timeLeft <= 325` 时开始生成粒子
             if (Projectile.timeLeft <= 325)
@@ -80,28 +115,29 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
 
-            // 创建正八边形粒子特效
-            float radius = 5 * 16f; // 八边形半径
-            int numSides = 8; // 八边形的边数
-            for (int i = 0; i < numSides; i++)
             {
-                float angle = MathHelper.TwoPi / numSides * i; // 每条边的角度
-                Vector2 position = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+                int numParticles = 24;
+                float baseSpeed = 8f;
+                for (int i = 0; i < numParticles; i++)
+                {
+                    float angle = MathHelper.TwoPi / numParticles * i;
+                    Vector2 velocity = angle.ToRotationVector2() * baseSpeed * Main.rand.NextFloat(0.7f, 1.3f);
 
-                // 创建粒子
-                int fiery = Dust.NewDust(
-                    position,
-                    0,
-                    0,
-                    DustID.InfernoFork, // 使用同样的粒子类型
-                    0f,
-                    0f,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.85f, 2.35f) // 粒子大小
-                );
-                Main.dust[fiery].noGravity = true;
-                Main.dust[fiery].velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f); // 粒子往外扩散
+                    // Dust 火焰碎屑
+                    int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.InfernoFork, velocity.X, velocity.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.8f, 2.5f));
+                    Main.dust[dust].noGravity = false;
+
+                    // Spark 火花
+                    SparkParticle spark = new SparkParticle(
+                        Projectile.Center,
+                        velocity * 1.2f,
+                        true,
+                        Main.rand.Next(20, 30),
+                        Main.rand.NextFloat(1.4f, 2.0f),
+                        Color.Yellow
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
 
             // 播放额外的爆炸特效

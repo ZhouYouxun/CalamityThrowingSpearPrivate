@@ -50,6 +50,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
         private int lemniscateCycle = 0; // 当前完整循环计数
         private bool clockwise = true; // 当前是否顺时针
 
+
+        private float orbitAngle = 0f;
+        private float orbitSpeed = MathHelper.TwoPi / 180f; // 每 180 帧旋转一圈，可调整快慢
+        private float orbitRadius = 240f; // 飞行半径，可调整呼吸扩张
         public override void AI()
         {
             Lighting.AddLight(Projectile.Center, Color.LimeGreen.ToVector3() * 1.0f);
@@ -103,31 +107,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 
                 Projectile targetProj = Main.projectile[targetIndex];
 
-                // 每帧推进相位角
-                lemniscateAngle += lemniscateSpeed;
+                //// 每帧推进相位角
+                //lemniscateAngle += lemniscateSpeed;
 
-                // 检测是否完成完整圈（2π）
-                if (Math.Abs(lemniscateAngle) >= MathHelper.TwoPi)
+                //// 检测是否完成完整圈（2π）
+                //if (Math.Abs(lemniscateAngle) >= MathHelper.TwoPi)
+                //{
+                //    lemniscateAngle = 0f;
+                //    lemniscateCycle++;
+
+                //    // 每次完整循环后重新随机大小（原大小 ~ 5x 大小）
+                //    outwardMultiplier = Main.rand.NextFloat(120f, 600f);
+
+                //    // 每次完整循环后重新随机转向
+                //    clockwise = Main.rand.NextBool();
+                //    lemniscateSpeed = 0.04f * (clockwise ? 1f : -1f);
+                //}
+
+                //// Lemniscate 计算
+                //float scale = 2f / (3f - (float)Math.Cos(2 * lemniscateAngle));
+                //Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(lemniscateAngle), (float)Math.Sin(2f * lemniscateAngle) / 2f);
+                //Vector2 targetPosition = targetProj.Center + lemniscateOffset * outwardMultiplier;
+
+                //// 平滑移动过去，保持速度曲线自然
+                //Vector2 toTarget = targetPosition - Projectile.Center;
+                //Projectile.velocity = toTarget * 0.2f; // 平滑度可调
+
+                orbitAngle += orbitSpeed;
+
+                if (orbitAngle >= MathHelper.TwoPi)
                 {
-                    lemniscateAngle = 0f;
-                    lemniscateCycle++;
-
-                    // 每次完整循环后重新随机大小（原大小 ~ 5x 大小）
-                    outwardMultiplier = Main.rand.NextFloat(120f, 600f);
-
-                    // 每次完整循环后重新随机转向
-                    clockwise = Main.rand.NextBool();
-                    lemniscateSpeed = 0.04f * (clockwise ? 1f : -1f);
+                    orbitAngle -= MathHelper.TwoPi;
+                    // 可在此处随机化 orbitRadius 实现呼吸扩张
+                    orbitRadius = Main.rand.NextFloat(180f, 360f);
                 }
 
-                // Lemniscate 计算
-                float scale = 2f / (3f - (float)Math.Cos(2 * lemniscateAngle));
-                Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(lemniscateAngle), (float)Math.Sin(2f * lemniscateAngle) / 2f);
-                Vector2 targetPosition = targetProj.Center + lemniscateOffset * outwardMultiplier;
+                // 计算圆周位置
+                Vector2 offset = orbitAngle.ToRotationVector2() * orbitRadius;
+                Vector2 targetPosition = targetProj.Center + offset;
 
-                // 平滑移动过去，保持速度曲线自然
+                // 平滑移动过去
                 Vector2 toTarget = targetPosition - Projectile.Center;
-                Projectile.velocity = toTarget * 0.2f; // 平滑度可调
+                Projectile.velocity = toTarget * 0.2f; // 保留平滑自然的跟随感
             }
         }
 

@@ -38,6 +38,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
             Projectile.extraUpdates = 1;
             Projectile.timeLeft = 300;
         }
+        private List<AltSparkParticle> ownedAltSparkParticles = new();
 
         public override void AI()
         {
@@ -66,68 +67,143 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
                 PointParticle spark = new PointParticle(Projectile.Center, -Projectile.velocity * 0.5f, false, 5, 1.1f, Color.LimeGreen);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
-        }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            // 在击中敌人时生成一个由3个顶点组成的翠绿色阵法特效
 
-            // 定义三角形顶点数
-            int trianglePoints = 3;
-
-            // 在三角形的每个顶点上生成粒子
-            for (int i = 0; i < trianglePoints; i++)
+            // 🌿 飞行期间持续生成 AltSparkParticle 尾迹
+            if (Projectile.ai[0] % 2 == 0) // 每 2 帧生成一次
             {
-                // 计算每个顶点的角度（360度被3等分，每个顶点相隔120度）
-                float angle = MathHelper.TwoPi * i / trianglePoints;
+                AltSparkParticle tail = new AltSparkParticle(
+                    Projectile.Center - Projectile.velocity * 1.5f,
+                    Projectile.velocity * 0.02f,
+                    false,
+                    20,  // 稍长寿命以便观察
+                    1.2f,
+                    Color.LimeGreen * 1.18f
+                );
+                GeneralParticleHandler.SpawnParticle(tail);
+                ownedAltSparkParticles.Add(tail);
+            }
 
-                // 生成多个粒子，以形成逐渐扩散的视觉效果
-                for (int j = 0; j < 12; j++)
+            for (int i = ownedAltSparkParticles.Count - 1; i >= 0; i--)
+            {
+                AltSparkParticle p = ownedAltSparkParticles[i];
+
+                if (p.Time >= p.Lifetime)
                 {
-                    // 粒子的速度从1到7逐渐增加
-                    float speed = MathHelper.Lerp(1f, 7f, j / 12f);
+                    ownedAltSparkParticles.RemoveAt(i);
+                    continue;
+                }
 
-                    // 粒子的颜色从白色到翠绿色逐渐变化
-                    Color particleColor = Color.Lerp(Color.White, Color.LimeGreen, j / 12f);
+                // === 🌿 轨迹复杂化：自然离谱草木灵息尾迹飞行 ===
 
-                    // 粒子的缩放比例从1.6逐渐减小到0.85
-                    float scale = MathHelper.Lerp(1.6f, 0.85f, j / 12f);
+                // 持续右拐
+                p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(2f));
 
-                    // 创建粒子，使用Dust类型107
-                    Dust magicDust = Dust.NewDustPerfect(Projectile.Center, 107);
+                // 呼吸式加速减速
+                float cycle = 24f;
+                float scaleFactor = 1f + 0.05f * (float)Math.Sin(MathHelper.TwoPi * p.Time / cycle);
+                p.Velocity *= scaleFactor;
 
-                    // 粒子的方向根据当前顶点的角度旋转，乘以粒子速度
-                    magicDust.velocity = angle.ToRotationVector2() * speed;
+                // 周期性轻微脉冲
+                if (p.Time % 12 == 0)
+                {
+                    p.Velocity *= 1.15f;
+                }
 
-                    // 设置粒子的颜色和缩放比例
-                    magicDust.color = particleColor;
-                    magicDust.scale = scale;
-
-                    // 设置粒子不受重力影响
-                    magicDust.noGravity = true;
+                // 每 8 帧 ±0.8° 微摆
+                if (p.Time % 8 < 4)
+                {
+                    p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-0.8f, 0.8f)));
                 }
             }
 
-            // 播放击中敌人时的视觉效果
-            int ovalPoints = 42; // 环形粒子的数量
+
+
+        }
+
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            // ========== 原三角阵 Dust ========== 
+            int trianglePoints = 3;
+            for (int i = 0; i < trianglePoints; i++)
+            {
+                float angle = MathHelper.TwoPi * i / trianglePoints;
+
+                for (int j = 0; j < 12; j++)
+                {
+                    float speed = MathHelper.Lerp(1f, 7f, j / 12f) * Main.rand.NextFloat(0.9f, 1.1f);
+                    Color particleColor = Main.rand.NextBool() ? Color.LimeGreen : Color.LightGreen;
+                    float scale = MathHelper.Lerp(1.6f, 0.85f, j / 12f) * Main.rand.NextFloat(0.95f, 1.05f);
+
+                    Dust magicDust = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        107,
+                        angle.ToRotationVector2() * speed,
+                        100,
+                        particleColor,
+                        scale
+                    );
+                    magicDust.noGravity = true;
+                    magicDust.fadeIn = Main.rand.NextFloat(0.6f, 1.2f);
+                }
+            }
+
+            // ========== 原环形 Dust 扩散 ==========
+            int ovalPoints = 42;
             for (int i = 0; i < ovalPoints; i++)
             {
-                // 计算每个粒子的发射角度
                 float angle = MathHelper.TwoPi * i / ovalPoints;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 7f);
 
-                // 创建翠绿色的环形粒子
-                Dust ringDust = Dust.NewDustPerfect(Projectile.Center, 107);
-
-                // 粒子的速度为6，沿着角度方向发射
-                ringDust.velocity = angle.ToRotationVector2() * 6f;
-
-                // 粒子的缩放比例为1.1
-                ringDust.scale = 1.1f;
-
-                // 设置粒子不受重力影响
+                Dust ringDust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    107,
+                    velocity,
+                    100,
+                    Color.Lerp(Color.LimeGreen, Color.White, Main.rand.NextFloat(0.0f, 0.3f)),
+                    Main.rand.NextFloat(0.95f, 1.3f)
+                );
                 ringDust.noGravity = true;
+                ringDust.fadeIn = Main.rand.NextFloat(0.5f, 1f);
+            }
+
+            // ========== 新增自定义粒子：DirectionalPulseRing ==========
+            Particle pulse = new DirectionalPulseRing(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.LightGreen * 0.8f,
+                new Vector2(1f, 1f),
+                0f,
+                0.2f,
+                0.9f,
+                20
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
+
+            // ========== 新增自定义粒子：PointParticle ==========
+            int pointCount = 12;
+            for (int i = 0; i < pointCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / pointCount + Main.rand.NextFloat(-0.1f, 0.1f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+
+                Particle point = new PointParticle(
+                    Projectile.Center,
+                    velocity,
+                    false,
+                    18,
+                    1.1f,
+                    Color.Lerp(Color.LawnGreen, Color.YellowGreen, 0.5f)
+                );
+                GeneralParticleHandler.SpawnParticle(point);
             }
         }
+
+
+
+
+
 
 
 

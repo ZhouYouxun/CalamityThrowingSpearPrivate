@@ -232,6 +232,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 CurrentState = BehaviorState.Dash;
             }
         }
+        // 放在类字段区域
+        private List<SparkParticle> ownedSilverSparks = new();
 
         private void DoBehavior_Dash()
         {
@@ -263,6 +265,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 {
                     float angle = i * goldenAngle + Main.GameUpdateCount * 0.05f;
                     Vector2 sparkVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+                    //SparkParticle silverSpark = new SparkParticle(
+                    //    Projectile.Center,
+                    //    sparkVelocity,
+                    //    false,
+                    //    20,
+                    //    1.0f,
+                    //    Color.Silver
+                    //);
+                    //GeneralParticleHandler.SpawnParticle(silverSpark);
                     SparkParticle silverSpark = new SparkParticle(
                         Projectile.Center,
                         sparkVelocity,
@@ -272,10 +283,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                         Color.Silver
                     );
                     GeneralParticleHandler.SpawnParticle(silverSpark);
+                    ownedSilverSparks.Add(silverSpark);
+
                 }
 
                 // === 🔵 蓝色 Electric Dust（双阿基米德螺旋扩散，交替方向） ===
-                if (Main.GameUpdateCount % 1 == 0) // 提升密度
+                for (int i = 0; i < 10; i++) // 提升密度
                 {
                     float spiralT = Main.GameUpdateCount * 0.1f;
                     float spiralR = 2f + 0.15f * spiralT; // 适当减少增长率防止飞太远
@@ -305,6 +318,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                     electricDust2.noGravity = true;
                 }
 
+
+            }
+
+
+            {
+                // === 🌀 SparkParticle 蛇形步轨迹修正 ===
+                for (int i = ownedSilverSparks.Count - 1; i >= 0; i--)
+                {
+                    SparkParticle p = ownedSilverSparks[i];
+
+                    // 粒子超时后移除引用避免持久保留
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedSilverSparks.RemoveAt(i);
+                        continue;
+                    }
+
+                    // 计算蛇形步旋转
+                    int cycle = 10; // 5 左 + 5 右 = 10 帧循环
+                    int phase = p.Time % cycle;
+
+                    float angleOffset = MathHelper.ToRadians(3f); // 每帧 3°
+                    if (phase < 5)
+                    {
+                        // 前 5 帧左转
+                        p.Velocity = p.Velocity.RotatedBy(-angleOffset);
+                    }
+                    else
+                    {
+                        // 后 5 帧右转
+                        p.Velocity = p.Velocity.RotatedBy(angleOffset);
+                    }
+                }
 
             }
 
