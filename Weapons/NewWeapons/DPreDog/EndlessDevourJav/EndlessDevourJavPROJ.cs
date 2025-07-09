@@ -745,17 +745,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                         chargeTime / 5f // 通过 ai[0] 传入黑洞影响后续强度[暂时没用到]
                     );
                 }
-                Projectile.NewProjectile(
+                /*Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
-                    //(int)(Projectile.damage * 1+finalDamage),
                     Projectile.damage,
                     Projectile.knockBack,
                     Projectile.owner,
                     transferredValue // 通过 ai[0] 传入
-                );
+                );*/
             }
             else
             {

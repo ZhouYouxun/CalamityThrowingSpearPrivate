@@ -612,7 +612,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             int type = ModContent.ProjectileType<TerraLanceBEAM>();
             int numBeams = 12;  // 生成8个TerraBeam弹幕
             var source = Projectile.GetSource_FromThis();
-            int beamDamage = (int)(Projectile.damage * 0.9f);  // 伤害调整为1.05倍
+            int beamDamage = (int)(Projectile.damage * 0.85f);  // 伤害调整为1.05倍
             float beamKB = Projectile.knockBack;
 
             for (int i = 0; i < numBeams; ++i)

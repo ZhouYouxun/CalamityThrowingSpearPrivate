@@ -31,9 +31,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             // 检查 NPC 是否是 Yharon 并且符合条件
             if (!eventTriggered && npc.type == yharonType && npc.life <= npc.lifeMax * 0.55f && !yharonTriggered)
             {
-                yharonTriggered = true; // 标记当前 Yharon 已触发事件
-                eventTriggered = true; // 标记整个世界已经触发该事件
-
                 // 获取玩家对象
                 Player player = Main.player[npc.target];
 
@@ -63,10 +60,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
 
                 // 若找到玩家持有 DLOAS：
-                if (dloasHolder != null)
+                if (player.active && !player.dead && player.HeldItem != null && player.HeldItem.type == ModContent.ItemType<DLOAS>())
                 {
                     // 摧毁玩家手中的 DLOAS（直接移除持有物）
                     dloasHolder.inventory[dloasHolder.selectedItem].TurnToAir();
+                    yharonTriggered = true; // 标记当前 Yharon 已触发事件
+                    eventTriggered = true; // 标记整个世界已经触发该事件
 
                     // 在玩家位置生成紫色风格 Spark 与 Dust 特效
                     for (int i = 0; i < 40; i++)

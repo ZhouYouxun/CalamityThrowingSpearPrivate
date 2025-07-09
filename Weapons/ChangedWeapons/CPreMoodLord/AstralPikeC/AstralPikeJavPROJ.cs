@@ -95,7 +95,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
                 Projectile.tileCollide = false; // 不在允许与方块碰撞
 
                 // 调用召唤彗星的逻辑，召唤2颗彗星（不再召唤）
-                NPC target = FindClosestNPC(1000f); // 寻找最近的敌人，1000像素范围内
+                NPC target = FindClosestNPC(1800f); // 寻找最近的敌人，1000像素范围内
                 if (target != null)
                 {
                     for (int i = 0; i < 2; i++)
@@ -132,7 +132,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             {
                 if (npc.CanBeChasedBy(Projectile))
                 {
-                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
+                    float distance = Vector2.Distance(Projectile.Center, npc.Center * 5);
                     if (distance < closestDistance)
                     {
                         closestDistance = distance;

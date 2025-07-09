@@ -94,7 +94,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1; // 穿透次数
-            Projectile.timeLeft = 30; // 设置持续时间为1500帧
+            Projectile.timeLeft = 24; // 设置持续时间为1500帧
             Projectile.extraUpdates = 2; // 额外更新次数为1
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 14;
@@ -234,7 +234,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     shootDirection,
                     ModContent.ProjectileType<StarsofDestinyLSTAR>(), // 替换为目标弹幕类型
-                    (int)(Projectile.damage * 0.95f), // 伤害倍率0.95倍
+                    (int)(Projectile.damage * 0.6f), // 伤害倍率0.95倍
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -282,7 +282,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     shootDirection,
                     ModContent.ProjectileType<StarsofDestinyLSTAR>(),
-                    (int)(Projectile.damage * 0.75f), // 伤害倍率0.75倍
+                    (int)(Projectile.damage * 0.36f), // 伤害倍率0.4倍
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -371,7 +371,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                                     particlePosition,
                                     Vector2.Zero, // 静止不动
                                     ModContent.ProjectileType<StarsofDestinyINV>(),
-                                    (int)(Projectile.damage * 0.2f), // 伤害倍率 0.2
+                                    (int)(Projectile.damage * 0.24f), // 伤害倍率 0.2
                                     0f,
                                     Projectile.owner
                                 );

@@ -2,6 +2,7 @@
 using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.NPCs.Yharon;
 using CalamityThrowingSpear.Global;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
 using Microsoft.Xna.Framework;
@@ -299,8 +300,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
 
             NPC boss = Main.npc.FirstOrDefault(npc => npc.active && npc.boss);
+            int bossCount = Main.npc.Count(npc => npc.active && npc.boss);
 
-            if (boss != null) // 如果有Boss
+            if (boss != null && bossCount == 1) // 如果有Boss
             {
                 if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f) // 如果Boss血量低于10%且未触发过
                 {
@@ -320,7 +322,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         Player p = Main.player[i];
                         if (p.active && !p.dead)
                         {
-                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), 900); // 600 = 10秒
+                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(),600); // 600 = 10秒
                         }
                     }
 

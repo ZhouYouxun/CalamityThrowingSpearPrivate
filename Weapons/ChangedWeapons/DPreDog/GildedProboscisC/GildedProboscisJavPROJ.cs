@@ -119,13 +119,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Electrified, 300); // 原版的带电效果
+            Player player = Main.player[Projectile.owner];
+            player.statLife += 1;
+            player.HealEffect(1);
 
             int currentBirdCount = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<GildedProboscisJavBIRD>());
 
             if (Projectile.owner == Main.myPlayer && currentBirdCount < 21)
             {
                 // 使用当前伤害 * 0.415 作为小鸟伤害基准
-                int birdDamage = (int)(Projectile.damage * 0.415f);
+                int birdDamage = (int)(Projectile.damage * 0.5f);
 
                 // 在命中位置生成 GildedProboscisJavINV，承担攻击传递
                 Projectile.NewProjectile(

@@ -158,7 +158,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.96),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -192,7 +192,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.96),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -333,7 +333,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                         Projectile.Center,
                         shootDirection,
                         ModContent.ProjectileType<StarsofDestinyRLIGHT>(), // 替换为目标弹幕类型
-                        (int)(Projectile.damage * 1.25f), // 伤害倍率
+                        (int)(Projectile.damage * 1.2f), // 伤害倍率
                         Projectile.knockBack,
                         Projectile.owner
                     );

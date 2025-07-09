@@ -23,7 +23,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 6500; // 设置伤害值
+            Item.damage = 3000; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -56,9 +56,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 750;
-                Item.useTime = 30;
-                Item.useAnimation = 30;
+                Item.damage = 660;
+                Item.useTime = 24;
+                Item.useAnimation = 24;
                 Item.shoot = ModContent.ProjectileType<StarsofDestinyRIGHT>();
                 Item.shootSpeed = 15f;
                 Item.UseSound = SoundID.Item1;
@@ -66,9 +66,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             }
             else // 左键
             {
-                Item.damage = 1500;
-                Item.useTime = 18;
-                Item.useAnimation = 18;
+                Item.damage = 666;
+                Item.useTime = 24;
+                Item.useAnimation = 24;
                 Item.shootSpeed = 5f; 
                 Item.shoot = ModContent.ProjectileType<StarsofDestinyLEFT>();
                 Item.UseSound = null;

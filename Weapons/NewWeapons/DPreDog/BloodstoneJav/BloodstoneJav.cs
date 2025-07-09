@@ -55,7 +55,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 240;
+                Item.damage = 270;
                 Item.useTime = 75;
                 Item.useAnimation = 75;
                 Item.useLimitPerAnimation = 1;
@@ -66,7 +66,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             }
             else // 左键
             {
-                Item.damage = 360;
+                Item.damage = 600;
                 Item.useTime = 30;
                 Item.useAnimation = 30;
                 Item.useLimitPerAnimation = 1;

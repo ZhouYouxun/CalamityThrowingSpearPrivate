@@ -24,6 +24,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public override void Update(Player player, ref int buffIndex)
         {
+            player.buffTime[buffIndex] = 2;
             player.GetDamage(DamageClass.Melee) *= 1.2f;
             player.statDefense += 50;
             player.endurance += 1.00f;

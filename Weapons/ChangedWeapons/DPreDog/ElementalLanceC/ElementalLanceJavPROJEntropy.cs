@@ -86,7 +86,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             hitCooldown = 15; // 设置 X 帧冷却
 
             // 生成标记弹幕（后续处理）
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<ElementalLanceJavPROJE>(), (int)(Projectile.damage * 0.5f), 0, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<ElementalLanceJavPROJE>(), (int)(Projectile.damage * 1.2f), 0, Projectile.owner);
 
             SpawnBlackImpactEffects();
         }

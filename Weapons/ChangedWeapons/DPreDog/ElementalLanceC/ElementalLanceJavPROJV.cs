@@ -123,7 +123,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
                 Vector2 velocity = shootDir * 10f;
 
                 int lightning = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
-                    ProjectileID.CultistBossLightningOrbArc, (int)(Projectile.damage * 2.1), 0f, Projectile.owner,
+                    ProjectileID.CultistBossLightningOrbArc, (int)(Projectile.damage * 0.5), 0f, Projectile.owner,
                     MathHelper.PiOver2, Main.rand.Next(100));
 
                 if (Main.projectile.IndexInRange(lightning))

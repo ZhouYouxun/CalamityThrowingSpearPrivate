@@ -127,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
                 Vector2 spawnPosition = Main.MouseWorld + Main.rand.NextVector2Circular(15 * 16f, 15 * 16f);
                 Vector2 velocity = (Main.MouseWorld - spawnPosition).SafeNormalize(Vector2.Zero) * 12f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.7), Projectile.knockBack, Projectile.owner);
                 SoundEngine.PlaySound(SoundID.Item34, Projectile.position);
 
                 // 用粒子特效绘制线条
@@ -160,7 +160,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             if (!Owner.channel)
             {
                 Projectile.netUpdate = true;
-                Projectile.timeLeft = 300; // 冲刺阶段持续时间
+                Projectile.timeLeft = 180; // 冲刺阶段持续时间
                 Projectile.penetrate = 20; // 设置冲刺阶段的穿透次数
 
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/深渊潮涌音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
@@ -197,15 +197,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
             // 每隔10帧发射一次水剑
             shootTimer++;
-            if (shootTimer >= 10) // 如果计时器达到10帧
+            if (shootTimer == 10) // 如果计时器达到10帧
             {
                 shootTimer = 0; // 重置计时器
 
                 // 往左右固定角度发射水剑
                 Vector2 leftVelocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(-10)) * 1f;
                 Vector2 rightVelocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(10)) * 1f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.35f), Projectile.knockBack, Projectile.owner);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.35f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
             }
         }
 

@@ -126,7 +126,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             {
                 Vector2 dir = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir,
-                    ModContent.ProjectileType<NebulaSLASH>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<NebulaSLASH>(), (int)(Projectile.damage * 0.5), Projectile.knockBack, Projectile.owner);
             }
 
             // 环绕目标发射激光

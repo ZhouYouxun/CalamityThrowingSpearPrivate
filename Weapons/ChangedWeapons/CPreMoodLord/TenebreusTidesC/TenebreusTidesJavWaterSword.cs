@@ -74,7 +74,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
                 new(
-                    ratio => MathHelper.SmoothStep(12f, 2f, ratio) * 1.0f, // ← 这里 * Xf 可以控制梯形的宽窄程度
+                    ratio => MathHelper.SmoothStep(16f, 4f, ratio) * 1.0f, // ← 这里 * Xf 可以控制梯形的宽窄程度
                     TrailColor,
                     (_) => Projectile.Size * 0.5f,
                     shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
