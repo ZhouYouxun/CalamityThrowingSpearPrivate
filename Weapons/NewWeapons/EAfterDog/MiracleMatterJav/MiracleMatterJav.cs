@@ -59,6 +59,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             Item.shootSpeed = 24f; // 更改使用时的武器弹幕飞行速度
         }
 
+        public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (Main.zenithWorld)
+            {
+                int numProjectiles = 8;
+                float totalSpread = MathHelper.ToRadians(3f * (numProjectiles - 1)); // 总夹角
+                float startRotation = -totalSpread / 2f; // 左边起始角
+
+                for (int i = 0; i < numProjectiles; i++)
+                {
+                    float rotation = startRotation + MathHelper.ToRadians(3f) * i;
+                    Vector2 perturbedSpeed = velocity.RotatedBy(rotation);
+                    Projectile.NewProjectile(
+                        source,
+                        position,
+                        perturbedSpeed,
+                        type,
+                        damage,
+                        knockback,
+                        player.whoAmI
+                    );
+                }
+
+                // 防止默认再发一发，避免重复
+                return false;
+            }
+
+            // 默认情况下正常发射
+            return true;
+        }
 
         public override void AddRecipes()
         {

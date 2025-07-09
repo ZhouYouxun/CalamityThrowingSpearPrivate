@@ -186,37 +186,113 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             particleTimer++;
             if (particleTimer >= 2)
             {
-                GenerateDoubleHelixParticles();
+                GenerateDevourerHelixParticles();
                 particleTimer = 0; // 重置计时器
             }
         }
         private int particleTimer = 0; // 用于控制粒子生成的计时器
-                                       // **双螺旋粒子生成**
-        private void GenerateDoubleHelixParticles()
+        private List<SparkParticle> ownedSparkParticles = new();
+
+        // **双螺旋粒子生成**
+
+        private void GenerateDevourerHelixParticles()
         {
-            // 计算“枪头”位置
-            Vector2 muzzlePosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            Vector2 muzzlePos = Projectile.Center + forward * 24f + Main.rand.NextVector2Circular(4f, 4f);
 
-            // 计算双螺旋的偏移角度
-            float swingAngle1 = (float)Math.Sin(Main.GameUpdateCount * 0.3f) * MathHelper.ToRadians(10);
-            float swingAngle2 = (float)Math.Sin(Main.GameUpdateCount * 0.3f + MathHelper.Pi) * MathHelper.ToRadians(10);
+            float phase = Main.GameUpdateCount * 0.25f;
+            float baseAngle = Main.GameUpdateCount * 0.05f; // 时间扰动
 
-            // 计算旋转后的粒子速度
-            Vector2 swingVelocity1 = Projectile.velocity.RotatedBy(swingAngle1) * 0.5f;
-            Vector2 swingVelocity2 = Projectile.velocity.RotatedBy(swingAngle2) * 0.5f;
+            for (int i = 0; i < 4; i++)
+            {
+                // 基础四方向：0°, 90°, 180°, 270°，增加微扰动形成灵动感
+                float angleOffset = MathHelper.PiOver2 * i + baseAngle + Main.rand.NextFloat(-0.2f, 0.2f);
 
-            // 颜色渐变
-            Color[] cosmicColors = { Color.MediumPurple, Color.HotPink, Color.Violet };
-            Color particleColor1 = cosmicColors[Main.GameUpdateCount % cosmicColors.Length];
-            Color particleColor2 = cosmicColors[(Main.GameUpdateCount + 1) % cosmicColors.Length];
+                // 速度大小随机
+                float speed = Main.rand.NextFloat(1.5f, 3.2f);
+                Vector2 swirlVelocity = forward.RotatedBy(angleOffset) * speed;
 
-            // 在枪头位置生成粒子
-            PointParticle particle1 = new PointParticle(muzzlePosition, swingVelocity1, false, 15, 1.1f, particleColor1);
-            PointParticle particle2 = new PointParticle(muzzlePosition, swingVelocity2, false, 15, 1.1f, particleColor2);
+                // 随机紫色系颜色
+                Color swirlColor = Color.Lerp(Color.MediumPurple, Color.Violet, Main.rand.NextFloat(0f, 1f));
 
-            GeneralParticleHandler.SpawnParticle(particle1);
-            GeneralParticleHandler.SpawnParticle(particle2);
+                SparkParticle swirlSpark = new SparkParticle(
+                    muzzlePos + swirlVelocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 8f), // 起点随机偏移
+                    swirlVelocity,
+                    false,
+                    40,
+                    Main.rand.NextFloat(0.8f, 1.4f),
+                    swirlColor
+                );
+                GeneralParticleHandler.SpawnParticle(swirlSpark);
+                ownedSparkParticles.Add(swirlSpark);
+            }
+
+            // ✦ 星空主题 Dust 复杂扩散 ✦
+            for (int i = 0; i < 8; i++)
+            {
+                // 在弹幕周围 12px 圆环范围内随机生成
+                Vector2 spawnOffset = Main.rand.NextVector2Circular(12f, 12f);
+                Vector2 spawnPosition = Projectile.Center + spawnOffset;
+
+                // 基础速度沿偏移方向扩散，增加小扰动
+                Vector2 dustVelocity = spawnOffset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.3f, 1.5f);
+                dustVelocity = dustVelocity.RotatedByRandom(MathHelper.ToRadians(15));
+
+                Color particleColor = Main.rand.NextBool() ? Color.Purple : Color.Violet;
+
+                Dust dust = Dust.NewDustPerfect(
+                    spawnPosition,
+                    DustID.FireworkFountain_Pink,
+                    dustVelocity,
+                    100,
+                    particleColor,
+                    0.65f * Main.rand.NextFloat(0.8f, 1.2f) // 大小微变
+                );
+
+                dust.noGravity = true;
+                dust.fadeIn = Main.rand.NextFloat(0.4f, 0.8f);
+
+                // 每 3 个粒子附带额外加速，制造深空灵息流动感
+                if (i % 3 == 0)
+                {
+                    dust.velocity *= Main.rand.NextFloat(1.2f, 1.5f);
+                }
+            }
+
+
+            for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
+            {
+                SparkParticle p = ownedSparkParticles[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedSparkParticles.RemoveAt(i);
+                    continue;
+                }
+
+                // ✦ 离谱的“灵息蛇形拐弯”逻辑 ✦
+
+                // 持续右拐形成螺旋
+                p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(2.5f));
+
+                // 每 15 帧倒退一次形成“撕裂回流”
+                if (p.Time % 15 == 0)
+                {
+                    p.Velocity *= -0.8f; // 短暂倒退
+                }
+
+                // 呼吸式加速减速
+                float cycle = 20f;
+                float scaleFactor = 1f + 0.05f * (float)Math.Sin(MathHelper.TwoPi * p.Time / cycle);
+                p.Velocity *= scaleFactor;
+            }
+
         }
+
+
+
+
+
+
 
         // 传送到屏幕的对侧位置
         private void TeleportToOtherSide(Vector2 screenPosition)

@@ -87,7 +87,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             }
 
 
-            { 
+            {
                 // 如果未碰撞，检测与 GoldplumeJavWind 的碰撞
                 if (!collided)
                 {
@@ -104,7 +104,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                                 collided = true; // 标记为已碰撞
                                 Projectile.timeLeft = 80; // 设置持续时间
                                 Projectile.penetrate = -1;
-                                Projectile.usesLocalNPCImmunity = true; 
+                                Projectile.usesLocalNPCImmunity = true;
                                 Projectile.localNPCHitCooldown = 18; //让它在公转期间也能造成多次伤害
                                 Projectile.velocity = Vector2.Zero; // 初始速度归零
 
@@ -168,6 +168,73 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
 
                     }
                 }
+
+
+                //// 获取场景中最近的 GoldplumeJavWind
+                //Projectile targetWind = null;
+                //float closestDist = float.MaxValue;
+                //for (int i = 0; i < Main.maxProjectiles; i++)
+                //{
+                //    Projectile otherProj = Main.projectile[i];
+                //    if (otherProj.active && otherProj.type == ModContent.ProjectileType<GoldplumeJavWind>())
+                //    {
+                //        float dist = Vector2.Distance(Projectile.Center, otherProj.Center);
+                //        if (dist < closestDist)
+                //        {
+                //            closestDist = dist;
+                //            targetWind = otherProj;
+                //        }
+                //    }
+                //}
+
+                //// 检测是否需要切换到公转状态（距离小于 256）
+                //if (!collided && targetWind != null && closestDist < 256f)
+                //{
+                //    collided = true;
+                //    Projectile.timeLeft = 80;
+                //    Projectile.penetrate = -1;
+                //    Projectile.usesLocalNPCImmunity = true;
+                //    Projectile.localNPCHitCooldown = 18;
+                //    Projectile.velocity = Vector2.Zero;
+
+                //    Projectile.ai[0] = closestDist; // 初始半径
+                //    Projectile.ai[1] = 0f; // 初始角度
+                //}
+
+                //// 公转逻辑
+                //if (collided && targetWind != null)
+                //{
+                //    // 平滑缩圈
+                //    float targetRadius = 48f; // 最终缩到 48px
+                //    float currentRadius = Projectile.ai[0];
+                //    float shrinkSpeed = 0.05f; // 缓慢缩圈速度
+                //    currentRadius = MathHelper.Lerp(currentRadius, targetRadius, shrinkSpeed);
+                //    Projectile.ai[0] = currentRadius;
+
+                //    // 平滑旋转（圆润 iOS 风格缓动）
+                //    float angularSpeed = 0.15f; // 缓慢旋转
+                //    Projectile.ai[1] += angularSpeed;
+
+                //    Vector2 desiredPosition = targetWind.Center + new Vector2(currentRadius, 0).RotatedBy(Projectile.ai[1]);
+                //    Projectile.Center = Vector2.Lerp(Projectile.Center, desiredPosition, 0.08f); // 圆润移动到位
+
+                //    Projectile.rotation = (Projectile.Center - targetWind.Center).ToRotation() + MathHelper.PiOver2 + MathHelper.PiOver2;
+
+                //    // 保留 Spark 特效
+                //    Vector2 forward = Projectile.rotation.ToRotationVector2();
+                //    Particle spark = new SparkParticle(
+                //        Projectile.Center,
+                //        forward * 3f,
+                //        false,
+                //        60,
+                //        1.2f,
+                //        Color.White
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(spark);
+                //    ownedSparkParticles.Add((SparkParticle)spark);
+                //}
+
+
 
                 // === Spark 右拐轨迹控制 ===
                 for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
