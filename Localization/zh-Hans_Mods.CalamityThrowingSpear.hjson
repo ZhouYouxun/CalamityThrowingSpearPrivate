@@ -2,73 +2,7 @@
 
 Projectiles: {
 	NewWeapons: {
-		APreHardMode: {
-			BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
-			BraisedPorkJavPROJ.DisplayName: 卤肉矛
-			ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
-			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
-			GraniteJavPROJ.DisplayName: 花岗岩矛
-			RedtideJavPROJ.DisplayName: 赤潮矛
-			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
-			WulfrimJavPROJ.DisplayName: 钨钢矛
-			RedtideJavEXP.DisplayName: 赤潮爆炸
-			TheBrokenPROJ.DisplayName: 破旧的长枪
-			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
-			DLOASSnake3Tail.DisplayName: 画蛇添尾
-			DLOASSnake2Body.DisplayName: 画蛇添体
-			DLOASSnake1Head.DisplayName: 画蛇添头
-			DLOASPROJ.DisplayName: 画蛇添足
-			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
-			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
-		}
-
-		BPrePlantera: {
-			SunEssenceJavBEAM.DisplayName: 光耀日激光
-			ChaosEssenceJavFIRE.DisplayName: 凯奥斯焰
-			ChaosEssenceJavPROJ.DisplayName: 凯奥斯
-			ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
-			HeartSwordPROJ.DisplayName: 心之刺剑
-			HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
-			PearlwoodJavPROJ.DisplayName: 珍珠木矛
-			PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
-			PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
-			PolarEssenceJavPROJ.DisplayName: 霜雪川
-			SHPCKEXP.DisplayName: SHPCK等离子爆炸
-			SHPCKFast.DisplayName: SHPCK右键攻击
-			SHPCKPROJ.DisplayName: SHPCK左键攻击
-			SunEssenceJavFeather.DisplayName: 光耀日羽毛
-			SunEssenceJavPROJ.DisplayName: 光耀日
-			SunEssenceJavSmallBEAM.DisplayName: 光耀日小型激光
-			TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
-			TheLastLancePROJ.DisplayName: 最后的骑枪
-			TheLastLanceWater.DisplayName: 最后的骑枪水流
-			// SHPCKFast2.DisplayName: S H P C K Fast2
-			PearlwoodJavPROJINV.DisplayName: 珍珠木王的新弹幕
-			ElectrocutionHalberdField.DisplayName: 电圈
-			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
-			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
-		}
-
-		CPreMoodLord: {
-			FestiveHalberdPROJ.DisplayName: 节日长戟
-			SagittariusPROJ.DisplayName: 贯星枪
-			SagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
-			SagittariusSPIT.DisplayName: 贯星枪分裂弹
-			TidalMechanicsBubbles.DisplayName: 潮汐泡泡
-			TidalMechanicsPROJ.DisplayName: 潮汐
-			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
-			TidalMechanicsTyphoon.DisplayName: 潮汐台风
-			StarsofDestinyLEFT.DisplayName: 分针
-			SurfeiterStonePillars.DisplayName: 石元柱
-			SurfeiterPROJ.DisplayName: 巴蛇吞象
-			// SurfeiterDrum.DisplayName: Surfeiter Drum
-			SurfeiterDrumINV.DisplayName: 音爆
-			SurfeiterDrumINVEXP.DisplayName: 音爆爆
-			FestiveHalberdSTAR.DisplayName: 圣诞星
-			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
-		}
-
-                DPreDog: {
+		DPreDog: {
 			ElementalArkJavEonBolt.DisplayName: 元素爆裂弹
 			BloodstoneJavPROJ.DisplayName: 龙血长刀
 			ChaosWindJavAirburst.DisplayName: 无序狂风爆炸
@@ -117,7 +51,74 @@ Projectiles: {
 			EndlessDevourJavBlackHole.DisplayName: 无际黑洞
 			EndlessDevourJavBlackHoleIBV.DisplayName: 黑洞坍缩
 			EndlessDevourJavBlackHole2.DisplayName: 无际黑洞爆发
-			EndlessDevourJavOrbSmall.DisplayName: 无尽暗影玉
+		}
+
+		BPrePlantera: {
+			SunEssenceJavBEAM.DisplayName: 光耀日激光
+			ChaosEssenceJavFIRE.DisplayName: 凯奥斯焰
+			ChaosEssenceJavPROJ.DisplayName: 凯奥斯
+			ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
+			HeartSwordPROJ.DisplayName: 心之刺剑
+			HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
+			PearlwoodJavPROJ.DisplayName: 珍珠木矛
+			PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
+			PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
+			PolarEssenceJavPROJ.DisplayName: 霜雪川
+			SHPCKEXP.DisplayName: SHPCK等离子爆炸
+			SHPCKFast.DisplayName: SHPCK右键攻击
+			SHPCKPROJ.DisplayName: SHPCK左键攻击
+			SunEssenceJavFeather.DisplayName: 光耀日羽毛
+			SunEssenceJavPROJ.DisplayName: 光耀日
+			SunEssenceJavSmallBEAM.DisplayName: 光耀日小型激光
+			TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
+			TheLastLancePROJ.DisplayName: 最后的骑枪
+			TheLastLanceWater.DisplayName: 最后的骑枪水流
+			// SHPCKFast2.DisplayName: S H P C K Fast2
+			PearlwoodJavPROJINV.DisplayName: 珍珠木王的新弹幕
+			ElectrocutionHalberdField.DisplayName: 电圈
+			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
+			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
+		}
+
+		APreHardMode: {
+			BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
+			BraisedPorkJavPROJ.DisplayName: 卤肉矛
+			ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
+			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
+			GraniteJavPROJ.DisplayName: 花岗岩矛
+			RedtideJavPROJ.DisplayName: 赤潮矛
+			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
+			WulfrimJavPROJ.DisplayName: 钨钢矛
+			RedtideJavEXP.DisplayName: 赤潮爆炸
+			TheBrokenPROJ.DisplayName: 破旧的长枪
+			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
+			DLOASSnake3Tail.DisplayName: 画蛇添尾
+			DLOASSnake2Body.DisplayName: 画蛇添体
+			DLOASSnake1Head.DisplayName: 画蛇添头
+			DLOASPROJ.DisplayName: 画蛇添足
+			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
+			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
+			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
+			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
+			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
+		}
+
+		CPreMoodLord: {
+			FestiveHalberdPROJ.DisplayName: 节日长戟
+			SagittariusPROJ.DisplayName: 贯星枪
+			SagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
+			SagittariusSPIT.DisplayName: 贯星枪分裂弹
+			TidalMechanicsBubbles.DisplayName: 潮汐泡泡
+			TidalMechanicsPROJ.DisplayName: 潮汐
+			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
+			TidalMechanicsTyphoon.DisplayName: 潮汐台风
+			SurfeiterStonePillars.DisplayName: 石元柱
+			SurfeiterPROJ.DisplayName: 巴蛇吞象
+			// SurfeiterDrum.DisplayName: Surfeiter Drum
+			SurfeiterDrumINV.DisplayName: 音爆
+			SurfeiterDrumINVEXP.DisplayName: 音爆爆
+			FestiveHalberdSTAR.DisplayName: 圣诞星
+			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
 		}
 
 		EAfterDog: {
@@ -128,8 +129,6 @@ Projectiles: {
 			FinishingTouchEPROJ.DisplayName: 画龙点睛敌对
 			FinishingTouchPROJ.DisplayName: 画龙点睛
 			FinishingTouchDASHFuckYou.DisplayName: 龙目
-			FinishingTouchINV.DisplayName: 龙玉
-			FinishingTouchDragon.DisplayName: 应龙
 			MiracleMatterJavLight.DisplayName: 恒辉之矛光束
 			MiracleMatterJavPROJ.DisplayName: 恒辉之矛
 			SawBladeForkHornJavPROJ.DisplayName: 锯刃叉角枪
@@ -150,11 +149,15 @@ Projectiles: {
 			// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
 			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
 			PrimordialStatePROJ.DisplayName: 太极八荒
+			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 			AuricJavLighting.DisplayName: 金源球状闪电
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 			SoulSeekerJavBRIDFire.DisplayName: 终幕火焰
+			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
+			FinishingTouchINV.DisplayName: 龙玉
 			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
+			FinishingTouchDragon.DisplayName: 应龙
 		}
 	}
 
@@ -191,19 +194,14 @@ Projectiles: {
 			GalvanizingGlaiveJavPROJ.DisplayName: 磁能分割剑
 			HellionFlowerJavPROJ.DisplayName: 刺花长矛
 			HellionFlowerJavVine.DisplayName: 刺花长矛藤蔓
-			HellionFlowerJavAbsorb.DisplayName: 刺花种子
-		        // HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
 			TenebreusTidesJavPROJ.DisplayName: 深渊潮涌
 			TenebreusTidesJavWaterSword.DisplayName: 深渊潮涌水箭
 			TyphonsGreedJavBubble.DisplayName: 提丰泡泡
-			TyphonsGreedJavBubble2.DisplayName: 提丰水流环
 			TyphonsGreedJavPROJ.DisplayName: 提丰之贪婪
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
 			VulcaniteLanceJavTinyFlare.DisplayName: 火焰精灵
-		        // SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
-		        // DiseasedJavEXP.DisplayName: Diseased Jav E X P
-		        // VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
-		        // VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+			TyphonsGreedJavBubble2.DisplayName: 提丰水流环
+			HellionFlowerJavAbsorb.DisplayName: 刺花种子
 		}
 
 		DPreDog: {
@@ -245,6 +243,7 @@ Projectiles: {
 			StreamGougeJavEXP.DisplayName: 激流爆破
 			DragonRageJavFire.DisplayName: 巨龙怒火
 			DragonRageJavFireBall.DisplayName: 巨龙怒焰
+			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
 
@@ -333,6 +332,14 @@ Projectiles: {
 }
 
 Projectile: {
+	CPreMoodLord: {
+		// HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+		// SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
+		// DiseasedJavEXP.DisplayName: Diseased Jav E X P
+		// VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+		// VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+	}
+
 	DPreDog: {
 		// SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
 		// InfiniteDarknessSpearPROJ.DisplayName: Infinite Darkness Spear P R O J

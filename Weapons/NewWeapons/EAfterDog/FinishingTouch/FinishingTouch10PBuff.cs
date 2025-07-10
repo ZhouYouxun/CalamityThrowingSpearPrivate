@@ -21,6 +21,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Main.buffNoSave[Type] = true;
             BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
         }
+        private List<SparkParticle> ownedSparkParticles = new();
+        private List<CritSpark> ownedCritSparks = new();
 
         public override void Update(Player player, ref int buffIndex)
         {
@@ -31,61 +33,124 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             player.statDefense += 50;
             player.endurance += 1.00f;
 
-            // === 在玩家周围以半径 ~48 的环上分布特效中心 ===
-            float offsetAngle = Main.GameUpdateCount * 0.04f + player.whoAmI; // 保证不同玩家不同
-            Vector2 ringOffset = offsetAngle.ToRotationVector2() * 0f;
-            Vector2 center = player.Center + ringOffset;
 
-            if (Main.GameUpdateCount % 2 == 0) // 控制密度
             {
-                int petals = 48;
-                float goldenAngle = MathHelper.ToRadians(137.5f);
+                Vector2 center = player.Center + Main.rand.NextVector2Circular(32f, 32f);
+                Vector2 velocity = (player.Center - center).SafeNormalize(Vector2.Zero) * 1.2f;
 
-                for (int i = 0; i < petals; i++)
+                // === 1️⃣ SparkParticle（核心轨迹橙色粒子） ===
+                Particle spark = new SparkParticle(
+                    center,
+                    velocity,
+                    false,
+                    60,
+                    1.0f,
+                    Color.Orange
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+                ownedSparkParticles.Add((SparkParticle)spark); // 记录引用用于后续修改
+
+                for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
                 {
-                    // 玫瑰曲线半径
-                    float theta = MathHelper.TwoPi * i / petals;
-                    float roseRadius = 32f * (1 + 0.3f * (float)Math.Sin(6 * theta));
+                    SparkParticle p = ownedSparkParticles[i];
 
-                    // 螺旋半径
-                    float spiralT = Main.GameUpdateCount * 0.32f;
-                    float spiralRadius = 3f + 0.15f * spiralT;
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedSparkParticles.RemoveAt(i);
+                        continue;
+                    }
 
-                    // 黄金角偏移喷射方向
-                    float angle = i * goldenAngle + Main.GameUpdateCount * 0.08f;
-                    Vector2 direction = angle.ToRotationVector2();
+                    Vector2 targetDirection = (player.Center - p.Position).SafeNormalize(Vector2.Zero);
+                    float speed = p.Velocity.Length();
+                    p.Velocity = Vector2.Lerp(p.Velocity, targetDirection * speed, 0.08f); // 平滑追踪，越小越柔和
+                }
 
-                    Vector2 velocity = direction * roseRadius * 0.25f + direction.RotatedBy(MathHelper.PiOver4) * spiralRadius * 0.15f;
 
-                    int dustType = Main.rand.Next(new int[] { DustID.Blood, DustID.RedTorch });
-                    Color dustColor = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat(0.3f, 0.7f));
+                // === 2️⃣ CritSpark（细节闪烁橙光） ===
+                int interval = 2; // 每?帧炸一次
+                if (Main.GameUpdateCount % interval == 0)
+                {
+                    int sparkCount = 12; // 每圈生成12个
+                    float speed = 3f;
+                    for (int k = 0; k < sparkCount; k++)
+                    {
+                        float angle = MathHelper.TwoPi * k / sparkCount;
+                        Vector2 critVel = angle.ToRotationVector2() * speed;
 
-                    Dust d = Dust.NewDustPerfect(center, dustType, velocity, 100, dustColor, Main.rand.NextFloat(1.2f, 1.8f));
+                        CritSpark critSpark = new CritSpark(
+                            center,
+                            critVel,
+                            Color.Orange,
+                            Color.Yellow,
+                            0.8f,
+                            30 // 寿命可适当增加
+                        );
+                        GeneralParticleHandler.SpawnParticle(critSpark);
+                        ownedCritSparks.Add(critSpark); // 若要控制轨迹，记录引用
+                    }
+                }
+
+                for (int i = ownedCritSparks.Count - 1; i >= 0; i--)
+                {
+                    CritSpark p = ownedCritSparks[i];
+
+                    if (p.Time >= p.Lifetime)
+                    {
+                        ownedCritSparks.RemoveAt(i);
+                        continue;
+                    }
+
+                    // 加速
+                    p.Velocity *= 1.05f;
+
+                    // 左拐 2°
+                    p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(-2f));
+                }
+
+
+                // === 3️⃣ 轻型烟雾（橙色淡烟） ===
+                Particle smoke = new HeavySmokeParticle(
+                    center,
+                    velocity * 0.3f,
+                    new Color(255, 120, 0, 100),
+                    30,
+                    Main.rand.NextFloat(0.6f, 1.0f),
+                    0.3f,
+                    Main.rand.NextFloat(-0.05f, 0.05f),
+                    false
+                );
+                GeneralParticleHandler.SpawnParticle(smoke);
+
+                // === 4️⃣ Dust（随机橙色火花） ===
+                if (Main.rand.NextBool(2))
+                {
+                    Dust d = Dust.NewDustPerfect(
+                        center,
+                        DustID.Torch,
+                        velocity * 0.2f,
+                        100,
+                        Color.Orange,
+                        Main.rand.NextFloat(0.8f, 1.4f)
+                    );
                     d.noGravity = true;
+                }
+
+                // === 5️⃣ 可选 Bloom 柔和光环（仅适用于需要额外光域感时启用） ===
+                if (Main.rand.NextBool(5))
+                {
+                    Particle bloom = new GenericBloom(
+                        center,
+                        Vector2.Zero,
+                        Color.Orange * 0.5f,
+                        1.5f,
+                        45
+                    );
+                    GeneralParticleHandler.SpawnParticle(bloom);
                 }
             }
 
-            //if (Main.GameUpdateCount % 3 == 0) // 高速火花放射
-            //{
-            //    int sparks = 12;
-            //    float baseAngle = Main.GameUpdateCount * 0.05f;
 
-            //    for (int i = 0; i < sparks; i++)
-            //    {
-            //        float angle = baseAngle + MathHelper.TwoPi * i / sparks;
-            //        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 7f);
 
-            //        Particle spark = new SparkParticle(
-            //            center,
-            //            velocity,
-            //            false,
-            //            Main.rand.Next(30, 45),
-            //            Main.rand.NextFloat(1.0f, 1.5f),
-            //            Color.LightYellow * 0.8f
-            //        );
-            //        GeneralParticleHandler.SpawnParticle(spark);
-            //    }
-            //}
         }
 
 
