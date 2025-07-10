@@ -2,55 +2,24 @@
 
 Projectiles: {
 	NewWeapons: {
-		DPreDog: {
-			ElementalArkJavEonBolt.DisplayName: 元素爆裂弹
-			BloodstoneJavPROJ.DisplayName: 血炎长枪
-			ChaosWindJavAirburst.DisplayName: 无序狂风爆炸
-			ChaosWindJavElectromagneticBall.DisplayName: 无序狂风电磁球
-			ChaosWindJavLightningCloud.DisplayName: 无序狂风雷云
-			ChaosWindJavPROJ.DisplayName: 无序狂风
-			ChaosWindJavWind.DisplayName: 无序狂风小龙卷风
-			ElementalArkJavBlade.DisplayName: 鸢素方舟刀片
-			ElementalArkJavBlast.DisplayName: 鸢素方舟撕裂
-			ElementalArkJavFragments.DisplayName: 鸢素方舟残片
-			ElementalArkJavFragments05.DisplayName: 鸢素方舟残片
-			ElementalArkJavSUPERPROJ.DisplayName: 鸢素方舟聚合片
-			EndlessDevourJavOrb.DisplayName: 无止之噬暗能量
-			EndlessDevourJavPROJ.DisplayName: 无止之噬
-			BlackSLASH.DisplayName: 黑色斩切
-			InfiniteDarknessJavPROJ.DisplayName: 无边黑暗
-			InfiniteDarknessJavPROJStarBomb.DisplayName: 无边黑暗镰刀
-			SoulHunterJavPROJ.DisplayName: 魂狩
-			TerraLanceBEAM.DisplayName: 泰拉巨枪光束
-			TerraLancePROJ.DisplayName: 泰拉巨枪
-			// BloodstoneRIGHT.DisplayName: Bloodstone R I G H T
-			// SunsetBForgetRightCut.DisplayName: Sunset B Forget Right Cut
-			// SunsetBForgetRight.DisplayName: Sunset B Forget Right
-			// SunsetBForgetLeft.DisplayName: Sunset B Forget Left
-			// SunsetASunsetRightEXP.DisplayName: Sunset A Sunset Right E X P
-			// SunsetASunsetRight.DisplayName: Sunset A Sunset Right
-			// SunsetASunsetLeft.DisplayName: Sunset A Sunset Left
-			// SunsetCConceptLeft.DisplayName: Sunset C Concept Left
-			// SunsetCConceptLeftEXP.DisplayName: Sunset C Concept Left E X P
-			// SunsetCConceptRight.DisplayName: Sunset C Concept Right
-			// SunsetCConceptRightCut.DisplayName: Sunset C Concept Right Cut
-			// SunsetCConceptLeftListener.DisplayName: Sunset C Concept Left Listener
-			// SunsetCConceptLeftBlack.DisplayName: Sunset C Concept Left Black
-			// SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
-			// SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
-			// SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
-			// ChaosWindSpearWind.DisplayName: Chaos Wind Spear Wind
-			// TerraLanceSpearBEAM.DisplayName: Terra Lance Spear B E A M
-			// AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
-			// NuclearFuelRodPROJ.DisplayName: Nuclear Fuel Rod P R O J
-			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
-			// NuclearFuelRodL.DisplayName: Nuclear Fuel Rod L
-			// NuclearFuelRodM.DisplayName: Nuclear Fuel Rod M
-			// NuclearFuelRodSAM.DisplayName: Nuclear Fuel Rod S A M
-			// StarsofDestinyINV.DisplayName: Starsof Destiny I N V
-			// EndlessDevourJavBlackHole.DisplayName: Endless Devour Jav Black Hole
-			// EndlessDevourJavBlackHoleIBV.DisplayName: Endless Devour Jav Black Hole I B V
-			// EndlessDevourJavBlackHole2.DisplayName: Endless Devour Jav Black Hole2
+		APreHardMode: {
+			BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
+			BraisedPorkJavPROJ.DisplayName: 卤肉矛
+			ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
+			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
+			GraniteJavPROJ.DisplayName: 花岗岩矛
+			RedtideJavPROJ.DisplayName: 赤潮矛
+			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
+			WulfrimJavPROJ.DisplayName: 钨钢矛
+			RedtideJavEXP.DisplayName: 赤潮爆炸
+			TheBrokenPROJ.DisplayName: 破旧的长枪
+			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
+			DLOASSnake3Tail.DisplayName: 画蛇添尾
+			DLOASSnake2Body.DisplayName: 画蛇添体
+			DLOASSnake1Head.DisplayName: 画蛇添头
+			DLOASPROJ.DisplayName: 画蛇添足
+			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
+			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
 		}
 
 		BPrePlantera: {
@@ -74,33 +43,10 @@ Projectiles: {
 			TheLastLancePROJ.DisplayName: 最后的骑枪
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
 			// SHPCKFast2.DisplayName: S H P C K Fast2
-			// PearlwoodJavPROJINV.DisplayName: Pearlwood Jav P R O J I N V
-			// ElectrocutionHalberdField.DisplayName: Electrocution Halberd Field
-			// ElectrocutionHalberdRIGHT.DisplayName: Electrocution Halberd R I G H T
+			PearlwoodJavPROJINV.DisplayName: 珍珠木王的新弹幕
+			ElectrocutionHalberdField.DisplayName: 电圈
+			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
 			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
-		}
-
-		APreHardMode: {
-			BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
-			BraisedPorkJavPROJ.DisplayName: 卤肉矛
-			ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
-			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
-			GraniteJavPROJ.DisplayName: 花岗岩矛
-			RedtideJavPROJ.DisplayName: 赤潮矛
-			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
-			WulfrimJavPROJ.DisplayName: 钨钢矛
-			RedtideJavEXP.DisplayName: 赤潮爆炸
-			TheBrokenPROJ.DisplayName: 破旧的长枪
-			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
-			// DLOASSnake3Tail.DisplayName: D L O A S Snake3 Tail
-			// DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
-			// DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
-			// DLOASPROJ.DisplayName: D L O A S P R O J
-			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
-			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
-			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
-			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
-			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
 		}
 
 		CPreMoodLord: {
@@ -112,23 +58,77 @@ Projectiles: {
 			TidalMechanicsPROJ.DisplayName: 潮汐
 			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
 			TidalMechanicsTyphoon.DisplayName: 潮汐台风
-			// SurfeiterStonePillars.DisplayName: Surfeiter Stone Pillars
-			// SurfeiterPROJ.DisplayName: Surfeiter P R O J
+			StarsofDestinyLEFT.DisplayName: 分针
+			SurfeiterStonePillars.DisplayName: 石元柱
+			SurfeiterPROJ.DisplayName: 巴蛇吞象
 			// SurfeiterDrum.DisplayName: Surfeiter Drum
-			// SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
-			// SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
-			// FestiveHalberdSTAR.DisplayName: Festive Halberd S T A R
-			// SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
+			SurfeiterDrumINV.DisplayName: 音爆
+			SurfeiterDrumINVEXP.DisplayName: 音爆爆
+			FestiveHalberdSTAR.DisplayName: 圣诞星
+			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
+		}
+
+                DPreDog: {
+			ElementalArkJavEonBolt.DisplayName: 元素爆裂弹
+			BloodstoneJavPROJ.DisplayName: 龙血长刀
+			ChaosWindJavAirburst.DisplayName: 无序狂风爆炸
+			ChaosWindJavElectromagneticBall.DisplayName: 无序狂风电磁球
+			ChaosWindJavLightningCloud.DisplayName: 无序狂风雷云
+			ChaosWindJavPROJ.DisplayName: 无序狂风
+			ChaosWindJavWind.DisplayName: 无序狂风小龙卷风
+			ElementalArkJavBlade.DisplayName: 鸢素方舟刀片
+			ElementalArkJavBlast.DisplayName: 鸢素方舟撕裂
+			ElementalArkJavFragments.DisplayName: 鸢素方舟残片
+			ElementalArkJavFragments05.DisplayName: 鸢素方舟残片
+			ElementalArkJavSUPERPROJ.DisplayName: 鸢素方舟聚合片
+			EndlessDevourJavOrb.DisplayName: 无止之噬暗能量
+			EndlessDevourJavPROJ.DisplayName: 无止之噬
+			BlackSLASH.DisplayName: 黑色斩切
+			InfiniteDarknessJavPROJ.DisplayName: 无边黑暗
+			InfiniteDarknessJavPROJStarBomb.DisplayName: 无边黑暗镰刀
+			SoulHunterJavPROJ.DisplayName: 魂狩
+			TerraLanceBEAM.DisplayName: 泰拉巨枪光束
+			TerraLancePROJ.DisplayName: 泰拉巨枪
+			BloodstoneRIGHT.DisplayName: 龙血千刃
+			// SunsetBForgetRightCut.DisplayName: Sunset B Forget Right Cut
+			// SunsetBForgetRight.DisplayName: Sunset B Forget Right
+			// SunsetBForgetLeft.DisplayName: Sunset B Forget Left
+			// SunsetASunsetRightEXP.DisplayName: Sunset A Sunset Right E X P
+			// SunsetASunsetRight.DisplayName: Sunset A Sunset Right
+			// SunsetASunsetLeft.DisplayName: Sunset A Sunset Left
+			// SunsetCConceptLeft.DisplayName: Sunset C Concept Left
+			// SunsetCConceptLeftEXP.DisplayName: Sunset C Concept Left E X P
+			// SunsetCConceptRight.DisplayName: Sunset C Concept Right
+			// SunsetCConceptRightCut.DisplayName: Sunset C Concept Right Cut
+			// SunsetCConceptLeftListener.DisplayName: Sunset C Concept Left Listener
+			// SunsetCConceptLeftBlack.DisplayName: Sunset C Concept Left Black
+			// SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
+			// SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
+			// SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
+			// ChaosWindSpearWind.DisplayName: Chaos Wind Spear Wind
+			// TerraLanceSpearBEAM.DisplayName: Terra Lance Spear B E A M
+			// AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
+			NuclearFuelRodPROJ.DisplayName: 核子风暴
+			NuclearFuelRodLazer.DisplayName: 辐射骇光
+			NuclearFuelRodL.DisplayName: 巨大辐射颗粒
+			NuclearFuelRodM.DisplayName: 迷你辐射颗粒
+			NuclearFuelRodSAM.DisplayName: 核子山姆
+			StarsofDestinyINV.DisplayName: 不可知之变数
+			EndlessDevourJavBlackHole.DisplayName: 无际黑洞
+			EndlessDevourJavBlackHoleIBV.DisplayName: 黑洞坍缩
+			EndlessDevourJavBlackHole2.DisplayName: 无际黑洞爆发
 		}
 
 		EAfterDog: {
 			AuricJavBallPROJ.DisplayName: 金源量子冷却电池
 			AuricJavPROJ.DisplayName: 金源量子带电调试棒
-			FinishingTouchBALL.DisplayName: 画龙点睛火球
-			FinishingTouchDASH.DisplayName: 画龙点睛冲刺
+			FinishingTouchBALL.DisplayName: 灼焱余烬
+			FinishingTouchDASH.DisplayName: 狻猊腾云
 			FinishingTouchEPROJ.DisplayName: 画龙点睛敌对
 			FinishingTouchPROJ.DisplayName: 画龙点睛
-			FinishingTouchDASHFuckYou.DisplayName: 画龙点睛冲刺爆炸
+			FinishingTouchDASHFuckYou.DisplayName: 龙目
+			FinishingTouchINV.DisplayName: 龙玉
+			FinishingTouchDragon.DisplayName: 应龙
 			MiracleMatterJavLight.DisplayName: 恒辉之矛光束
 			MiracleMatterJavPROJ.DisplayName: 恒辉之矛
 			SawBladeForkHornJavPROJ.DisplayName: 锯刃叉角枪
@@ -148,16 +148,12 @@ Projectiles: {
 			SoulSeekerJavPROJ.DisplayName: 终幕残翼
 			// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
 			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
-			// PrimordialStatePROJ.DisplayName: Primordial State P R O J
-			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
+			PrimordialStatePROJ.DisplayName: 太极八荒
 			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
-			// AuricJavLighting.DisplayName: Auric Jav Lighting
+			AuricJavLighting.DisplayName: 金源球状闪电
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
-			// SoulSeekerJavBRIDFire.DisplayName: Soul Seeker Jav B R I D Fire
-			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
-			// FinishingTouchINV.DisplayName: Finishing Touch I N V
+			SoulSeekerJavBRIDFire.DisplayName: 终幕火焰
 			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
-			// FinishingTouchDragon.DisplayName: Finishing Touch Dragon
 		}
 	}
 
@@ -169,8 +165,8 @@ Projectiles: {
 			SausageMakerJavPROJ.DisplayName: 香肠矛
 			YateveoBloomJavPROJ.DisplayName: 绽花毒藤
 			// GoldplumeJavWind.DisplayName: Goldplume Jav Wind
-			// GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
-			// AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
+			GoldplumeJavFeather.DisplayName: 褪色羽毛
+			AmidiasTridentJavWaterWall.DisplayName: 水元柱
 		}
 
 		BPrePlantera: {
@@ -178,8 +174,8 @@ Projectiles: {
 			StarnightLanceJavBeam.DisplayName: 星夜长枪光束
 			StarnightLanceJavPROJ.DisplayName: 星夜长枪
 			EarthenJavPROJ.DisplayName: 磐石地元叉
-			// BrimlanceJavFireWall.DisplayName: Brimlance Jav Fire Wall
-			// EarthenJavSHARD.DisplayName: Earthen Jav S H A R D
+			BrimlanceJavFireWall.DisplayName: 虚空之喉
+			EarthenJavSHARD.DisplayName: 破碎磐石
 		}
 
 		CPreMoodLord: {
@@ -194,14 +190,14 @@ Projectiles: {
 			GalvanizingGlaiveJavPROJ.DisplayName: 磁能分割剑
 			HellionFlowerJavPROJ.DisplayName: 刺花长矛
 			HellionFlowerJavVine.DisplayName: 刺花长矛藤蔓
+			HellionFlowerJavAbsorb.DisplayName: 刺花种子
 			TenebreusTidesJavPROJ.DisplayName: 深渊潮涌
 			TenebreusTidesJavWaterSword.DisplayName: 深渊潮涌水箭
-			TyphonsGreedJavBubble.DisplayName: 提丰之贪婪泡泡
+			TyphonsGreedJavBubble.DisplayName: 提丰泡泡
+			TyphonsGreedJavBubble2.DisplayName: 提丰水流环
 			TyphonsGreedJavPROJ.DisplayName: 提丰之贪婪
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
-			VulcaniteLanceJavTinyFlare.DisplayName: 火山之矛火焰精灵
-			// TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
-			// HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
+			VulcaniteLanceJavTinyFlare.DisplayName: 火焰精灵
 		}
 
 		DPreDog: {
@@ -240,7 +236,7 @@ Projectiles: {
 			StreamGougeJavPROJSPLIT.DisplayName: 宇宙暗流分裂弹幕
 			ViolenceJavLight.DisplayName: 恣睢光束
 			ViolenceJavPROJ.DisplayName: 恣睢
-			// StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
+			StreamGougeJavEXP.DisplayName: 激流爆破
 			// DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
 			// DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
 			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
