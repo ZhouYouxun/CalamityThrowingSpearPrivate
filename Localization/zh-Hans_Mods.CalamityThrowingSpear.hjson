@@ -117,6 +117,7 @@ Projectiles: {
 			EndlessDevourJavBlackHole.DisplayName: 无际黑洞
 			EndlessDevourJavBlackHoleIBV.DisplayName: 黑洞坍缩
 			EndlessDevourJavBlackHole2.DisplayName: 无际黑洞爆发
+			EndlessDevourJavOrbSmall.DisplayName: 无尽暗影玉
 		}
 
 		EAfterDog: {
@@ -191,6 +192,7 @@ Projectiles: {
 			HellionFlowerJavPROJ.DisplayName: 刺花长矛
 			HellionFlowerJavVine.DisplayName: 刺花长矛藤蔓
 			HellionFlowerJavAbsorb.DisplayName: 刺花种子
+		        // HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
 			TenebreusTidesJavPROJ.DisplayName: 深渊潮涌
 			TenebreusTidesJavWaterSword.DisplayName: 深渊潮涌水箭
 			TyphonsGreedJavBubble.DisplayName: 提丰泡泡
@@ -198,6 +200,10 @@ Projectiles: {
 			TyphonsGreedJavPROJ.DisplayName: 提丰之贪婪
 			VulcaniteLanceJavPROJ.DisplayName: 火山之矛
 			VulcaniteLanceJavTinyFlare.DisplayName: 火焰精灵
+		        // SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
+		        // DiseasedJavEXP.DisplayName: Diseased Jav E X P
+		        // VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+		        // VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
 		}
 
 		DPreDog: {
@@ -237,9 +243,8 @@ Projectiles: {
 			ViolenceJavLight.DisplayName: 恣睢光束
 			ViolenceJavPROJ.DisplayName: 恣睢
 			StreamGougeJavEXP.DisplayName: 激流爆破
-			// DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
-			// DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
-			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
+			DragonRageJavFire.DisplayName: 巨龙怒火
+			DragonRageJavFireBall.DisplayName: 巨龙怒焰
 		}
 	}
 
@@ -328,14 +333,6 @@ Projectiles: {
 }
 
 Projectile: {
-	CPreMoodLord: {
-		// HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
-		// SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
-		// DiseasedJavEXP.DisplayName: Diseased Jav E X P
-		// VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
-		// VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
-	}
-
 	DPreDog: {
 		// SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
 		// InfiniteDarknessSpearPROJ.DisplayName: Infinite Darkness Spear P R O J
