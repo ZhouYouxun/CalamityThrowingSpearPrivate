@@ -24,6 +24,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public override void Update(Player player, ref int buffIndex)
         {
+            player.GetModPlayer<FinishingTouch10Player>().finishingTouchOrangeTrailActive = true;
+
             player.buffTime[buffIndex] = 2;
             player.GetDamage(DamageClass.Melee) *= 1.2f;
             player.statDefense += 50;
@@ -63,27 +65,27 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
             }
 
-            if (Main.GameUpdateCount % 3 == 0) // 高速火花放射
-            {
-                int sparks = 12;
-                float baseAngle = Main.GameUpdateCount * 0.05f;
+            //if (Main.GameUpdateCount % 3 == 0) // 高速火花放射
+            //{
+            //    int sparks = 12;
+            //    float baseAngle = Main.GameUpdateCount * 0.05f;
 
-                for (int i = 0; i < sparks; i++)
-                {
-                    float angle = baseAngle + MathHelper.TwoPi * i / sparks;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 7f);
+            //    for (int i = 0; i < sparks; i++)
+            //    {
+            //        float angle = baseAngle + MathHelper.TwoPi * i / sparks;
+            //        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 7f);
 
-                    Particle spark = new SparkParticle(
-                        center,
-                        velocity,
-                        false,
-                        Main.rand.Next(30, 45),
-                        Main.rand.NextFloat(1.0f, 1.5f),
-                        Color.LightYellow * 0.8f
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-            }
+            //        Particle spark = new SparkParticle(
+            //            center,
+            //            velocity,
+            //            false,
+            //            Main.rand.Next(30, 45),
+            //            Main.rand.NextFloat(1.0f, 1.5f),
+            //            Color.LightYellow * 0.8f
+            //        );
+            //        GeneralParticleHandler.SpawnParticle(spark);
+            //    }
+            //}
         }
 
 
