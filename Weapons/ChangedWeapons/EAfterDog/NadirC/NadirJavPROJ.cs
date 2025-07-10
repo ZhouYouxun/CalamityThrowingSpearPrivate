@@ -211,12 +211,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             SoundEngine.PlaySound(SoundID.Item104, Projectile.Center);
 
             // 1. 生成重型烟雾粒子，颜色为紫色和黑色，左右 30 度范围内随机
-            int smokeParticleCount = 20; // 粒子数量可根据需求调整
+            int smokeParticleCount = 50; // 粒子数量可根据需求调整
             for (int i = 0; i < smokeParticleCount; i++)
             {
                 // 随机在左右 30 度范围内生成粒子
                 float angleOffset = Main.rand.NextFloat(-MathHelper.ToRadians(30), MathHelper.ToRadians(30));
-                Vector2 smokeVelocity = Projectile.velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.5f, 1.5f);
+                Vector2 smokeVelocity = Projectile.velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.5f, 3.5f);
                 Color smokeColor = Main.rand.NextBool() ? Color.Purple : Color.Black; // 颜色为紫色或黑色
                 float smokeLifetime = Main.rand.Next(30, 60); // 粒子存活时间
 
@@ -237,28 +237,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             // 在原 HeavySmokeParticle 和 NadirJavVoidEssence 生成后执行
 
 
-            // 深渊黑洞爆裂 Dust（强爆版）
-            int dustAmount = 550;
-            for (int i = 0; i < dustAmount; i++)
-            {
-                float angle = MathHelper.TwoPi * i / dustAmount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 25f); // 速度翻 5~6 倍
-                int type = Main.rand.Next(new int[] { DustID.Shadowflame, DustID.PurpleTorch, DustID.DarkCelestial });
-                int idx = Dust.NewDust(Projectile.Center, 0, 0, type, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(2.0f, 2.8f)); // 尺寸略大
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].velocity *= Main.rand.NextFloat(1.02f, 1.05f); // 再加速
-            }
-
-            // 黑暗核心残留 Dust（强力版）
-            for (int i = 0; i < 15; i++)
-            {
-                Vector2 offset = Main.rand.NextVector2Circular(20f, 20f); // 扩散范围翻倍
-                Vector2 velocity = offset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 4f); // 速度提高
-                int type = DustID.DarkCelestial;
-                int idx = Dust.NewDust(Projectile.Center + offset, 0, 0, type, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(1.6f, 2.2f)); // 尺寸微调
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].velocity *= Main.rand.NextFloat(0.8f, 1.2f);
-            }
+        
 
 
             // 3 放射型 SparkParticle 爆裂
@@ -271,7 +250,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                     Projectile.Center,
                     sparkVelocity,
                     false,
-                    Main.rand.Next(8, 12),
+                    Main.rand.Next(15, 22),
                     Main.rand.NextFloat(1.4f, 1.8f),
                     sparkColor
                 );
@@ -279,7 +258,111 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             }
 
 
+            // 前向锥形螺旋喷射 SparkParticle（限定正前方 ±30°，多股交织，体积放大）
+            int spirals = 7; // 多股螺旋交织，增加复杂度
+            int particlesPerSpiral = 35; // 每股螺旋长度
+            float spiralSpacing = 6f; // 外扩距离
+            float spiralSpin = MathHelper.ToRadians(55f); // 自旋速度
 
+            float forwardAngle = Projectile.velocity.ToRotation();
+            float coneHalfAngle = MathHelper.ToRadians(30f);
+
+            for (int s = 0; s < spirals; s++)
+            {
+                // 每股螺旋有独立相位偏移交织，避免重叠
+                float phaseOffset = MathHelper.Lerp((float)(-coneHalfAngle * 1.5), (float)(coneHalfAngle * 0.5), s / (float)(spirals - 1))
+                                    + Main.rand.NextFloat(-0.05f, 0.05f);
+
+                for (int p = 0; p < particlesPerSpiral; p++)
+                {
+                    float t = p / (float)particlesPerSpiral;
+                    float angle = spiralSpin * t + phaseOffset;
+                    float distance = spiralSpacing * p;
+                    Vector2 dir = angle.ToRotationVector2().RotatedBy(forwardAngle);
+
+                    Vector2 pos = Projectile.Center + dir * distance;
+                    Vector2 vel = dir * Main.rand.NextFloat(12.5f, 20f);
+
+                    Color sparkColor = Main.rand.NextBool() ? Color.Black : Color.DarkViolet;
+
+                    SparkParticle spark = new SparkParticle(
+                        pos,
+                        vel,
+                        false, // 不受重力
+                        45,    // 生命周期
+                        Main.rand.NextFloat(1.0f, 1.8f), // 缩放，放大体积
+                        sparkColor
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+
+
+            {
+
+                // 喷射螺旋 Dust（限制 ±30° 扇形范围，力度减半）
+                int spiralDust = 200;
+                float spiralScale = 0.8f;
+                float spiralLength = 150f; // 原300，削减50%
+                float spiralTurns = 4f;     // 螺旋圈数
+                float sprayAngle = MathHelper.ToRadians(60f); // 总喷射范围 ±30°
+
+                float baseAngle = Projectile.velocity.ToRotation();
+
+                for (int i = 0; i < spiralDust; i++)
+                {
+                    float t = i / (float)spiralDust;
+
+                    // 螺旋角度进度
+                    float theta = spiralTurns * MathHelper.TwoPi * t;
+
+                    // 在 ±30° 内线性分布角度
+                    float angleOffset = MathHelper.Lerp(-sprayAngle / 2, sprayAngle / 2, t);
+
+                    // 最终角度 = 螺旋角 + 偏移角 + 弹幕方向
+                    float finalAngle = theta + angleOffset + baseAngle;
+
+                    float radius = t * spiralLength;
+                    Vector2 offset = finalAngle.ToRotationVector2() * radius;
+
+                    // 速度沿喷射方向（finalAngle）
+                    Vector2 velocity = finalAngle.ToRotationVector2() * Main.rand.NextFloat(9f, 13f); // 原18-26削减50%
+
+                    int type = Main.rand.Next(new int[] { DustID.Shadowflame, DustID.PurpleTorch, DustID.DarkCelestial });
+                    int idx = Dust.NewDust(Projectile.Center + offset, 0, 0, type, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(2.0f, 2.8f) * spiralScale);
+                    Main.dust[idx].noGravity = true;
+                    Main.dust[idx].velocity *= Main.rand.NextFloat(1.02f, 1.05f);
+                }          
+
+                int circleDust = 160;
+                float baseSpeed = 12f;
+                for (int i = 0; i < circleDust; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / circleDust;
+                    Vector2 vel = angle.ToRotationVector2() * baseSpeed;
+                    int type = Main.rand.Next(new int[] { DustID.Shadowflame, DustID.PurpleTorch });
+                    int idx = Dust.NewDust(Projectile.Center, 0, 0, type, vel.X, vel.Y, 100, default, Main.rand.NextFloat(2.0f, 2.5f));
+                    Main.dust[idx].noGravity = true;
+                }
+                int inwardDust = 80;
+                float inwardRadiusMin = 150f; // 更远生成
+                float inwardRadiusMax = 300f;
+                float spiralAngleOffset = MathHelper.ToRadians(12f); // 左偏
+
+                for (int i = 0; i < inwardDust; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / inwardDust;
+                    Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(inwardRadiusMin, inwardRadiusMax);
+                    Vector2 directionToCenter = (Projectile.Center - (Projectile.Center + offset)).SafeNormalize(Vector2.UnitY);
+                    directionToCenter = directionToCenter.RotatedBy(spiralAngleOffset); // 左偏
+                    Vector2 vel = directionToCenter * Main.rand.NextFloat(8f, 16f);
+
+                    int type = DustID.DarkCelestial;
+                    int idx = Dust.NewDust(Projectile.Center + offset, 0, 0, type, vel.X, vel.Y, 100, default, Main.rand.NextFloat(1.5f, 2.2f));
+                    Main.dust[idx].noGravity = true;
+                }
+            }
 
 
 
