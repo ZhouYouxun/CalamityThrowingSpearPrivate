@@ -52,7 +52,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override bool PreDraw(ref Color lightColor)
         {
-            if (isAttachedToTarget)
+            if (stuck)
             {
                 // 如果已触发粘附，仅绘制弹幕本体
                 Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
@@ -60,7 +60,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 Vector2 origin = frame.Size() * 0.5f;
                 Vector2 drawPosition = Projectile.Center - Main.screenPosition;
                 SpriteEffects direction = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+
+                // 🚩 关键替换：
+                Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), lockedRotation, origin, Projectile.scale, direction, 0);
+
                 return false;
             }
 
@@ -114,39 +117,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.timeLeft = 720;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false; // 允许与方块碰撞
+            Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用通用无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
+        private float lockedRotation;
+        private bool stuck;
+        private NPC stuckTarget;
+        private bool hasCreatedStandField = false; // 确保星空立场仅生成一次
+        private bool isAttachedToTarget = false; // 用于标记是否已触发粘附
 
         public override void AI()
         {
-            // Lighting - 添加深橙色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.55f);
-
-
 
             // 粘附逻辑
             {
-                if (Projectile.ai[0] == 0f)
+                if (stuck && stuckTarget != null && stuckTarget.active)
+                {
+                    Projectile.Center = stuckTarget.Center;
+                    Projectile.velocity = Vector2.Zero;
+                    Projectile.rotation = lockedRotation;
+                }
+                else if (stuck)
+                {
+                    Projectile.velocity = Vector2.Zero;
+                    Projectile.rotation = lockedRotation;
+                }
+                else
                 {
                     Projectile.spriteDirection = Projectile.direction = (Projectile.velocity.X > 0).ToDirectionInt();
                     Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
                     Projectile.rotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
                 }
-                Projectile.StickyProjAI(15);
-                if (Projectile.ai[0] == 2f)
-                {
-                    Projectile.velocity *= 0f;
-                }
             }
         }
-        private bool hasCreatedStandField = false; // 确保星空立场仅生成一次
-        private bool isAttachedToTarget = false; // 用于标记是否已触发粘附
+
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            if (!stuck)
+            {
+                stuck = true;
+                lockedRotation = Projectile.rotation;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 900;
+            }
+
             // 检查当前世界中同类型立场的数量
             int activeFields = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<StarsofDestinyRStandField>());
 
@@ -164,22 +182,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 );
             }
 
-            // 保持当前的旋转角度
-            if (Projectile.velocity.X != oldVelocity.X)
-                Projectile.velocity.X = -oldVelocity.X; // 反射 X 轴方向速度
-            if (Projectile.velocity.Y != oldVelocity.Y)
-                Projectile.velocity.Y = -oldVelocity.Y; // 反射 Y 轴方向速度
 
-            Projectile.ai[0] = 2f;
-            Projectile.timeLeft = 720;
-            return false;
+            return false; // 防止弹幕被 Kill
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            if (!isAttachedToTarget) // 如果是第一次触发粘附
+
+            if (!stuck)
             {
-                isAttachedToTarget = true; // 标记为已粘附
+                stuck = true;
+                stuckTarget = target; // 🚩 正确记录目标 NPC
+
+                lockedRotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
+                lockedRotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
+
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 900; // 可选延长时间
             }
+
+
 
             // 检查当前世界中同类型立场的数量
             int activeFields = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<StarsofDestinyRStandField>());
@@ -194,11 +215,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
                     (int)(Projectile.damage * 0.96),
                     Projectile.knockBack,
-                    Projectile.owner
+                    Projectile.owner,
+                    0f,  // ai[0]
+                    -1f  // ai[1] = -1 表示不跟随 NPC
                 );
             }
 
-            Projectile.ModifyHitNPCSticky(20); // 调用原本的粘附逻辑
+
         }
 
 

@@ -205,13 +205,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         for (int j = 0; j < 3; j++)
                         {
                             Particle trail = new SparkParticle(
-gunTip,
-sprayDirection * 15f + Main.rand.NextVector2Circular(12f, 12f), // 3f -> 15f (5倍)，扰动加大
-false,
-60,
-1.8f,
-Color.LimeGreen
-);
+                                gunTip,
+                                sprayDirection * 15f + Main.rand.NextVector2Circular(12f, 12f), // 3f -> 15f (5倍)，扰动加大
+                                false,
+                                60,
+                                1.8f,
+                                Color.LimeGreen
+                                );
                             GeneralParticleHandler.SpawnParticle(trail);
                         }
 

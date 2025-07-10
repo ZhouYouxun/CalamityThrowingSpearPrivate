@@ -103,7 +103,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 3; // 只允许一次伤害
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 360;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; 
@@ -173,7 +173,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                 spiralAngle += 0.1f + spiralAngle * 0.002f;
 
                 // 蚊香半径扩大（缓慢外扩）
-                spiralRadius += 2.15f;
+                spiralRadius += 5f;
 
                 // 计算位置
                 Vector2 offset = spiralAngle.ToRotationVector2() * spiralRadius;
@@ -191,7 +191,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                     // 发射子弹
                     Vector2 fireVel = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVel,
-                        ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), Projectile.damage, 0f, Projectile.owner);
+                        ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), (int)(Projectile.damage * 0.33), 0f, Projectile.owner);
 
                     SoundEngine.PlaySound(SoundID.Item23, Projectile.Center);
 

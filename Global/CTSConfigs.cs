@@ -30,9 +30,11 @@ namespace CalamityThrowingSpear.Global
         public bool EnableFTSound { get; set; }
 
         // 专门启用是否受攻速加成影响的开关
-        [DefaultValue(true)]
+        [Range(0, 3)]
+        [DefaultValue(0)]
         [ReloadRequired]
-        public bool EnableMeleeSpeed { get; set; }
+        public int MeleeSpeedMultiplierMode { get; set; }
+
 
 
         // 专门开关盗贼武器

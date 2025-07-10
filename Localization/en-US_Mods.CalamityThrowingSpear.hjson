@@ -1214,6 +1214,16 @@ Items: {
 		DisplayName: Mirror Water
 		Tooltip: ""
 	}
+
+	XiaoZhiTiaoSoD: {
+		DisplayName: Xiao Zhi Tiao So D
+		Tooltip: ""
+	}
+
+	XiaoZhiTiaoSoD2: {
+		DisplayName: Xiao Zhi Tiao So D2
+		Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1289,6 +1299,11 @@ Configs: {
 		EnableRogue: {
 			Label: EnableRogue
 			Tooltip: Changed all weapons class type to Rogue
+		}
+
+		MeleeSpeedMultiplierMode: {
+			Label: Melee Speed Multiplier Mode
+			Tooltip: ""
 		}
 	}
 }

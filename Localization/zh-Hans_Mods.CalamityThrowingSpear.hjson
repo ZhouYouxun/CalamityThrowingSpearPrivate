@@ -1257,6 +1257,16 @@ Items: {
 		// DisplayName: Mirror Water
 		// Tooltip: ""
 	}
+
+	XiaoZhiTiaoSoD: {
+		// DisplayName: Xiao Zhi Tiao So D
+		// Tooltip: ""
+	}
+
+	XiaoZhiTiaoSoD2: {
+		// DisplayName: Xiao Zhi Tiao So D2
+		// Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1336,6 +1346,11 @@ Configs: {
 				将所有武器和弹幕的职业类型改为盗贼
 				注：开启后不会获得全新的潜伏攻击
 				'''
+		}
+
+		MeleeSpeedMultiplierMode: {
+			// Label: Melee Speed Multiplier Mode
+			// Tooltip: ""
 		}
 	}
 }

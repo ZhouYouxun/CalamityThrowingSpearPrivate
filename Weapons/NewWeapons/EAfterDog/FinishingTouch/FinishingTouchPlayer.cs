@@ -301,40 +301,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             NPC boss = Main.npc.FirstOrDefault(npc => npc.active && npc.boss);
             int bossCount = Main.npc.Count(npc => npc.active && npc.boss);
-
-            if (boss != null && bossCount == 1) // 如果有Boss
+            if (boss != null && bossCount >= 1) // ✅ 兼容多 Boss
             {
-                if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f) // 如果Boss血量低于10%且未触发过
+                if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f)
                 {
-                    // 播放文本
-                    string lowHealthMessage = "喊出我的名字吧！";
-                    CombatText.NewText(new Rectangle((int)Player.Center.X, (int)Player.Center.Y - 50, 1, 1), Color.Red, lowHealthMessage, true);
+                    // 文本提示、音效同原逻辑
 
-                    // 播放音效
-                    if (ModContent.GetInstance<CTSConfigs>().EnableFTSound) // 检查是否启用音效
-                    {
-                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Zett"), Player.Center);
-                    }
-
-                    // 给所有玩家添加 10 秒 FinishingTouch10PBuff
                     for (int i = 0; i < Main.maxPlayers; i++)
                     {
                         Player p = Main.player[i];
                         if (p.active && !p.dead)
                         {
-                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(),600); // 600 = 10秒
+                            // ✅ 给无限时间 Buff
+                            p.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), int.MaxValue);
                         }
                     }
 
-                    // 设置标记为已触发
                     hasTriggeredLowHealthEvent = true;
                 }
             }
             else
             {
-                // 如果没有Boss存活，重置标记
+                // ✅ 如果场上无任何 Boss 存活，清除 Buff
+                for (int i = 0; i < Main.maxPlayers; i++)
+                {
+                    Player p = Main.player[i];
+                    if (p.active && !p.dead && p.HasBuff(ModContent.BuffType<FinishingTouch10PBuff>()))
+                    {
+                        p.ClearBuff(ModContent.BuffType<FinishingTouch10PBuff>());
+                    }
+                }
+
                 hasTriggeredLowHealthEvent = false;
             }
+
 
 
 

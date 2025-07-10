@@ -77,6 +77,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override void AI()
         {
+
+            // 如果 ai[1] >= 0，表示需要跟随 NPC
+            if (Projectile.ai[1] >= 0)
+            {
+                int npcIndex = (int)Projectile.ai[1];
+
+                if (Main.npc[npcIndex].active && !Main.npc[npcIndex].friendly && !Main.npc[npcIndex].dontTakeDamage)
+                {
+                    Projectile.Center = Main.npc[npcIndex].Center;
+                }
+                else
+                {
+                    // 如果目标 NPC 死亡或无效，则停止跟随，保持当前位置
+                    Projectile.ai[1] = -1f;
+                }
+            }
+
+
+
             // 烟雾生成逻辑
             int perimeterLength = (Projectile.width + Projectile.height) * 2; // 边框的总长度
             smokeTimer = (smokeTimer + 6) % perimeterLength; // 每帧前进2像素，循环生成

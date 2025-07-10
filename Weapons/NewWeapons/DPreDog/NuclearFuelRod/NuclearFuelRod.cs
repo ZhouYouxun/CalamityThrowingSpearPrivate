@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
     public class NuclearFuelRod : ModItem, ILocalizedModType
     {
-        private const int CooldownMax = 180;
+        private const int CooldownMax = 1800;
         public int cooldownTimer = 0;
 
         public new string LocalizationCategory => "NewWeapons.DPreDog";

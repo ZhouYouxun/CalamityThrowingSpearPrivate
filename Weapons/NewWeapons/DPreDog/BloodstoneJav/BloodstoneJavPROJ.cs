@@ -83,6 +83,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
+            Projectile.friendly = false;
 
             // 使投射物与玩家保持一致并瞄准鼠标位置
             if (Main.myPlayer == Projectile.owner)
@@ -113,6 +114,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 float speedBoost = 14f + chargeLevel * 0.2f; // 飞行速度提升
                 Projectile.velocity *= speedBoost;
                 Projectile.damage *= (int)(1f + finalDamage * 0.3f);
+
+                Projectile.friendly = true;
             }
 
             Projectile.localAI[0]++;

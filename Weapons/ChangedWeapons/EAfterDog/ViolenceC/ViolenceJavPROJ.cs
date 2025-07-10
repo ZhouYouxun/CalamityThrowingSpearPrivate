@@ -248,7 +248,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
             // 5% 概率翻倍 Boss 数量并触发五角星特效
             if (Main.rand.NextFloat() < 1f)
             {
-                bossCount += 3;
+                bossCount += 1;
 
                 //// 五角星粒子特效
                 //for (int i = 0; i < 5; i++)

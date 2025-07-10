@@ -234,10 +234,27 @@ namespace CalamityThrowingSpear
                 item.maxStack == 1 &&
                 !item.accessory)
             {
-                if (ModContent.GetInstance<CTSConfigs>().EnableMeleeSpeed)
-                    ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 0.000f;
-                else
-                    ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = 1.000f;
+                int mode = ModContent.GetInstance<CTSConfigs>().MeleeSpeedMultiplierMode;
+                float multiplier = 0f;
+
+                switch (mode)
+                {
+                    case 0:
+                        multiplier = 0f; // 不受攻速影响
+                        break;
+                    case 1:
+                        multiplier = 1f; // 受正常攻速影响（可根据需求改）
+                        break;
+                    case 2:
+                        multiplier = 2.0f; // 翻倍攻速
+                        break;
+                    case 3:
+                        multiplier = 3.0f; // 超额加成
+                        break;
+                }
+
+                ItemID.Sets.BonusAttackSpeedMultiplier[item.type] = multiplier;
+
             }
         }
 
