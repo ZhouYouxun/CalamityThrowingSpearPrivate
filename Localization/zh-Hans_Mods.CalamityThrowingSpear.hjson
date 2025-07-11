@@ -944,9 +944,10 @@ NewWeapons: {
 				左键丢出长枪，命中后沿着速度方向依次释放数个冲击波，造成多次伤害
 				每扔出九根长枪，第十根长枪便会被强化
 				强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
-				右键以持续消耗自身许多生命值为代价，举起长枪
-				在一定的蓄力时间过后往鼠标位置处持续发动冲刺
-				冲刺期间释放数圈火球，撞击敌人时造成巨额伤害
+				右键将举起长枪，召唤巨龙与数颗龙珠
+				在一定的蓄力时间过后一同朝着鼠标方向发动冲刺
+                                冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
+			        如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
 				[c/ff7335:“吾名为……希腊奶！我堂希腊奶！用此枪，终结这……荒唐而又幼稚的梦！”]
 				'''
 		}
@@ -1038,7 +1039,7 @@ NewWeapons: {
 		}
 
 		PrimordialState: {
-			DisplayName: 无极
+			DisplayName: 太极八荒
 			Tooltip:
 				'''
 				在飞行一段时间后开始追踪
@@ -1060,7 +1061,7 @@ NewWeapons: {
 				右键扔出短针枪，扎在目标上形成立场，可被长针枪提前引爆
 				长按左键可蓄力提升长针枪的伤害，造成伤害后短暂提升机动性
 				首次使用该武器时会产生时空错乱
-				[c/FFFFFF:“海洋与冰雪之国的女王把你误认为自己的爱人”]
+				[c/e1ffff:“海洋与冰雪之国的女王把你误认为自己的爱人”]
 				'''
 		}
 	}
@@ -1107,17 +1108,13 @@ Items: {
 	}
 
 	XiaoZhiTiaoFT: {
-		DisplayName: 巨龙涅槃
+		DisplayName: 鳞蛇化龙
 		Tooltip:
 			'''
-			[c/ffa500:巨龙涅槃]之时，象征[c/ffa500:胜利的火焰将会焚烧你的躯体]
-			如果你在这[c/ffa500:胜利的火焰]中存活下来，那么我将成为你的得力干将
-			但作为代价，我会无时无刻地在你耳边喋喋不休
-			不过我这人心善，我不忍心看到其他人痛苦
-			所以其他人痛苦时，[c/ffa500:胜利的火焰]将会迅速地结束他们的生命
-			这样他们就不会痛苦了[c/ffa500::)]
-			而如果你觉得我吵的话，你可以在配置[c/d3d3d3:配置设置]里剥夺我的发言权
-			我也阻止不了你[c/ffa500::(]
+			[c/ffa500:巨龙涅槃之时]
+			[c/ffa500:沐浴在龙魂之下的蛇将升入天空，于澄澈的天空中蜕为巨龙]
+                        [c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
+                        [c/ffa500:为上天焚烧这世间一切的邪秽之物]
 			'''
 	}
 
@@ -1174,7 +1171,7 @@ Items: {
 	}
 
 	XiaoZhiTiaoFT2: {
-		DisplayName: 巨龙涅槃
+		DisplayName: 鳞蛇化龙
 		Tooltip: 挑战：使犽戎进入二阶段
 	}
 
@@ -1248,13 +1245,21 @@ Items: {
 	}
 
 	XiaoZhiTiaoSoD: {
-		// DisplayName: Xiao Zhi Tiao So D
-		// Tooltip: ""
+		DisplayName: 不思议之旅
+		Tooltip: 
+                        '''
+                        [c/e1ffff:“黑之魂哟，请收下这荒诞的舞台剧”]
+                        [c/e1ffff:“决绝地终结那悲伤”]
+                        [c/e1ffff:“于那挚爱之人们的回忆中深埋约定”]
+                        [c/e1ffff:“献上沟通往昔的怀表”]
+                        [c/e1ffff:“如同那洗净铅华的坠落珠宝”]
+                        [c/e1ffff:“来自飘渺的星之物语”]
+                        '''
 	}
 
 	XiaoZhiTiaoSoD2: {
-		// DisplayName: Xiao Zhi Tiao So D2
-		// Tooltip: ""
+		DisplayName: 不思议之旅
+		Tooltip: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉祭坛
 	}
 }
 
@@ -1301,8 +1306,12 @@ ModBuff: {
 	}
 
 	FinishingTouch10PBuff: {
-		// DisplayName: Finishing Touch10 P Buff
-		// Description: Mods.CalamityThrowingSpear.ModBuff.FinishingTouch10PBuff.Description
+		DisplayName: 决斗降临
+		Description: 
+                        '''
+                        大幅提高最终伤害，防御与伤害减免
+                        将由我来刺穿！
+                        '''
 	}
 }
 
