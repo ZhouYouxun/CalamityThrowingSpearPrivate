@@ -1034,6 +1034,7 @@ NewWeapons: {
 				Left-click to hurl a long needle spear, which rains down meteors upon reaching its destination.
 				Right-click to throw a short needle spear that embeds in targets, forming a field and can be detonated early by the long spear.
 				Holding left-click charges the long spear, increasing its damage, and grants a brief surge of mobility upon striking foes.
+				The first time use this weapon will experience a time-space distortion.
 				[c/FFFFFF:"The Queen of the Ocean and the Snowbound Realm mistook you for her beloved."]
 				'''
 		}

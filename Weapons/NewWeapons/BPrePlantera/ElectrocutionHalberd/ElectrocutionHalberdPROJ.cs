@@ -287,30 +287,43 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
                 }
 
-                // === 🔵 蓝色 Electric Dust（双阿基米德螺旋扩散，交替方向） ===
-                for (int i = 0; i < 10; i++) // 提升密度
-                {
-                    float spiralT = Main.GameUpdateCount * 0.1f;
-                    float spiralR = 2f + 0.15f * spiralT; // 适当减少增长率防止飞太远
+                // === 🔵 蓝色 Electric Dust（阿基米德双螺旋，稳定缓慢扩散） ===
+                float spiralSpeed = 0.12f; // 螺旋增长速度（影响旋转速度）
+                float maxTheta = MathHelper.TwoPi * 6f; // 最大旋转角度（6圈）
+                float spiralT = (Main.GameUpdateCount * spiralSpeed) % maxTheta;
 
-                    // 正向螺旋
-                    Vector2 spiralVelocity1 = spiralT.ToRotationVector2() * spiralR;
+                // 阿基米德螺旋参数
+                float a = 2 * 16f;          // 起始半径
+                float b = 0.08f;       // 每弧度增长率（小，避免飞太远）
+
+                for (int i = 0; i < 10; i++)
+                {
+                    float phaseOffset = MathHelper.TwoPi * i / 4f; // X等分相位
+
+                    // === 正向螺旋 ===
+                    float theta1 = spiralT + phaseOffset;
+                    float r1 = a + b * theta1;
+                    Vector2 spiralOffset1 = theta1.ToRotationVector2() * r1;
+
                     Dust electricDust1 = Dust.NewDustPerfect(
-                        Projectile.Center + spiralVelocity1,
+                        Projectile.Center + spiralOffset1,
                         DustID.Electric,
-                        spiralVelocity1 * 0.03f,
+                        spiralOffset1 * 0.2f, // 慢速飘动
                         100,
                         Color.Blue,
                         1.2f
                     );
                     electricDust1.noGravity = true;
 
-                    // 反向螺旋（交替方向）
-                    Vector2 spiralVelocity2 = (-spiralT).ToRotationVector2() * spiralR;
+                    // === 反向螺旋（交替方向） ===
+                    float theta2 = -spiralT + phaseOffset;
+                    float r2 = a + b * Math.Abs(theta2);
+                    Vector2 spiralOffset2 = theta2.ToRotationVector2() * r2;
+
                     Dust electricDust2 = Dust.NewDustPerfect(
-                        Projectile.Center + spiralVelocity2,
+                        Projectile.Center + spiralOffset2,
                         DustID.Electric,
-                        spiralVelocity2 * 0.03f,
+                        spiralOffset2 * 0.2f,
                         100,
                         Color.Blue,
                         1.2f
