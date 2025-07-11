@@ -448,7 +448,7 @@ ChangedWeapons: {
 				'''
 				After a short flight, splits rapidly into two homing botanic energy beam.
 				Before splitting,the lance itself deal 150% damage and Infinite penetration.
-				[c/8dff73:" No one has ever questioned how it is all that all beings come to grow"]
+				[c/8dff73:"No, you don't want to hit the enemy directly with it"]
 				'''
 		}
 
@@ -563,7 +563,7 @@ ChangedWeapons: {
 				Throws a spinning Dragon's Rage in the air.
 				Has limited range but infinite pierce.
 				Releases multiple homing fireballs upon disappearing.
-				[c/ffc27a:"The final wrath of the Auric Dragon."]
+				[c/ffc27a:"I can do this all day."]
 				'''
 		}
 
@@ -773,7 +773,7 @@ NewWeapons: {
 				'''
 				Continuously leaves behind numerous Christmas lights along its path.
 				The lights then fall to the ground.
-				[c/86ff4b:"Because you discovered gravity."]
+				[c/86ff4b:"We can celebrate Christmas every day."]
 				'''
 		}
 
@@ -857,7 +857,7 @@ NewWeapons: {
 				Summon three homing void from afar upon hitting an enemy.
 				In the same time converts nearby enemy projectiles into Player’s projectiles and re-releases them.
 				Converted projectiles deal 6x their original damage.
-				[c/320055:"Do you know how mirrors work? This weapon has nothing to do with mirrors."]
+				[c/320055:"Theoretically, even light cannot escape, but this black hole is obviously a defective product."]
 				'''
 		}
 
@@ -893,14 +893,14 @@ NewWeapons: {
 				'''
 		}
 
-		Sunset: {
-			Tooltip: ""
-			DisplayName: Sunset
-		}
-
 		NuclearFuelRod: {
 			DisplayName: Nuclear Fuel Rod
-			Tooltip: ""
+			Tooltip:
+				'''
+				Aim and release an extremely powerful nuclear laser with infinite penetration.
+				A large number of bullets will be released during this period.
+				Has a 30-second cooldown
+				'''
 		}
 	}
 
@@ -932,8 +932,9 @@ NewWeapons: {
 			DisplayName: Eternal Radiance
 			Tooltip:
 				'''
-				Imbeds itself in enemies, dealing continuous damage.
+				Imbeds itself in enemies or block, dealing continuous damage.
 				Releases multiple homing energy bolts upon disappearing.
+				Right-click to manually detonate all the Eternal Radiance that are stuck in the blocks
 				[c/757575:"Lighter compared to its counterpart."]
 				'''
 		}
@@ -1011,24 +1012,30 @@ NewWeapons: {
 				'''
 		}
 
-		TheOtherRevelation: {
-			Tooltip: ""
-			DisplayName: The Other Revelation
-		}
-
 		PrimordialState: {
 			DisplayName: Primordial State
-			Tooltip: ""
+			Tooltip:
+				'''
+				Begins homing after a brief flight.
+				While homing, spawns a Yin-Yang Orb every 12 frames.
+				These orbs relentlessly pursue the spear, dealing rapid hits on contact.
+				After homing for a time, the spear will veer off in a random direction,
+				releasing a cluster of Yin-Yang Orbs as it does so.
+				Orbs ricochet on impact, triggering Yin-Yang explosions.
+				[c/e1ffff:"Let these clear skies be shrouded by my wandering thoughts. I offer up this body, that my blood may be spilled upon the earth."]
+				[c/2f2f2f:"This defiled vessel has no place in the heavens... All things impure, remain with me in eternal stillness."]
+				'''
 		}
 
 		StarsofDestiny: {
-			Tooltip: ""
-			DisplayName: Starsof Destiny
-		}
-
-		AuricSpear: {
-			DisplayName: Auric Spear
-			Tooltip: ""
+			DisplayName: Stars of Destiny
+			Tooltip:
+				'''
+				Left-click to hurl a long needle spear, which rains down meteors upon reaching its destination.
+				Right-click to throw a short needle spear that embeds in targets, forming a field and can be detonated early by the long spear.
+				Holding left-click charges the long spear, increasing its damage, and grants a brief surge of mobility upon striking foes.
+				[c/FFFFFF:"The Queen of the Ocean and the Snowbound Realm mistook you for her beloved."]
+				'''
 		}
 	}
 }
