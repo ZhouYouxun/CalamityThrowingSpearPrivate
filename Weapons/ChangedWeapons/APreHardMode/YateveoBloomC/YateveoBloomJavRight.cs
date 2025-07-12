@@ -1,24 +1,18 @@
-﻿using System;
+﻿using CalamityMod;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod.Particles;
-using CalamityMod;
-using CalamityMod.Items.Tools;
 using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloomC
 {
-    public class YateveoBloomJavPROJ : ModProjectile, ILocalizedModType
+    internal class YateveoBloomJavRight : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.APreHardMode";
 
@@ -42,14 +36,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 10; // 穿透次数改为 10
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = 200;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
+            Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 10; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
+            Projectile.localNPCHitCooldown = 5; // 无敌帧冷却时间
 
         }
 
@@ -58,21 +51,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             // 保持弹幕旋转（对于倾斜走向的弹幕而言）
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-
             // Lighting - 添加深绿色光源，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, Color.DarkGreen.ToVector3() * 0.55f);
 
-            //// 弹幕保持直线运动并逐渐加速
-            //Projectile.velocity *= 1.01f;
-
-            {            
-                // 添加粒子效果 - 深红色和深绿色粒子
-                if (Main.rand.NextBool(3)) // 以1/3的概率生成深红色或深绿色粒子
-                {
-                    int dustType = Main.rand.NextBool() ? DustID.RedTorch : DustID.GreenTorch; // 红色或绿色粒子
-                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
-                }
-
+         
+            {
+             
                 // 🌹 优美螺旋花瓣尾迹
                 float spiralRadius = 6f;
                 float spiralSpeed = 0.2f;
@@ -98,6 +82,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
                         d.noGravity = true;
                     }
                 }
+
+                EmitGrassDustFromTip();
+
+
+
+
             }
 
             if (Projectile.localAI[0] > 20f)
@@ -109,87 +99,41 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             }
 
         }
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
+        private void EmitGrassDustFromTip()
         {
-            SpawnRoseBloomDust(Projectile.Center);
+            if (Main.dedServ)
+                return;
 
-            // 每次反弹减少 2 次穿透
-            Projectile.penetrate -= 2;
-            if (Projectile.penetrate <= 0)
+            // 飞行方向
+            Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+            // 预测未来位置（前方 18px，可根据需求调整）
+            Vector2 tipPosition = Projectile.Center + direction * 18f;
+
+            // 微随机偏移防止完全重合
+            tipPosition += Main.rand.NextVector2CircularEdge(0.5f, 0.5f);
+
+            // 动态偏移角度 (轻微摆动效果)
+            float dustVelocityArcOffset = 0.4f + (float)Math.Sin(Main.GameUpdateCount * 0.3f) * 0.1f;
+
+            for (float side = -1f; side <= 1f; side += 2f) // 左右两侧
             {
-                Projectile.Kill();
-                return false;
-            }
-
-            // 精准物理反弹（入射角 = 出射角）
-            if (Projectile.velocity.X != oldVelocity.X)
-            {
-                Projectile.velocity.X = -oldVelocity.X;
-            }
-            if (Projectile.velocity.Y != oldVelocity.Y)
-            {
-                Projectile.velocity.Y = -oldVelocity.Y;
-            }
-
-            // 反弹后在出射角 ±20°扇形范围随机抽取 3 个点，生成 BladeOfGrass 弹幕，并锁定最近敌人
-            for (int i = 0; i < 3; i++)
-            {
-                Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-                float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(-20f, 20f));
-                Vector2 spawnDirection = baseDirection.RotatedBy(randomAngle);
-
-                // 在出射方向前方半径 60 像素范围内随机偏移位置
-                Vector2 spawnPosition = Projectile.Center + spawnDirection * Main.rand.NextFloat(30f, 60f);
-
-                // 锁定最近敌人作为目标方向
-                NPC target = Main.npc
-                    .Where(n => n.CanBeChasedBy() && !n.friendly && n.active && Vector2.Distance(spawnPosition, n.Center) < 800f)
-                    .OrderBy(n => Vector2.Distance(spawnPosition, n.Center))
-                    .FirstOrDefault();
-
-                Vector2 offset = Main.rand.NextVector2Circular(32f, 32f); // 在32像素范围内随机偏移
-                Vector2 velocityToTarget = target != null
-                    ? (target.Center + offset - spawnPosition).SafeNormalize(Vector2.UnitY) * 8f
-                    : spawnDirection * 8f;
-
-                int leafProj = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    spawnPosition,
-                    velocityToTarget,
-                    ProjectileID.BladeOfGrass,
-                    (int)(Projectile.damage * 0.3f),
-                    Projectile.knockBack,
-                    Projectile.owner
+                Dust grassDust = Dust.NewDustPerfect(
+                    tipPosition,
+                    Main.rand.NextBool() ? DustID.Grass : DustID.GrassBlades,
+                    null,
+                    100,
+                    Color.ForestGreen,
+                    Main.rand.NextFloat(0.8f, 1.1f)
                 );
 
-                // 设置生成的弹幕可穿墙且无限穿透
-                if (leafProj.WithinBounds(Main.maxProjectiles))
-                {
-                    Projectile proj = Main.projectile[leafProj];
-                    proj.friendly = true;
-                    proj.hostile = false;
-                    proj.penetrate = 3;
-                    proj.extraUpdates = 3;
-                    proj.tileCollide = false;
-                    proj.localNPCHitCooldown = 60;
-                    proj.usesLocalNPCImmunity = true;
-                }
+                grassDust.velocity = direction.RotatedBy(side * dustVelocityArcOffset) * -3f + Projectile.velocity * 0.3f;
+                grassDust.noGravity = true;
+
+                // 可选克隆一层较小光辉
+                Dust cloneDust = Dust.CloneDust(grassDust);
+                cloneDust.scale *= 0.6f;
             }
-
-            //// 发射一发 YateveoBloomJavBall 向反弹后法线方向（下一步单独实现）
-            //Vector2 normalDir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-            //Projectile.NewProjectile(
-            //    Projectile.GetSource_FromThis(),
-            //    Projectile.Center,
-            //    normalDir * 8f,
-            //    ModContent.ProjectileType<YateveoBloomJavBall>(), // 需确认类存在
-            //    Projectile.damage,
-            //    Projectile.knockBack,
-            //    Projectile.owner
-            //);
-
-            return false;
         }
 
 
@@ -197,9 +141,45 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
         {
             // 释放独特的草音效	
             SoundEngine.PlaySound(SoundID.Grass, Projectile.position);
-
             // 使敌人中毒，持续 180 帧
             target.AddBuff(BuffID.Poisoned, 180);
+
+            {
+                // 🌿 强喷射感 Dust 特效
+                int dustAmount = 40;
+                for (int i = 0; i < dustAmount; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / dustAmount;
+                    // 高速喷射速度，模拟喷射感
+                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
+
+                    Dust d = Dust.NewDustPerfect(
+                        target.Center,
+                        Main.rand.NextBool() ? DustID.Grass : DustID.GrassBlades,
+                        velocity,
+                        50, // 更低透明度更亮眼
+                        Color.ForestGreen,
+                        Main.rand.NextFloat(1.0f, 1.5f)
+                    );
+                    d.noGravity = true;
+                }
+
+                // 🌿 中心小范围高速叶片 Dust 收缩回弹
+                for (int i = 0; i < 20; i++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(6f, 10f);
+                    Dust d = Dust.NewDustPerfect(
+                        target.Center,
+                        DustID.GrassBlades,
+                        velocity,
+                        80,
+                        Color.GreenYellow,
+                        Main.rand.NextFloat(0.8f, 1.3f)
+                    );
+                    d.noGravity = true;
+                }
+            }
+
         }
 
 

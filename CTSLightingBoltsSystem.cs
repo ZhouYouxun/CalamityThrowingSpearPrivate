@@ -958,6 +958,38 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
+        public static void Spawn_SilverSpearGlow(Vector2 position)
+        {
+            PrettySparkleParticle particle = _poolPrettySparkle.RequestParticle();
+
+            // ✦ 颜色：亮白 + 浅蓝调
+            particle.ColorTint = new Color(0.9f, 0.9f, 1f, 1f); // 略偏蓝的亮白色
+
+            // ✦ 随机微偏移范围 (半径 8~12px)，保持“漂浮感”
+            particle.LocalPosition = position + Main.rand.NextVector2Circular(8f, 12f);
+
+            // ✦ 旋转随机，形成动态闪耀感
+            particle.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+
+            // ✦ 形状：细长横向光点（可微调）
+            particle.Scale = new Vector2(Main.rand.NextFloat(1.5f, 2.0f), Main.rand.NextFloat(0.3f, 0.5f));
+
+            // ✦ 淡入淡出流畅
+            particle.FadeInNormalizedTime = 5E-06f;
+            particle.FadeOutNormalizedTime = 0.95f;
+
+            // ✦ 生命周期 (30–40 帧)
+            particle.TimeToLive = Main.rand.Next(30, 40);
+            particle.FadeOutEnd = particle.TimeToLive;
+            particle.FadeInEnd = (int)(particle.TimeToLive * 0.3f);
+            particle.FadeOutStart = (int)(particle.TimeToLive * 0.7f);
+
+            // ✦ 发光量适中（避免过度刺眼）
+            particle.AdditiveAmount = 0.4f;
+
+            // ✦ 添加到粒子系统
+            Main.ParticleSystem_World_OverPlayers.Add(particle);
+        }
 
 
 

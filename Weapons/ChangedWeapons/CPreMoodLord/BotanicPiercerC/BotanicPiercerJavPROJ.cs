@@ -119,7 +119,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            SoundEngine.PlaySound(SoundID.Item53 with { Pitch = 0.9f, Volume = 0.4f }, Projectile.Center);
 
             if (!hasHitNPC)
             {
@@ -138,6 +137,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
         private List<SparkParticle> ownedSparkParticles = new();
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/翠芒") with { Volume = 1.4f, Pitch = -0.0f }, Projectile.Center);
+
             // 发射两个 BotanicPiercerJavPROJSPLIT 分裂弹幕
             Vector2 vel1 = Projectile.velocity.RotatedBy(MathHelper.ToRadians(5)) * 0.9f;
             Vector2 vel2 = Projectile.velocity.RotatedBy(MathHelper.ToRadians(-5)) * 0.9f;
@@ -148,7 +149,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
             {
                 // ======================== 🌿 追加大自然美感特效 ========================
 
-                // ==================== 🌿 高复杂度 Spark 调用 ====================
+                // 🌿 高复杂度 Spark 调用
                 int sparkCount = 20;
                 for (int i = 0; i < sparkCount; i++)
                 {

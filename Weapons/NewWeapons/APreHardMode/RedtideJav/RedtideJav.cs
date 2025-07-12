@@ -10,6 +10,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloomC;
+using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 {
@@ -36,7 +38,47 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
             Item.shootSpeed = 17f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
-
+        public override void SetStaticDefaults()
+        {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+        }
+        public override bool AltFunctionUse(Player player) => true;
+        public override bool CanUseItem(Player player)
+        {
+            if (player.altFunctionUse == 2) // 右键
+            {
+                Item.shoot = ModContent.ProjectileType<RedtideJavRight>();
+                Item.useTime = Item.useAnimation = 35; // 快速
+                Item.shootSpeed = 2f; // 保持或可微调
+            }
+            else // 左键
+            {
+                Item.shoot = ModContent.ProjectileType<RedtideJavPROJ>();
+                Item.useTime = Item.useAnimation = 60; // 慢速
+                Item.shootSpeed = 17f; // 保持或可微调
+            }
+            return base.CanUseItem(player);
+        }
+        public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (player.altFunctionUse == 2) // 右键：单发直射
+            {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            }
+            else // 左键：散射三发 ±10° 且伤害速度浮动
+            {
+                int projectiles = 3;
+                for (int i = 0; i < projectiles; i++)
+                {
+                    // ±10° 随机散射
+                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f));
+                    Vector2 perturbedSpeed = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.9f, 1.1f); // 速度浮动 ±10%
+                    int variedDamage = (int)(damage * Main.rand.NextFloat(0.9f, 1.1f)); // 伤害浮动 ±10%
+                    Projectile.NewProjectile(source, position, perturbedSpeed, type, variedDamage, knockback, player.whoAmI);
+                }
+            }
+            return false; // 防止默认再发射一次
+        }
 
         //public override void AddRecipes()
         //{
@@ -45,10 +87,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         //    //recipe.AddTile(TileID.Anvils);
         //    recipe.Register();
         //}
-
-
-
-
 
     }
 }

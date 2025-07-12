@@ -1,26 +1,27 @@
-﻿using CalamityMod.Particles;
-using CalamityMod;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod;
+using CalamityMod.Particles;
 using CalamityMod.Buffs.DamageOverTime;
 using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 {
-    public class RedtideJavPROJ : ModProjectile, ILocalizedModType
+    internal class RedtideJavRight : ModProjectile, ILocalizedModType
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/APreHardMode/RedtideJav/RedtideJav";
         public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -32,71 +33,128 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 20;
+            Projectile.width = Projectile.height = 4 * 16;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 5;
-            Projectile.timeLeft = 300;
-            Projectile.light = 0.5f;
+            Projectile.penetrate = 15; // 可击中次数
+            Projectile.timeLeft = 150;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 9; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
+            Projectile.tileCollide = true;
+            Projectile.extraUpdates = 1; // 可调节飞行平滑度
+        }
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            // 弹幕生成时执行，用于初始化粒子或播放生成音效
         }
 
         public override void AI()
         {
-            // 保持弹幕旋转 (在这基础上再增加一点角度，为了适配这个特殊的贴图)
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(15);
-
-            // 添加红色光源
-            Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.55f);
-
-            // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.003f;
-
-
+            Player owner = Main.player[Projectile.owner];
 
             {
-                // 每隔一段时间生成水泡特效
-                if (Main.rand.NextBool(5)) // 每5帧有20%概率生成一次水泡
+                // 💥 从圆环区域中随机选一点作为喷射源
+                if (Main.rand.NextBool(1)) // 控制频率，越小越密集
                 {
-                    Gore bubble = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), Projectile.position, Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), 411);
-                    bubble.timeLeft = 8 + Main.rand.Next(6);
-                    bubble.scale = Main.rand.NextFloat(0.6f, 1f) * (1 + Projectile.timeLeft / (float)Projectile.timeLeft);
-                    bubble.type = Main.rand.NextBool(3) ? 412 : 411;
-                }
+                    // 随机圆环位置：内半径32，外半径48
+                    float radius = Main.rand.NextFloat(32f, 48f);
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+                    Vector2 emitPosition = Projectile.Center + offset;
 
-                // 🌊 双螺旋水珠 Dust（飞行特效）
-                float spiralRadius = 10f;
-                float spiralSpeed = 0.15f;
-                float time = Main.GameUpdateCount * spiralSpeed;
-
-                for (int s = 0; s < 12; s++)
-                {
-                    float spiralOffset = s * MathHelper.Pi;
-                    float angle = time + spiralOffset;
-                    Vector2 offset = angle.ToRotationVector2() * spiralRadius;
-
+                    // 💦 随机喷射水珠或蓝光特效
                     if (Main.rand.NextBool(2))
                     {
                         Dust d = Dust.NewDustPerfect(
-                            Projectile.Center + offset,
-                            Main.rand.NextBool() ? DustID.Water : DustID.GemSapphire,
-                            -Projectile.velocity * 0.1f + offset.SafeNormalize(Vector2.Zero) * 0.5f,
+                            emitPosition,
+                            Main.rand.NextBool(3) ? DustID.GemSapphire : DustID.Water,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.2f, 3.5f),
                             100,
                             Color.White,
-                            1.1f
+                            Main.rand.NextFloat(0.8f, 1.4f)
+                        );
+                        d.noGravity = true;
+                    }
+
+                    // ✨ 深蓝 SparkParticle 闪烁
+                    if (Main.rand.NextBool(5))
+                    {
+                        Particle spark = new SparkParticle(
+                            emitPosition,
+                            offset.SafeNormalize(Vector2.Zero).RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 4f),
+                            false,
+                            20,
+                            0.7f,
+                            Color.White
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    // 🌫️ 稀有烟雾点缀
+                    if (Main.rand.NextBool(12))
+                    {
+                        Dust d = Dust.NewDustPerfect(
+                            emitPosition,
+                            DustID.Smoke,
+                            offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 1.5f),
+                            80,
+                            new Color(80, 40, 40, 100),
+                            Main.rand.NextFloat(1.1f, 1.6f)
                         );
                         d.noGravity = true;
                     }
                 }
+
+            }
+
+            // === 1️⃣ 高速自转 ===
+            Projectile.rotation += 0.3f; // 高速自转
+
+            // === 2️⃣ 线性加速飞行 ===
+            float maxSpeed = 10f;
+            float acceleration = 0.018f;
+            if (Projectile.velocity.Length() < maxSpeed)
+            {
+                Projectile.velocity *= 1f + acceleration;
             }
 
 
+
+
+            // === 3️⃣ 角度限制自动追踪敌人 ===
+            NPC target = null;
+            float trackingAngleLimit = MathHelper.ToRadians(20f);
+            float minDistance = float.MaxValue;
+
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy(Projectile))
+                {
+                    Vector2 toTarget = npc.Center - Projectile.Center;
+                    float distance = toTarget.Length();
+                    float angleToTarget = Math.Abs(
+                        MathHelper.WrapAngle(
+                            Projectile.velocity.SafeNormalize(Vector2.UnitY).ToRotation() -
+                            toTarget.SafeNormalize(Vector2.UnitY).ToRotation()
+                        )
+                    );
+
+                    if (angleToTarget <= trackingAngleLimit && distance < minDistance)
+                    {
+                        minDistance = distance;
+                        target = npc;
+                    }
+                }
+            }
+
+            if (target != null)
+            {
+                // 慢速修正方向，确保不会瞬间拐弯
+                float turnSpeed = 0.05f; // 追踪力度
+                Vector2 desiredVelocity = (target.Center - Projectile.Center).SafeNormalize(Projectile.velocity.SafeNormalize(Vector2.UnitY)) * Projectile.velocity.Length();
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, turnSpeed);
+            }
 
 
             // 每帧增加 ai[x] 计数
@@ -110,6 +168,53 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
             else
             {
                 Projectile.tileCollide = true; // 启用碰撞
+            }
+
+
+
+            // === 4️⃣ 持续甩出丰富水系特效 ===
+
+            // 💦 水珠 Dust 拖尾
+            if (Main.rand.NextBool(2))
+            {
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                    Main.rand.NextBool(3) ? DustID.GemSapphire : DustID.Water,
+                    -Projectile.velocity * 0.2f,
+                    80,
+                    Color.White,
+                    Main.rand.NextFloat(0.8f, 1.2f)
+                );
+                d.noGravity = true;
+            }
+
+            // ✨ 深蓝 SparkParticle 锐光拖尾
+            if (Main.rand.NextBool(5))
+            {
+                Vector2 sparkVel = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(3f, 5f) + Projectile.velocity * 0.1f;
+                Particle spark = new SparkParticle(
+                    Projectile.Center,
+                    sparkVel,
+                    false,
+                    20,
+                    0.8f,
+                    Color.DarkBlue
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+            // 🌫️ 极少量深红/褐色水雾点缀
+            if (Main.rand.NextBool(10))
+            {
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Smoke,
+                    -Projectile.velocity * 0.1f,
+                    100,
+                    new Color(80, 40, 40, 100),
+                    Main.rand.NextFloat(1.0f, 1.4f)
+                );
+                d.noGravity = true;
             }
         }
 
@@ -229,5 +334,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         {
             target.AddBuff(ModContent.BuffType<RiptideDebuff>(), 240);
         }
+
     }
 }

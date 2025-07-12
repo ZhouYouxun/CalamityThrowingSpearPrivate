@@ -101,6 +101,9 @@ Projectiles: {
 			DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
 			FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
 			FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
+			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
+			RedtideJavRight.DisplayName: Redtide Jav Right
+			TheBrokenRight.DisplayName: The Broken Right
 		}
 
 		CPreMoodLord: {
@@ -171,6 +174,8 @@ Projectiles: {
 			GoldplumeJavWind.DisplayName: Goldplume Jav Wind
 			GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
 			AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
+			YateveoBloomJavBall.DisplayName: Yateveo Bloom Jav Ball
+			YateveoBloomJavRight.DisplayName: Yateveo Bloom Jav Right
 		}
 
 		BPrePlantera: {

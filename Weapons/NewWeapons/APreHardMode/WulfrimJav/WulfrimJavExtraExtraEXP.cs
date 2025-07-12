@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria;
+
+namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
+{
+    internal class WulfrimJavExtraExtraEXP : ModProjectile, ILocalizedModType
+    {
+        public new string LocalizationCategory => "Projectiles.NewWeapons.APreHardMode";
+        public override string Texture => "CalamityMod/Projectiles/InvisibleProj"; // 使用完全透明贴图
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = Projectile.height = 64; // 范围型爆炸判定大小
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 5; // 存活时间短
+            Projectile.extraUpdates = 1;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 600; // 防止重复命中
+            Projectile.alpha = 255; // 完全透明
+        }
+
+        public override void AI()
+        {
+            // 此处通常留空，仅用于保证存活期间的判定
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            // 命中 NPC 时触发，可添加爆炸特效、附加 Buff 等
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            // 弹幕消失时触发，可用于播放音效、生成爆炸粒子等
+        }
+    }
+}
