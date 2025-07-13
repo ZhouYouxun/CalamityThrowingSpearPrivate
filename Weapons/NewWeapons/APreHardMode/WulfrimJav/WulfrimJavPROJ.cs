@@ -150,7 +150,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
                 for (int i = 0; i < extraCount; i++)
                 {
                     float angle = MathHelper.ToRadians(Main.rand.NextFloat(-60f, 60f));
-                    Vector2 velocity = Projectile.velocity.RotatedBy(angle).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(6f, 10f);
+                    Vector2 velocity = Projectile.velocity.RotatedBy(angle).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 4f);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<WulfrimJavExtraPROJ>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 }
 

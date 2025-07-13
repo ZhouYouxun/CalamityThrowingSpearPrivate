@@ -67,15 +67,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
             }
             else // 左键：散射三发 ±10° 且伤害速度浮动
             {
-                int projectiles = 3;
-                for (int i = 0; i < projectiles; i++)
-                {
-                    // ±10° 随机散射
-                    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f));
-                    Vector2 perturbedSpeed = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.9f, 1.1f); // 速度浮动 ±10%
-                    int variedDamage = (int)(damage * Main.rand.NextFloat(0.9f, 1.1f)); // 伤害浮动 ±10%
-                    Projectile.NewProjectile(source, position, perturbedSpeed, type, variedDamage, knockback, player.whoAmI);
-                }
+                //int projectiles = 3;
+                //for (int i = 0; i < projectiles; i++)
+                //{
+                //    // ±10° 随机散射
+                //    float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f));
+                //    Vector2 perturbedSpeed = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.9f, 1.1f); // 速度浮动 ±10%
+                //    int variedDamage = (int)(damage * Main.rand.NextFloat(0.9f, 1.1f)); // 伤害浮动 ±10%
+                //    Projectile.NewProjectile(source, position, perturbedSpeed, type, variedDamage, knockback, player.whoAmI);
+                //}
+
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+
             }
             return false; // 防止默认再发射一次
         }

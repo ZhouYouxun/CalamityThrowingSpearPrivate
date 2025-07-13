@@ -16,7 +16,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
 {
     public class HellionFlowerJavSPIT : ModProjectile, ILocalizedModType
     {
-        public new string LocalizationCategory => "Projectile.CPreMoodLord";
+        public new string LocalizationCategory => "Projectiles.CPreMoodLord";
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;

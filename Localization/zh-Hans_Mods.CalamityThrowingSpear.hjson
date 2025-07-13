@@ -2,74 +2,6 @@
 
 Projectiles: {
 	NewWeapons: {
-				APreHardMode: {
-			BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
-			BraisedPorkJavPROJ.DisplayName: 卤肉矛
-			ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
-			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
-			GraniteJavPROJ.DisplayName: 花岗岩矛
-			RedtideJavPROJ.DisplayName: 赤潮矛
-			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
-			WulfrimJavPROJ.DisplayName: 钨钢矛
-			RedtideJavEXP.DisplayName: 赤潮爆炸
-			TheBrokenPROJ.DisplayName: 破旧的长枪
-			TheBrokenSPIT.DisplayName: 破旧的长枪碎片
-			DLOASSnake3Tail.DisplayName: 画蛇添尾
-			DLOASSnake2Body.DisplayName: 画蛇添体
-			DLOASSnake1Head.DisplayName: 画蛇添头
-			DLOASPROJ.DisplayName: 画蛇添足
-			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
-			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
-			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
-			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
-			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
-		}
-
-		BPrePlantera: {
-			SunEssenceJavBEAM.DisplayName: 光耀日激光
-			ChaosEssenceJavFIRE.DisplayName: 凯奥斯焰
-			ChaosEssenceJavPROJ.DisplayName: 凯奥斯
-			ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
-			HeartSwordPROJ.DisplayName: 心之刺剑
-			HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
-			PearlwoodJavPROJ.DisplayName: 珍珠木矛
-			PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
-			PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
-			PolarEssenceJavPROJ.DisplayName: 霜雪川
-			SHPCKEXP.DisplayName: SHPCK等离子爆炸
-			SHPCKFast.DisplayName: SHPCK右键攻击
-			SHPCKPROJ.DisplayName: SHPCK左键攻击
-			SunEssenceJavFeather.DisplayName: 光耀日羽毛
-			SunEssenceJavPROJ.DisplayName: 光耀日
-			SunEssenceJavSmallBEAM.DisplayName: 光耀日小型激光
-			TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
-			TheLastLancePROJ.DisplayName: 最后的骑枪
-			TheLastLanceWater.DisplayName: 最后的骑枪水流
-			// SHPCKFast2.DisplayName: S H P C K Fast2
-			PearlwoodJavPROJINV.DisplayName: 珍珠木王的新弹幕
-			ElectrocutionHalberdField.DisplayName: 电圈
-			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
-			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
-		}
-
-		CPreMoodLord: {
-			FestiveHalberdPROJ.DisplayName: 节日长戟
-			SagittariusPROJ.DisplayName: 贯星枪
-			SagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
-			SagittariusSPIT.DisplayName: 贯星枪分裂弹
-			TidalMechanicsBubbles.DisplayName: 潮汐泡泡
-			TidalMechanicsPROJ.DisplayName: 潮汐
-			TidalMechanicsShark.DisplayName: 潮汐鲨鱼
-			TidalMechanicsTyphoon.DisplayName: 潮汐台风
-			SurfeiterStonePillars.DisplayName: 石元柱
-			SurfeiterPROJ.DisplayName: 巴蛇吞象
-			// SurfeiterDrum.DisplayName: Surfeiter Drum
-			SurfeiterDrumINV.DisplayName: 音爆
-			SurfeiterDrumINVEXP.DisplayName: 音爆爆
-			FestiveHalberdSTAR.DisplayName: 圣诞星
-			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
-		}
-
 		DPreDog: {
 			ElementalArkJavEonBolt.DisplayName: 元素爆裂弹
 			BloodstoneJavPROJ.DisplayName: 龙血长刀
@@ -112,11 +44,9 @@ Projectiles: {
 			// AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
 			NuclearFuelRodPROJ.DisplayName: 核子风暴
 			NuclearFuelRodLazer.DisplayName: 辐射骇光
-			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
 			NuclearFuelRodL.DisplayName: 巨大辐射颗粒
 			NuclearFuelRodM.DisplayName: 迷你辐射颗粒
 			NuclearFuelRodSAM.DisplayName: 核子山姆
-			StarsofDestinyLEFT.DisplayName: 分针
 			StarsofDestinyINV.DisplayName: 不可知之变数
 			EndlessDevourJavBlackHole.DisplayName: 无际黑洞
 			EndlessDevourJavBlackHoleIBV.DisplayName: 黑洞坍缩
@@ -144,7 +74,7 @@ Projectiles: {
 			TheLastLancePROJ.DisplayName: 最后的骑枪
 			TheLastLanceWater.DisplayName: 最后的骑枪水流
 			// SHPCKFast2.DisplayName: S H P C K Fast2
-			PearlwoodJavPROJINV.DisplayName: 珍珠木王的新弹幕
+			PearlwoodJavPROJINV.DisplayName: 珍珠木矛隐形弹幕
 			ElectrocutionHalberdField.DisplayName: 电圈
 			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
 			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
@@ -166,14 +96,9 @@ Projectiles: {
 			DLOASSnake2Body.DisplayName: 画蛇添体
 			DLOASSnake1Head.DisplayName: 画蛇添头
 			DLOASPROJ.DisplayName: 画蛇添足
-			// DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
-			// DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
-			// DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
-			// FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
-			// FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
-			// WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
-			// RedtideJavRight.DisplayName: Redtide Jav Right
-			// TheBrokenRight.DisplayName: The Broken Right
+			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
+			 RedtideJavRight.DisplayName: Redtide Jav Right
+			/TheBrokenRight.DisplayName: The Broken Right
 		}
 
 		CPreMoodLord: {
@@ -192,7 +117,6 @@ Projectiles: {
 			SurfeiterDrumINVEXP.DisplayName: 音爆爆
 			FestiveHalberdSTAR.DisplayName: 圣诞星
 			SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
-			EndlessDevourJavOrbSmall.DisplayName: 无尽暗影束
 		}
 
 		EAfterDog: {
@@ -203,9 +127,6 @@ Projectiles: {
 			FinishingTouchEPROJ.DisplayName: 画龙点睛敌对
 			FinishingTouchPROJ.DisplayName: 画龙点睛
 			FinishingTouchDASHFuckYou.DisplayName: 龙目
-			FinishingTouchINV.DisplayName: 龙玉
-			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
-			FinishingTouchDragon.DisplayName: 应龙
 			MiracleMatterJavLight.DisplayName: 恒辉之矛光束
 			MiracleMatterJavPROJ.DisplayName: 恒辉之矛
 			SawBladeForkHornJavPROJ.DisplayName: 锯刃叉角枪
@@ -226,10 +147,13 @@ Projectiles: {
 			// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
 			TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
 			PrimordialStatePROJ.DisplayName: 太极八荒
+			// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
 			// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
 			AuricJavLighting.DisplayName: 金源球状闪电
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 			SoulSeekerJavBRIDFire.DisplayName: 终幕火焰
+			FinishingTouchINV.DisplayName: 龙玉
+			FinishingTouchDragon.DisplayName: 应龙
 		}
 	}
 
@@ -320,8 +244,8 @@ Projectiles: {
 			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
-
 }
+
 
 ChangedWeapons: {
 	APreHardMode: {
@@ -340,9 +264,9 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				手持时释放一个跟随鼠标的旋风
-				                            长矛能够穿透2次并在命中时朝着后方两个固定角度释放两根羽毛
+				长矛能够穿透2次并在命中时朝着后方两个固定角度释放两根羽毛
 				长矛命中旋风时会被旋风吸住，在一段时间后或碰撞时释放数个羽毛
-				                            羽毛受重力影响且不能穿过物块也不能穿透敌怪
+				羽毛受重力影响且不能穿过物块也不能穿透敌怪
 				[c/52f2fc:“天羽屠髅武”]
 				'''
 		}
@@ -385,7 +309,7 @@ ChangedWeapons: {
 				'''
 				命中物块时在前方召唤多个岩石碎片
 				若找不到合适的方块，则不释放
-				[c/ac8f50:“别敲了，地板都被你敲碎了”]
+				[c/ac8f50:“钻地导弹”]
 				'''
 		}
 
@@ -394,7 +318,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				本体追踪，消失时释放追踪转向的星夜光束
-				[c/f692ff:“能不能多释放一道剑气”]
+				[c/f692ff:“极光效应”]
 				'''
 		}
 	}
@@ -476,7 +400,8 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				扔出一根受重力的长矛
-                                在消失或命中至少2次时产生爆炸
+				一段时间后喷发出三个能追踪的火焰球
+				本体命中后造成巨大面积火焰
 				[c/ff8400:“岩浆溢流”]
 				'''
 		}
@@ -498,12 +423,12 @@ ChangedWeapons: {
 			DisplayName: 元素长枪
 			Tooltip:
 				'''
-				5份力量，无限可能
-                                日耀投矛命中后会持续攻击目标4次
-                                星璇投矛命中后会在目标头顶生成漩涡，漩涡会在几秒后向下释放六道闪电
-                                星云投矛命中后会产生两道星云射线
-                                星云投矛会粘在目标身上持续造成伤害并在消失时生成4个星星
-                                冥思投矛命中后会在接下来的几秒内按一定频率伤害目标
+				按照顺序丢出五种矛
+				日耀投矛命中后会持续追踪攻击目标4次
+				星璇投矛命中后会在目标头顶生成漩涡，漩涡会在几秒后向下释放闪电和导弹
+				星云投矛命中后会产生数条星云射线
+				星云投矛会粘在目标身上持续造成伤害并在消失时生成4个星星
+				冥思投矛命中后会在接下来的几秒后造成巨大爆炸
 				[c/8e8e8e:“最应该出现的白矮星却没有到场”]
 				'''
 		}
@@ -542,7 +467,7 @@ ChangedWeapons: {
 				'''
 				飞行过程中持续生成飞升的深渊精华，命中时也会产生大量飞升的深渊精华
 				深渊精华能够追踪敌怪并在命中时释放数个虚空触手
-				[c/867891:“上下相应”]
+				[c/867891:“从哪里飞出来的”]
 				'''
 		}
 
@@ -624,8 +549,9 @@ NewWeapons: {
 			DisplayName: 钨钢矛
 			Tooltip:
 				'''
-				击中敌人时在上空召唤一个沉重的钨钢锤砸向这个倒霉蛋
-				[c/95b47c:“谁能告诉我为什么这个矛命中人之后会有锤子砸下来，材料就是被你们这样浪费完的”]
+				爆裂出多个不断弹跳的钨钢金属废料
+				点击右键提前引爆金属废料
+				[c/95b47c:“非常的浪费材料”]
 				'''
 		}
 
@@ -633,6 +559,7 @@ NewWeapons: {
 			Tooltip:
 				'''
 				飞行一段时间后扔出手里剑或投刀
+				右键对一个倒霉蛋持续释放手里剑或投刀
 				穿透一次
 				[c/e0e0e0:“什么？你难道指望着他很强？”]
 				'''
@@ -657,7 +584,7 @@ NewWeapons: {
 				'''
 				命中后产生爆炸并释放几个火焰弹
 				火焰弹能够在屏幕边缘反弹
-				[c/ff88a7:“意义不明，正如其名”]
+				[c/ff88a7:“享受爆炸和浓烟”]
 				'''
 		}
 
@@ -805,7 +732,7 @@ NewWeapons: {
 			TooltipNormal:
 				'''
 				按住左键持续消耗自身的生命力并相应增加这把矛的穿透次数与伤害
-                                右键朝着鼠标方向扇形发射一组长枪
+				                            右键朝着鼠标方向扇形发射一组长枪
 				击中敌人时将为自己回复血量
 				不会有人用这东西来对付神明吞噬者吧？
 				[c/cc0e11:“永垂不朽”]
@@ -893,7 +820,7 @@ NewWeapons: {
 				瞄准并释放一道无比强大的核激光，无限穿透
 				期间会释放大量的弹幕
 				拥有30秒的冷却
-                                [c/95b47c:“我的滨州可是会发光的！”]
+				                            [c/95b47c:“我的滨州可是会发光的！”]
 				'''
 		}
 	}
@@ -920,8 +847,8 @@ NewWeapons: {
 				强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
 				右键将举起长枪，召唤巨龙与数颗龙珠
 				在一定的蓄力时间过后一同朝着鼠标方向发动冲刺
-                                冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
-			        如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
+				                            冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
+				       如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
 				[c/ff7335:“吾名为……Ki厚忒！我恸Ki厚忒！用此枪，终结这……荒唐而又幼稚的梦！”]
 				'''
 		}
@@ -1087,8 +1014,8 @@ Items: {
 			'''
 			[c/ffa500:巨龙涅槃之时]
 			[c/ffa500:沐浴在龙魂之下的蛇将升入天空，于澄澈的天空中蜕为巨龙]
-                        [c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
-                        [c/ffa500:为上天焚烧这世间一切的邪秽之物]
+			                     [c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
+			                     [c/ffa500:为上天焚烧这世间一切的邪秽之物]
 			'''
 	}
 
@@ -1220,15 +1147,15 @@ Items: {
 
 	XiaoZhiTiaoSoD: {
 		DisplayName: 不思议之旅
-		Tooltip: 
-                        '''
-                        [c/e1ffff:“黑之魂哟，请收下这荒诞的舞台剧”]
-                        [c/e1ffff:“决绝地终结那悲伤”]
-                        [c/e1ffff:“于那彗星之民们的回忆中深埋约定”]
-                        [c/e1ffff:“献上沟通往昔的怀表”]
-                        [c/e1ffff:“如同那洗净铅华的坠落珠宝”]
-                        [c/e1ffff:“来自飘渺的星之物语”]
-                        '''
+		Tooltip:
+			'''
+			[c/e1ffff:“黑之魂哟，请收下这荒诞的舞台剧”]
+			[c/e1ffff:“决绝地终结那悲伤”]
+			[c/e1ffff:“于那彗星之民们的回忆中深埋约定”]
+			[c/e1ffff:“献上沟通往昔的怀表”]
+			[c/e1ffff:“如同那洗净铅华的坠落珠宝”]
+			[c/e1ffff:“来自飘渺的星之物语”]
+			'''
 	}
 
 	XiaoZhiTiaoSoD2: {
@@ -1281,11 +1208,11 @@ ModBuff: {
 
 	FinishingTouch10PBuff: {
 		DisplayName: 决斗降临
-		Description: 
-                        '''
-                        大幅提高最终伤害，防御与伤害减免
-                        将由我来刺穿！
-                        '''
+		Description:
+			'''
+			大幅提高最终伤害，防御与伤害减免
+			将由我来刺穿！
+			'''
 	}
 }
 

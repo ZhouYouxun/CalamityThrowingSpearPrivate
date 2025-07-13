@@ -172,10 +172,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
                 }
 
                 // 血腥爆发时产生夸张的线性粒子喷射（SparkParticle）
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     Vector2 direction = Main.rand.NextVector2CircularEdge(1f, 1f).SafeNormalize(Vector2.UnitY);
-                    Vector2 velocity = direction * Main.rand.NextFloat(7f, 17f); // 极高速爆射
+                    Vector2 velocity = direction * Main.rand.NextFloat(5f, 12f); // 极高速爆射
 
                     Color bloodRed = Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f));
 
@@ -184,7 +184,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
                         velocity,
                         false, // 不受重力影响
                         45, // 存活帧数，保证爆射过程可见
-                        Main.rand.NextFloat(1.8f, 2.5f), // 粗壮血线
+                        Main.rand.NextFloat(1.1f, 1.7f), // 粗壮血线
                         bloodRed
                     );
                     GeneralParticleHandler.SpawnParticle(bloodLine);

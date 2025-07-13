@@ -103,7 +103,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
             }
 
             // 受重力影响的速度变化
-            Projectile.velocity.Y += 0.15f;
+            //Projectile.velocity.Y += 0.15f;
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {

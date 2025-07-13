@@ -17,7 +17,7 @@
 //{
 //    public class SunEssenceJavLightPoint : ModProjectile, ILocalizedModType
 //    {
-//        public new string LocalizationCategory => "Projectile.CPreMoodLord";
+//        public new string LocalizationCategory => "Projectiles.CPreMoodLord";
 //        public override void SetDefaults()
 //        {
 //            Projectile.width = Projectile.height = 10;

@@ -16,7 +16,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 {
     public class PrimordialStateNight : ModProjectile, ILocalizedModType
     {
-        public new string LocalizationCategory => "Projectile.EAfterDog";
+        public new string LocalizationCategory => "Projectiles.EAfterDog";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public bool ableToHit = true;
         public NPC target;

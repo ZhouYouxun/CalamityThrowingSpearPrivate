@@ -14,7 +14,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
 {
     public class VulcaniteLanceJavFlame : ModProjectile, ILocalizedModType
     {
-        public new string LocalizationCategory => "Projectile.CPreMoodLord";
+        public new string LocalizationCategory => "Projectiles.CPreMoodLord";
         public int frameX = 0;
         public int frameY = 0;
         public int currentFrame => frameY + frameX * 4;

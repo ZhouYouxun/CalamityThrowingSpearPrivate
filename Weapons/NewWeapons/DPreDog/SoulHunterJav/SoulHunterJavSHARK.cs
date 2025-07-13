@@ -19,7 +19,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
 {
     public class SoulHunterJavSHARK : ModProjectile, ILocalizedModType
     {
-        public new string LocalizationCategory => "Projectile.DPreDog";
+        public new string LocalizationCategory => "Projectiles.DPreDog";
         public override void SetStaticDefaults()
         {
             Main.projFrames[Projectile.type] = 6;

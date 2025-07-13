@@ -126,7 +126,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                 }
 
                 // 在飞行期间稳定维持有序科技感螺旋光点
-                CTSLightingBoltsSystem.Spawn_SagittariusFlightSpiral(Projectile.Center, Main.GameUpdateCount * 0.03f);
+                CTSLightingBoltsSystem.Spawn_SagittariusFlightSpiral(Projectile.Center, Main.GameUpdateCount * 0.3f);
             }
 
 

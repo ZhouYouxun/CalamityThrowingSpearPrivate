@@ -10,12 +10,39 @@ using Microsoft.Xna.Framework;
 using Terraria.ID;
 using Terraria.DataStructures;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 {
     public class EarthenJavSHARD : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.BPrePlantera";
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() * 0.5f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float rotation = Projectile.rotation;
+            SpriteEffects effects = SpriteEffects.None;
+
+            // 渐进式描边数量：从 0 ~ 8 层
+            int outlineCount = Utils.Clamp((int)(spawnTime / 2.5f), 0, 8);
+            float outlineOffset = 1.5f;
+            Color outlineColor = Color.SandyBrown * 0.4f;
+            outlineColor.A = 0;
+
+            for (int i = 0; i < outlineCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / outlineCount;
+                Vector2 offset = angle.ToRotationVector2() * outlineOffset;
+                Main.spriteBatch.Draw(texture, drawPos + offset, null, outlineColor, rotation, origin, Projectile.scale, effects, 0f);
+            }
+
+            // 本体绘制
+            Main.spriteBatch.Draw(texture, drawPos, null, lightColor, rotation, origin, Projectile.scale, effects, 0f);
+            return false;
+        }
 
         public override void SetDefaults()
         {
@@ -32,12 +59,98 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
         public override void OnSpawn(IEntitySource source)
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/钻地武器进入地面的音效"), Projectile.Center);
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(0.5f, 1.5f);
+
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    Main.rand.NextBool() ? DustID.Dirt : DustID.Stone,
+                    velocity,
+                    60,
+                    Color.SandyBrown,
+                    Main.rand.NextFloat(0.8f, 1.2f)
+                );
+                d.noGravity = true;
+            }
         }
+        private int spawnTime = 0;
+        private bool hasJumped = false;
+        public int spawnDirection = 1; // +1 右, -1 左（默认右）
+
         public override void AI()
         {
             Projectile.rotation += Projectile.velocity.Y;
 
+            {
+                spawnTime++;
 
+                if (spawnTime <= 20)
+                {
+                    Projectile.velocity = Vector2.Zero;
+                }
+                else
+                {
+                    if (!hasJumped)
+                    {
+                        // 读取主弹幕方向，默认向右
+                        float sideBias = spawnDirection < 0 ? -1f : 1f;
+
+                        // 构造一个从上往下顺时针偏移角度（单位弧度）
+                        float offsetAngle = MathHelper.ToRadians(5f) * sideBias;
+
+                        // 起跳方向 = 正上方向 + 2度偏移
+                        Vector2 launchVelocity = Vector2.UnitY.RotatedBy(offsetAngle) * -10.5f;
+
+                        Projectile.velocity = launchVelocity;
+                        hasJumped = true;
+                    }
+
+
+                    // 更真实的重力模拟（逐渐下落，而非速度指数增长）
+                    Projectile.velocity.Y += 0.15f; // 每帧叠加
+                }
+            }
+
+            {
+                // === 🧱 Earthen 微型尘土特效 ===
+                if (spawnTime <= 20)
+                {
+                    // ⏳ 停滞阶段：围绕本体生成轻微扰动的漂浮尘土
+                    if (Main.rand.NextBool(55))
+                    {
+                        Dust d = Dust.NewDustPerfect(
+                            Projectile.Center + Main.rand.NextVector2Circular(2f, 2f),
+                            DustID.Dirt,
+                            Main.rand.NextVector2Circular(0.2f, 0.2f),
+                            100,
+                            Color.SandyBrown,
+                            Main.rand.NextFloat(0.8f, 1.1f)
+                        );
+                        d.noGravity = true;
+                    }
+                }
+                else
+                {
+                    // 🚀 飞行阶段：喷射向下/向后的土屑
+                    if (Main.rand.NextBool(8))
+                    {
+                        Vector2 sprayDir = -Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                        Vector2 dustVel = sprayDir * Main.rand.NextFloat(0.5f, 1.5f) + Main.rand.NextVector2Circular(0.2f, 0.2f);
+
+                        Dust d = Dust.NewDustPerfect(
+                            Projectile.Center,
+                            Main.rand.NextBool() ? DustID.Dirt : DustID.Stone,
+                            dustVel,
+                            80,
+                            Color.SaddleBrown,
+                            Main.rand.NextFloat(0.9f, 1.2f)
+                        );
+                        d.noGravity = Main.rand.NextBool(3); // 少量无重力粒子
+                    }
+                }
+
+            }
             //// 灵感来自于shellshocklive里面的武器："卫星"
             //{
             //    //// 这个是线性反转，也就是折线
@@ -45,7 +158,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             //    //if (gravityTimer >= gravityDuration)
             //    //{
             //    //    gravityTimer = 0;
-            
+
             //    //    // 每次周期结束，反转重力方向
             //    //    gravityDirection *= -1f;
 
@@ -85,10 +198,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             //}
 
 
-            if (Projectile.velocity.Y <= 0f)
-                Projectile.velocity.Y = 0.1f;
-            Projectile.rotation += Projectile.velocity.Y;
-            Projectile.velocity.Y *= 1.05f;
+            //if (Projectile.velocity.Y <= 0f)
+            //    Projectile.velocity.Y = 0.1f;
+            //Projectile.rotation += Projectile.velocity.Y;
+
+
+          
 
 
             //if (Main.rand.NextBool(2)) // 每帧约50%概率生成

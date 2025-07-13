@@ -96,11 +96,6 @@ Projectiles: {
 			DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
 			DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
 			DLOASPROJ.DisplayName: D L O A S P R O J
-			DLOASSpear1Head.DisplayName: D L O A S Spear1 Head
-			DLOASSpear2Body.DisplayName: D L O A S Spear2 Body
-			DLOASSpear3Tail.DisplayName: D L O A S Spear3 Tail
-			FinishingTouchDragon2Body.DisplayName: Finishing Touch Dragon2 Body
-			FinishingTouchDragon3Tail.DisplayName: Finishing Touch Dragon3 Tail
 			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
 			RedtideJavRight.DisplayName: Redtide Jav Right
 			TheBrokenRight.DisplayName: The Broken Right
@@ -251,114 +246,8 @@ Projectiles: {
 			EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
-
-	SmallTridentProj.DisplayName: Small Trident Proj
-	TideTridentProj.DisplayName: Tide Trident Proj
-	PrimeMeridianBlackHole.DisplayName: Prime Meridian Black Hole
-	PrimeMeridianPROJ.DisplayName: Prime Meridian P R O J
-	PrimeMeridianRightClickHoldOut.DisplayName: Prime Meridian Right Click Hold Out
-	PrimeMeridianRightClickShortLaser.DisplayName: Prime Meridian Right Click Short Laser
-	PrimeMeridianStarThunder.DisplayName: Prime Meridian Star Thunder
-	PrimeMeridianVoidEssence.DisplayName: Prime Meridian Void Essence
-	PrimeMeridianXLaser.DisplayName: Prime Meridian X Laser
-	PrimeMeridianZenith.DisplayName: Prime Meridian Zenith
-	PrimordialStateSlash.DisplayName: Primordial State Slash
-	StarsofDestinySTAR.DisplayName: Starsof Destiny S T A R
-	StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
-	StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
-	StarsofDestinyLIGHT.DisplayName: Starsof Destiny L I G H T
-	StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
-	StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
-	ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
-	PM9Cat.DisplayName: P M9 Cat
-	PM8Crazy.DisplayName: P M8 Crazy
-	PM7Wave.DisplayName: P M7 Wave
-	PM6Headless.DisplayName: P M6 Headless
-	PM5Seed.DisplayName: P M5 Seed
-	PM4Beekeeper.DisplayName: P M4 Beekeeper
-	PM3StarFury.DisplayName: P M3 Star Fury
-	PM2Enchanted.DisplayName: P M2 Enchanted
-	PM1CopperDaggerSlash.DisplayName: P M1 Copper Dagger Slash
-	PM1CopperDagger.DisplayName: P M1 Copper Dagger
-	PM10Terra.DisplayName: P M10 Terra
-	PrimeMeridianRIGHTPROJ.DisplayName: Prime Meridian R I G H T P R O J
-	PrimeMeridianRIGHT.DisplayName: Prime Meridian R I G H T
-	PrimeMeridianLaser.DisplayName: Prime Meridian Laser
-	PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
-	ExampleCustomSwingProjectile.DisplayName: Example Custom Swing Projectile
-	ExampleSwingingEnergySwordProjectile.DisplayName: Example Swinging Energy Sword Projectile
-	TeachingProjectile.DisplayName: Teaching Projectile
-	SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
-	GlobalStormRightMagic.DisplayName: Global Storm Right Magic
-	GlobalStormRightHoldOut.DisplayName: Global Storm Right Hold Out
-	GlobalStormCloud.DisplayName: Global Storm Cloud
-	SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
-	SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
-	ElectrocutionHalberdSpearPROJ.DisplayName: Electrocution Halberd Spear P R O J
-	WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
-
-	NewSpears: {
-		APreHardMode: {
-			WulfrimSpearPROJ.DisplayName: Wulfrim Spear P R O J
-			BraisedPorkSpearCloud.DisplayName: Braised Pork Spear Cloud
-		}
-
-		BPrePlantera.ChaosEssenceSpearFire.DisplayName: Chaos Essence Spear Fire
-		EAfterDog.AuricSpearCell.DisplayName: Auric Spear Cell
-	}
-
-	GraniteSpearPROJ.DisplayName: Granite Spear P R O J
-	TidalMechanicsSpearHoldOut.DisplayName: Tidal Mechanics Spear Hold Out
-	TidalMechanicsSpearPROJ.DisplayName: Tidal Mechanics Spear P R O J
-	TheLastLanceSpearHoldOut.DisplayName: The Last Lance Spear Hold Out
-	TheBrokenSpearHoldOut.DisplayName: The Broken Spear Hold Out
-	TheLastLanceSpearSwing.DisplayName: The Last Lance Spear Swing
-	HeartSwordSpearHoldOut.DisplayName: Heart Sword Spear Hold Out
-
-	Melee: {
-		BraisedPorkSpearPROJ.DisplayName: Braised Pork Spear P R O J
-		ElectrocoagulationTenmonSpearPROJ.DisplayName: Electrocoagulation Tenmon Spear P R O J
-		PolarEssenceSpearPROJ.DisplayName: Polar Essence Spear P R O J
-		ChaosEssenceSpearPROJ.DisplayName: Chaos Essence Spear P R O J
-		DLOASSpearPROJ.DisplayName: D L O A S Spear P R O J
-		TerraLanceSpearPROJ.DisplayName: Terra Lance Spear P R O J
-		BloodstoneSpearPROJ.DisplayName: Bloodstone Spear P R O J
-	}
-
-	PolarEssenceSpearExtra.DisplayName: Polar Essence Spear Extra
-	SunEssenceSpearPROJ.DisplayName: Sun Essence Spear P R O J
-	ChaosWindSpearPROJ.DisplayName: Chaos Wind Spear P R O J
-	TidalMechanicsSpearHoldOutSP.DisplayName: Tidal Mechanics Spear Hold Out S P
-	BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
-	FinishingTouchDragon.DisplayName: Finishing Touch Dragon
-	GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
-	FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
-	FinishingTouchDASHLocater.DisplayName: Finishing Touch D A S H Locater
 }
 
-Projectile: {
-	CPreMoodLord: {
-		HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
-		SunEssenceJavLightPoint.DisplayName: Sun Essence Jav Light Point
-		DiseasedJavEXP.DisplayName: Diseased Jav E X P
-		VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
-		VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
-	}
-
-	DPreDog: {
-		SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
-		InfiniteDarknessSpearPROJ.DisplayName: Infinite Darkness Spear P R O J
-	}
-
-	EAfterDog: {
-		PrimordialStateNight.DisplayName: Primordial State Night
-		PrimordialStateLight.DisplayName: Primordial State Light
-		GlobalStormLightBall.DisplayName: Global Storm Light Ball
-		BloodstoneSpearBloodProj.DisplayName: Bloodstone Spear Blood Proj
-	}
-
-	APreHardMode.WulfrimSpearLight.DisplayName: Wulfrim Spear Light
-}
 
 ChangedWeapons: {
 	APreHardMode: {

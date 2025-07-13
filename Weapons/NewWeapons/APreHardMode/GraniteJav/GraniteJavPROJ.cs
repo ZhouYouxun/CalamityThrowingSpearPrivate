@@ -21,10 +21,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
+        private int afterimageCooldown = 0; // 拖影暂停计时器
+        private bool returning = false; // 是否进入回程状态
+        private int stopTime = 10;      // 停顿时间
+        private Vector2 originalVelocity; // 记录初始速度
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            if (afterimageCooldown <= 0)
+            {
+                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            }
             return false;
         }
 
@@ -42,7 +49,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
+            //Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
         }
 
         public override void AI()
@@ -54,7 +61,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.1f, 0.5f) * 0.55f);
 
             // 弹幕保持直线运动并逐渐加速
-            Projectile.velocity *= 1.01f;
+            //Projectile.velocity *= 1.01f;
+
+            // === 📐 古典数学式“模糊追踪轨迹” ===
+
+            if (!returning)
+            {
+                // 每颗弹幕有一个属于自己的“随机扰动参数”
+                if (Projectile.localAI[0] == 0f)
+                {
+                    Projectile.localAI[0] = Main.rand.NextFloat(-0.05f, 0.05f); // 旋偏角因子
+                    Projectile.localAI[1] = Main.rand.NextFloat(0.9f, 1.1f);    // 飞行速度因子
+                }
+
+                float spiralStrength = Projectile.localAI[0];
+                float speedMultiplier = Projectile.localAI[1];
+
+                Projectile.velocity = Projectile.velocity.RotatedBy(spiralStrength);
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * 8f * speedMultiplier;
+
+                // 模糊地吸向最近敌人（但精度极差）
+                NPC target = FindClosestTarget(400f);
+                if (target != null)
+                {
+                    Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    float curveIn = 0.02f; // 极弱角度偏修正
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * Projectile.velocity.Length(), curveIn);
+                }
+
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            }
+
+
+
+
 
             {
                 // 🪨 GraniteJav 飞行特效：李萨如曲线动态 Dust + 双螺旋环绕
@@ -98,6 +138,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 
             }
 
+            if (afterimageCooldown > 0)
+                afterimageCooldown--;
+
 
             // 每帧增加 ai[0] 计数
             Projectile.ai[0]++;
@@ -112,20 +155,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
                 Projectile.tileCollide = true; // 启用碰撞
             }
         }
+        private NPC FindClosestTarget(float range)
+        {
+            NPC closest = null;
+            float minDist = range;
+
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy())
+                {
+                    float dist = Vector2.Distance(npc.Center, Projectile.Center);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        closest = npc;
+                    }
+                }
+            }
+            return closest;
+        }
+
+
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
-
-            // 当命中敌人时，弹幕向上飞行，且带有一定的左右偏移
-            float angle = MathHelper.ToRadians(Main.rand.Next(-10, 10)); // 在正上方左右10度范围内取随机角度
-            Vector2 upwardVelocity = new Vector2(0, -8f).RotatedBy(angle); // 初始向上飞行的速度
-            Projectile.velocity = upwardVelocity;
-
-            // 继续受到重力影响
-            Projectile.velocity.Y += 0.2f; // 模拟逐渐受重力下坠
-
-            // 播放音效
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
 
 
@@ -159,36 +214,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 
         }
 
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            if (Projectile.penetrate > 1)
+            {
+                Projectile.penetrate--;
+
+                // 检测当前是撞哪种类型的面
+                bool hitHorizontal = Math.Abs(oldVelocity.Y) > Math.Abs(oldVelocity.X);
+
+                // 计算一个偏移角度（受控的偏转，模拟“理性跳弹”）
+                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-15f, 15f));
+
+                // 获取碰撞法线
+                Vector2 reflectNormal = hitHorizontal ? Vector2.UnitY : Vector2.UnitX;
+                Vector2 inDirection = oldVelocity.SafeNormalize(Vector2.Zero);
+                Vector2 reflectDir = Vector2.Reflect(inDirection, reflectNormal).RotatedBy(angleOffset);
+
+                // 应用速度（保持能量感）
+                Projectile.velocity = reflectDir * oldVelocity.Length() * 0.85f;
+
+                // 🧱 反弹修正：把弹幕往新方向稍微推出一点点，避免卡墙体
+                Projectile.position += reflectDir * 4f;
+
+                // 拖影关闭 + 撞击音效
+                afterimageCooldown = 10;
+                SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
+
+                // 临时关闭 tileCollide，避免下一帧误判
+                Projectile.tileCollide = false;
+
+                return false;
+            }
+
+            return true;
+        }
+
+
         public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
-
+            // 收敛版阿基米德螺旋 Dust 爆散
+            int spiralDusts = 30; // 原 80 ➜ 30
+            for (int i = 0; i < spiralDusts; i++)
             {
-                // 🪨 GraniteJav 死亡特效：螺旋爆散 Dust（阿基米德螺旋）
-                int spiralDusts = 80;
-                for (int i = 0; i < spiralDusts; i++)
-                {
-                    float t = i / (float)spiralDusts * 6f * MathHelper.Pi;
-                    float r = 2f + 0.5f * t; // 螺旋半径递增
-                    Vector2 velocity = t.ToRotationVector2() * r;
+                float t = i / (float)spiralDusts * 4f * MathHelper.Pi; // 螺旋次数少
+                float r = 1.5f + 0.2f * t; // 半径压缩
 
-                    Dust d = Dust.NewDustPerfect(
-                        Projectile.Center,
-                        DustID.BlueTorch,
-                        velocity,
-                        100,
-                        Color.MediumBlue,
-                        1.3f
-                    );
-                    d.noGravity = false;
-                }
+                Vector2 velocity = t.ToRotationVector2() * r;
 
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.BlueTorch,
+                    velocity,
+                    80,
+                    Color.LightSteelBlue,
+                    1.1f
+                );
+                d.noGravity = true;
             }
-
-
         }
-
 
 
     }
