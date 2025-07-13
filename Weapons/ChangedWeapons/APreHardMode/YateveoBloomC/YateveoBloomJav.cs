@@ -20,13 +20,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 48; // 设置伤害值
+            Item.damage = 40; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 70; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 60; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
@@ -47,6 +47,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
         {
             if (player.altFunctionUse == 2) // 右键
             {
+                Item.damage = 52;
                 Item.shoot = ModContent.ProjectileType<YateveoBloomJavRight>();
 
                 // 限制同屏仅一发右键弹幕
@@ -55,6 +56,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             }
             else // 左键
             {
+                Item.damage = 40;
                 Item.shoot = ModContent.ProjectileType<YateveoBloomJavPROJ>();
 
                 // 限制同屏仅一发左键弹幕

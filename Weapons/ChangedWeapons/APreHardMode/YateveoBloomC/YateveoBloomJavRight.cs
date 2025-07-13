@@ -35,14 +35,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 10; // 穿透次数改为 10
+            Projectile.penetrate = 12; // 穿透次数改为 10
             Projectile.timeLeft = 200;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 5; // 无敌帧冷却时间
+            Projectile.localNPCHitCooldown = 10; // 无敌帧冷却时间
 
         }
 

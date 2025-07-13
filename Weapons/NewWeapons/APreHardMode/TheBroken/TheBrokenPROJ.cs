@@ -260,7 +260,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                     spawnPos,
                     velocity,
                     projectileTypes[i % 2],
-                    (int)(Projectile.damage * 0.5f),
+                    (int)(Projectile.damage * 0.4f),
                     Projectile.knockBack,
                     Projectile.owner
                 );

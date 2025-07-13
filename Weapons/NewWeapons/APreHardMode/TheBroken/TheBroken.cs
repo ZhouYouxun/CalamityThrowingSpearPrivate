@@ -24,13 +24,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 9; // 设置伤害值
+            Item.damage = 7; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 30; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 36; // 更改使用时的武器攻击速度
             Item.knockBack = 1.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
@@ -48,7 +48,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
         {
             if (player.altFunctionUse == 2) // 右键：扎入模式
             {
-                Item.damage = 14; // 左键+5伤害
+                Item.damage = 13; // 左键+5伤害
                 Item.useTime = Item.useAnimation = 70; // 比左键慢
                 Item.shootSpeed = 13f; // 比左键快 2f
             }

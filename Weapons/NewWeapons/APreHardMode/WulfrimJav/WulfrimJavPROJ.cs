@@ -146,12 +146,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
 
             {
                 // 在弹幕死亡时额外生成扇形射出 4-6 发 WulfrimJavExtraPROJ
-                int extraCount = Main.rand.Next(4, 7);
+                int extraCount = Main.rand.Next(3, 5);
                 for (int i = 0; i < extraCount; i++)
                 {
                     float angle = MathHelper.ToRadians(Main.rand.NextFloat(-60f, 60f));
-                    Vector2 velocity = Projectile.velocity.RotatedBy(angle).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 4f);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<WulfrimJavExtraPROJ>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    Vector2 velocity = Projectile.velocity.RotatedBy(angle).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(6f, 10f);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<WulfrimJavExtraPROJ>(), (int)(Projectile.damage * 0.4), Projectile.knockBack, Projectile.owner);
                 }
 
                 // 原特效收敛 50%

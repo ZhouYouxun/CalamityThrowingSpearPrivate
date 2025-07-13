@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 7; // 只允许一次伤害
+            Projectile.penetrate = 2; // 只允许一次伤害
             Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -103,7 +103,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
             }
 
             // 受重力影响的速度变化
-            //Projectile.velocity.Y += 0.15f;
+            Projectile.velocity.Y += 0.15f;
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
