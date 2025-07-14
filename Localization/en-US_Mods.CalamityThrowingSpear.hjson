@@ -561,13 +561,19 @@ NewWeapons: {
 				Pierce once.
 				[c/e0e0e0: "What? Do you expect him to be strong?"]
 				'''
-			DisplayName: The Broken Spear
+			DisplayName: Silver Spear
 		}
 
 		DLOAS: {
-			Tooltip: ""
-			DisplayName: D L O A S
+			Tooltip:
+				'''
+				Gradually slows down mid-air and summons 3 venomous serpents that spiral around the spear.
+				[c/492861:“If you add legs to a snake, is it a dragon or a lizard?”]
+				[c/FFA500:“Dragon or lizard, either way—this bottle’s mine.”]
+				'''
+			DisplayName: Drawing Legs on a Snake
 		}
+
 	}
 
 	BPrePlantera: {

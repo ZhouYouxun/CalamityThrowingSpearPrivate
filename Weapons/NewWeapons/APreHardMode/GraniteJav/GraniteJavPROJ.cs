@@ -181,7 +181,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
         {
 
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f, Pitch = 0.0f }, Projectile.position);
 
 
             {
