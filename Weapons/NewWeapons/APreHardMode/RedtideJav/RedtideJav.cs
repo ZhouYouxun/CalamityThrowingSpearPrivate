@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 28; // 设置伤害值
+            Item.damage = 25; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -47,14 +47,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         {
             if (player.altFunctionUse == 2) // 右键
             {
+                Item.damage = 20;
                 Item.shoot = ModContent.ProjectileType<RedtideJavRight>();
-                Item.useTime = Item.useAnimation = 35; // 快速
+                Item.useTime = Item.useAnimation = 32; // 快速
                 Item.shootSpeed = 2f; // 保持或可微调
             }
             else // 左键
             {
+                Item.damage = 25;
                 Item.shoot = ModContent.ProjectileType<RedtideJavPROJ>();
-                Item.useTime = Item.useAnimation = 60; // 慢速
+                Item.useTime = Item.useAnimation = 50; // 慢速
                 Item.shootSpeed = 17f; // 保持或可微调
             }
             return base.CanUseItem(player);

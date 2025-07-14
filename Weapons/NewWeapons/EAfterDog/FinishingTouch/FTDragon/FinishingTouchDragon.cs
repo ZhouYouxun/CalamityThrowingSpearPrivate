@@ -19,11 +19,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
         private Vector2 initialDirection;
         private bool initialized = false;
 
-        private const int SegmentCount = 10;
+        private const int SegmentCount = 18;
         private Segment[] Segments = new Segment[SegmentCount];
 
-        private const float MaxSpeed = 24f;
-        private const float MinSpeed = 6f;
+        private const float MaxSpeed = 27f;
+        private const float MinSpeed = 8f;
 
         private Player lockedPlayer; // 用于B方案
         private bool useBPlan = false; // 用于B方案
@@ -249,7 +249,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
                     // 🚩 最优雅真实高速公转围绕玩家阶段
 
-                    float desiredRadius = 320f; // 公转半径
+                    float desiredRadius = 540f; // 公转半径
                     float angularSpeed = MathHelper.TwoPi * 3f; // 每秒3圈（可调：越大转越快）
 
                     // 玩家位置实时更新

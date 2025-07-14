@@ -41,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 6; // 穿透次数改为 10
+            Projectile.penetrate = 4; // 穿透次数改为 10
             Projectile.timeLeft = 240;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -115,7 +115,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             SpawnRoseBloomDust(Projectile.Center);
 
             // 每次反弹减少 2 次穿透
-            Projectile.penetrate -= 2;
+            Projectile.penetrate -= 1;
             if (Projectile.penetrate <= 0)
             {
                 Projectile.Kill();
@@ -158,7 +158,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
                     spawnPosition,
                     velocityToTarget,
                     ProjectileID.BladeOfGrass,
-                    (int)(Projectile.damage * 0.3f),
+                    (int)(Projectile.damage * 0.5f),
                     Projectile.knockBack,
                     Projectile.owner
                 );

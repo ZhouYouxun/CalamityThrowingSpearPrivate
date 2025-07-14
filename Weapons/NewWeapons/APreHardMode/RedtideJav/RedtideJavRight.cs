@@ -38,7 +38,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 15; // 可击中次数
-            Projectile.timeLeft = 150;
+            Projectile.timeLeft = 180;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true;
             Projectile.extraUpdates = 1; // 可调节飞行平滑度
@@ -113,7 +113,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 
             // === 2️⃣ 线性加速飞行 ===
             float maxSpeed = 10f;
-            float acceleration = 0.018f;
+            float acceleration = 0.01f;
             if (Projectile.velocity.Length() < maxSpeed)
             {
                 Projectile.velocity *= 1f + acceleration;

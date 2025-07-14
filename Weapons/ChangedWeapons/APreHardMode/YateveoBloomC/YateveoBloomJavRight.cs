@@ -35,7 +35,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 12; // 穿透次数改为 10
+            Projectile.penetrate = 8; // 穿透次数改为 10
             Projectile.timeLeft = 200;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -143,6 +143,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             SoundEngine.PlaySound(SoundID.Grass, Projectile.position);
             // 使敌人中毒，持续 180 帧
             target.AddBuff(BuffID.Poisoned, 180);
+            Projectile.damage = (int)(Projectile.damage * 0.85);
 
             {
                 // 🌿 强喷射感 Dust 特效
