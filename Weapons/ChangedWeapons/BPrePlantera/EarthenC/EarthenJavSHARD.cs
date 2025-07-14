@@ -58,7 +58,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
         }
         public override void OnSpawn(IEntitySource source)
         {
-            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/钻地武器进入地面的音效"), Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/钻地武器进入地面的音效") with { Volume = 1.7f, Pitch = -0.2f }, Projectile.Center);
+
             for (int i = 0; i < 8; i++)
             {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(0.5f, 1.5f);

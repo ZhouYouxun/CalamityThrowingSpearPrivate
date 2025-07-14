@@ -87,7 +87,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                         int[] projectileTypes = { ProjectileID.Shuriken, ProjectileID.ThrowingKnife };
                         int type = projectileTypes[Main.rand.Next(projectileTypes.Length)];
 
-                        // 范围更狂野一些（更远更随机）
+                        // 范围更狂野一些（更远更随机）🐘
                         Vector2 spawnPos = Projectile.Center + new Vector2(
                             Main.rand.NextFloat(-64f, 64f),  // 水平方向扩大
                             Main.rand.NextFloat(-96f, -64f)  // 垂直方向提高

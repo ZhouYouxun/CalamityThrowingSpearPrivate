@@ -97,8 +97,8 @@ Projectiles: {
 			DLOASSnake1Head.DisplayName: 画蛇添头
 			DLOASPROJ.DisplayName: 画蛇添足
 			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
-			 RedtideJavRight.DisplayName: Redtide Jav Right
-			/TheBrokenRight.DisplayName: The Broken Right
+			RedtideJavRight.DisplayName: Redtide Jav Right
+			// TheBrokenRight.DisplayName: The Broken Right
 		}
 
 		CPreMoodLord: {
@@ -152,7 +152,9 @@ Projectiles: {
 			AuricJavLighting.DisplayName: 金源球状闪电
 			// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
 			SoulSeekerJavBRIDFire.DisplayName: 终幕火焰
+			// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
 			FinishingTouchINV.DisplayName: 龙玉
+			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
 			FinishingTouchDragon.DisplayName: 应龙
 		}
 	}
@@ -164,11 +166,10 @@ Projectiles: {
 			GoldplumeJavPROJ.DisplayName: 金羽
 			SausageMakerJavPROJ.DisplayName: 香肠矛
 			YateveoBloomJavPROJ.DisplayName: 绽花毒藤
-			// GoldplumeJavWind.DisplayName: Goldplume Jav Wind
+			GoldplumeJavWind.DisplayName: 小旋风
 			GoldplumeJavFeather.DisplayName: 褪色羽毛
 			AmidiasTridentJavWaterWall.DisplayName: 水元柱
-			// YateveoBloomJavBall.DisplayName: Yateveo Bloom Jav Ball
-			// YateveoBloomJavRight.DisplayName: Yateveo Bloom Jav Right
+			YateveoBloomJavRight.DisplayName: 绽花毒藤右键
 		}
 
 		BPrePlantera: {
@@ -206,14 +207,14 @@ Projectiles: {
 			BansheeHookJavPROJ.DisplayName: 女妖之爪
 			BansheeHookJavScythe.DisplayName: 女妖之爪回收镰刀
 			ElementalLanceJavPROJNebula.DisplayName: 元素长枪-星云
-			// ElementalLanceJavPROJN.DisplayName: Elemental Lance Jav P R O J N
+			ElementalLanceJavPROJN.DisplayName: 元素长枪-星云狙击弹
 			ElementalLanceJavPROJSolar.DisplayName: 元素长枪-日耀
 			ElementalLanceJavPROJStardust.DisplayName: 元素长枪-星尘
-			// ElementalLanceJavPROJS.DisplayName: Elemental Lance Jav P R O J S
+			ElementalLanceJavPROJS.DisplayName: 元素长枪-星尘回旋弹
 			ElementalLanceJavPROJVortex.DisplayName: 元素长枪-星漩
-			// ElementalLanceJavPROJV.DisplayName: Elemental Lance Jav P R O J V
+			ElementalLanceJavPROJV.DisplayName: 元素长枪-星漩量子闪电漩涡
 			ElementalLanceJavPROJEntropy.DisplayName: 元素长枪-冥思
-			// ElementalLanceJavPROJE.DisplayName: Elemental Lance Jav P R O J E
+			ElementalLanceJavPROJE.DisplayName: 元素长枪-冥思聚合爆炸
 			ELPStardust.DisplayName: 元素长枪-星尘碎片
 			ELPVortexElectricity.DisplayName: 元素长枪-星漩电磁
 			ELPVortexLighting.DisplayName: 元素长枪-星漩闪电
@@ -245,7 +246,6 @@ Projectiles: {
 		}
 	}
 }
-
 
 ChangedWeapons: {
 	APreHardMode: {
@@ -307,9 +307,8 @@ ChangedWeapons: {
 			DisplayName: 磐石地元叉
 			Tooltip:
 				'''
-				命中物块时在前方召唤多个岩石碎片
-				若找不到合适的方块，则不释放
-				[c/ac8f50:“钻地导弹”]
+				命中物块时在前方召唤多个岩石碎片				
+				[c/ac8f50:“我打地道战”]
 				'''
 		}
 
@@ -402,7 +401,7 @@ ChangedWeapons: {
 				扔出一根受重力的长矛
 				一段时间后喷发出三个能追踪的火焰球
 				本体命中后造成巨大面积火焰
-				[c/ff8400:“岩浆溢流”]
+				[c/ff8400:“1200°C”]
 				'''
 		}
 	}
@@ -499,7 +498,7 @@ ChangedWeapons: {
 				每次击中敌人都会从玩家处释放多个追踪硫火弹
 				默认释放2发，场上每存活一个敌方Boss单位便会增加一发
 				蠕虫类Boss仅算一个
-				[c/a50101:“溜撒点，一起上罢！”]
+				[c/a50101:“你们一起上吧，我等不及了”]
 				'''
 		}
 	}
@@ -560,7 +559,6 @@ NewWeapons: {
 				'''
 				飞行一段时间后扔出手里剑或投刀
 				右键对一个倒霉蛋持续释放手里剑或投刀
-				穿透一次
 				[c/e0e0e0:“什么？你难道指望着他很强？”]
 				'''
 			DisplayName: 破旧的长枪
@@ -616,7 +614,7 @@ NewWeapons: {
 				'''
 				穿墙并受重力飞行
 				飞行期间无限贯穿
-				[c/bcb696:“仁慈与仇恨并存”]
+				[c/bcb696:“刚刚是什么东西飞过来了”]
 				'''
 		}
 
@@ -703,11 +701,12 @@ NewWeapons: {
 				随后进入30秒的冷却，右键可提早取消泡泡
 				手持该武器时，玩家背包里每有5个水元素的战士武器
 				便会给玩家提升75%的战士伤害与10点战士暴击率
-				[c/689bf4:“这一击，我为你挡下”]
+				[c/689bf4:“你看，又急”]
 				'''
 		}
 
 		Surfeiter: {
+			DisplayName: 巴蛇吞象
 			Tooltip:
 				'''
 				手持时在头顶生成一个鼓
@@ -722,7 +721,6 @@ NewWeapons: {
 				右键切换鼓的类型
 				[c/B8860B:“生犯贪嗔痴戾疑，死受鞭笞釜灼烹”]
 				'''
-			DisplayName: 巴蛇吞象
 		}
 	}
 
@@ -732,7 +730,7 @@ NewWeapons: {
 			TooltipNormal:
 				'''
 				按住左键持续消耗自身的生命力并相应增加这把矛的穿透次数与伤害
-				                            右键朝着鼠标方向扇形发射一组长枪
+				右键朝着鼠标方向扇形发射一组弹射长枪
 				击中敌人时将为自己回复血量
 				不会有人用这东西来对付神明吞噬者吧？
 				[c/cc0e11:“永垂不朽”]
@@ -820,7 +818,7 @@ NewWeapons: {
 				瞄准并释放一道无比强大的核激光，无限穿透
 				期间会释放大量的弹幕
 				拥有30秒的冷却
-				                            [c/95b47c:“我的滨州可是会发光的！”]
+				[c/95b47c:“我的滨州可是会发光的！”]
 				'''
 		}
 	}
@@ -847,8 +845,8 @@ NewWeapons: {
 				强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
 				右键将举起长枪，召唤巨龙与数颗龙珠
 				在一定的蓄力时间过后一同朝着鼠标方向发动冲刺
-				                            冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
-				       如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
+				冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
+				如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
 				[c/ff7335:“吾名为……Ki厚忒！我恸Ki厚忒！用此枪，终结这……荒唐而又幼稚的梦！”]
 				'''
 		}
@@ -920,7 +918,7 @@ NewWeapons: {
 				四级--进一步提升速度，爆炸时产生大量可以追踪敌人的彗星
 				受到伤害或者未击中任何物体时降低一个等级
 				不再持有该武器时将等级清空，再次切换回来不会恢复等级
-				[c/494949:“凝结了人类文明的所有科技，外行人估计是无法理解这些的”]
+				[c/494949:“你可能听不太懂，但你应该会用”]
 				'''
 		}
 

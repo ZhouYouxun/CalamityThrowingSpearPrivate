@@ -169,7 +169,6 @@ Projectiles: {
 			GoldplumeJavWind.DisplayName: Goldplume Jav Wind
 			GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
 			AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
-			YateveoBloomJavBall.DisplayName: Yateveo Bloom Jav Ball
 			YateveoBloomJavRight.DisplayName: Yateveo Bloom Jav Right
 		}
 
@@ -247,7 +246,6 @@ Projectiles: {
 		}
 	}
 }
-
 
 ChangedWeapons: {
 	APreHardMode: {

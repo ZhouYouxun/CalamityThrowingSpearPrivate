@@ -11,5 +11,6 @@
 # 忽略临时文件
 *.tmp
 *.log
-.vs/CalamityThrowingSpear/v17/.suo
-.vs/CalamityThrowingSpear/v17/fileList.bin
+.vs/CalamityX/v17/.suo
+.vs/CalamityX/v17/fileList.bin
+obj/
