@@ -57,7 +57,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
             Projectile.velocity *= 1.01f;
 
             // 添加绿色能量光效
-            LineParticle energy = new LineParticle(Projectile.Center + Projectile.velocity * 4, Projectile.velocity * 4.95f, false, 9, 2.4f, Color.LimeGreen);
+            LineParticle energy = new LineParticle(Projectile.Center + Projectile.velocity * 4, Projectile.velocity * 1.95f, false, 9, 2.4f, Color.LimeGreen);
             GeneralParticleHandler.SpawnParticle(energy);
 
             // 🌿 飞行期间持续释放 Spark
@@ -90,8 +90,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
                 }
 
                 // === 🌿 轨迹复杂化：自然离谱草木灵息飞行 ===
+                // 判断主弹幕朝哪边飞行（左右）
                 float rightTurn = MathHelper.ToRadians(2f);
+                if (Projectile.velocity.X < 0) // 如果往左飞，就改成左转
+                    rightTurn = -rightTurn;
+
                 p.Velocity = p.Velocity.RotatedBy(rightTurn);
+
 
                 // 呼吸式加速减速，每 30 帧一个周期
                 float cycle = 30f;
@@ -119,15 +124,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-
-            if (!hasHitNPC)
-            {
-                hasHitNPC = true;
-                Projectile.friendly = false; // 禁止后续对 NPC 造成伤害
-                Projectile.hide = true;      // 内置隐藏标志，防止绘制
-                Projectile.alpha = 255;      // 完全透明
-                Projectile.timeLeft = 255;
-            }
+            //if (!hasHitNPC)
+            //{
+            //    hasHitNPC = true;
+            //    Projectile.friendly = false; // 禁止后续对 NPC 造成伤害
+            //    Projectile.hide = true;      // 内置隐藏标志，防止绘制
+            //    Projectile.alpha = 255;      // 完全透明
+            //    Projectile.timeLeft = 255;
+            //}
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {

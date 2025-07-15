@@ -245,6 +245,34 @@ Projectiles: {
 			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
+
+	// SmallTridentProj.DisplayName: Small Trident Proj
+	// TideTridentProj.DisplayName: Tide Trident Proj
+	// TeachingProjectile.DisplayName: Teaching Projectile
+
+	CPreMoodLord: {
+		// DiseasedJavEXP.DisplayName: Diseased Jav E X P
+		// HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+		// VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+		// VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+	}
+
+	// GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
+	// ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
+	// BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
+	// DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	// StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
+	// StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+	// StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+	// StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+	// FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
+
+	EAfterDog: {
+		// PrimordialStateLight.DisplayName: Primordial State Light
+		// PrimordialStateNight.DisplayName: Primordial State Night
+	}
+
+	// PrimordialStateSlash.DisplayName: Primordial State Slash
 }
 
 ChangedWeapons: {
@@ -338,7 +366,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				飞行很短的时间后快速分裂成两发追踪植物能量束
-				分裂前投矛本体具备无限穿透的能力并且会造成150%伤害
+				分裂前投矛本体造成150%伤害
 				[c/8dff73:“不，你不想用它直接命中敌人”]
 				'''
 		}
@@ -706,7 +734,6 @@ NewWeapons: {
 		}
 
 		Surfeiter: {
-			DisplayName: 巴蛇吞象
 			Tooltip:
 				'''
 				手持时在头顶生成一个鼓
@@ -721,6 +748,7 @@ NewWeapons: {
 				右键切换鼓的类型
 				[c/B8860B:“生犯贪嗔痴戾疑，死受鞭笞釜灼烹”]
 				'''
+			DisplayName: 巴蛇吞象
 		}
 	}
 

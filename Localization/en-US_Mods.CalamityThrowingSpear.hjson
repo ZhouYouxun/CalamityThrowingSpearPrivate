@@ -245,6 +245,34 @@ Projectiles: {
 			EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
 		}
 	}
+
+	SmallTridentProj.DisplayName: Small Trident Proj
+	TideTridentProj.DisplayName: Tide Trident Proj
+	TeachingProjectile.DisplayName: Teaching Projectile
+
+	CPreMoodLord: {
+		DiseasedJavEXP.DisplayName: Diseased Jav E X P
+		HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+		VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+		VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+	}
+
+	GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
+	ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
+	BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
+	DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+	StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
+	StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+	StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+	StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+	FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
+
+	EAfterDog: {
+		PrimordialStateLight.DisplayName: Primordial State Light
+		PrimordialStateNight.DisplayName: Primordial State Night
+	}
+
+	PrimordialStateSlash.DisplayName: Primordial State Slash
 }
 
 ChangedWeapons: {
@@ -339,7 +367,7 @@ ChangedWeapons: {
 			Tooltip:
 				'''
 				After a short flight, splits rapidly into two homing botanic energy beam.
-				Before splitting,the lance itself deal 150% damage and Infinite penetration.
+				Before splitting,the lance itself deal 150% damage.
 				[c/8dff73:"No, you don't want to hit the enemy directly with it"]
 				'''
 		}
@@ -573,7 +601,6 @@ NewWeapons: {
 				'''
 			DisplayName: Drawing Legs on a Snake
 		}
-
 	}
 
 	BPrePlantera: {
