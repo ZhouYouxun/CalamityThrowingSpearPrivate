@@ -255,7 +255,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             {
                 isSpinning = true;
                 Projectile.velocity = Vector2.Zero; // 停止移动
-                Projectile.timeLeft = spinDuration; // 保证旋转期间不消失
+                Projectile.timeLeft = spinDuration + 15; // 保证旋转期间不消失
             }
             else
             {
