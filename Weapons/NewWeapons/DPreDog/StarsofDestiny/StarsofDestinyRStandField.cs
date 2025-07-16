@@ -194,7 +194,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
             // 播放爆炸音效
             SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
-            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded").WithVolumeScale(0.93f));
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/玻璃破碎").WithVolumeScale(0.93f));
 
 
             // 粒子总数

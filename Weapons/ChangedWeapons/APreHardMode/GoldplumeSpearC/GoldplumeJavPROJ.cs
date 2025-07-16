@@ -159,7 +159,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                             Projectile.Center,
                             forward * 3f, // 初速度，适中即可
                             false, // 不受重力
-                            60,    // 生命周期
+                            10,    // 生命周期
                             1.2f,  // 缩放
                             Color.White // 颜色
                         );

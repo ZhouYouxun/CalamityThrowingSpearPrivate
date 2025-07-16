@@ -124,7 +124,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             Projectile.timeLeft = 600;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
+            Projectile.tileCollide = false; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 25; // 无敌帧冷却时间为25帧
@@ -168,6 +168,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
         {
             Player player = Main.player[Projectile.owner];
 
+            //// 如果主弹幕已经消失，直接进入冲刺阶段
+            //bool hasOwnerProjectile = false;
+            //for (int i = 0; i < Main.maxProjectiles; i++)
+            //{
+            //    Projectile proj = Main.projectile[i];
+            //    if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<HeartSwordPROJ>())
+            //    {
+            //        hasOwnerProjectile = true;
+            //        break;
+            //    }
+            //}
+            //if (!hasOwnerProjectile)
+            //{
+            //    Projectile.localAI[0] = 1;
+
+            //    // 尝试寻找最近敌人
+            //    NPC target = FindClosestNPC(1000f);
+            //    if (target != null)
+            //    {
+            //        Vector2 directionToTarget = target.Center - Projectile.Center;
+            //        directionToTarget.Normalize();
+            //        Projectile.velocity = directionToTarget * 30f;
+            //        Projectile.penetrate = 1;
+            //        Projectile.timeLeft = 300;
+            //        Projectile.tileCollide = true;
+            //    }
+            //    else
+            //    {
+            //        DoDashBehavior(); // 没有敌人时就朝鼠标方向冲刺
+            //    }
+            //    return;
+            //}
+
+
             // 检查是否已经进入冲刺阶段
             if (Projectile.localAI[0] == 1) // 冲刺阶段标志
             {
@@ -185,6 +219,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 
             // 旋转阶段逻辑
             DoOrbitBehavior(player);
+        }
+        private NPC FindClosestNPC(float maxDetectDistance)
+        {
+            NPC closest = null;
+            float closestDist = maxDetectDistance;
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.CanBeChasedBy(this) && !npc.friendly)
+                {
+                    float dist = Vector2.Distance(Projectile.Center, npc.Center);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closest = npc;
+                    }
+                }
+            }
+            return closest;
         }
 
         private void DoOrbitBehavior(Player player)
@@ -215,14 +268,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
                 Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Projectile.Center) * speed;
             }
 
-
-
-
-
         }
-
-
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
 

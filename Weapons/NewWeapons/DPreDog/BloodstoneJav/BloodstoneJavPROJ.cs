@@ -334,15 +334,34 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
             Projectile.localAI[0]++;
         }
+        private int totalHealed = 0;
+        private int maxHealLimit = -1; // 初始化为未设定
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            SoundEngine.PlaySound(SoundID.Item110 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
+            
             // 恢复玩家生命值
             Player player = Main.player[Projectile.owner];
-            float healMultiplier = 0.01f + chargeLevel * 0.001f; // 每级多增加0.1%回复
+            if (maxHealLimit == -1)
+            {
+                // 首次命中时，设定一次本次弹幕的治疗上限（320~480之间浮动）
+                maxHealLimit = (int)(400f * Main.rand.NextFloat(0.8f, 1.2f));
+            }
+
+            float healMultiplier = 0.01f + chargeLevel * 0.001f;
             int healAmount = (int)(damageDone * healMultiplier);
+            healAmount = Math.Min(healAmount, 60); // 每次上限60
+
+            int remaining = maxHealLimit - totalHealed;
+            if (remaining <= 0)
+                return; // 已超额，不再治疗
+
+            healAmount = Math.Min(healAmount, remaining); // 不超上限
             player.statLife += healAmount;
             player.HealEffect(healAmount);
+            totalHealed += healAmount;
+
 
             // 每命中4次触发特效
             hitCounter++;
@@ -522,7 +541,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Rectangle frame = texture.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
             Vector2 origin = frame.Size() * 0.5f;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            SpriteEffects direction = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+
+            // SpriteEffects direction = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally; // 这段不对，因此需要替换成:
+            bool facingLeft = Projectile.velocity.X < 0;
+            SpriteEffects direction = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            float rotation = Projectile.rotation + (facingLeft ? MathHelper.PiOver2 : 0f);
+
 
             if (CurrentState == BehaviorState.Dash)
             {
@@ -530,8 +555,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             }
             else
             {
-                Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+                // Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+                // 把这里面的Projectilerotation改成rotation
+                Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), rotation, origin, Projectile.scale, direction, 0);
             }
+
             return false;
         }
       

@@ -193,14 +193,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             //    GeneralParticleHandler.SpawnParticle(subTrail);
             //}
 
-            // 在命中敌人时召唤 4 颗彗星
-            NPC target = FindClosestNPC(1000f); // 寻找最近的敌人，1000像素范围内
-            if (target != null)
+            // 死亡时召唤 4 颗朝自己飞来的彗星
+            for (int i = 0; i < 4; i++)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    SummonComet(target);
-                }
+                SummonCometAtSelf();
             }
 
 
@@ -302,6 +298,31 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
                     GeneralParticleHandler.SpawnParticle(p);
                 }
             }
+        }
+        private void SummonCometAtSelf()
+        {
+            Vector2 targetPosition = Projectile.Center;
+            float radius = 50f * 16f;
+            float arrowSpeed = 10f;
+
+            float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+            Vector2 spawnPosition = targetPosition + radius * randomAngle.ToRotationVector2();
+
+            Vector2 direction = targetPosition - spawnPosition;
+            direction.Normalize();
+            Vector2 velocity = direction * arrowSpeed * 6f + Main.rand.NextVector2Circular(1.2f, 1.2f);
+
+            int newDamage = (int)(Projectile.damage * 0.33f);
+
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                spawnPosition,
+                velocity,
+                ModContent.ProjectileType<AstralPikeSTAR>(),
+                newDamage,
+                0,
+                Main.myPlayer
+            );
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

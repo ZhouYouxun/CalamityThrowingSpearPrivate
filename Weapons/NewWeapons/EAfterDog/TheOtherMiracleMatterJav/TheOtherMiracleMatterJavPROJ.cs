@@ -59,19 +59,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
             Color chargeColor = Color.Lerp(Color.Lime, Color.Cyan, (float)Math.Cos(Main.GlobalTimeWrappedHourly * 7.1f) * 0.5f + 0.5f) * 0.6f;
             chargeColor.A = 0;
 
-            // 回收时使用 Projectile.rotation（真实旋转值）高速旋转可视化
-            // 非回收时保持指向速度方向
-            float rotation = isRetracting ? Projectile.rotation : Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            SpriteEffects direction = SpriteEffects.None;
+            // ✅根据速度判断是否翻转，并在朝左飞时额外加90度旋转✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅
+            bool facingLeft = Projectile.velocity.X < 0;
+            SpriteEffects direction = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            float rotation = (isRetracting ? Projectile.rotation : Projectile.velocity.ToRotation() + MathHelper.PiOver4) + (facingLeft ? MathHelper.PiOver2 : 0f);
 
-            // 光晕环
+            // 绘制环状光晕
             for (int i = 0; i < 8; i++)
             {
                 Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
                 Main.spriteBatch.Draw(texture, drawPosition + drawOffset, null, chargeColor, rotation, origin, Projectile.scale, direction, 0f);
             }
 
-            // 着色器设置
+            // 设置拖尾着色器
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
@@ -80,7 +80,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
 
             if (!isRetracting)
             {
-                // 正常飞行拖尾
+                // 普通拖尾
                 PrimitiveRenderer.RenderTrail(
                     Projectile.oldPos,
                     new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]),
@@ -89,7 +89,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
             }
             else
             {
-                // 回收时拖尾固定在枪头（头部）
+                // 回收时拖尾
                 Vector2 headPosition = Projectile.Center + new Vector2(16f * 3f, 0f).RotatedBy(Projectile.rotation);
                 Vector2[] headTrail = Enumerable.Repeat(headPosition, 10).ToArray();
 

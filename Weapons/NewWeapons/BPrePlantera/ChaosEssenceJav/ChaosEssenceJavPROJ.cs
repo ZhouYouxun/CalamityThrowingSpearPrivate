@@ -11,6 +11,8 @@ using Terraria;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Typeless;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 {
@@ -26,9 +28,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            DrawAfterimagesSmartRotation(lightColor);
             return false;
         }
+
+        private void DrawAfterimagesSmartRotation(Color lightColor)
+        {
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+
+            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+            int y = frameHeight * Projectile.frame;
+            Rectangle frame = new Rectangle(0, y, texture.Width, frameHeight);
+            Vector2 origin = frame.Size() / 2f;
+            Vector2 centerOffset = Projectile.Size / 2f;
+            Color baseColor = Projectile.GetAlpha(lightColor);
+            float scale = Projectile.scale;
+
+            bool facingLeft = Projectile.velocity.X < 0;
+
+            for (int i = 0; i < Projectile.oldPos.Length; i++)
+            {
+                Vector2 drawPos = Projectile.oldPos[i] + centerOffset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+                float rotation = Projectile.oldRot[i] + (facingLeft ? MathHelper.PiOver2 : 0f);
+                SpriteEffects fx = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                Color color = baseColor * ((float)(Projectile.oldPos.Length - i) / Projectile.oldPos.Length);
+
+                Main.spriteBatch.Draw(texture, drawPos, frame, color, rotation, origin, scale, fx, 0f);
+            }
+
+            // 绘制本体（非必须，如果主绘制中会画就不画）
+            Vector2 currentPos = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            float currentRotation = Projectile.rotation + (facingLeft ? MathHelper.PiOver2 : 0f);
+            Main.spriteBatch.Draw(texture, currentPos, frame, baseColor, currentRotation, origin, scale, facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+        }
+
 
         public override void SetDefaults()
         {

@@ -27,6 +27,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             Item.height = 50;
             Item.damage = 200; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
+            //Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+
+
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;

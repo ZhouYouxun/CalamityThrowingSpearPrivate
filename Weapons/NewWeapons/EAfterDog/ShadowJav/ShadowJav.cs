@@ -30,6 +30,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
         public override bool AltFunctionUse(Player player) => true;
+        private static bool playBackgroundNext = true;
+
         public override void SetDefaults()
         {
             Item.width = 44;
@@ -102,6 +104,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
                 Item.useTime = Item.useAnimation = 12;
                 Item.shoot = ModContent.ProjectileType<ShadowJavPROJ>(); // 左键使用时发射的弹幕
             }
+
+            string soundPath = playBackgroundNext
+    ? "CalamityThrowingSpear/Sound/Windows/WindowsBackground"
+    : "CalamityThrowingSpear/Sound/Windows/WindowsForeground";
+
+            SoundEngine.PlaySound(new SoundStyle(soundPath)
+            {
+                Volume = 1.0f,
+                Pitch = 0f
+            }, Main.LocalPlayer.Center);
+
+            playBackgroundNext = !playBackgroundNext; // 切换下次播放的声音
+
 
             return true; // 允许使用
         }

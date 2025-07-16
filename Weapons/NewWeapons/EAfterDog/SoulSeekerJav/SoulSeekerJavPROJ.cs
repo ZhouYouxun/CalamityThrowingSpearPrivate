@@ -193,7 +193,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireVel,
                         ModContent.ProjectileType<SoulSeekerJavBRIDFire>(), (int)(Projectile.damage * 0.33), 0f, Projectile.owner);
 
-                    SoundEngine.PlaySound(SoundID.Item23, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.NPCDeath26, Projectile.Center);
 
                     // 冷却时间逐步缩短，最短为6帧
                     fireInterval = Math.Max(fireInterval - fireIntervalDecrement, 6);
@@ -282,6 +282,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
+            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 1.2f, Pitch = -0.0f }, Projectile.Center);
             // 检查当前小鸟数量
             int currentBirdCount = Main.projectile.Count(p => p.active && p.owner == Projectile.owner && p.type == ModContent.ProjectileType<SoulSeekerJavBRID>());
             if (currentBirdCount >= 10)

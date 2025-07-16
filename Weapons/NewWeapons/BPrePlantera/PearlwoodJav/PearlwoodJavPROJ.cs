@@ -142,7 +142,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
             {
                 float fixedRotation = Projectile.rotation - MathHelper.PiOver4;
-                Vector2 gunTip = Projectile.Center + new Vector2(16f * 4f, 0).RotatedBy(fixedRotation); // 计算枪尖位置
+                Vector2 gunTip = Projectile.Center + new Vector2(16f * 3f, 0).RotatedBy(fixedRotation); // 计算枪尖位置
                 Vector2 drawPositio1n = gunTip - Main.screenPosition;
 
                 // 🌸 粉色 Extra_89 梦幻环（叠加层）
@@ -397,7 +397,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         public override void OnKill(int timeLeft)
         {
             // === 🌈 PearlwoodJavPROJ 死亡特效（OnKill 内调用） ===
-            SoundEngine.PlaySound(SoundID.Item67, Projectile.Center); // 彩虹枪音效
+            SoundEngine.PlaySound(SoundID.Item67 with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center); // 彩虹枪音效
 
             // 触发粉色圣洁光点爆发（柔和补充）
             CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);

@@ -147,39 +147,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                         type = ModContent.ProjectileType<ElementalArkJavFragments>();
                         Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                         break;
-
-
                     case 2:
                         type = ModContent.ProjectileType<ElementalArkJavBlade>();
                         int bladeProjUp = Projectile.NewProjectile(source, position, velocity * 3, type, damage, knockback, player.whoAmI);
                         Main.projectile[bladeProjUp].localAI[0] = 1f; // 第1次会直接顺时针偏移前进，逆时针返回
                         break;
-
                     case 3:
                         type = ModContent.ProjectileType<ElementalArkJavFragments>();
                         Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                         break;
-
-
                     case 4:
                         type = ModContent.ProjectileType<ElementalArkJavBlade>();
                         int bladeProjDown = Projectile.NewProjectile(source, position, velocity * 3, type, damage, knockback, player.whoAmI);
                         Main.projectile[bladeProjDown].localAI[0] = 0f; // 第2次会逆时针偏移前进，顺时针返回
                         break;
-
-
-
                     case 0:
                         // 上回旋的 ElementalArkJavFragments05
                         int projUp = Projectile.NewProjectile(source, position, velocity * 6, ModContent.ProjectileType<ElementalArkJavFragments05>(), damage, knockback, player.whoAmI);
                         Main.projectile[projUp].ai[1] = 1f;
                         Main.projectile[projUp].ModProjectile<ElementalArkJavFragments05>().isCurveUpwards = true;
-
                         // 下回旋的 ElementalArkJavFragments05
                         int projDown = Projectile.NewProjectile(source, position, velocity * 6, ModContent.ProjectileType<ElementalArkJavFragments05>(), damage, knockback, player.whoAmI);
                         Main.projectile[projDown].ai[1] = 0f;
                         Main.projectile[projDown].ModProjectile<ElementalArkJavFragments05>().isCurveUpwards = false;
-
                         break;
                 }
             }

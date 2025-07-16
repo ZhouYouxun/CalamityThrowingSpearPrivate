@@ -73,7 +73,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.MysticCoilSnake, 1); // 耍蛇者长笛
             recipe.AddIngredient(ItemID.HellstoneBar, 6); // 狱岩锭
-            recipe.AddIngredient(ItemID.Hotdog, 1); // 热狗：骨蛇3.33概率掉落
+            recipe.AddIngredient(ItemID.FrogLeg, 1); // 蛙腿
+            //recipe.AddIngredient(ItemID.Hotdog, 1); // 热狗：骨蛇3.33概率掉落
             //recipe.AddIngredient(ItemID.Skelehead, 1); // 骨蛇之头：地狱里的跟骨蛇相关的一幅画
             recipe.AddTile(TileID.Hellforge);
             recipe.Register();

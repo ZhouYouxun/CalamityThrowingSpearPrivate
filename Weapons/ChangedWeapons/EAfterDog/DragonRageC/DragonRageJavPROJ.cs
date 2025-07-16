@@ -746,7 +746,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 
         public override void OnSpawn(IEntitySource source)
         {
-            SoundEngine.PlaySound(SoundID.Item113, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 1.2f, Pitch = -0.0f }, Projectile.Center);
+
         }
 
     }

@@ -44,58 +44,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Rectangle rectangle = new Rectangle(0, y, texture.Width, frameHeight);
             Vector2 origin = rectangle.Size() / 2f;
 
-            // 当前弹幕的翻转状态
-            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            // 👇 替换 spriteDirection 判断逻辑为 velocity.X 判断
+            bool facingLeft = Projectile.velocity.X < 0;
+            SpriteEffects effects = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            // 👇 统一计算旋转角度：基础旋转 + 45度 +（如果朝左，再额外转90度）
+            float rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            if (facingLeft)
+                rotation += MathHelper.PiOver2;
 
             // 居中偏移
             Vector2 drawOffset = Projectile.Size / 2f;
             Color alpha = Projectile.GetAlpha(lightColor);
 
-            // 第一阶段：普通拖尾效果
+            // === 第一阶段：普通拖尾效果 ===
             if (Projectile.ai[0] < 25)
             {
                 for (int i = 0; i < Projectile.oldPos.Length; i++)
                 {
-                    // 获取历史位置、旋转和翻转状态
                     Vector2 position = Projectile.oldPos[i] + drawOffset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                    float rotation2 = Projectile.oldRot[i];
+                    float rotation2 = Projectile.oldRot[i] + (Projectile.oldSpriteDirection[i] == -1 ? MathHelper.PiOver2 : 0f); // 加上90°
                     SpriteEffects effects2 = Projectile.oldSpriteDirection[i] == -1
                         ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically
                         : SpriteEffects.None;
 
-                    // 根据历史位置调整颜色透明度
                     Color color = alpha * ((float)(Projectile.oldPos.Length - i) / Projectile.oldPos.Length);
 
-                    // 绘制残影
                     Main.spriteBatch.Draw(texture, position, rectangle, color, rotation2, origin, scale, effects2, 0f);
                 }
 
-                // 绘制弹幕本体
                 Vector2 currentPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                Main.spriteBatch.Draw(texture, currentPosition, rectangle, lightColor, Projectile.rotation, origin, scale, effects, 0f);
+                //Main.spriteBatch.Draw(texture, currentPosition, rectangle, lightColor, rotation, origin, scale, effects, 0f);
 
                 return false;
             }
 
-            // 第二阶段：背光效果
+            // === 第二阶段：背光效果 ===
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            // 背光效果部分 - 亮绿色光晕
-            float chargeOffset = 5f; // 控制背光效果扩散的偏移量
-            Color chargeColor = Color.Lime * 0.6f; // 设置为亮绿色
-            chargeColor.A = 0; // 设置透明度
+            float chargeOffset = 5f;
+            Color chargeColor = Color.Lime * 0.6f;
+            chargeColor.A = 0;
 
-            // 修复旋转逻辑，确保与速度方向同步
-            float rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // 绘制背光效果 - 圆周上绘制多个光效
             for (int i = 0; i < 8; i++)
             {
                 Vector2 offset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
                 Main.spriteBatch.Draw(texture, drawPosition + offset, rectangle, chargeColor, rotation, origin, scale, effects, 0f);
             }
 
-            // 渲染实际的投射物本体
             Main.spriteBatch.Draw(texture, drawPosition, rectangle, Projectile.GetAlpha(lightColor), rotation, origin, scale, effects, 0f);
 
             return false;
@@ -138,8 +134,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             // 添加绿色光源
             Lighting.AddLight(Projectile.Center, Color.Green.ToVector3() * 0.55f);
 
-
-
             // 阶段控制
             if (Projectile.ai[0] < 25)
             {
@@ -156,6 +150,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             }
             else if (Projectile.ai[0] == 25) // 阶段转换时释放特殊特效
             {
+                SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1.2f, Pitch = -0.0f }, Projectile.Center);
+
                 // 吸引特效：生成两个向中心汇聚的圆圈
                 for (int i = 0; i < 2; i++) // 生成两个吸引特效
                 {
