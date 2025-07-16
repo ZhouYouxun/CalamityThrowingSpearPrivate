@@ -86,6 +86,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         }
 
+
         // 当玩家被 NPC 攻击时调用
         public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
         {
@@ -301,7 +302,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             NPC boss = Main.npc.FirstOrDefault(npc => npc.active && npc.boss);
             int bossCount = Main.npc.Count(npc => npc.active && npc.boss);
-            if (boss != null && bossCount >= 1) // ✅ 兼容多 Boss
+            if (boss != null && bossCount == 1) // ✅ 有且只有一个BOSS存活
             {
                 if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f)
                 {
@@ -373,7 +374,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 "筋疲力尽？厌倦。想要休息？肚子饿了。想离开这里？",
                 "平战乱，享太平",
                 "8848画龙点睛",
-                "ZI-0...GRAND ZI-O"
+                "ZI-0...GRAND ZI-O",
+                "众流汇聚于江海，可引暗潮漫城",
+                "初平元年，第一次在泰拉打自由搏击，便一举夺魁！",
+                "我注定在这王座之上，独自统治……"
                         };
                         string selectedMessage = messages[Main.rand.Next(messages.Length)]; // 随机选取一个文本
 
@@ -464,6 +468,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                             else if (selectedMessage == "筋疲力尽？厌倦。想要休息？肚子饿了。想离开这里？")
                             {
                                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Roland") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "众流汇聚于江海，可引暗潮漫城")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/zhongliuhuiyujianghai") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "初平元年，第一次在泰拉打自由搏击，便一举夺魁！")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/ziyouboji") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "我注定在这王座之上，独自统治……")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Bind") with { Volume = 2f }, Player.Center);
                             }
                         }
                         textTimer = 0; // 重置计时器
@@ -624,6 +640,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             "无耻小人，胆敢暗算于我",
             "七情难掩，六欲难消，何谓之神",
             "吾主公短命无妨",
+            "都是你的错！"
                 };
                 string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
 
@@ -654,6 +671,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     else if (selectedPhrase == "菜就多练练")
                     {
                         SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/caijiuduolianlian") with { Volume = 2.5f }, Player.Center);
+                    }
+                    else if (selectedPhrase == "都是你的错！")
+                    {
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/YourMistake") with { Volume = 2.5f }, Player.Center);
                     }
                 }
 

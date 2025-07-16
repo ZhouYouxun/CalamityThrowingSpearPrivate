@@ -186,6 +186,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             // 生成掉落物
             Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, ModContent.ItemType<FinishingTouch>());
 
+            for (int i = 0; i < Main.maxPlayers; i++)
+            {
+                Player targetPlayer = Main.player[i];
+                if (targetPlayer.active && !targetPlayer.dead)
+                {
+                    // 为玩家施加 创造胜利，持续时间为 300 帧（5 秒）
+                    targetPlayer.AddBuff(ModContent.BuffType<FinishingTouch10PBuff>(), 180);
+                }
+            }
+
             // 生成大量的重型烟雾粒子特效
             for (int i = 0; i < 50; i++) // 生成大量烟雾粒子
             {
@@ -208,6 +218,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 // 生成粒子
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
+
 
             // 播放爆炸音效（可选）
             //Main.PlaySound(SoundID.Item14, Projectile.position);
@@ -284,7 +295,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             hasCollidedWithTile = true;
 
             {
-                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 2.5f }, Projectile.Center);
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/RayquazaRoar") with { Volume = 2.5f }, Projectile.Center);
 
                 // ==================== 播放一次性极限爆炸视觉特效 ====================
 

@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod.Particles;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -27,13 +28,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<FinishingTouch10Player>().finishingTouchOrangeTrailActive = true;
-
             player.buffTime[buffIndex] = 2;
-            player.GetDamage(DamageClass.Melee) *= 1.2f;
-            player.statDefense += 50;
-            player.endurance += 1.00f;
 
+            bool isHoldingFinishingTouch = player.HeldItem != null && player.HeldItem.type == ModContent.ItemType<FinishingTouch>();
+            if (isHoldingFinishingTouch)
+            {
+                player.GetDamage(DamageClass.Melee) *= 1.2f;
+                player.statDefense += 50;
+                player.endurance += 1.00f;
+            }
 
+            
             {
                 Vector2 center = player.Center + Main.rand.NextVector2Circular(32f, 32f);
                 Vector2 velocity = (player.Center - center).SafeNormalize(Vector2.Zero) * 1.2f;
@@ -136,7 +141,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 }
 
                 // === 5️⃣ 可选 Bloom 柔和光环（仅适用于需要额外光域感时启用） ===
-                if (Main.rand.NextBool(5))
+                /*if (Main.rand.NextBool(5))
                 {
                     Particle bloom = new GenericBloom(
                         center,
@@ -146,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         45
                     );
                     GeneralParticleHandler.SpawnParticle(bloom);
-                }
+                }*/
             }
 
 

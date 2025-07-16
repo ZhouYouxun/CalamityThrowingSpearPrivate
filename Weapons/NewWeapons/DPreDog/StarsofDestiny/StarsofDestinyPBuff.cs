@@ -19,6 +19,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             // 启用 StarsofDestinyPBuffPlayer 的开关
             player.GetModPlayer<StarsofDestinyPBuffPlayer>().IsBuffActive = true;
+            player.lifeRegen += 6;
         }
 
 

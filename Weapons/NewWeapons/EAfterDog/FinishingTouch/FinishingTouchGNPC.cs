@@ -111,7 +111,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     player.QuickSpawnItem(npc.GetSource_FromAI(), ModContent.ItemType<XiaoZhiTiaoFT>(), 1);
 
                     // 在左下角显示提示信息
-                    Main.NewText("收下他！", Color.LightGreen);
+                    Main.NewText("此般污秽之躯已无可供升入之天空……所有的邪秽之物啊！与我一同停驻至永恒吧！", Color.OrangeRed);
                 }
             }
         }

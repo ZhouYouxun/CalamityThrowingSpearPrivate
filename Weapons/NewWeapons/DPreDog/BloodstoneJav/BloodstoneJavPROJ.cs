@@ -349,7 +349,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 maxHealLimit = (int)(400f * Main.rand.NextFloat(0.8f, 1.2f));
             }
 
-            float healMultiplier = 0.01f + chargeLevel * 0.001f;
+            float healMultiplier = 0.1f + chargeLevel * 0.01f;
             int healAmount = (int)(damageDone * healMultiplier);
             healAmount = Math.Min(healAmount, 60); // 每次上限60
 

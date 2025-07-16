@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     : MathHelper.ToRadians(-165); // 左上角
 
                 // 偏移量和长度不变
-                float lengthMultiplier = 6f; // 将长度扩大 5 倍
+                float lengthMultiplier = 8f; // 将长度扩大 5 倍
                 Vector2 offset = new Vector2(i % (particleCount / 2), i % (particleCount / 2))
                                  * Main.rand.NextFloat(0.5f, 1.5f) * lengthMultiplier;
 

@@ -84,7 +84,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.IronBar, 1);
+            recipe.AddIngredient(ItemID.SilverBar, 1);
             recipe.AddIngredient(ItemID.Wood, 2);
             recipe.AddTile(TileID.WorkBenches);
             recipe.Register();

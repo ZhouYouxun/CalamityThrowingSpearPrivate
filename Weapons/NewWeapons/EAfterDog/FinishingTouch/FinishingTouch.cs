@@ -209,7 +209,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "马踏祁连山河动，兵起玄黄奈何天",
         "名师大将莫自牢，千兵万马避红袍",
         "干云气惊八万里，一剑光寒十九州",
-        "雷池铸剑，今霜刃即成，当振天下于大白"
+        "雷池铸剑，今霜刃即成，当振天下于大白",
+        "只需射击，一直射击",
+        "同风暴一起消散吧！！！",
+        "扫腿直拳十字锁，裸绞肘击断头台"
 
                     };
 
@@ -259,7 +262,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/mataqilianshanhedong",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/mingshidajiang",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/danyunqijing",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/tianjie"
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/tianjie",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/FellBullet",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/wildhunt",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/saotuizhiquan"
                 };
 
                     // 随机选择文本和对应的音效
