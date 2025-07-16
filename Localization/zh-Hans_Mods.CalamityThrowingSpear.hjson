@@ -99,6 +99,7 @@ Projectiles: {
 			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
 			RedtideJavRight.DisplayName: Redtide Jav Right
 			// TheBrokenRight.DisplayName: The Broken Right
+			// TheBrokenSpit.DisplayName: The Broken Spit
 		}
 
 		CPreMoodLord: {

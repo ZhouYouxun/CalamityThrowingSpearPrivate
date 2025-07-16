@@ -59,7 +59,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
                         Projectile.velocity * 0.5f,
                         Color.MediumPurple * 0.6f,
                         new Vector2(1f, 2.3f),
-                        Projectile.rotation - MathHelper.PiOver4,
+                        Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver4,
                         0.22f,
                         0.035f,
                         20

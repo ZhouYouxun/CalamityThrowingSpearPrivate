@@ -13,6 +13,7 @@ using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.SupremeCalamitas;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
 {
@@ -30,7 +31,70 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
 
         public override bool PreDraw(ref Color lightColor)
         {
+            // 保留拖影
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+
+            // 计算枪头位置
+            float fixedRotation = Projectile.rotation - MathHelper.PiOver4;
+            Vector2 gunTip = Projectile.Center + new Vector2(16f * 5f, 0).RotatedBy(fixedRotation);
+            Vector2 drawPos = gunTip - Main.screenPosition;
+
+            // 获取纹理
+            Texture2D magicCircle = ModContent.Request<Texture2D>(
+                "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/ViolenceC/RancorMagicCircle"
+            ).Value;
+
+            // 椭圆缩放（固定）[改主意了，不要椭圆形]
+            Vector2 ringScale = new Vector2(0.7f, 0.7f) * 2.5f; // 直接放大 2.5 倍
+
+            // 绘制时：缩放形成椭圆，rotation 控制内容绕中心旋转
+            Main.EntitySpriteDraw(
+                magicCircle,
+                drawPos,
+                null,
+                Color.HotPink * 0.6f,
+                Main.GlobalTimeWrappedHourly * 0.8f, // 内容缓慢自转
+                magicCircle.Size() * 0.5f,
+                ringScale,
+                SpriteEffects.None,
+                0
+            );
+
+
+            // === ✴️ 红色脉动双星星（反转旋转） ===
+            Texture2D starA = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_07").Value;
+            Texture2D starB = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_08").Value;
+
+            float pulse = 0.8f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f);
+            float starRotA = Main.GlobalTimeWrappedHourly * 1.6f;
+            float starRotB = -Main.GlobalTimeWrappedHourly * 1.2f;
+            Color starColor = Color.Red * 0.7f;
+            starColor.A = 0;
+
+            Main.EntitySpriteDraw(
+                starA,
+                drawPos,
+                null,
+                starColor,
+                starRotA,
+                starA.Size() * 0.5f,
+                pulse * 0.5f,
+                SpriteEffects.None,
+                0
+            );
+
+            Main.EntitySpriteDraw(
+                starB,
+                drawPos,
+                null,
+                starColor,
+                starRotB,
+                starB.Size() * 0.5f,
+                pulse * 0.5f,
+                SpriteEffects.None,
+                0
+            );
+
             return false;
         }
 
@@ -80,90 +144,37 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
                 {
                     Vector2 forward = Projectile.rotation.ToRotationVector2();
 
-                    // 1️⃣ 前方破空喷射（Spark + Dust）
-                    Vector2 frontPos = Projectile.Center + forward * 24f;
+
+
+                    Vector2 baseDir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                    // 中段双边撕裂（左右对称） + 混合 Spark / Point
                     for (int i = -1; i <= 1; i += 2)
                     {
-                        Vector2 sideDir = forward.RotatedBy(MathHelper.ToRadians(45f * i));
-                        // Spark
+                        Vector2 dir = baseDir.RotatedBy(MathHelper.ToRadians(25f * i));
+
+                        // Spark：如魔法线流
                         Particle spark = new SparkParticle(
-                            frontPos,
-                            sideDir * Main.rand.NextFloat(12f, 22f),
+                            Projectile.Center,
+                            dir * Main.rand.NextFloat(6f, 12f),
                             false,
-                            18,
-                            Main.rand.NextFloat(1.0f, 1.4f),
-                            Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f))
+                            20,
+                            Main.rand.NextFloat(0.9f, 1.2f),
+                            Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f))
                         );
                         GeneralParticleHandler.SpawnParticle(spark);
 
-                        // Dust
-                        Dust dust = Dust.NewDustPerfect(
-                            frontPos,
-                            DustID.Blood,
-                            sideDir * Main.rand.NextFloat(6f, 14f),
-                            100,
-                            Color.Red,
-                            Main.rand.NextFloat(1.0f, 1.5f)
-                        );
-                        dust.noGravity = true;
-                    }
-
-                    // 2️⃣ 中段撕裂（Spark + Dust）
-                    Vector2 midPos = Projectile.Center;
-                    for (int i = -1; i <= 1; i += 2)
-                    {
-                        Vector2 sideDir = forward.RotatedBy(MathHelper.ToRadians(30f * i));
-                        // Spark
-                        Particle spark = new SparkParticle(
-                            midPos,
-                            sideDir * Main.rand.NextFloat(8f, 16f),
+                        // Point：咒刺
+                        Particle point = new PointParticle(
+                            Projectile.Center,
+                            dir * Main.rand.NextFloat(5f, 10f),
                             false,
-                            22,
-                            Main.rand.NextFloat(0.9f, 1.3f),
-                            Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.2f, 0.6f))
+                            16,
+                            1.2f,
+                            Color.IndianRed
                         );
-                        GeneralParticleHandler.SpawnParticle(spark);
-
-                        // Dust
-                        Dust dust = Dust.NewDustPerfect(
-                            midPos,
-                            DustID.Blood,
-                            sideDir * Main.rand.NextFloat(4f, 10f),
-                            100,
-                            Color.Red,
-                            Main.rand.NextFloat(0.9f, 1.3f)
-                        );
-                        dust.noGravity = true;
+                        GeneralParticleHandler.SpawnParticle(point);
                     }
-
-                    // 3️⃣ 后方收拢（Spark + Dust）
-                    Vector2 backPos = Projectile.Center - forward * 16f;
-                    Vector2 inwardDir = -forward;
-                    for (int j = 0; j < 2; j++)
-                    {
-                        // Spark
-                        Particle spark = new SparkParticle(
-                            backPos,
-                            inwardDir.RotatedByRandom(MathHelper.ToRadians(10f)) * Main.rand.NextFloat(5f, 10f),
-                            false,
-                            25,
-                            Main.rand.NextFloat(0.8f, 1.2f),
-                            Color.DarkRed
-                        );
-                        GeneralParticleHandler.SpawnParticle(spark);
-
-                        // Dust
-                        Dust dust = Dust.NewDustPerfect(
-                            backPos,
-                            DustID.Blood,
-                            inwardDir.RotatedByRandom(MathHelper.ToRadians(10f)) * Main.rand.NextFloat(3f, 8f),
-                            100,
-                            Color.DarkRed,
-                            Main.rand.NextFloat(0.8f, 1.2f)
-                        );
-                        dust.noGravity = true;
-                    }
-
 
 
                     // === ViolenceJav 飞行期间复杂重型烟雾特效 ===

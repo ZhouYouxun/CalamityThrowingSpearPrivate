@@ -37,7 +37,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
             Item.value = CalamityGlobalItem.RarityGreenBuyPrice;
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<TheBrokenPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 11f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 6f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
 
         }

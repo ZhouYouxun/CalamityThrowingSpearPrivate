@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod;
+using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 {
@@ -37,7 +39,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
 
         }
 
+        public override void SetStaticDefaults()
+        {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+        }
+        public override bool AltFunctionUse(Player player) => true;
 
+        public override bool CanUseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                // 右键：奇特飞行模式（混乱扰动弹幕）
+                Item.useTime = Item.useAnimation = 26;
+                Item.shootSpeed = 10f;
+            }
+            else
+            {
+                // 左键：箭矢式平飞，包含“死亡下落”逻辑
+                Item.useTime = Item.useAnimation = 18;
+                Item.shootSpeed = 12f;
+            }
+            return base.CanUseItem(player);
+        }
+
+        public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            if (proj.WithinBounds(Main.maxProjectiles))
+            {
+                Main.projectile[proj].localAI[0] = player.altFunctionUse == 2 ? 1f : 0f; // 右键 = 特殊飞行，左键 = 平飞
+            }
+            return false;
+        }
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();

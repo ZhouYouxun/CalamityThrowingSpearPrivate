@@ -25,6 +25,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
         private bool returning = false; // 是否进入回程状态
         private int stopTime = 10;      // 停顿时间
         private Vector2 originalVelocity; // 记录初始速度
+        private int deathDropDelayTimer = 0; // 死亡下落延迟计时器
+        private bool hasTriggeredDeathDrop = false;
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -60,83 +62,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             // Lighting - 将光源颜色更改为偏黑的深蓝色，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.1f, 0.5f) * 0.55f);
 
-            // 弹幕保持直线运动并逐渐加速
-            //Projectile.velocity *= 1.01f;
+            bool isAltMode = Projectile.localAI[0] == 1f; // 来自右键的标记
 
-            // === 📐 古典数学式“模糊追踪轨迹” ===
-
-            if (!returning)
+            if (isAltMode)
             {
-                // 每颗弹幕有一个属于自己的“随机扰动参数”
-                if (Projectile.localAI[0] == 0f)
-                {
-                    Projectile.localAI[0] = Main.rand.NextFloat(-0.05f, 0.05f); // 旋偏角因子
-                    Projectile.localAI[1] = Main.rand.NextFloat(0.9f, 1.1f);    // 飞行速度因子
-                }
-
-                float spiralStrength = Projectile.localAI[0];
-                float speedMultiplier = Projectile.localAI[1];
-
-                Projectile.velocity = Projectile.velocity.RotatedBy(spiralStrength);
-                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * 8f * speedMultiplier;
-
-                // 模糊地吸向最近敌人（但精度极差）
-                NPC target = FindClosestTarget(400f);
-                if (target != null)
-                {
-                    Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                    float curveIn = 0.02f; // 极弱角度偏修正
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * Projectile.velocity.Length(), curveIn);
-                }
-
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+                RunChaosFlight(); // 👈 原来的扰动+追踪逻辑
+            }
+            else
+            {
+                Projectile.aiStyle = ProjAIStyleID.Arrow; // 标准箭矢逻辑
+                RunDeathDropCheck();                      // 👈 加入死亡下落机制
             }
 
+            DoSharedDustEffects(); // 两种模式共用的视觉效果
 
-
-
-
-            {
-                // 🪨 GraniteJav 飞行特效：李萨如曲线动态 Dust + 双螺旋环绕
-                float t = Main.GameUpdateCount * 0.15f;
-                float lissX = 8f * (float)Math.Sin(3 * t);
-                float lissY = 8f * (float)Math.Sin(2 * t + MathHelper.PiOver4);
-                Vector2 lissajousOffset = new Vector2(lissX, lissY);
-
-                // 每帧微抖动尾迹
-                Dust d1 = Dust.NewDustPerfect(
-                    Projectile.Center + lissajousOffset,
-                    DustID.GemSapphire,
-                    -Projectile.velocity * 0.1f,
-                    100,
-                    Color.CornflowerBlue,
-                    1.0f
-                );
-                d1.noGravity = true;
-
-                // 每 5 帧生成螺旋环绕 Dust
-                if (Main.GameUpdateCount % 5 == 0)
-                {
-                    float spiralRadius = 10f;
-                    float spiralAngle = Main.GameUpdateCount * 0.2f;
-                    for (int s = 0; s < 2; s++)
-                    {
-                        float offsetAngle = spiralAngle + s * MathHelper.Pi;
-                        Vector2 offset = offsetAngle.ToRotationVector2() * spiralRadius;
-
-                        Dust d2 = Dust.NewDustPerfect(
-                            Projectile.Center + offset,
-                            DustID.BlueTorch,
-                            offset.RotatedBy(MathHelper.PiOver2) * 0.2f,
-                            120,
-                            Color.LightBlue,
-                            1.2f
-                        );
-                        d2.noGravity = true;
-                    }
-                }
-
-            }
 
             if (afterimageCooldown > 0)
                 afterimageCooldown--;
@@ -155,6 +94,118 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
                 Projectile.tileCollide = true; // 启用碰撞
             }
         }
+
+
+        private void RunChaosFlight()
+        {
+            if (!returning)
+            {
+                if (Projectile.localAI[1] == 0f)
+                {
+                    Projectile.localAI[1] = 1f;
+                    Projectile.localAI[2] = Main.rand.NextFloat(-0.05f, 0.05f);
+                }
+
+                float spiralStrength = Projectile.localAI[2];
+                Projectile.velocity = Projectile.velocity.RotatedBy(spiralStrength);
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * 8f;
+
+                NPC target = FindClosestTarget(400f);
+                if (target != null)
+                {
+                    Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * Projectile.velocity.Length(), 0.02f);
+                }
+
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            }
+        }
+
+        private void RunDeathDropCheck()
+        {
+            // 在正下方范围寻找敌人
+            Rectangle checkBox = new Rectangle(
+                (int)(Projectile.Center.X - 25),
+                (int)(Projectile.Center.Y),
+                50,
+                50 * 16 // 50格下方
+            );
+
+            bool enemyFound = false;
+
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy() && npc.Hitbox.Intersects(checkBox))
+                {
+                    enemyFound = true;
+                    break;
+                }
+            }
+
+            if (enemyFound && !hasTriggeredDeathDrop)
+            {
+                deathDropDelayTimer++;
+
+                if (deathDropDelayTimer >= 3) // 🕒 延迟 3 帧才触发
+                {
+                    float speed = Projectile.velocity.Length() * 1.5f;
+                    Projectile.velocity = Vector2.UnitY * speed;
+
+                    afterimageCooldown = 10; // ✅ 只执行一次的拖影关闭
+                    hasTriggeredDeathDrop = true; // ✅ 标记已触发
+                }
+            }
+            else if (!enemyFound)
+            {
+                deathDropDelayTimer = 0;
+            }
+
+        }
+
+
+
+        private void DoSharedDustEffects()
+        {
+            // 🪨 GraniteJav 飞行特效：李萨如曲线动态 Dust + 双螺旋环绕
+            float t = Main.GameUpdateCount * 0.15f;
+            float lissX = 8f * (float)Math.Sin(3 * t);
+            float lissY = 8f * (float)Math.Sin(2 * t + MathHelper.PiOver4);
+            Vector2 lissajousOffset = new Vector2(lissX, lissY);
+
+            // 每帧微抖动尾迹
+            Dust d1 = Dust.NewDustPerfect(
+                Projectile.Center + lissajousOffset,
+                DustID.GemSapphire,
+                -Projectile.velocity * 0.1f,
+                100,
+                Color.CornflowerBlue,
+                1.0f
+            );
+            d1.noGravity = true;
+
+            // 每 5 帧生成螺旋环绕 Dust
+            if (Main.GameUpdateCount % 5 == 0)
+            {
+                float spiralRadius = 10f;
+                float spiralAngle = Main.GameUpdateCount * 0.2f;
+                for (int s = 0; s < 2; s++)
+                {
+                    float offsetAngle = spiralAngle + s * MathHelper.Pi;
+                    Vector2 offset = offsetAngle.ToRotationVector2() * spiralRadius;
+
+                    Dust d2 = Dust.NewDustPerfect(
+                        Projectile.Center + offset,
+                        DustID.BlueTorch,
+                        offset.RotatedBy(MathHelper.PiOver2) * 0.2f,
+                        120,
+                        Color.LightBlue,
+                        1.2f
+                    );
+                    d2.noGravity = true;
+                }
+            }
+        }
+
         private NPC FindClosestTarget(float range)
         {
             NPC closest = null;
@@ -183,20 +234,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/花岗岩矛音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f, Pitch = 0.0f }, Projectile.position);
 
-
             {
-                // 🪨 GraniteJav 命中特效：花岗岩爆裂散射 Dust（玫瑰曲线 + 双曲线）
-                int petals = 60;
+                // 获取命中时的真实角度
+                float baseAngle = Projectile.velocity.ToRotation();
+
+                int petals = 30;
                 for (int i = 0; i < petals; i++)
                 {
                     float theta = MathHelper.TwoPi * i / petals;
-                    float r = 6f * (1 + 0.5f * (float)Math.Sin(5 * theta)); // 五瓣玫瑰
+                    float r = 3f * (1 + 0.4f * (float)Math.Sin(5 * theta));
 
-                    // 使用双曲线变形增强离散感
                     float modifier = (float)Math.Tan(theta * 1.5f) * 0.1f;
-                    modifier = MathHelper.Clamp(modifier, -1f, 1f); // 防止爆炸性发散
+                    modifier = MathHelper.Clamp(modifier, -0.6f, 0.6f);
 
-                    Vector2 velocity = theta.ToRotationVector2() * r * (1 + modifier);
+                    Vector2 local = theta.ToRotationVector2() * r * (1 + modifier);
+
+                    // 🌟 整体绕命中角度旋转
+                    Vector2 velocity = local.RotatedBy(baseAngle);
 
                     Dust d = Dust.NewDustPerfect(
                         Projectile.Center,
@@ -204,11 +258,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
                         velocity,
                         100,
                         Color.RoyalBlue,
-                        1.4f
+                        1.3f
                     );
                     d.noGravity = true;
                 }
-
             }
 
 

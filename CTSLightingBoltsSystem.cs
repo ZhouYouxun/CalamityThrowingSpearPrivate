@@ -962,29 +962,36 @@ namespace CalamityRangerExpansion.LightingBolts
         {
             PrettySparkleParticle particle = _poolPrettySparkle.RequestParticle();
 
-            // ✦ 颜色：亮白 + 浅蓝调
-            particle.ColorTint = new Color(0.9f, 0.9f, 1f, 1f); // 略偏蓝的亮白色
+            // ✦ 颜色：亮白 + 浅蓝调（不变）
+            particle.ColorTint = new Color(0.9f, 0.9f, 1f, 1f);
 
-            // ✦ 随机微偏移范围 (半径 8~12px)，保持“漂浮感”
-            particle.LocalPosition = position + Main.rand.NextVector2Circular(8f, 12f);
+            // ✦ 稳定偏移：根据位置生成有规律偏移（避免集中堆积）
+            float offsetIndex = (position.X + position.Y) * 0.01f;
+            float offsetRadius = 10f;
+            Vector2 offset = offsetRadius * new Vector2((float)Math.Sin(offsetIndex), (float)Math.Cos(offsetIndex));
+            particle.LocalPosition = position + offset;
 
-            // ✦ 旋转随机，形成动态闪耀感
-            particle.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            // ✦ 稳定旋转（基于坐标或时间）
+            particle.Rotation = (position.X * 0.001f + position.Y * 0.002f) % MathHelper.TwoPi;
 
-            // ✦ 形状：细长横向光点（可微调）
-            particle.Scale = new Vector2(Main.rand.NextFloat(1.5f, 2.0f), Main.rand.NextFloat(0.3f, 0.5f));
+            // ✦ 规则缩放：在允许范围内使用余弦起伏
+            float scaleOsc = (float)Math.Cos(offsetIndex * 1.2f) * 0.5f + 0.5f;
+            particle.Scale = new Vector2(
+                MathHelper.Lerp(1.5f, 2.0f, scaleOsc),
+                MathHelper.Lerp(0.3f, 0.5f, scaleOsc)
+            );
 
-            // ✦ 淡入淡出流畅
+            // ✦ 淡入淡出流畅（保留）
             particle.FadeInNormalizedTime = 5E-06f;
             particle.FadeOutNormalizedTime = 0.95f;
 
-            // ✦ 生命周期 (30–40 帧)
-            particle.TimeToLive = Main.rand.Next(30, 40);
-            particle.FadeOutEnd = particle.TimeToLive;
-            particle.FadeInEnd = (int)(particle.TimeToLive * 0.3f);
-            particle.FadeOutStart = (int)(particle.TimeToLive * 0.7f);
+            // ✦ 生命周期稳定为 36 帧（不再随机）
+            particle.TimeToLive = 36;
+            particle.FadeOutEnd = 36;
+            particle.FadeInEnd = 10;
+            particle.FadeOutStart = 26;
 
-            // ✦ 发光量适中（避免过度刺眼）
+            // ✦ 发光量不变
             particle.AdditiveAmount = 0.4f;
 
             // ✦ 添加到粒子系统

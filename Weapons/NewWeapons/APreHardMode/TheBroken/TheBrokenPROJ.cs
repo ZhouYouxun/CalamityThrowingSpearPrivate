@@ -37,151 +37,133 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
             return false;
         }
 
-
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 3; // 允许？次伤害
-            Projectile.timeLeft = 120 * 3;
+            Projectile.penetrate = 3;
+            Projectile.timeLeft = 20 * 3;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 2; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.tileCollide = true;
+            Projectile.extraUpdates = 1; // 默认值，之后会在AI中调整
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 14;
+            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
+
         }
 
         public override void AI()
         {
-            // 初始化：仅执行一次，使用稳定的 localAI[0] 决定是否启用扎入模式
+            // 初始化攻击模式
             if (!Projectile.localAI[1].Equals(1f))
             {
                 _enableStickMode = Projectile.localAI[0] == 1f;
-                Projectile.localAI[1] = 1f; // 已初始化
+                Projectile.localAI[1] = 1f;
+
+                // 根据模式设置 extraUpdates
+                Projectile.extraUpdates = _enableStickMode ? 1 : 2; // _enableStickMode = 5
+                Projectile.timeLeft = _enableStickMode ? 60 : 30;
+
+                // 如果是右键模式则设置穿透为 2
+                if (_enableStickMode)
+                    Projectile.penetrate = 2;
             }
 
-            // 自定义重力影响
-            Projectile.velocity.Y += 0.075f;
-
-            // 旋转
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // 粒子特效始终保留
-            GenerateSilverDustAndSparks();
-
+            // 左键模式不受重力影响
             if (_enableStickMode)
             {
-                // 扎入模式
+                // 右键扎入模式
                 if (stuckToTarget && stuckTarget != null && stuckTarget.active)
                 {
-                    // 紧跟目标
-                    Projectile.Center = stuckTarget.Center + new Vector2(0, -16f);
-
-                    // 持续生成飞刀手里剑
-                    spawnCounter++;
-                    if (spawnCounter % 5 == 0)
-                    {
-                        int[] projectileTypes = { ProjectileID.Shuriken, ProjectileID.ThrowingKnife };
-                        int type = projectileTypes[Main.rand.Next(projectileTypes.Length)];
-
-                        // 范围更狂野一些（更远更随机）🐘
-                        Vector2 spawnPos = Projectile.Center + new Vector2(
-                            Main.rand.NextFloat(-64f, 64f),  // 水平方向扩大
-                            Main.rand.NextFloat(-96f, -64f)  // 垂直方向提高
-                        );
-
-                        Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(9f, 12f);
-
-                        int projID = Projectile.NewProjectile(
-                            Projectile.GetSource_FromThis(),
-                            spawnPos,
-                            velocity,
-                            type,
-                            (int)(Projectile.damage * 0.5f),
-                            Projectile.knockBack,
-                            Projectile.owner
-                        );
-
-                        if (projID.WithinBounds(Main.maxProjectiles))
-                        {
-                            Projectile proj = Main.projectile[projID];
-                            proj.friendly = true;
-                            proj.hostile = false;
-                            proj.penetrate = 1;
-                            proj.usesLocalNPCImmunity = true;
-                            proj.localNPCHitCooldown = 60;
-                        }
-
-                        CTSLightingBoltsSystem.Spawn_SilverSpearGlow(spawnPos);
-
-                        // 🌟 CritSpark 特效喷射
-                        Vector2 sparkDirection = -(Projectile.Center - spawnPos).SafeNormalize(Vector2.UnitY);
-                        int sparkCount = Main.rand.Next(2, 4);
-                        for (int j = 0; j < sparkCount; j++)
-                        {
-                            Vector2 sparkVelocity = sparkDirection.RotatedByRandom(MathHelper.ToRadians(12f)) * Main.rand.NextFloat(3f, 5f);
-                            CritSpark spark = new CritSpark(
-                                spawnPos,
-                                sparkVelocity,
-                                Color.White,
-                                Color.LightBlue,
-                                0.7f,
-                                18
-                            );
-                            GeneralParticleHandler.SpawnParticle(spark);
-                        }
-                    }
-
-
-
-                    // 平滑跟随敌人
-                    Projectile.Center = Vector2.Lerp(Projectile.Center, stuckTarget.Center, 0.2f);
+                    Projectile.Center = Vector2.Lerp(Projectile.Center, stuckTarget.Center + new Vector2(0, -16f), 0.2f);
                 }
             }
             else
             {
-                // 飞刀雨模式
-                Projectile.localAI[2]++; // 帧计数
-
-                if (Projectile.localAI[2] < 5)
-                    Projectile.tileCollide = false;
-                else
-                    Projectile.tileCollide = true;
-
-                // 35帧时触发散射飞刀飞镖
-                if (Projectile.localAI[2] == 25)
-                    ScatterShurikenAndKnives();
+                // 左键：不受重力影响
+                // 不再释放飞刀雨逻辑
+                Projectile.tileCollide = true;
             }
+
+            // 自身旋转和粒子保持通用
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            GenerateSilverDustAndSparks();
         }
 
-
-
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-        {
-
-
-        }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             base.OnHitNPC(target, hit, damageDone);
 
+            // 扎入逻辑
             if (EnableStickMode && !stuckToTarget && target.CanBeChasedBy())
             {
                 stuckToTarget = true;
                 stuckTarget = target;
-                Projectile.timeLeft = 250; // 固定持续时间
+                Projectile.timeLeft = 250;
                 Projectile.tileCollide = false;
-                Projectile.velocity = Vector2.Zero; // 停止运动
+                Projectile.velocity = Vector2.Zero;
+            }
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            CreateSilverDeathEffect();
+            SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+
+            if (!_enableStickMode)
+            {
+                int count = 5;
+                Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+                for (int i = 0; i < count; i++)
+                {
+                    // 在 ±45° 内随机角度偏转
+                    float randomRotation = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
+                    Vector2 direction = baseDirection.RotatedBy(randomRotation);
+
+                    // 随机速度 6 ~ 10f
+                    float speed = Main.rand.NextFloat(6f, 10f);
+                    Vector2 velocity = direction * speed;
+
+                    // 随机伤害倍率 0.2 ~ 0.4
+                    float damageMultiplier = Main.rand.NextFloat(0.2f, 0.4f);
+
+                    int proj = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        velocity,
+                        ModContent.ProjectileType<TheBrokenSpit>(),
+                        (int)(Projectile.damage * damageMultiplier),
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+
+                    if (proj.WithinBounds(Main.maxProjectiles))
+                    {
+                        Main.projectile[proj].friendly = true;
+                        Main.projectile[proj].hostile = false;
+                    }
+
+                    //// 随机角度偏移（±45° 扇形）
+                    //float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
+                    //Vector2 offsetDir = direction.RotatedBy(randomAngle);
+
+                    //// 在 direction 前方 ±45° 范围内，半径在 0 到 3×长度 之间随机
+                    //float radius = Main.rand.NextFloat(0f, 3f * Projectile.Size.Length());
+                    //Vector2 glowPos = Projectile.Center + offsetDir * radius;
+
+                    //// 生成光点（旋转由内部粒子系统控制）
+                    //CTSLightingBoltsSystem.Spawn_SilverSpearGlow(glowPos);
+
+                }
             }
         }
 
         private void GenerateSilverDustAndSparks()
         {
-            // 银光Dust
             if (Main.rand.NextBool(1))
             {
                 Dust d = Dust.NewDustPerfect(
@@ -195,7 +177,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                 d.noGravity = true;
             }
 
-            // CritSpark闪光十字
             if (Main.rand.NextBool(1))
             {
                 Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitX);
@@ -205,13 +186,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                     sparkVelocity,
                     Color.White,
                     Color.LightBlue,
-                    0.8f, // 缩放适中
-                    18 // 寿命稍长
+                    0.8f,
+                    18
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            // 深蓝SparkParticle（冷调提升高级感）
             if (Main.rand.NextBool(5))
             {
                 Vector2 sparkVel = Main.rand.NextVector2CircularEdge(1f, 1f) * 3f;
@@ -225,93 +205,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
-        }
-
-
-        private void ScatterShurikenAndKnives()
-        {
-            int[] projectileTypes = { ProjectileID.Shuriken, ProjectileID.ThrowingKnife };
-            int projectiles = 6; // 3 shuriken + 3 knives
-            float radius = 64f; // 翻倍范围
-
-            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY); // 正前方方向
-            Vector2 spreadBase = forward * 10f; // 基础喷射速度
-
-            for (int i = 0; i < projectiles; i++)
-            {
-                // 在正前方附近随机偏移范围散射
-                Vector2 randomOffset = Main.rand.NextVector2Circular(radius, radius);
-                Vector2 spawnPos = Projectile.Center + randomOffset;
-
-                // 以正前方为基础
-                Vector2 baseDirection = forward;
-
-                // 在 ±10° 内随机旋转方向
-                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f));
-                Vector2 direction = baseDirection.RotatedBy(angleOffset);
-
-                // 速度正负30%随机浮动
-                float speedMultiplier = Main.rand.NextFloat(0.7f, 1.3f);
-                Vector2 velocity = direction * spreadBase.Length() * speedMultiplier;
-
-                // 发射飞刀或手里剑
-                int projID = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    spawnPos,
-                    velocity,
-                    projectileTypes[i % 2],
-                    (int)(Projectile.damage * 0.4f),
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-
-                if (projID.WithinBounds(Main.maxProjectiles))
-                {
-                    Projectile proj = Main.projectile[projID];
-                    proj.friendly = true;
-                    proj.hostile = false;
-                    proj.penetrate = 1;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 60;
-                }
-
-
-                // 在落点生成银色光点
-                CTSLightingBoltsSystem.Spawn_SilverSpearGlow(spawnPos);
-
-                // 可保留原银色 Dust 辅助可视化
-                Dust d = Dust.NewDustPerfect(
-                    spawnPos,
-                    DustID.Silver,
-                    velocity * 0.1f,
-                    120,
-                    Color.White,
-                    1.2f
-                );
-                d.noGravity = true;
-
-                // 生成 2~3 个 CritSpark 往正后方退，形成爆散感
-                int critSparks = Main.rand.Next(2, 4);
-                for (int j = 0; j < critSparks; j++)
-                {
-                    Vector2 backwardVelocity = -forward.RotatedByRandom(MathHelper.ToRadians(10f)) * Main.rand.NextFloat(3f, 5f);
-                    CritSpark spark = new CritSpark(
-                        spawnPos,
-                        backwardVelocity,
-                        Color.White,
-                        Color.LightBlue,
-                        0.7f,
-                        16
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-            }
-        }
-
-
-        public override void OnKill(int timeLeft)
-        {
-            CreateSilverDeathEffect();
         }
 
         private void CreateSilverDeathEffect()
@@ -346,8 +239,5 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                 GeneralParticleHandler.SpawnParticle(spark);
             }
         }
-
-
-
     }
 }

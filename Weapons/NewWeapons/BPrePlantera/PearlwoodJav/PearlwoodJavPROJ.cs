@@ -140,7 +140,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             );
 
 
+            {
+                float fixedRotation = Projectile.rotation - MathHelper.PiOver4;
+                Vector2 gunTip = Projectile.Center + new Vector2(16f * 4f, 0).RotatedBy(fixedRotation); // 计算枪尖位置
+                Vector2 drawPositio1n = gunTip - Main.screenPosition;
 
+                // 🌸 粉色 Extra_89 梦幻环（叠加层）
+                Texture2D pinkRing = Terraria.GameContent.TextureAssets.Extra[89].Value;
+                float pulse = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
+                Color pinkColor = new Color(255, 200, 240) * 0.8f;
+
+                for (int i = 0; i < 5; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / 5f + Main.GlobalTimeWrappedHourly * 2.5f;
+                    float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
+
+                    Main.EntitySpriteDraw(
+                        pinkRing,
+                        drawPositio1n,
+                        null,
+                        pinkColor,
+                        angle,
+                        pinkRing.Size() * 0.5f,
+                        scale,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+
+                // 🌟 魔法阵纹理绘制
+                string[] magicCircles = new[]
+                {
+    "CalamityThrowingSpear/Texture/KsTexture/magic_01",
+    "CalamityThrowingSpear/Texture/KsTexture/magic_02",
+    "CalamityThrowingSpear/Texture/KsTexture/magic_04"
+};
+
+                for (int i = 0; i < magicCircles.Length; i++)
+                {
+                    Texture2D tex = ModContent.Request<Texture2D>(magicCircles[i]).Value;
+
+                    float scale = (0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i)) * 0.4f;
+                    float rotation = Main.GlobalTimeWrappedHourly * (0.6f + 0.1f * i);
+
+                    Color magicColor = Color.Pink * 0.55f;
+                    magicColor.A = 0;
+
+                    Main.EntitySpriteDraw(
+                        tex,
+                        drawPositio1n,
+                        null,
+                        magicColor,
+                        rotation,
+                        tex.Size() * 0.5f,
+                        scale,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+
+            }
 
 
             // 获取纹理资源和位置
@@ -269,7 +329,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
                 // 周期性彩虹圣光螺旋光点（已封装）
                 if (Main.GameUpdateCount % 30 == 0)
                 {
-                    CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
+                    //CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
                 }
 
                 // 持续外围粉红 Dust

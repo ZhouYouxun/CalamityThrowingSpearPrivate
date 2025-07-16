@@ -51,7 +51,10 @@
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ScourgeoftheCosmosC\宇宙吞噬者.txt" />
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\StreamGougeC\StreamGougeJavPortal.png" />
 	  <None Remove="Weapons\ChangedWeapons\EAfterDog\StreamGougeC\宇宙暗流.txt" />
-	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\恣睢投矛.txt" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\RancorMagicCircle.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\RancorMagicCircleGlowmask.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\RancorMagicCircleInner.png" />
+	  <None Remove="Weapons\ChangedWeapons\EAfterDog\ViolenceC\RancorMagicCircleInnerGlowmask.png" />
 	  <None Remove="Weapons\NewSpears\APreHardMode\BraisedPorkSpear\BraisedPorkSpearCloud.png" />
 	  <None Remove="Weapons\NewSpears\APreHardMode\DLOASSpear\DLOASSpear1Head.png" />
 	  <None Remove="Weapons\NewSpears\APreHardMode\DLOASSpear\DLOASSpear2Body.png" />

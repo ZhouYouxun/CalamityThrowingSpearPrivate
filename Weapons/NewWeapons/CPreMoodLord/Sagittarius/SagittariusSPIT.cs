@@ -95,7 +95,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
-
+            // 在死亡时触发屏幕震动
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = 5f;
             // 保留原版粒子效果
             for (int i = 0; i < 10; i++)
             {

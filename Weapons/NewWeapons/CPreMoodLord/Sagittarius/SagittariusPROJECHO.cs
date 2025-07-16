@@ -78,11 +78,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             if (!isAttached)// 蓄力阶段
             {
 
-                // 在 AI 中蓄力阶段循环调用
-                if (!isAttached && Main.rand.NextBool(3))
+                // 蓄力阶段，频率随时间增加，位置在甜甜圈环上
+                if (!isAttached)
                 {
-                    CTSLightingBoltsSystem.Spawn_SagittariusEchoCharging(Projectile.Center);
+                    // 插值计算“频率增强”：从初始间隔5（1/5概率）提升到每帧都触发（1/1）
+                    float chargeTime = Projectile.ai[0]; // 蓄力时间
+                    float progress = MathHelper.Clamp(chargeTime / 120f, 0f, 1f); // 约2秒内完成
+                    float triggerChance = MathHelper.Lerp(0.2f, 1f, progress); // 从20%到100%
+
+                    if (Main.rand.NextFloat() < triggerChance)
+                    {
+                        // 角度随机，半径在5~7格之间
+                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        float radius = Main.rand.NextFloat(5f * 16f, 7f * 16f);
+                        Vector2 offset = angle.ToRotationVector2() * radius;
+
+                        CTSLightingBoltsSystem.Spawn_SagittariusEchoCharging(Projectile.Center + offset);
+                    }
                 }
+
 
                 if (Main.GameUpdateCount % 12 == 0)
                 {
@@ -183,7 +197,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             // 如果进入了粘附状态，每次攻击都会召唤两把分裂长枪
             if (isAttached)
             {
-                SoundEngine.PlaySound(SoundID.Item108, Projectile.Center);
+                //SoundEngine.PlaySound(SoundID.Item108, Projectile.Center);
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮-开火"));
 
                 // 根据是否启用 Main.zenithWorld 决定召唤数量
                 int splitCount = Main.zenithWorld ? 10 : 3;
@@ -298,7 +313,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             {
                 isAttached = true; // 打开开关，标记为已粘附
                 // 屏幕震动效果
-                float shakePower = 1f; // 设置震动强度
+                float shakePower = 19f; // 设置震动强度
                 float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
                 Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
@@ -312,7 +327,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
         public override void OnKill(int timeLeft)
         {
             // 在死亡时触发屏幕震动
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = 10f;
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = 50f;
 
             // 在弹幕消失时释放大量烟雾粒子
             int smokeCount = 150; // 数量为原有逻辑的两倍
