@@ -125,41 +125,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            if (AngerMeter <= 0)
+            if (Main.LocalPlayer.HeldItem.type != Item.type)
                 return;
 
-            float barScale = 1.34f;
+            // ✅只有在开始充能之后才绘制
+            if (AngerMeter <= 0f)
+                return;
+
+            float barScale = 1.04f;
             var barBG = Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
             var barFG = Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
 
-            // 获取正确的玩家对象（确保是当前操控的玩家）
-            Player player = Main.player[Main.myPlayer];
+            // 🧭 屏幕中心位置 + 偏移
+            Vector2 screenCenter = new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f);
+            Vector2 playerScreenPos = Main.LocalPlayer.Center - Main.screenPosition;
 
-            // 计算绘制位置
-            //Vector2 drawPos = player.Center - Main.screenPosition + new Vector2(0, -36) - barBG.Size() / 2;
-            //float yOffset = 23f;
-            //Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+            // ✅我们的目标位置：玩家头顶往上 + 左偏移
+            float verticalOffset = -300f;
+            float horizontalOffset = -616f;
 
-            //Vector2 drawPos = player.Center - (Main.screenPosition) + new Vector2(350, -210) - barBG.Size() / 2;
-            // + new Vector2(0, -110) 后面的值意味着y轴后续调整，越是负数越是往上，前面的值意味着x轴，越是负数越是往右
+            Vector2 drawPos = playerScreenPos + new Vector2(horizontalOffset, verticalOffset);
 
-            //Vector2 drawPos = player.Center - Main.screenPosition + new Vector2(0, -36) - (barBG.Size() / 2);
-
-            float yOffset = 23f;
-            Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-
-            // 计算进度条填充区域
+            // 裁剪与颜色
             Rectangle frameCrop = new Rectangle(0, 0, (int)(AngerMeter / MaxAnger * barFG.Width), barFG.Height);
-
-            // 根据能量值选择颜色
             Color barColor = AngerMeter < 40 ? Color.Green : AngerMeter < 80 ? Color.Yellow : Color.Red;
 
-            // 绘制背景条
+            // 绘制
             spriteBatch.Draw(barBG, drawPos, null, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
-
-            // 绘制前景条（填充部分）
             spriteBatch.Draw(barFG, drawPos, frameCrop, barColor * 0.8f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
         }
+
+
+
 
         public override void AddRecipes()
         {

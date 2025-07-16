@@ -20,6 +20,7 @@ using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.DataStructures;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC
 {
@@ -176,6 +177,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
                 stuck = false;
                 Projectile.tileCollide = false;
                 Projectile.velocity = (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.UnitY) * 20f;
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/三叉戟音效2") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
             }
 
             if (returning)

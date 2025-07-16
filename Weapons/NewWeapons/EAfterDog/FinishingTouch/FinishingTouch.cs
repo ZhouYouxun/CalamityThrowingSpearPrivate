@@ -73,36 +73,37 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         }
 
         public override void PostDrawInInventory(
-    SpriteBatch spriteBatch,
-    Vector2 position,
-    Rectangle frame,
-    Color drawColor,
-    Color itemColor,
-    Vector2 origin,
-    float scale)
+         SpriteBatch spriteBatch,
+         Vector2 position,
+         Rectangle frame,
+         Color drawColor,
+         Color itemColor,
+         Vector2 origin,
+         float scale)
         {
             if (rightClickCooldownTimer <= 0)
-                return; // 未冷却无需显示
+                return;
 
-            // 加载 Calamity 的通用进度条贴图
+            float barScale = 1.04f;
             var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
             var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
 
-            float barScale = 0.8f;
-            Vector2 drawPos = position + Vector2.UnitY * (frame.Height - 4f) * scale;
+            // ✅接轨位置（以玩家为参考）
+            Vector2 playerScreenPos = Main.LocalPlayer.Center - Main.screenPosition;
+            Vector2 drawPos = playerScreenPos + new Vector2(-616f, -300f);
 
-            // 冷却进度百分比（反向填充）
+            // 冷却进度
             float progress = 1f - rightClickCooldownTimer / (float)RightClickCooldownMax;
             Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
 
-            // 根据进度动态改变颜色（绿-黄-红）
-            Color barColor = progress < 0.33f ? Color.Green : (progress < 0.66f ? Color.Yellow : Color.Red);
+            // ✅固定荧光绿色
+            Color barColor = Color.LimeGreen;
 
-            // 绘制背景
+            // 绘制
             spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
-            // 绘制填充
             spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
         }
+
 
 
         public override bool CanUseItem(Player player)
