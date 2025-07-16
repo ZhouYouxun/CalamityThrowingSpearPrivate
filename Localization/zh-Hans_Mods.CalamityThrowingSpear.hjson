@@ -87,7 +87,7 @@ Projectiles: {
 			ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
 			GraniteJavPROJ.DisplayName: 花岗岩矛
 			RedtideJavPROJ.DisplayName: 赤潮矛
-			WulfrimJavExtraPROJ.DisplayName: 钨钢锤
+			// WulfrimJavExtraPROJ.DisplayName: Wulfrim Hammer
 			WulfrimJavPROJ.DisplayName: 钨钢矛
 			RedtideJavEXP.DisplayName: 赤潮爆炸
 			TheBrokenPROJ.DisplayName: 破旧的长枪
@@ -96,8 +96,8 @@ Projectiles: {
 			DLOASSnake2Body.DisplayName: 画蛇添体
 			DLOASSnake1Head.DisplayName: 画蛇添头
 			DLOASPROJ.DisplayName: 画蛇添足
-			WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
-			RedtideJavRight.DisplayName: Redtide Jav Right
+			WulfrimJavExtraExtraEXP.DisplayName: 钨钢碎片
+			RedtideJavRight.DisplayName: 赤潮
 			// TheBrokenRight.DisplayName: The Broken Right
 			// TheBrokenSpit.DisplayName: The Broken Spit
 		}
@@ -136,7 +136,7 @@ Projectiles: {
 			ShadowJavPROJ.DisplayName: 错误
 			TheOtherMiracleMatterJavExoFire.DisplayName: 视界探针激光
 			TheOtherMiracleMatterJavPROJ.DisplayName: 视界探针
-			ShadowJavREPROJ.DisplayName: 无极右键
+			ShadowJavREPROJ.DisplayName: 错乱
 			RevelationSUPERBoom.DisplayName: 启示录超级爆炸
 			RevelationSTAR.DisplayName: 启示录落星
 			RevelationSpark.DisplayName: 启示录火焰
@@ -429,7 +429,7 @@ ChangedWeapons: {
 				'''
 				扔出一根受重力的长矛
 				一段时间后喷发出三个能追踪的火焰球
-				本体命中后造成巨大面积火焰
+				本体命中物块或至少两个敌怪后造成巨大面积火焰
 				[c/ff8400:“1200°C”]
 				'''
 		}
@@ -571,7 +571,7 @@ NewWeapons: {
 				'''
 				在空中留下气泡并且多次穿透
 				在消失时造成小规模爆炸
-				[c/ffc3c6:“有害藻类的反攻”]
+				[c/ffc3c6:“那一天的藻类，繁殖起来”]
 				'''
 		}
 
@@ -588,9 +588,9 @@ NewWeapons: {
 		TheBroken: {
 			Tooltip:
 				'''
-				飞行一段时间后扔出手里剑或投刀
-				右键对一个倒霉蛋持续释放手里剑或投刀
-				[c/e0e0e0:“什么？你难道指望着他很强？”]
+				左键扔出一根投矛，在短暂的延迟后依次弹出四根幻银矛
+				右键造成两次伤害
+				[c/e0e0e0:“我不建议你把它卖了，因为这是卖银”]
 				'''
 			DisplayName: 银质长枪
 		}
@@ -757,7 +757,7 @@ NewWeapons: {
 
 	DPreDog: {
 		BloodstoneJav: {
-			DisplayName: 血炎长枪
+			DisplayName: 龙血长刀
 			TooltipNormal:
 				'''
 				按住左键持续消耗自身的生命力并相应增加这把矛的穿透次数与伤害
@@ -978,8 +978,8 @@ NewWeapons: {
 				长矛追踪一段时间后会向着随机方向飞出
 				飞出时同时生成数个阴阳玉
 				阴阳玉会在击中时弹射并产生阴阳爆炸
-				[c/e1ffff:“将这澄澈的天空以思绪遮盖。我愿献上此身，令血悉数洒落大地。”]
-				[c/2f2f2f:“此般污秽之躯已无可供升入之天空……所有的邪秽之物啊！与我一同停驻至永恒吧！”]
+				[c/e1ffff:“断罪即为如此，非黑即白”]
+				[c/2f2f2f:“真理就存在于这黑白之间”]
 				'''
 		}
 
@@ -1043,8 +1043,8 @@ Items: {
 			'''
 			[c/ffa500:巨龙涅槃之时]
 			[c/ffa500:沐浴在龙魂之下的蛇将升入天空，于澄澈的天空中蜕为巨龙]
-			                     [c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
-			                     [c/ffa500:为上天焚烧这世间一切的邪秽之物]
+			[c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
+			[c/ffa500:为上天焚烧这世间一切的邪秽之物]
 			'''
 	}
 

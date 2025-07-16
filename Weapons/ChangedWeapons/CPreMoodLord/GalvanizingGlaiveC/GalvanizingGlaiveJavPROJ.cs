@@ -122,7 +122,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
             Vector2 baseVelocity = Projectile.velocity;
             float baseSpeed = baseVelocity.Length();
             Player owner = Main.player[Projectile.owner];
-
             target.AddBuff(BuffID.Electrified, 300); // 电击效果
 
             bool spawnFlux = !Main.rand.NextBool(5); // 20% 概率生成漩涡

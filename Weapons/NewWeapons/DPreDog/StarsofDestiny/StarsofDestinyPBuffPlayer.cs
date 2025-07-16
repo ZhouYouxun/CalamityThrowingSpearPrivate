@@ -21,10 +21,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 //Player.accRunSpeed *= 1.2f; // 提升跑步加速度
                 //Player.wingAccRunSpeed *= 1.5f; // 提升飞行时的加速度
                 //Player.wingTimeMax = (int)(Player.wingTimeMax * 1.75f); // 提升飞行时长
-
-                Player.moveSpeed += 10.25f;
-                Player.runAcceleration *= 2.25f;
-                Player.maxRunSpeed *= 2.25f;
+                Player.moveSpeed += 12f;
+                Player.runAcceleration *= 3.5f;
+                Player.maxRunSpeed *= 1.5f;
             }
         }
         public override void PostUpdateMiscEffects()
