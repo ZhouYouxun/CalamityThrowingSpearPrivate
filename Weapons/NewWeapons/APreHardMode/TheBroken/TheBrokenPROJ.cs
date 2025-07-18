@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
-using CalamityRangerExpansion.LightingBolts;
+//using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
 {
@@ -129,7 +129,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken
                     Vector2 velocity = direction * speed;
 
                     // 随机伤害倍率 0.2 ~ 0.4
-                    float damageMultiplier = Main.rand.NextFloat(0.2f, 0.4f);
+                    float damageMultiplier = Main.rand.NextFloat(0.4f, 0.6f);
 
                     int proj = Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),

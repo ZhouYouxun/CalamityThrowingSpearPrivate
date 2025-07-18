@@ -8,7 +8,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using CalamityRangerExpansion.LightingBolts;
+//using CalamityRangerExpansion.LightingBolts;
 using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken

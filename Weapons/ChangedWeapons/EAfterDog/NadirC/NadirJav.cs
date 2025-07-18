@@ -36,7 +36,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 32; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 36; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
