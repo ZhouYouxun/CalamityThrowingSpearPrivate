@@ -39,26 +39,26 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
             Vector2 gunTip = Projectile.Center + new Vector2(16f * 5f, 0).RotatedBy(fixedRotation);
             Vector2 drawPos = gunTip - Main.screenPosition;
 
-            // 获取纹理
-            Texture2D magicCircle = ModContent.Request<Texture2D>(
-                "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/ViolenceC/RancorMagicCircle"
-            ).Value;
+            //// 获取纹理
+            //Texture2D magicCircle = ModContent.Request<Texture2D>(
+            //    "CalamityThrowingSpear/Weapons/ChangedWeapons/EAfterDog/ViolenceC/RancorMagicCircle"
+            //).Value;
 
-            // 椭圆缩放（固定）[改主意了，不要椭圆形]
-            Vector2 ringScale = new Vector2(0.7f, 0.7f) * 2.5f; // 直接放大 2.5 倍
+            //// 椭圆缩放（固定）[改主意了，不要椭圆形]
+            //Vector2 ringScale = new Vector2(0.7f, 0.7f) * 2.5f; // 直接放大 2.5 倍
 
-            // 绘制时：缩放形成椭圆，rotation 控制内容绕中心旋转
-            Main.EntitySpriteDraw(
-                magicCircle,
-                drawPos,
-                null,
-                Color.HotPink * 0.6f,
-                Main.GlobalTimeWrappedHourly * 0.8f, // 内容缓慢自转
-                magicCircle.Size() * 0.5f,
-                ringScale,
-                SpriteEffects.None,
-                0
-            );
+            //// 绘制时：缩放形成椭圆，rotation 控制内容绕中心旋转
+            //Main.EntitySpriteDraw(
+            //    magicCircle,
+            //    drawPos,
+            //    null,
+            //    Color.HotPink * 0.6f,
+            //    Main.GlobalTimeWrappedHourly * 0.8f, // 内容缓慢自转
+            //    magicCircle.Size() * 0.5f,
+            //    ringScale,
+            //    SpriteEffects.None,
+            //    0
+            //);
 
 
             // === ✴️ 红色脉动双星星（反转旋转） ===

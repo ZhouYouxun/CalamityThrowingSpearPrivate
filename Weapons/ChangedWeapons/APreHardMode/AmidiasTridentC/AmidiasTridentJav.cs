@@ -27,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
             Item.useTime = Item.useAnimation = 36; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
-            Item.UseSound = new SoundStyle("CalamityThrowingSpear/Sound/三叉戟音效1");
+            Item.UseSound = new SoundStyle("CalamityThrowingSpear/Sound/海王三叉戟发射");
 
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityGreenBuyPrice;
