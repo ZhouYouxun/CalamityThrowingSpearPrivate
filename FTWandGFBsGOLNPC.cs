@@ -57,11 +57,11 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<DragonRageFuckYou>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.4f;
+                    modifiers.FinalDamage *= 0.6f;
                 }
                 if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
                 {
-                    modifiers.SourceDamage *= 0.05f;
+                    modifiers.SourceDamage *= 0.25f;
                 }
             }
 
@@ -79,7 +79,7 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.7f;
+                    modifiers.FinalDamage *= 0.9f;
                 }
             }
 

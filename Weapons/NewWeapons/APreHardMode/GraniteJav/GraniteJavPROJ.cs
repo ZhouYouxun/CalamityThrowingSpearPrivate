@@ -44,7 +44,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 3; // 允许3次伤害
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 480;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
@@ -62,17 +62,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             // Lighting - 将光源颜色更改为偏黑的深蓝色，光照强度为 0.55
             Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.1f, 0.5f) * 0.55f);
 
-            bool isAltMode = Projectile.localAI[0] == 1f; // 来自右键的标记
+            bool isAltMode = Projectile.localAI[0] == 0f; // 来自右键的标记
 
             if (isAltMode)
             {
                 RunChaosFlight(); // 👈 原来的扰动+追踪逻辑
             }
-            else
+            /*else
             {
                 Projectile.aiStyle = ProjAIStyleID.Arrow; // 标准箭矢逻辑
                 RunDeathDropCheck();                      // 👈 加入死亡下落机制
-            }
+            }*/
 
             DoSharedDustEffects(); // 两种模式共用的视觉效果
 
@@ -121,7 +121,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
             }
         }
 
-        private void RunDeathDropCheck()
+        /*private void RunDeathDropCheck()
         {
             // 在正下方范围寻找敌人
             Rectangle checkBox = new Rectangle(
@@ -160,7 +160,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
                 deathDropDelayTimer = 0;
             }
 
-        }
+        }*/
 
 
 

@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 21; // 设置伤害值
+            Item.damage = 24; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -43,14 +43,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
         {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
-        public override bool AltFunctionUse(Player player) => true;
+        //public override bool AltFunctionUse(Player player) => true;
 
-        public override bool CanUseItem(Player player)
+        /*public override bool CanUseItem(Player player)
         {
-            if (player.altFunctionUse == 2)
+            if (player.altFunctionUse == 1)
             {
                 // 右键：奇特飞行模式（混乱扰动弹幕）
-                Item.useTime = Item.useAnimation = 26;
                 Item.shootSpeed = 10f;
             }
             else
@@ -60,14 +59,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.GraniteJav
                 Item.shootSpeed = 12f;
             }
             return base.CanUseItem(player);
-        }
+        }*/
 
         public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             if (proj.WithinBounds(Main.maxProjectiles))
             {
-                Main.projectile[proj].localAI[0] = player.altFunctionUse == 2 ? 1f : 0f; // 右键 = 特殊飞行，左键 = 平飞
+                Main.projectile[proj].localAI[0] = player.altFunctionUse == 1 ? 1f : 0f; // 右键 = 特殊飞行，左键 = 平飞
             }
             return false;
         }
