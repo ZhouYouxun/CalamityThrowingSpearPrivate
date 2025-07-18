@@ -26,7 +26,6 @@ using CalamityMod.NPCs.Bumblebirb;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
-using CalamityRangerExpansion.LightingBolts;
 using Terraria.Graphics.Renderers;
 using CalamityMod.Prefixes;
 

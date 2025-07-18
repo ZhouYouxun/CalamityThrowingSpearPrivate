@@ -15,8 +15,7 @@ using CalamityMod.Particles;
 using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Buffs.DamageOverTime;
-using static CalamityRangerExpansion.LightingBolts.CTSLightingBoltsSystem;
-using CalamityRangerExpansion.LightingBolts;
+using static CalamityThrowingSpear.CTSLightingBoltsSystem;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 {

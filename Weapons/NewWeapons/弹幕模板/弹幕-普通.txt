@@ -19,6 +19,7 @@ namespace CalamityThrowingSpear.Projectiles.Tutorial
         {
             // 绘制控制函数，可用于绘制自定义贴图、添加发光效果、叠加特效等
             // 若不需要可返回 true 使用默认绘制【很不推荐】
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
             return true;
         }
 
@@ -34,6 +35,8 @@ namespace CalamityThrowingSpear.Projectiles.Tutorial
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true;
             Projectile.extraUpdates = 0; // 可调节飞行平滑度
+            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
+            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
 
         public override void OnSpawn(IEntitySource source)

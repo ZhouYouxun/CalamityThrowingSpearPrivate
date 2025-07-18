@@ -12,7 +12,6 @@ using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
 using CalamityMod.Particles;
-using CalamityRangerExpansion.LightingBolts;
 using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav

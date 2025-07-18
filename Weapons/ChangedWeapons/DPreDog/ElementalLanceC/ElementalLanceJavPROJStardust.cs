@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityMod.Particles;
-using CalamityRangerExpansion.LightingBolts;
 using CalamityMod;
 using Terraria.Audio;
 

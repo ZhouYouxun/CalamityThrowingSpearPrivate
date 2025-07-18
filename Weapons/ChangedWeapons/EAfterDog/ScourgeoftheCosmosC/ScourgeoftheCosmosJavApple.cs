@@ -14,7 +14,6 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent;
-using CalamityRangerExpansion.LightingBolts;
 
 
 

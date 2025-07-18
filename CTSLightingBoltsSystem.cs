@@ -6,7 +6,7 @@ using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent;
 
-namespace CalamityRangerExpansion.LightingBolts
+namespace CalamityThrowingSpear
 {
     public class CTSLightingBoltsSystem
     {
@@ -19,6 +19,8 @@ namespace CalamityRangerExpansion.LightingBolts
         // 注意！！注意！！
         // 本文件里的所有特效均不需要灾厄Calamity运行！这些东西完全独立，因为这些特效是基于原版1.4.4.9 Terraria的！
 
+
+        // 神圣晶石子弹-命中
         public static void Spawn_IonizingRadiation(Vector2 position)
         {
             float triangleAngleOffset = MathHelper.ToRadians(60f);
@@ -51,6 +53,8 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+
+        // 永恒子弹-升级一次
         public static void Spawn_FlowerPattern(Vector2 position)
         {
             int maxParticles = 25;
@@ -103,7 +107,7 @@ namespace CalamityRangerExpansion.LightingBolts
             Main.ParticleSystem_World_OverPlayers.Add(centerParticle);
         }
 
-
+        // 泰拉巨箭-分裂
         public static void Spawn_AncientForestWisdom(Vector2 position)
         {
             int totalPoints = 16; // 总光点数量
@@ -148,6 +152,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+        // 幽灵箭-命中
         public static void Spawn_SpectralWhispers(Vector2 position)
         {
             int ghostPoints = 12; // 幽魂光点数量
@@ -188,7 +193,7 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
-
+        // 山铜弹-命中
         public static void Spawn_BlossomPathIndicator(Vector2 position, Player player)
         {
             int lightCount = Main.rand.Next(3, 5); // 生成 3~4 个光点
@@ -228,7 +233,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
+        // 龙豪弹-命中
         public static void Spawn_GreenShimmerPath(Vector2 position, Player player)
         {
             int pointCount = Main.rand.Next(5, 8); // 生成 5~7 个光点
@@ -268,7 +273,7 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
         private static ParticlePool<FadingParticle> _poolFading = new ParticlePool<FadingParticle>(100, () => new FadingParticle());
-
+        // 熔渣弹-命中【橙色光圈，但是被废弃了】
         public static void Spawn_ExpandingOrangeRing(Vector2 position)
         {
             int ringCount = Main.rand.Next(1, 3); // 生成 1~2 个光环
@@ -307,7 +312,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-
+        // 空弹-命中
         public static void Spawn_GhostlyImpact(Vector2 position)
         {
             int ghostPointCount = Main.rand.Next(3, 7); // 生成 3~7 个光点
@@ -350,7 +355,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-
+        // 调星弹-命中
         public static void Spawn_AstralSoulLightsA(Vector2 position)
         {
             float lifespan = 36f; // 生命时长
@@ -402,17 +407,12 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+        // 上面这些是CRE的
+        // ---------------------------------------------分界线---------------------------------------------
+        // 下面这些是CTS的
 
 
-
-
-
-
-
-
-
-
-        // 这个是唯一一个用到的，上面的都是cre模组的[仅供参考，但是cre模组毕竟也是我的模组]
+        // 宇宙贪吃蛇-吃苹果
         public static void Apple_OnKill(Vector2 position)
         {
             float lifespan = 36f; // 粒子存活时间
@@ -466,12 +466,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
-
-
-
-
-
+        // 幻星-第一次反弹
         public static void Spawn_CelestialBurst(Vector2 center)
         {
             int rays = 6; // 六芒星
@@ -487,7 +482,7 @@ namespace CalamityRangerExpansion.LightingBolts
                     float distance = (j + 1) * radius / 3f;
                     Vector2 pos = center + dir * distance;
 
-                    PrettySparkleParticle p = CTSLightingBoltsSystem._poolPrettySparkle.RequestParticle();
+                    PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
 
                     // ✦ 设置基本视觉参数
                     p.LocalPosition = pos;
@@ -518,6 +513,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
+        // 女妖之爪-飞行
         public static void Spawn_BansheeSoulOrbs(Vector2 center, float rotationAngle)
         {
             float radius = 32f; // 半径为 2 × 16 = 32 像素
@@ -556,7 +552,7 @@ namespace CalamityRangerExpansion.LightingBolts
             Main.ParticleSystem_World_OverPlayers.Add(blue);
         }
 
-
+        // 高斯分割刀-命中-能量弹模式、核子风暴-冷却完成、潮汐-死亡
         public static void Spawn_GaussDischargeShards(Vector2 position)
         {
             int pointCount = Main.rand.Next(6, 10); // 数量浮动
@@ -578,7 +574,7 @@ namespace CalamityRangerExpansion.LightingBolts
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }
         }
-
+        // 高斯分割刀-命中-漩涡模式
         public static void Spawn_GaussSingularityPulse(Vector2 position)
         {
             float radius = 32f;
@@ -603,7 +599,7 @@ namespace CalamityRangerExpansion.LightingBolts
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }
         }
-
+        // 元素长枪-星辰
         public static void Spawn_StardustNova_Simple(Vector2 position, Color color, float rotationOffset)
         {
             float angleStep = MathHelper.ToRadians(120f); // 三角形分布
@@ -635,7 +631,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-        // SagittariusPROJ 飞行时生成：亮黄螺旋轨迹光点
+        // 贯星之枪-默认弹幕、恒辉长枪-默认弹幕
         public static void Spawn_SagittariusFlightSpiral(Vector2 center, float angleOffset)
         {
             float radius = 24f;
@@ -657,7 +653,7 @@ namespace CalamityRangerExpansion.LightingBolts
             Main.ParticleSystem_World_OverPlayers.Add(spark);
         }
 
-        // SagittariusSPIT 出现时爆发光点（类似星屑点燃）
+        // 贯星之枪-分裂弹幕
         public static void Spawn_SagittariusSpitBirth(Vector2 center)
         {
             int count = 8;
@@ -682,7 +678,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-        // SagittariusPROJECHO 蓄力期间，随机喷发喷射型光点
+        // 贯星之枪-重型蓄力弹幕
         public static void Spawn_SagittariusEchoCharging(Vector2 center)
         {
             int count = Main.rand.Next(2, 4);
@@ -705,7 +701,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
+        // 画龙点睛-冲刺
         public static void Spawn_FlamingPentagonOrbs(Vector2 center, float rotationAngle)
         {
             int points = 5;
@@ -735,7 +731,7 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
-
+        // 泰拉巨枪-命中
         public static void Spawn_TerraLanceForestSpirals(Vector2 position, float timeOffset = 0f)
         {
             int spiralCount = 2; // 双螺旋
@@ -777,7 +773,7 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
-        // 星流1
+        // 恒辉-命中
         public static void Spawn_PlasmaScatter(Vector2 position)
         {
             int count = Main.rand.Next(12, 18);
@@ -800,7 +796,7 @@ namespace CalamityRangerExpansion.LightingBolts
         }
 
 
-        // 星流2
+        // 探针-飞行期间
         public static void Spawn_ParallelPlasmaLines(Vector2 center, Vector2 dirShort, Vector2 dirLong)
         {
             Color[] colors = {
@@ -866,9 +862,7 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-
-
-        // === 💖 CTSLightingBoltsSystem 新增函数 Spawn_PinkHolyExplosion ===
+        // 珍珠木-死亡
         public static void Spawn_PinkHolyExplosion(Vector2 position)
         {
             int count = Main.rand.Next(8, 12); // 光点数量
@@ -890,9 +884,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
-
-
+        // 珍珠木-命中
         public static void Spawn_RainbowHolySpirals(Vector2 position)
         {
             Color[] rainbowColors = new Color[]
@@ -924,7 +916,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
+        // 电磁凝胶-命中
         public static void Spawn_StaticElectricSparkle(Vector2 center, float radius = 24f, float rotationOffset = 0f)
         {
             int count = 10; // 严格保持 ≤10 颗光点
@@ -957,7 +949,7 @@ namespace CalamityRangerExpansion.LightingBolts
             }
         }
 
-
+        // 初始银枪【单体光点】
         public static void Spawn_SilverSpearGlow(Vector2 position)
         {
             PrettySparkleParticle particle = _poolPrettySparkle.RequestParticle();
@@ -1000,7 +992,9 @@ namespace CalamityRangerExpansion.LightingBolts
 
 
 
-
+        // 上面这些是CTS的
+        // ---------------------------------------------分界线---------------------------------------------
+        // 下面这些是CX除了CTS部分的
 
 
 

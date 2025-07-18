@@ -19,7 +19,6 @@ using CalamityMod.Projectiles.Magic;
 using Terraria.Audio;
 using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Buffs.StatDebuffs;
-using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingGlaiveC
 {

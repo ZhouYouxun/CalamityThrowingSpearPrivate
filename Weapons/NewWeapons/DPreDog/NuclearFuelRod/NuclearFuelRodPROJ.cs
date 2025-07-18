@@ -328,6 +328,81 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             //    );
             //}
 
+            //if (laserSpawned)
+            //{
+            //    Vector2 gunTip = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 48f;
+            //    Vector2 screenPos = gunTip - Main.screenPosition;
+            //    float globalScale = 0.5f; // 🔁 全局缩放比例
+
+            //    // === ☢ 核辐射符号 IonizingRadiation ===
+            //    Texture2D radiation = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/IonizingRadiation").Value;
+            //    for (int i = 0; i < 3; i++)
+            //    {
+            //        float rot = Main.GlobalTimeWrappedHourly * (0.8f + 0.2f * i) * (i % 2 == 0 ? 1f : -1f);
+            //        float pulse = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f + i);
+            //        Color color = Color.LimeGreen * 0.4f;
+            //        color.A = 0;
+
+            //        Main.EntitySpriteDraw(
+            //            radiation,
+            //            screenPos,
+            //            null,
+            //            color,
+            //            rot,
+            //            radiation.Size() * 0.5f,
+            //            globalScale * pulse,
+            //            SpriteEffects.None,
+            //            0
+            //        );
+            //    }
+
+            //    // === 🌫 cloud2_00~04 光晕层（反转+脉动） ===
+            //    for (int i = 1; i < 5; i++)
+            //    {
+            //        Texture2D tex = ModContent.Request<Texture2D>($"CalamityThrowingSpear/Texture/SuperTexturePack/cloud2_00{i}").Value;
+            //        float rot = Main.GlobalTimeWrappedHourly * (0.6f + 0.1f * i) * (i % 2 == 0 ? 1f : -1f);
+            //        float pulse = 1f + 0.05f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + i);
+            //        Color color = Color.LightGreen * 0.35f;
+            //        color.A = 0;
+
+            //        Main.EntitySpriteDraw(
+            //            tex,
+            //            screenPos,
+            //            null,
+            //            color,
+            //            rot,
+            //            tex.Size() * 0.5f,
+            //            globalScale * 1.2f * pulse,
+            //            SpriteEffects.None,
+            //            0
+            //        );
+            //    }
+
+            //    // === 🔋 energy_00~01 核心层（深绿色） ===
+            //    for (int i = 1; i < 2; i++)
+            //    {
+            //        Texture2D tex = ModContent.Request<Texture2D>($"CalamityThrowingSpear/Texture/SuperTexturePack/energy_00{i}").Value;
+            //        float rot = Main.GlobalTimeWrappedHourly * (1f + 0.1f * i) * (i % 2 == 0 ? 1f : -1f);
+            //        float pulse = 1f + 0.06f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + i);
+            //        Color color = Color.Lime * 0.5f;
+            //        color.A = 0;
+
+            //        Main.EntitySpriteDraw(
+            //            tex,
+            //            screenPos,
+            //            null,
+            //            color,
+            //            rot,
+            //            tex.Size() * 0.5f,
+            //            globalScale * 0.9f * pulse,
+            //            SpriteEffects.None,
+            //            0
+            //        );
+            //    }
+            //}
+
+
+
 
             if (laserSpawned)
             {

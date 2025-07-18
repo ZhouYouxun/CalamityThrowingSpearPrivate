@@ -11,7 +11,6 @@ using Terraria;
 using Terraria.Audio;
 using CalamityMod.Particles;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 {

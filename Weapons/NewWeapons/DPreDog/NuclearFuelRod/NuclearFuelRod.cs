@@ -14,7 +14,6 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
-using CalamityRangerExpansion.LightingBolts;
 using Terraria.Audio;
 using CalamityMod.Particles;
 

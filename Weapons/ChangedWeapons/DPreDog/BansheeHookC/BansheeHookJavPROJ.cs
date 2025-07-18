@@ -13,7 +13,6 @@ using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using Terraria.Audio;
 using CalamityMod.Sounds;
-using CalamityRangerExpansion.LightingBolts;
 using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC

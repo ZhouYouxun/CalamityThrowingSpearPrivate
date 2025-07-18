@@ -15,7 +15,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Buffs.StatDebuffs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
-using CalamityRangerExpansion.LightingBolts;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
 {
