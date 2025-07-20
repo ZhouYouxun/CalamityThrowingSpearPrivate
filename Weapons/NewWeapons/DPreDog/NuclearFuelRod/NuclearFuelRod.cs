@@ -212,25 +212,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             if (cooldownTimer <= 0)
                 return;
 
-            float barScale = 1.04f;
+            float barScale = 3.34f;
             var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
             var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
 
-            // ✅使用你定义的屏幕偏移标准位置
-            Vector2 playerScreenPos = Main.LocalPlayer.Center - Main.screenPosition;
-            Vector2 drawPos = playerScreenPos + new Vector2(-616f, -300f);
+            Vector2 barOrigin = barBG.Size() * 0.5f;
+            float yOffset = 20f;
+            Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
 
-            // 冷却进度（填充）
             float progress = 1f - cooldownTimer / (float)CooldownMax;
             Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
 
-            // ✅颜色固定为荧光绿色
             Color barColor = Color.LimeGreen;
+            Vector2 totalScale = scale * barScale * Vector2.One;
 
-            // 绘制
-            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
         }
+
 
 
 

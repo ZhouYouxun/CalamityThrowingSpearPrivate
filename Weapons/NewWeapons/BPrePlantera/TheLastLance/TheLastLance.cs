@@ -219,25 +219,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             if (rightClickCooldown <= 0)
                 return;
 
-            float barScale = 1.04f;
+            // 📐 缩放倍率（统一使用 3.34f）
+            float barScale = 3.34f;
             var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
             var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
 
-            // ✅接轨标准位置：屏幕右下角基准 + 偏移
-            Vector2 playerScreenPos = Main.LocalPlayer.Center - Main.screenPosition;
-            Vector2 drawPos = playerScreenPos + new Vector2(-616f, -300f);
+            Vector2 barOrigin = barBG.Size() * 0.5f;
+            float yOffset = 20f; // 条在物品图标下方 20px
+            Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
 
-            // 冷却百分比（填充）
+            // ✅ 填充长度
             float progress = 1f - rightClickCooldown / (float)RightClickCooldownMax;
             Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
 
-            // 颜色风格：深海蓝调
+            // ✅ 颜色：深海蓝 → 深蓝过渡
             Color barColor = Color.Lerp(Color.DarkSlateGray, Color.DarkBlue, progress);
 
-            // 绘制
-            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+            // ✅ 等比例绘制
+            Vector2 totalScale = scale * barScale * Vector2.One;
+
+            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
         }
+
 
 
 

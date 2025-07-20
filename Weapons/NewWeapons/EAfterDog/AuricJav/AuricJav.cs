@@ -128,31 +128,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             if (Main.LocalPlayer.HeldItem.type != Item.type)
                 return;
 
-            // ✅只有在开始充能之后才绘制
             if (AngerMeter <= 0f)
                 return;
 
-            float barScale = 1.04f;
+            float barScale = 3.34f;
             var barBG = Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
             var barFG = Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
 
-            // 🧭 屏幕中心位置 + 偏移
-            Vector2 screenCenter = new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f);
-            Vector2 playerScreenPos = Main.LocalPlayer.Center - Main.screenPosition;
+            Vector2 barOrigin = barBG.Size() * 0.5f;
+            float yOffset = 20f; // 往下的偏移（可调）
+            Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
 
-            // ✅我们的目标位置：玩家头顶往上 + 左偏移
-            float verticalOffset = -300f;
-            float horizontalOffset = -616f;
-
-            Vector2 drawPos = playerScreenPos + new Vector2(horizontalOffset, verticalOffset);
-
-            // 裁剪与颜色
             Rectangle frameCrop = new Rectangle(0, 0, (int)(AngerMeter / MaxAnger * barFG.Width), barFG.Height);
             Color barColor = AngerMeter < 40 ? Color.Green : AngerMeter < 80 ? Color.Yellow : Color.Red;
 
-            // 绘制
-            spriteBatch.Draw(barBG, drawPos, null, barColor, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor * 0.8f, 0f, Vector2.Zero, barScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barBG, drawPos, null, barColor, 0f, barOrigin, scale * barScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barFG, drawPos, frameCrop, barColor * 0.8f, 0f, barOrigin, scale * barScale, SpriteEffects.None, 0f);
         }
 
 
