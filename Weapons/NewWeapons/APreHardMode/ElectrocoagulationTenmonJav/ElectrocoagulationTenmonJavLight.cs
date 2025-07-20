@@ -81,8 +81,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
 
             {
                 // 双螺旋白色 Dust + Spark 飞行环绕特效
-                float spiralRadius = 12f;
-                float spiralSpeed = 0.25f; // 控制螺旋速度
+                float spiralRadius = 9f;
+                float spiralSpeed = 0.65f; // 控制螺旋速度
                 float globalTime = Main.GameUpdateCount * spiralSpeed;
 
                 for (int spiral = 0; spiral < 2; spiral++)
@@ -92,7 +92,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
                     Vector2 offset = angle.ToRotationVector2() * spiralRadius;
 
                     // Dust 环绕
-                    if (Main.rand.NextBool(2)) // 控制密度
+                    if (Main.rand.NextBool(5)) // 控制密度
                     {
                         Dust dust = Dust.NewDustPerfect(
                             Projectile.Center + offset,
@@ -116,7 +116,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.Electrocoagulati
                             perpendicularVel,
                             false,
                             20, // 生命周期
-                            0.5f, // 大小
+                            0.25f, // 大小
                             Color.White
                         );
                         GeneralParticleHandler.SpawnParticle(spark);

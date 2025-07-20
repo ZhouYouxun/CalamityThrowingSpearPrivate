@@ -18,6 +18,7 @@ using Terraria.ModLoader;
 using CalamityMod.Particles;
 using Terraria.GameContent.Drawing;
 using CalamityMod.Graphics.Metaballs;
+using Terraria.ID;
 
 
 
@@ -48,25 +49,119 @@ namespace CalamityThrowingSpear
         }
         public override void AI()
         {
-
-            // 粒子效果------------------------------------------------------------------------------------------------------------------------------------
+            // 原版Dust效果------------------------------------------------------------------------------------------------------------------------------------
             {
-                // 1. 尖刺型粒子特效💉💉💉---------------------------------
-                // 原灾示范：北辰鹦哥鱼【新版】命中特效
-                PointParticle leftSpark = new PointParticle(
+                // 原版 Dust 效果 ----------------------------------------------------------------------------------------------------------------------
+
+                // 方式 1️⃣：使用 Dust.NewDust（带扰动、适合爆炸）
+                for (int i = 0; i < 6; i++)
+                {
+                    int dustIndex = Dust.NewDust(
+                        Projectile.Center - new Vector2(4f), // 起始位置（中心偏移）
+                        8, 8, // 宽高范围
+                        DustID.Torch, // 粒子类型（可以换成你喜欢的）
+                        Main.rand.NextFloat(-2f, 2f), // velocityX
+                        Main.rand.NextFloat(-2f, 2f), // velocityY
+                        0, // alpha
+                        Color.Orange, // 粒子颜色（部分类型支持）
+                        Main.rand.NextFloat(1f, 1.5f) // scale
+                    );
+                    Main.dust[dustIndex].noGravity = true;
+                    Main.dust[dustIndex].fadeIn = 1.2f;
+                }
+
+                // 方式 2️⃣：使用 Dust.NewDustPerfect（精准无扰动、适合轨迹/装饰）
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 offset = Main.rand.NextVector2Circular(6f, 6f);
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center + offset,
+                        DustID.GoldFlame, // 另一种粒子类型
+                        offset * 0.1f,
+                        0,
+                        Color.Gold,
+                        Main.rand.NextFloat(1f, 1.4f)
+                    );
+                    d.noGravity = true;
+                    d.fadeIn = 1.2f;
+                }
+
+            }
+
+
+
+            // 原版Gore效果------------------------------------------------------------------------------------------------------------------------------------
+            {
+                // 原版 Gore 效果 ----------------------------------------------------------------------------------------------------------------------
+
+                // 示例用途：当弹幕或单位死亡时，喷出碎块血肉残骸
+
+                // 方法：使用 Gore.NewGore 创建一个碎块（支持原版和 ModGore）
+
+                // 原版 Gore 示例（类型：GoreID.Smoke1 ~ Smoke3 是内置灰尘碎块）
+                for (int i = 0; i < 3; i++)
+                {
+                    Vector2 goreVelocity = Projectile.velocity + Main.rand.NextVector2Circular(3f, 3f);
+                    int goreType = GoreID.Smoke1 + i; // 示例：烟雾 1~3 号
+
+                    Gore.NewGore(
+                        Projectile.GetSource_Death(), // 来源（必须传入）
+                        Projectile.Center,            // 生成位置
+                        goreVelocity,                 // 初始速度
+                        goreType,                     // Gore 类型（原版：GoreID.*，或 ModGore）
+                        Projectile.scale              // 缩放
+                    );
+                }
+
+
+                // 额外演示：搭配血雾 Dust 效果一起
+                for (int i = 0; i < 10; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(5f, 5f));
+                    d.noGravity = true;
+                    d.scale *= Main.rand.NextFloat(0.8f, 1.3f);
+                }
+            }
+
+
+            // Mod粒子效果------------------------------------------------------------------------------------------------------------------------------------
+            {
+                // 按照个人认为的适用范围，从高到低排布（越是排在越前面的越是我觉得它用处更广泛的）
+
+
+                // 1.线性粒子---------------------------------
+                // 原灾示范：太多了,包括宇宙之火和巨龙之火的debuff效果，日蚀之陨，哈雷彗星炮主体等等
+                // 适用于尾迹、火花、能量拖尾，几乎所有都可以用到，它非常广泛
+                Particle trail = new SparkParticle(
                     Projectile.Center, // 设定粒子的初始位置，与弹幕中心重合
-                    -Projectile.velocity * 0.5f, // 让粒子朝弹幕运动方向的反方向移动
-                    false, // 是否受重力影响 (false = 不受重力影响)
-                    15, // 粒子的生命周期（帧数，15 帧）
-                    1.1f, // 粒子的缩放大小，数值越大粒子越大
+                    Projectile.velocity * 0.2f, // 设定粒子的运动方向与速度（较慢）
+                    false, // ❌ `AffectedByGravity` = false，不受重力影响
+                    60, // 粒子的生命周期（帧数，60 帧）
+                    1.0f, // 设定粒子的缩放大小
                     Color.Orange // 设定粒子的颜色（橙色）
                 );
+                // 生成粒子
+                GeneralParticleHandler.SpawnParticle(trail);
 
-                // 生成该粒子，使其出现在游戏世界中
-                GeneralParticleHandler.SpawnParticle(leftSpark);
+
+                // 2.细长线性粒子---------------------------------
+                // 原灾示范：NE猎枪
+                // 适用于更长的能量流动、更长的光束轨迹、更长的尾迹等效果【适用场景中等偏少】
+                AltSparkParticle spark5 = new AltSparkParticle(
+                    Projectile.Center - Projectile.velocity * 1.5f, // 生成位置，略微延迟以形成轨迹
+                    Projectile.velocity * 0.01f, // 速度极低，几乎静止
+                    false, // ❌ 不受重力影响
+                    8, // 存活时间（帧数）
+                    1.3f, // 设定粒子的缩放大小
+                    Color.Cyan * 0.135f // 颜色较淡的效果
+                );
+                // 生成细长线性粒子
+                GeneralParticleHandler.SpawnParticle(spark5);
 
 
-                // 2.轻型烟雾💨💨💨---------------------------------
+
+
+                // 3.轻型烟雾💨💨💨---------------------------------
                 // 原灾示范：余烬箭命中特效
                 // 适用于爆炸、蒸汽、灰尘等较轻的烟雾效果
                 Particle smokeL = new HeavySmokeParticle(
@@ -82,8 +177,7 @@ namespace CalamityThrowingSpear
                 // 生成烟雾粒子
                 GeneralParticleHandler.SpawnParticle(smokeL);
 
-
-                // 3.重型烟雾🌫️🌫️🌫️---------------------------------
+                // 4.重型烟雾🌫️🌫️🌫️---------------------------------
                 // 原灾示范：影流喷射器，奥密克戎线枪口火焰，深渊之刃线分裂弹
                 // 适用于爆炸核心、强烈冲击、深海水流等浓厚的烟雾
                 Particle smokeH = new HeavySmokeParticle(
@@ -109,7 +203,26 @@ namespace CalamityThrowingSpear
                 //15 - 18 → 轻型
                 //30 + → 重型
 
-                // 4.椭圆形冲击波🔄🔄🔄---------------------------------
+
+
+                // 5. 点刺型粒子特效💉💉💉---------------------------------
+                // 原灾示范：北辰鹦哥鱼【新版】命中特效
+                PointParticle leftSpark = new PointParticle(
+                    Projectile.Center, // 设定粒子的初始位置，与弹幕中心重合
+                    -Projectile.velocity * 0.5f, // 让粒子朝弹幕运动方向的反方向移动
+                    false, // 是否受重力影响 (false = 不受重力影响)
+                    15, // 粒子的生命周期（帧数，15 帧）
+                    1.1f, // 粒子的缩放大小，数值越大粒子越大
+                    Color.Orange // 设定粒子的颜色（橙色）
+                );
+
+                // 生成该粒子，使其出现在游戏世界中
+                GeneralParticleHandler.SpawnParticle(leftSpark);
+
+
+
+
+                // 6.椭圆形冲击波🔄🔄🔄---------------------------------
                 // 原灾示范：影流喷射器，奥密克戎线枪口火焰，深渊之刃线分裂弹
                 // 适用于能量爆炸、波动冲击、领域扩散等效果
                 Particle pulse = new DirectionalPulseRing(
@@ -125,21 +238,8 @@ namespace CalamityThrowingSpear
                 // 生成冲击波粒子
                 GeneralParticleHandler.SpawnParticle(pulse);
 
-                // 5.线性粒子---------------------------------
-                // 原灾示范：太多了,包括宇宙之火和巨龙之火的debuff效果，日蚀之陨，哈雷彗星炮主体等等
-                // 适用于尾迹、火花、能量拖尾，几乎所有都可以用到，它非常广泛
-                Particle trail = new SparkParticle(
-                    Projectile.Center, // 设定粒子的初始位置，与弹幕中心重合
-                    Projectile.velocity * 0.2f, // 设定粒子的运动方向与速度（较慢）
-                    false, // ❌ `AffectedByGravity` = false，不受重力影响
-                    60, // 粒子的生命周期（帧数，60 帧）
-                    1.0f, // 设定粒子的缩放大小
-                    Color.Orange // 设定粒子的颜色（橙色）
-                );
-                // 生成粒子
-                GeneralParticleHandler.SpawnParticle(trail);
 
-                // 6.十字星---------------------------------
+                // 7.十字星---------------------------------
                 // 原灾示范：整个方舟和环境之刃系列，p90和金源弹命中特效
                 // 适用于华丽的能量闪光、星爆效果、命中反馈等
                 GenericSparkle sparker = new GenericSparkle(
@@ -155,7 +255,7 @@ namespace CalamityThrowingSpear
                 // 生成十字星粒子
                 GeneralParticleHandler.SpawnParticle(sparker);
 
-                // 这是前者更小、更圆润、更可爱的版本
+                // 8.小型十字星【更小、更圆润】---------------------------------
                 Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitX); // 使用正前方方向
                 Vector2 sparkVelocity = direction.RotatedBy(Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4)) * 6f; // 随机旋转方向
                 CritSpark spark = new CritSpark(
@@ -168,19 +268,38 @@ namespace CalamityThrowingSpear
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
 
-                // 7.骷髅头💀💀💀---------------------------------
-                // 原灾示范：重做后的憎恨左键，沙漠巡游者套装
-                // 适用于幽灵效果、亡灵能量、恐怖气息等【适用场景较少】
-                Particle smoke = new DesertProwlerSkullParticle(
-                    Projectile.Center, // 粒子生成位置，与弹幕中心重合
-                    Projectile.velocity * 0.5f, // 让骷髅头缓慢飘动
-                    Color.DarkGray * 0.8f, // 初始颜色，较暗的灰色
-                    Color.LightGray, // 逐渐变淡至浅灰色
-                    Main.rand.NextFloat(0.5f, 1.0f), // 设定骷髅头的缩放大小（随机范围）
-                    150 // 骷髅头的初始透明度
+                // 9.EXO之光
+                // Squish 拉伸 + 柔光贴图的粒子
+                // 非常亮，非要找现实对照物的话，差不多就是镁粉燃烧时的高亮
+                // 原灾示范：星流系列武器的纯白量子光束
+                SquishyLightParticle exoEnergy = new(
+                    Projectile.Center,                                              // 粒子位置
+                    -Vector2.UnitY.RotatedByRandom(0.39f) * Main.rand.NextFloat(0.4f, 1.6f), // 初速度
+                    0.28f,                                                          // 缩放大小
+                    Color.Orange,                                                   // 粒子颜色
+                    25,                                                             // 生命周期（帧数）
+                    opacity: 1f,                                                    // 不透明度
+                    squishStrenght: 1f,                                             // 拉伸强度
+                    maxSquish: 3f,                                                  // 最大拉伸倍数
+                    hueShift: 0f                                                    // 色相偏移
                 );
-                // 生成骷髅头粒子
-                GeneralParticleHandler.SpawnParticle(smoke);
+                GeneralParticleHandler.SpawnParticle(exoEnergy);
+
+                // 10.辉光球
+                // 小型闪亮的球非常快速，很清爽
+                // 原灾示范：海伯利斯子弹的三色折线
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    Projectile.Center,         // position：粒子生成位置
+                    Vector2.Zero,              // velocity：初速度（通常为零）
+                    false,                     // affectedByGravity：是否受重力（true = 掉落）
+                    5,                         // lifetime：生命周期（单位：帧）
+                    0.9f,                      // scale：缩放大小
+                    Color.Red,                 // color：基础颜色
+                    true,                      // additiveBlend：是否加法混合（true = 更亮更绚）
+                    false,                     // needed：是否重要粒子（一般设 false）
+                    true                       // glowCenter：是否在中心叠加额外白色发光（true = 亮度增强）
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
 
 
                 // 11.四方粒子🔳---------------------------------
@@ -197,22 +316,12 @@ namespace CalamityThrowingSpear
                 // 生成四方形粒子
                 GeneralParticleHandler.SpawnParticle(squareParticle);
 
-                // 10.细长线性粒子---------------------------------
-                // 原灾示范：NE猎枪
-                // 适用于更长的能量流动、更长的光束轨迹、更长的尾迹等效果【适用场景中等偏少】
-                AltSparkParticle spark5 = new AltSparkParticle(
-                    Projectile.Center - Projectile.velocity * 1.5f, // 生成位置，略微延迟以形成轨迹
-                    Projectile.velocity * 0.01f, // 速度极低，几乎静止
-                    false, // ❌ 不受重力影响
-                    8, // 存活时间（帧数）
-                    1.3f, // 设定粒子的缩放大小
-                    Color.Cyan * 0.135f // 颜色较淡的效果
-                );
-                // 生成细长线性粒子
-                GeneralParticleHandler.SpawnParticle(spark5);
 
-                // 裂纹、闪电粒子
-                // 用于模拟破裂、冲击爆发时的裂缝特效、当然他更广为人知的用途就是模拟闪电
+
+                // 12.裂纹、闪电粒子
+                // 用于模拟破裂、冲击爆发时的裂缝特效
+                // 当然他更广为人知的用途就是模拟闪电！
+                // 注意一下：这个东西的体积较大，调用的时候酌情减少体积
                 // 原灾示范：虚空漩涡的闪电球
                 CrackParticle crack = new CrackParticle(
                     Projectile.Center,                       // Vector2 position，生成位置
@@ -225,6 +334,25 @@ namespace CalamityThrowingSpear
                     35                                       // int lifeTime，持续时间（帧数）
                 );
                 GeneralParticleHandler.SpawnParticle(crack);
+
+                // 13.骷髅头💀💀💀---------------------------------
+                // 原灾示范：重做后的憎恨左键，沙漠巡游者套装
+                // 适用于幽灵效果、亡灵能量、恐怖气息等【适用场景非常少】
+                Particle smoke = new DesertProwlerSkullParticle(
+                    Projectile.Center, // 粒子生成位置，与弹幕中心重合
+                    Projectile.velocity * 0.5f, // 让骷髅头缓慢飘动
+                    Color.DarkGray * 0.8f, // 初始颜色，较暗的灰色
+                    Color.LightGray, // 逐渐变淡至浅灰色
+                    Main.rand.NextFloat(0.5f, 1.0f), // 设定骷髅头的缩放大小（随机范围）
+                    150 // 骷髅头的初始透明度
+                );
+                // 生成骷髅头粒子
+                GeneralParticleHandler.SpawnParticle(smoke);
+
+             
+
+
+
 
             }
 

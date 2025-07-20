@@ -59,51 +59,52 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
 
-                // 产生金色粒子效果
-                int dustType = Main.rand.NextBool(3) ? 244 : 246;
-                float scale = 0.8f + Main.rand.NextFloat(0.6f);
-                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType);
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].velocity = Projectile.velocity / 3f;
-                Main.dust[idx].scale = scale;
+
+                // === AltSpark 作为电流中心核心 ===
+                AltSparkParticle centerSpark = new AltSparkParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), // 轻微漂移
+                    Projectile.velocity.SafeNormalize(Vector2.UnitX) * 0.3f + Main.rand.NextVector2Circular(0.1f, 0.1f), // 缓慢向前
+                    false,
+                    Main.rand.Next(14, 20), // 生命周期较短
+                    Main.rand.NextFloat(1.0f, 1.3f),
+                    Color.LightGoldenrodYellow * 0.45f // 柔金色调
+                );
+                GeneralParticleHandler.SpawnParticle(centerSpark);
 
 
+                // === 干涉波轨迹粒子 ===
+                float waveAmplitude1 = 24f;
+                float waveAmplitude2 = 12f;
+                float waveFreq1 = 0.52f;
+                float waveFreq2 = 1.15f;
 
-
-                // 正弦波轨迹粒子（每帧生成多个相位点，形成连续波纹）
-                float waveAmplitude = 28f; // 波动幅度
-                float waveFrequency = 0.52f; // 波动频率
                 Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
 
-                int stepsPerFrame = 3; // 每帧生成几段“相位插值”
+                int stepsPerFrame = 2;
                 for (int i = 0; i < stepsPerFrame; i++)
                 {
-                    float fakeTime = Time + i * (1f / stepsPerFrame); // 插值相位
-                    float waveOffset = (float)Math.Sin(fakeTime * waveFrequency) * waveAmplitude;
-                    Vector2 spawnPos = Projectile.Center + normal * waveOffset;
+                    float t = Time + i / (float)stepsPerFrame;
 
-                    int dustType2 = Main.rand.NextBool(2) ? yellowDust[Main.rand.Next(yellowDust.Length)] : blueDust[Main.rand.Next(blueDust.Length)];
-                    Dust d = Dust.NewDustPerfect(spawnPos, dustType2, Vector2.Zero, 100, Color.White, 1.4f);
-                    d.noGravity = true;
-                    d.fadeIn = 1.2f;
+                    // ✅ 双波干涉轨迹偏移（模拟示波器）
+                    float wave1 = MathF.Sin(t * waveFreq1) * waveAmplitude1;
+                    float wave2 = MathF.Sin(t * waveFreq2 + MathF.Cos(t * 0.3f) * 0.5f) * waveAmplitude2;
+                    float offsetY = wave1 + wave2;
+
+                    Vector2 spawnPos = Projectile.Center + normal * offsetY;
+
+                    int dustType = Main.rand.NextBool(2)
+                        ? yellowDust[Main.rand.Next(yellowDust.Length)]
+                        : blueDust[Main.rand.Next(blueDust.Length)];
+
+                    int idx = Dust.NewDust(spawnPos, 0, 0, dustType, 0f, 0f, 100, Color.White, 0.8f);
+                    Main.dust[idx].noGravity = true;
+                    Main.dust[idx].fadeIn = 1.2f;
                 }
 
 
 
 
-                // 每X帧创建一圈旋转粒子（像磁力感）
-                if (Time % 25 == 0)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        float angle = MathHelper.TwoPi * j / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
-                        Vector2 pos = Projectile.Center + angle.ToRotationVector2() * 6f;
-                        Dust d2 = Dust.NewDustPerfect(pos, 226, angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 1.2f, 100, Color.SkyBlue, 1.1f);
-                        d2.noGravity = true;
-                        d2.fadeIn = 1.1f;
-                    }
-                }
 
             }
 

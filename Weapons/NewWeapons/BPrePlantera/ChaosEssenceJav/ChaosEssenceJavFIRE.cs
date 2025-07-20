@@ -50,34 +50,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
             // 弹幕保持直线运动并逐渐加速
             //Projectile.velocity *= 1.035f;
 
-            // 绘制轨迹粒子特效
-            for (int i = 0; i < 3; i++)
-            {
-                Vector2 spawnPosition = Vector2.Lerp(Projectile.oldPosition, Projectile.position, i / 3f);
-                Dust dust = Dust.NewDustPerfect(spawnPosition, DustID.CrimsonTorch);
-                dust.color = Color.OrangeRed;
-                dust.scale = 1.5f;
-                dust.fadeIn = 1f;
-                dust.noGravity = true;
-            }
 
             {
+                // 绘制轨迹粒子特效
+                for (int i = 0; i < 3; i++)
+                {
+                    float t = i / 3f; // ✅ 强制浮点
+                    Vector2 spawnPosition = Vector2.Lerp(Projectile.oldPosition, Projectile.position, t);
+                    Dust dust = Dust.NewDustPerfect(spawnPosition, DustID.CrimsonTorch);
+                    dust.color = Color.OrangeRed;
+                    dust.scale = 1.5f;
+                    dust.fadeIn = 1f;
+                    dust.noGravity = true;
+                }
+
                 // 1️⃣ 快速暗红 SparkParticle 拖尾
-                if (Main.rand.NextBool(2))
+                if (Main.rand.NextBool(1))
                 {
                     Particle spark = new SparkParticle(
                         Projectile.Center,
                         Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(6f, 12f),
                         false,
                         20,
-                        Main.rand.NextFloat(0.8f, 1.4f),
+                        Main.rand.NextFloat(0.3f, 0.6f),
                         Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f))
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
 
                 // 2️⃣ 竹笋尾流
-                if (Main.rand.NextBool(3))
+                if (Main.rand.NextBool(2))
                 {
                     AltSparkParticle altSpark = new AltSparkParticle(
                         Projectile.Center,
@@ -90,22 +92,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                     GeneralParticleHandler.SpawnParticle(altSpark);
                 }
 
-                // 3️⃣ 前向暗红 DirectionalPulseRing
-                if (Main.GameUpdateCount % 10 == 0)
-                {
-                    Particle pulse = new DirectionalPulseRing(
-                        Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 8f,
-                        Projectile.velocity.SafeNormalize(Vector2.UnitY) * 2f,
-                        Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f)),
-                        new Vector2(0.8f, 2f),
-                        Main.rand.NextFloat(6f),
-                        0.14f,
-                        0.02f,
-                        18
-                    );
-                    GeneralParticleHandler.SpawnParticle(pulse);
-                }
-
+           
             }
 
 
@@ -136,7 +123,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
             {
                 Vector2 velocity = new Vector2(3f, 0f).RotatedBy(angleIncrement * i);
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CrimsonTorch, velocity, 0, Color.OrangeRed);
-                dust.scale = 1.2f;
+                dust.scale = 0.62f;
                 dust.noGravity = true;
             }
 
@@ -151,7 +138,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                     velocity,
                     0,
                     Color.Lerp(Color.DarkRed, Color.Red, Main.rand.NextFloat(0.3f, 0.7f)),
-                    Main.rand.NextFloat(1.2f, 2.0f)
+                    Main.rand.NextFloat(0.2f, 0.8f)
                 );
                 dust.noGravity = Main.rand.NextBool(3) ? false : true;
             }
@@ -164,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                     Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(10f, 16f),
                     false,
                     30,
-                    Main.rand.NextFloat(0.8f, 1.4f),
+                    Main.rand.NextFloat(0.18f, 1.4f),
                     Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.2f, 0.5f))
                 );
                 GeneralParticleHandler.SpawnParticle(spark);

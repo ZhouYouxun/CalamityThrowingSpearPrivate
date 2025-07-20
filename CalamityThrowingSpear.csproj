@@ -104,6 +104,12 @@
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAM.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAMEnd.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\SunEssenceJavSmallBEAMMiddle.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavBEAM.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavBEAMEnd.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavBEAMMiddle.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavSmallBEAM.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavSmallBEAMEnd.png" />
+	  <None Remove="Weapons\NewWeapons\BPrePlantera\SunEssenceJav\废弃的\SunEssenceJavSmallBEAMMiddle.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLance.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLanceDASHSUPER.png" />
 	  <None Remove="Weapons\NewWeapons\BPrePlantera\TheLastLance\TheLastLancePBuff.png" />

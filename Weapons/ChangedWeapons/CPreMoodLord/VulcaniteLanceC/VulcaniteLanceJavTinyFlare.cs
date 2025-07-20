@@ -76,35 +76,50 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 }
             }
 
-
             // 在 `timeLeft <= 325` 时开始生成粒子
             if (Projectile.timeLeft <= 325)
             {
-                // 生成两条对称的粒子
-                float[] angles = { 0f, MathHelper.Pi }; // 夹角为180度
-                float radius = 0.7765f * 16f; // 粒子轨迹半径
+                // 每帧在弹幕中心生成一颗静止火焰粒子
+                // 核心粒子
+                int fiery = Dust.NewDust(
+                    Projectile.Center,
+                    0, 0,
+                    DustID.InfernoFork,
+                    0f, 0f,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.85f, 2.35f)
+                );
+                Main.dust[fiery].noGravity = true;
+                Main.dust[fiery].velocity = Vector2.Zero;
 
-                foreach (float initialAngle in angles)
+                // 粒子轨道旋转角度（围绕弹幕旋转）
+                float spinAngle = Main.GameUpdateCount * 0.2f; // 每帧推进角度，速度可调
+                float radius = 1f * 16f; // 1格半径 = 16像素
+
+                // 旋转前进
+                for (int i = 0; i < 1; i++)
                 {
-                    float angle = initialAngle + rotationAngle; // 计算粒子的当前角度
-                    Vector2 position = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
+                    float angle = spinAngle + MathHelper.TwoPi / 3f * i;
+                    Vector2 offset = angle.ToRotationVector2() * radius;
 
-                    // 创建粒子特效
-                    int fiery = Dust.NewDust(
-                        position,
-                        0,
-                        0,
-                        DustID.InfernoFork, // 使用的粒子类型
-                        0f,
-                        0f,
+                    int glow = Dust.NewDust(
+                        Projectile.Center + offset,
+                        0, 0,
+                        DustID.InfernoFork,
+                        offset.X * 0.2f,
+                        offset.Y * 0.2f,
                         100,
                         default,
-                        Main.rand.NextFloat(1.85f, 2.35f) // 粒子大小
+                        Main.rand.NextFloat(1.2f, 1.6f)
                     );
-                    Main.dust[fiery].noGravity = true;
-                    Main.dust[fiery].velocity = Vector2.Zero; // 粒子初始速度为零
+                    Main.dust[glow].noGravity = true;
+                    Main.dust[glow].velocity = Vector2.Zero;
                 }
+
             }
+
+
 
             // 追踪逻辑
             if (Projectile.timeLeft < 275)
@@ -116,15 +131,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
             SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
 
             {
-                int numParticles = 24;
+                int numParticles = 12;
                 float baseSpeed = 8f;
                 for (int i = 0; i < numParticles; i++)
                 {
                     float angle = MathHelper.TwoPi / numParticles * i;
-                    Vector2 velocity = angle.ToRotationVector2() * baseSpeed * Main.rand.NextFloat(0.7f, 1.3f);
+                    Vector2 velocity = angle.ToRotationVector2() * baseSpeed * Main.rand.NextFloat(0.3f, 0.9f);
 
                     // Dust 火焰碎屑
-                    int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.InfernoFork, velocity.X, velocity.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.8f, 2.5f));
+                    int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.InfernoFork, velocity.X, velocity.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.2f, 1.7f));
                     Main.dust[dust].noGravity = false;
 
                     // Spark 火花
@@ -132,8 +147,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                         Projectile.Center,
                         velocity * 1.2f,
                         true,
-                        Main.rand.Next(20, 30),
-                        Main.rand.NextFloat(1.4f, 2.0f),
+                        Main.rand.Next(10, 20),
+                        Main.rand.NextFloat(0.6f, 1.4f),
                         Color.Yellow
                     );
                     GeneralParticleHandler.SpawnParticle(spark);

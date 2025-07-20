@@ -125,61 +125,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         {
             Vector2 center = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 2f;
 
-            // === 1️⃣ 血色闪电线性粒子 (SparkParticle) ★重制宏伟版===
-            int sparkLayers = 3;
-            int sparksPerLayer = 16;
-            for (int layer = 0; layer < sparkLayers; layer++)
+            // === 1️⃣ 血色 SparkParticle：正前方扩散式放射（代表武器的冲击力）===
+            int sparkCount = 20;
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX); // 武器朝向
+
+            for (int i = 0; i < sparkCount; i++)
             {
-                float radius = 12f + layer * 6f;
-                float speedMultiplier = 1f + layer * 0.5f;
-                float angleOffset = Main.GameUpdateCount * 0.05f * (layer % 2 == 0 ? 1 : -1); // 层间反向旋转
+                // ±15° 内轻微扩散
+                float angle = Main.rand.NextFloat(-15f, 15f);
+                Vector2 dir = forward.RotatedBy(MathHelper.ToRadians(angle));
+                Vector2 velocity = dir * Main.rand.NextFloat(6f, 12f);
 
-                for (int i = 0; i < sparksPerLayer; i++)
-                {
-                    float angle = MathHelper.TwoPi * i / sparksPerLayer + angleOffset;
-                    Vector2 direction = angle.ToRotationVector2();
-                    Vector2 velocity = direction * Main.rand.NextFloat(4f, 8f) * speedMultiplier;
-
-                    Particle spark = new SparkParticle(
-                        center + direction * radius,
-                        velocity,
-                        false,
-                        60,
-                        Main.rand.NextFloat(1.5f, 2.4f),
-                        Color.Lerp(Color.DarkRed, Color.Maroon, Main.rand.NextFloat(0.3f, 0.7f)) * 0.9f
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                Particle spark = new SparkParticle(
+                    center,
+                    velocity,
+                    false,
+                    Main.rand.Next(25, 40),
+                    Main.rand.NextFloat(1.2f, 1.8f),
+                    Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.2f, 0.6f)) * 0.85f
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            // === 2️⃣ 血色 Dust 爆散 (血雾微粒) ★重制宏伟版===
-            int dustLayers = 5;
-            int dustPerLayer = 30;
-            float baseRadius = 8f;
-            float radiusStep = 10f;
-            for (int layer = 0; layer < dustLayers; layer++)
+
+            // === 2️⃣ 血色 Dust：在头部周围的 3x16 范围中向上散射 ===
+            int dustCount = 35;
+            float dustRadius = 3f * 16f;
+
+            for (int i = 0; i < dustCount; i++)
             {
-                float currentRadius = baseRadius + layer * radiusStep;
-                float angleOffset = Main.GameUpdateCount * 0.1f + layer * 0.5f;
+                Vector2 pos = center + Main.rand.NextVector2Circular(dustRadius, dustRadius);
+                Vector2 velocity = -Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(12f)) * Main.rand.NextFloat(3f, 7f);
 
-                for (int i = 0; i < dustPerLayer; i++)
-                {
-                    float angle = MathHelper.TwoPi * i / dustPerLayer + angleOffset + Main.rand.NextFloat(-0.05f, 0.05f);
-                    Vector2 direction = angle.ToRotationVector2();
-                    Vector2 spawnPos = center + direction * currentRadius;
-                    Vector2 velocity = direction * Main.rand.NextFloat(3f, 9f) + Main.rand.NextVector2Circular(1f, 1f);
-
-                    Dust dust = Dust.NewDustPerfect(
-                        spawnPos,
-                        DustID.Blood,
-                        velocity,
-                        0,
-                        Color.DarkRed * 0.9f,
-                        Main.rand.NextFloat(1.3f, 2.2f)
-                    );
-                    dust.noGravity = true;
-                }
+                Dust d = Dust.NewDustPerfect(
+                    pos,
+                    DustID.Blood,
+                    velocity,
+                    0,
+                    Color.DarkRed * 0.9f,
+                    Main.rand.NextFloat(1.2f, 1.9f)
+                );
+                d.noGravity = true;
             }
+
 
             // === 3️⃣ 血阵冲击波收缩 (DirectionalPulseRing) ===
             Particle pulse = new DirectionalPulseRing(
@@ -189,7 +177,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                 new Vector2(1.0f, 1.0f),
                 4f,
                 0.05f,
-                3f,
+                2f,
                 40
             );
             GeneralParticleHandler.SpawnParticle(pulse);
@@ -533,6 +521,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         public override void OnKill(int timeLeft)
         {
             CreateImpactEffects();
+            SoundEngine.PlaySound(SoundID.Item110 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor)

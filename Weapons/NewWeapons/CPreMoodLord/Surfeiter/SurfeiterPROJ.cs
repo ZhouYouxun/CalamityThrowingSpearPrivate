@@ -237,30 +237,69 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 
             hasTriggeredEffect = true;
 
-            // 🌋 华丽上喷式特效：红色 + 血腥感
-            for (int i = 0; i < 40; i++)
+            // === 🔴 血肉烟尘喷发（自然方向 + 不再是矩形） ===
+            for (int i = 0; i < 140; i++)
             {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-9f, -5f));
+                // 以正上方向（-Y）为基础，±45°内随机喷射
+                float angle = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
+                Vector2 velocity = (-Vector2.UnitY).RotatedBy(angle) * Main.rand.NextFloat(8f, 16f);
+
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, velocity);
-                d.scale = Main.rand.NextFloat(1.2f, 1.8f);
+                d.scale = Main.rand.NextFloat(1.3f, 2.2f);
                 d.noGravity = false;
                 d.fadeIn = 1.5f;
             }
 
+            // === 🌫️ 重型黑烟柱（从爆心上喷）===
             for (int i = 0; i < 20; i++)
             {
-                Particle upward = new SparkParticle(
-                    Projectile.Center,
-                    new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(6f, 10f)),
-                    false,
-                    50,
-                    Main.rand.NextFloat(1f, 1.4f),
-                    Color.OrangeRed
+                Particle smoke = new HeavySmokeParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(3f, 6f)),
+                    Color.Black,
+                    30,
+                    Main.rand.NextFloat(1.0f, 1.6f),
+                    0.5f,
+                    0.02f,
+                    true
                 );
-                GeneralParticleHandler.SpawnParticle(upward);
+                GeneralParticleHandler.SpawnParticle(smoke);
             }
 
-            // 自定义仪式能量冲击波（向上）
+            // === 🔻 AltSparkParticle：低亮度赤红能量点 ===
+            for (int i = 0; i < 15; i++)
+            {
+                AltSparkParticle alt = new AltSparkParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                    new Vector2(Main.rand.NextFloat(-5.5f, 5.5f), -Main.rand.NextFloat(5f, 15f)),
+                    false,
+                    24,
+                    2.3f,
+                    Color.DarkRed * 0.4f
+                );
+                GeneralParticleHandler.SpawnParticle(alt);
+            }
+
+            // === 🩸 CritSpark：血光四散爆裂（全方向 + 明亮） ===
+            for (int i = 0; i < 30; i++)
+            {
+                // 从圆周方向随机生成
+                Vector2 dir = Main.rand.NextVector2Unit(); // 等价于随机角度单位向量
+                Vector2 sparkVelocity = dir * Main.rand.NextFloat(30f, 60f); // 同样高速
+
+                CritSpark spark = new CritSpark(
+                    Projectile.Center,
+                    sparkVelocity,
+                    Color.Lerp(Color.IndianRed, Color.Red, 0.4f), // 起始色更亮偏肉白
+                    Color.Lerp(Color.Red, Color.Yellow, 0.3f),      // 结束色更热更亮
+                    3.1f,
+                    60
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+
+
+            // === 🧿 仪式感能量环（保留）===
             Particle ring = new CustomPulse(
                 Projectile.Center + new Vector2(0, -16),
                 Vector2.Zero,
@@ -274,12 +313,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             );
             GeneralParticleHandler.SpawnParticle(ring);
 
-            // 🫥 隐形处理
-            Projectile.alpha = 255;         // 完全透明
-            Projectile.hide = true;         // 不绘制贴图
-            Projectile.friendly = false;    // 不再造成伤害
-            Projectile.tileCollide = false; // 避免再触发
-            Projectile.timeLeft = 60;       // 1秒后清除
+            // === 🫥 弹幕处理：退出状态 ===
+            Projectile.alpha = 255;
+            Projectile.hide = true;
+            Projectile.friendly = false;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 60;
+
         }
 
 

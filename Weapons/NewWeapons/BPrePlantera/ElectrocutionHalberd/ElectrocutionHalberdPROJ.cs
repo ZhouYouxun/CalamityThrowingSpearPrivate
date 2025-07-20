@@ -293,7 +293,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 float spiralT = (Main.GameUpdateCount * spiralSpeed) % maxTheta;
 
                 // 阿基米德螺旋参数
-                float a = 2 * 16f;          // 起始半径
+                float a = 1.4f * 16f;          // 起始半径
                 float b = 0.08f;       // 每弧度增长率（小，避免飞太远）
 
                 for (int i = 0; i < 10; i++)
@@ -311,7 +311,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                         spiralOffset1 * 0.2f, // 慢速飘动
                         100,
                         Color.Blue,
-                        1.2f
+                        0.6f
                     );
                     electricDust1.noGravity = true;
 
@@ -325,8 +325,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                         DustID.Electric,
                         spiralOffset2 * 0.2f,
                         100,
-                        Color.Blue,
-                        1.2f
+                        Color.Red,
+                        0.4f
                     );
                     electricDust2.noGravity = true;
                 }

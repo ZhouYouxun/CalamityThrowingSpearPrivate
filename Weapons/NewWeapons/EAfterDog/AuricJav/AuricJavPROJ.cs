@@ -50,24 +50,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             bool spiralRight = true; // 控制左右交替
             float segmentLength = 16f + Main.rand.NextFloat(-2f, 2f); // 让线段长度有小幅随机变化
 
-            // 遍历弹幕的旧位置，生成螺旋线段
+            // 计算顶端位置作为电流收束目标点
+            Vector2 tip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 16f * 2f;
+
             for (int i = 1; i < Projectile.oldPos.Length; i++)
             {
-                Vector2 currentPosition = Projectile.oldPos[i] + Projectile.Size * 0.5f;
+                Vector2 current = Projectile.oldPos[i] + Projectile.Size * 0.5f;
 
-                // 计算螺旋偏移（在 -spiralOffset 和 +spiralOffset 之间波动）
-                float offsetAmount = spiralOffset * (spiralRight ? 1f : -1f) + Main.rand.NextFloat(-2f, 2f); // 让每次偏移稍微不一样
-                Vector2 offset = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * offsetAmount;
+                // 方向：从旧位置指向顶端电池
+                Vector2 toTip = (tip - current).SafeNormalize(Vector2.Zero);
 
-                Vector2 newEnd = currentPosition + offset; // 计算新的终点
+                // 随机左右轻微偏移，模拟电流抖动感
+                float sideOffset = Main.rand.NextFloat(-36f, 36f);
+                Vector2 perpendicular = toTip.RotatedBy(MathHelper.PiOver2) * sideOffset;
 
-                // 绘制线段
-                Main.spriteBatch.DrawLineBetter(previousEnd, newEnd, lineColor, 2f);
+                Vector2 target = current + toTip * 12f + perpendicular;
 
-                // 更新状态
-                previousEnd = newEnd;
-                spiralRight = !spiralRight; // 每次切换方向
+                Main.spriteBatch.DrawLineBetter(current, target, lineColor, 2f);
             }
+
 
             return false;
         }

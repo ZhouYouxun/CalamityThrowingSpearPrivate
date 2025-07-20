@@ -46,35 +46,70 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
         }
         public override void AI()
         {
-            // 顺时针旋转的角度
-            float rotationSpeed = MathHelper.ToRadians(7f); // 每帧旋转 X 度
+            // 顺时针旋转的角度（基础旋转角）
+            float rotationSpeed = MathHelper.ToRadians(7f);
             Projectile.ai[0] += rotationSpeed;
 
-            // 定义扇形的起始角度和间隔
+            // 定义扇形起始角度、跨度与间隔
             float baseAngle = Projectile.ai[0];
-            float sectorAngle = MathHelper.ToRadians(60); // 每个扇形 60 度
-            float gapAngle = MathHelper.ToRadians(60); // 扇形之间的间隔
+            float sectorAngle = MathHelper.ToRadians(60);
+            float gapAngle = MathHelper.ToRadians(60);
 
-            // 循环生成三个扇形区域的粒子
+            // === 🔥保留原始三旋粒子喷发（削弱版本）===
             for (int i = 0; i < 3; i++)
             {
                 float startAngle = baseAngle + i * (sectorAngle + gapAngle);
-                for (int j = 0; j < Main.rand.Next(15, 31); j++) // 每帧生成 X 个粒子
+                for (int j = 0; j < Main.rand.Next(7, 16); j++) // 数量减半
                 {
-                    float randomAngle = startAngle + Main.rand.NextFloat(-sectorAngle / 2, sectorAngle / 2); // 随机角度偏移
-                    Vector2 velocity = randomAngle.ToRotationVector2() * Main.rand.NextFloat(5.5f, 24.1f); // 粒子速度
+                    float randomAngle = startAngle + Main.rand.NextFloat(-sectorAngle / 2f, sectorAngle / 2f);
 
-                    Dust dust = Dust.NewDustPerfect(
+                    // 均匀角速度：改成单位速度后乘随机长度，避免横纵不一致
+                    Vector2 baseDir = randomAngle.ToRotationVector2().SafeNormalize(Vector2.UnitY);
+                    float speed = Main.rand.NextFloat(4.5f, 10f);
+
+                    // ⏺ 手动修正方向分量【改主意了，这个确实不合理】
+                    baseDir.X *= 1.0f;  // 水平削弱
+                    baseDir.Y *= 1.0f;  // 垂直增强
+
+                    Vector2 velocity = baseDir * speed;
+
+
+                    Dust d = Dust.NewDustPerfect(
                         Projectile.Center,
-                        Main.rand.Next(new int[] { 55, 35, 174 }), // 混合使用粒子类型
+                        Main.rand.Next(new int[] { 55, 35, 174 }),
                         velocity
                     );
-                    dust.noGravity = true; // 不受重力影响
-                    dust.scale = Main.rand.NextFloat(1.85f, 2.05f); // 大小随机
-                    dust.alpha = 217; // 透明度设置为 0.85
+                    d.noGravity = true;
+                    d.scale = Main.rand.NextFloat(1.85f, 2.05f);
+                    d.alpha = 217;
                 }
             }
+
+            // === 🌐新增粒子圆环喷发（随机从边缘往外）===
+            float circleRadius = 150f;
+            int ringParticles = 8; // 每帧喷出几个边缘粒子
+
+            for (int i = 0; i < ringParticles; i++)
+            {
+                float angle = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+                Vector2 edgePos = Projectile.Center + angle.ToRotationVector2() * circleRadius;
+
+                // 往外喷
+                Vector2 outward = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
+
+                Dust d = Dust.NewDustPerfect(
+                    edgePos,
+                    Main.rand.Next(new int[] { 55, 35, 174 }),
+                    outward
+                );
+                d.noGravity = true;
+                d.scale = Main.rand.NextFloat(1.85f, 2.05f);
+                d.alpha = 217;
+            }
         }
+
+
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.OnFire3, 300); // 给敌人添加燃烧减益效果

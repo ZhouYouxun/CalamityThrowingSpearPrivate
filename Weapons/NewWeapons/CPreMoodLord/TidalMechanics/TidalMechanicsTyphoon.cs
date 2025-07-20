@@ -133,53 +133,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 
         private void CreateWaterDust()
         {
-            if (Main.GameUpdateCount % 1 == 0) // 每帧高密度触发
+            // 每5帧生成一个环状粒子波
+            if (Main.GameUpdateCount % 5 != 0)
+                return;
+
+            int particleCount = 16; // 每个圆环上的粒子数
+            float baseRadius = 8f; // 起始半径
+            float expansionSpeed = 1.2f; // 每帧外扩速度
+            Vector2 center = Projectile.Center;
+
+            for (int i = 0; i < particleCount; i++)
             {
-                int particles = 12; // 高密度方形粒子
-                float goldenAngle = MathHelper.ToRadians(137.5f);
-                Vector2 basePos = Projectile.Center;
+                // 均匀角度分布
+                float angle = MathHelper.TwoPi * i / particleCount;
+                Vector2 direction = angle.ToRotationVector2();
 
-                for (int i = 0; i < particles; i++)
+                // 发射位置在圆环上
+                Vector2 spawnPos = center + direction * baseRadius;
+
+                // 向外速度统一
+                Vector2 velocity = direction * expansionSpeed * Main.rand.NextFloat(0.8f, 1.2f);
+
+                // 方形粒子（可用你已有的SquareParticle）
+                Particle p = new SquareParticle(
+                    spawnPos,
+                    velocity,
+                    false,
+                    Main.rand.Next(20, 30),
+                    Main.rand.NextFloat(0.3f, 0.6f),
+                    Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.7f))
+                );
+                GeneralParticleHandler.SpawnParticle(p);
+
+                // 辅助 Dust（可选）
+                if (Main.rand.NextBool(2))
                 {
-                    // === 黄金角散射 ===
-                    float angle = i * goldenAngle + Main.GameUpdateCount * 0.1f;
-                    Vector2 dir = angle.ToRotationVector2();
-
-                    // === 阿基米德螺旋递增速度 ===
-                    float spiralT = Main.GameUpdateCount * 0.15f + i * 0.3f;
-                    float spiralRadius = 2f + 0.2f * spiralT;
-                    Vector2 velocity = dir * spiralRadius * Main.rand.NextFloat(0.08f, 0.16f);
-
-                    if (Main.rand.NextBool(3))
-                    {
-                        // === 方形粒子（主导） ===
-                        Particle square = new SquareParticle(
-                            basePos + dir * Main.rand.NextFloat(1f, 3f), // 在周围环状喷发
-                            velocity,
-                            false,
-                            Main.rand.Next(15, 25), // lifetime
-                            Main.rand.NextFloat(0.2f, 0.8f), // scale
-                            Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.2f, 0.6f)) // color
-                        );
-                        GeneralParticleHandler.SpawnParticle(square);
-                    }
-                    // === Dust 辅助填充 ===
-                    if (Main.rand.NextBool(1))
-                    {
-                        Dust d = Dust.NewDustPerfect(
-                            basePos + dir * Main.rand.NextFloat(4f, 8f),
-                            Main.rand.Next(new int[] { DustID.Ice, DustID.BlueCrystalShard, DustID.WhiteTorch }),
-                            velocity * 0.5f,
-                            0,
-                            Color.Lerp(Color.LightBlue, Color.White, Main.rand.NextFloat(0.3f, 0.8f)),
-                            Main.rand.NextFloat(0.8f, 1.3f)
-                        );
-                        d.noGravity = true;
-                    }
+                    Dust d = Dust.NewDustPerfect(
+                        spawnPos,
+                        Main.rand.Next(new int[] { DustID.Ice, DustID.BlueCrystalShard }),
+                        velocity * 0.6f,
+                        0,
+                        Color.LightBlue,
+                        Main.rand.NextFloat(0.9f, 1.4f)
+                    );
+                    d.noGravity = true;
                 }
             }
-
         }
+
 
 
 

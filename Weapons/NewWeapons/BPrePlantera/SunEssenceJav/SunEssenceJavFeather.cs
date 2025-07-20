@@ -90,6 +90,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4;
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
+
+
+            // 若仍在飞行状态（未碰地形），保留所有特效
+            if (Projectile.tileCollide)
             {
                 // === 🚩 1️⃣ 高密度 Dust 蓝绿色流动 ===
                 int dustCount = 5;
@@ -114,9 +118,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 }
 
                 // === 🚩 2️⃣ DirectionalPulseRing 蓝绿色脉冲波 ===
-                if (Main.GameUpdateCount % 5 == 0)
+                if (Main.GameUpdateCount % 1 == 0)
                 {
-                    int pulseLayers = 3;
+                    int pulseLayers = 1;
                     for (int i = 0; i < pulseLayers; i++)
                     {
                         Particle pulse = new DirectionalPulseRing(
@@ -127,42 +131,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                             Projectile.rotation + MathHelper.PiOver4 + MathHelper.PiOver4,
                             0.15f + i * 0.03f,
                             0.025f,
-                            18
+                            8
                         );
                         GeneralParticleHandler.SpawnParticle(pulse);
                     }
                 }
 
-                // === 🚩 3️⃣ SparkParticle 蓝绿色射线 ===
+                // === 🚩 3️⃣ SparkParticle（偏外侧，随机发散）===
                 if (Main.rand.NextBool(3))
                 {
+                    Vector2 offset = Main.rand.NextVector2Circular(10f, 10f); // ⬅️ 比原来更远
+                    Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(4f, 10f); // 速度范围拉大
+
                     Particle spark = new SparkParticle(
-                        Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        forward.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(3f, 8f),
+                        Projectile.Center + offset,
+                        velocity,
                         false,
-                        30,
-                        Main.rand.NextFloat(0.8f, 1.2f),
+                        10,
+                        Main.rand.NextFloat(0.8f, 1.0f),
                         Color.Lerp(Color.Aqua, Color.Cyan, Main.rand.NextFloat(0.3f, 0.7f))
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
 
-                // === 🚩 4️⃣ AltSparkParticle 蓝绿色竹笋尾流 ===
+                // === 🚩 4️⃣ AltSparkParticle（更靠近，集中）===
                 if (Main.rand.NextBool(2))
                 {
+                    Vector2 offset = Main.rand.NextVector2Circular(2f, 2f); // ⬅️ 比原来更小，贴近轨迹
+                    Vector2 velocity = forward * 0.02f + Main.rand.NextVector2Circular(0.1f, 0.1f); // 更低速、轻扰动
+
                     AltSparkParticle altSpark = new AltSparkParticle(
-                        Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
-                        Projectile.velocity * 0.05f,
+                        Projectile.Center + offset,
+                        velocity,
                         false,
-                        14,
+                        16,
                         1.2f,
                         Color.Cyan * 0.25f
                     );
                     GeneralParticleHandler.SpawnParticle(altSpark);
                 }
+
             }
 
-          
+
         }
 
 

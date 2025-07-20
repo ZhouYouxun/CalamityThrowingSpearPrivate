@@ -11,6 +11,8 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
+using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 {
@@ -29,50 +31,96 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         {
             if (Projectile.timeLeft > 295)
             {
-                // 在timeLeft > 295时，不绘制任何内容
+                // 初始阶段不绘制任何内容
                 return false;
             }
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Vector2 origin = texture.Size() * 0.5f;
-            for (int i = 0; i < Projectile.oldPos.Length; ++i)
-            {
-                float afterimageRot = Projectile.oldRot[i];
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                Color afterimageColor = Color.MediumVioletRed * ((Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length);
-                Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
 
-                if (i > 0)
-                {
-                    for (float j = 0.2f; j < 0.8f; j += 0.2f)
-                    {
-                        drawPos = Vector2.Lerp(Projectile.oldPos[i - 1], Projectile.oldPos[i], j) +
-                            Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-                        Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
-                    }
-                }
+            //Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            //Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            //Vector2 origin = texture.Size() * 0.5f;
+
+            //// === 残影绘制 ===
+            //for (int i = 0; i < Projectile.oldPos.Length; ++i)
+            //{
+            //    float afterimageRot = Projectile.oldRot[i];
+            //    Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            //    Color afterimageColor = Color.MediumVioletRed * ((Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length);
+            //    Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
+
+            //    if (i > 0)
+            //    {
+            //        for (float j = 0.2f; j < 0.8f; j += 0.2f)
+            //        {
+            //            drawPos = Vector2.Lerp(Projectile.oldPos[i - 1], Projectile.oldPos[i], j) +
+            //                Projectile.Size * 0.5f - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            //            Main.spriteBatch.Draw(texture, drawPos, null, afterimageColor, afterimageRot, origin, Projectile.scale * 0.5f, 0, 0f);
+            //        }
+            //    }
+            //}
+
+
+
+            {
+                Texture2D mainTex = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+                Rectangle frame = mainTex.Frame();
+                Vector2 origin = frame.Size() * 0.5f;
+                Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+                // === 1️⃣ 呼吸透明度 ===
+                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI) * 0.15f + 0.85f;
+                Color pulseColor = Color.White * pulse;
+                pulseColor.A = 0;
+
+                // === 2️⃣ 绘制残影（原版保留） ===
+                CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], pulseColor, 1);
+
+                // === 3️⃣ 主体贴图绘制（用于遮罩/本体） ===
+                Main.EntitySpriteDraw(mainTex, drawPos, frame, pulseColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+
+                // === 4️⃣ 顶端发光核心绘制 ===
+                Vector2 tip = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * (Projectile.height * 0.5f); // 顶端位置
+
+                // 🧩 主光效材质
+                Texture2D coreTex = ModContent.Request<Texture2D>("Terraria/Images/Extra_89").Value;
+                Vector2 coreOrigin = coreTex.Size() * 0.5f;
+                Color coreColor = Color.Red * 0.8f;
+                coreColor.A = 0;
+
+                Main.EntitySpriteDraw(coreTex, tip - Main.screenPosition, null, coreColor, 0f, coreOrigin, 1.2f, SpriteEffects.None, 0);
+
+
+
+
+                // === 🔧 尺寸缩放因子统一设置（方便调试） ===
+                float flareScale1 = 0.25f;         // fx_Flare9 第一道（小圈）
+                float flareScale2 = 0.45f;         // fx_Flare9 第二道（大圈）
+                float energyBaseScale = 0.06f;      // energy_001 基础缩放倍数（会脉动）
+
+                // === 5️⃣ 叠加旋转光纹 fx_Flare9 ===
+                Texture2D flareTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/fx_Flare9").Value;
+                Vector2 flareOrigin = flareTex.Size() * 0.5f;
+                float flareRot = Main.GlobalTimeWrappedHourly * 1.8f;
+                Color flareColor = Color.White * 0.4f;
+                flareColor.A = 0;
+
+                Main.EntitySpriteDraw(flareTex, tip - Main.screenPosition, null, flareColor, flareRot, flareOrigin, flareScale1, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(flareTex, tip - Main.screenPosition, null, flareColor * 0.6f, -flareRot * 0.7f, flareOrigin, flareScale2, SpriteEffects.None, 0);
+
+                // === 6️⃣ 再叠加 energy_001 模糊爆点纹理 ===
+                Texture2D energyTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/energy_001").Value;
+                Vector2 energyOrigin = energyTex.Size() * 0.5f;
+                float scalePulse = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + Projectile.identity);
+
+                Main.EntitySpriteDraw(energyTex, tip - Main.screenPosition, null, Color.Red * 0.5f, 0f, energyOrigin, scalePulse * energyBaseScale, SpriteEffects.None, 0);
+
+
+
+                return false;
             }
 
-            Color color = Color.Red * 0.5f;
-            color.A = 0;
-
-            Main.spriteBatch.Draw(texture, drawPosition, null, color, Projectile.rotation, origin, Projectile.scale * 0.9f, 0, 0);
-            Color bigGleamColor = color;
-            Color smallGleamColor = color * 0.5f;
-            float opacity = (float)(Utils.GetLerpValue(15f, 30f, Projectile.timeLeft, true) *
-                Utils.GetLerpValue(240f, 200f, Projectile.timeLeft, true) *
-                (1f + 0.2f * Math.Cos(Main.GlobalTimeWrappedHourly % 30f / 0.5f * MathHelper.Pi * 6f)) * 0.8f);
-            Vector2 bigGleamScale = new Vector2(0.5f, 5f) * opacity;
-            Vector2 smallGleamScale = new Vector2(0.5f, 2f) * opacity;
-            bigGleamColor *= opacity;
-            smallGleamColor *= opacity;
-
-            Main.spriteBatch.Draw(texture, drawPosition, null, bigGleamColor, 1.57079637f, origin, bigGleamScale, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, bigGleamColor, 0f, origin, smallGleamScale, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, smallGleamColor, 1.57079637f, origin, bigGleamScale * 0.6f, 0, 0);
-            Main.spriteBatch.Draw(texture, drawPosition, null, smallGleamColor, 0f, origin, smallGleamScale * 0.6f, 0, 0);
             return false;
         }
+
 
         public override void SetDefaults()
         {
@@ -160,6 +208,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            SoundEngine.PlaySound(SoundID.Item110 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
+
             {
                 // 恢复玩家生命值
                 Player player = Main.player[Projectile.owner];

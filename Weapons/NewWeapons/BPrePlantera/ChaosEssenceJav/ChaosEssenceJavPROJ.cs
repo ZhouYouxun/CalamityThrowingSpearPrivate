@@ -93,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
             Projectile.velocity *= 1.005f;
 
             // 生成随机的 Lava 粒子效果
-            if (Main.rand.NextBool(3)) // 控制粒子生成频率，1/3 的几率生成一个粒子
+            if (Main.rand.NextBool(2)) // 控制粒子生成频率
             {
                 Vector2 dustPosition = Projectile.Center + new Vector2(Main.rand.NextFloat(-Projectile.width / 2, Projectile.width / 2), Main.rand.NextFloat(-Projectile.height / 2, Projectile.height / 2));
                 Dust dust = Dust.NewDustPerfect(dustPosition, DustID.Lava);
@@ -111,21 +111,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                     Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(8f, 16f),
                     false,
                     25,
-                    Main.rand.NextFloat(1.0f, 1.8f),
+                    Main.rand.NextFloat(0.3f, 0.8f),
                     Color.Lerp(Color.OrangeRed, Color.DarkRed, Main.rand.NextFloat(0.3f, 0.7f))
                 );
                 GeneralParticleHandler.SpawnParticle(spark);
             }
 
             // 2️⃣ 小范围烟雾粒子尾焰
-            if (Main.GameUpdateCount % 6 == 0)
+            if (Main.GameUpdateCount % 2 == 0)
             {
                 Particle smoke = new HeavySmokeParticle(
                     Projectile.Center,
                     -Projectile.velocity.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 5f) + Main.rand.NextVector2Circular(1f, 1f),
                     Color.Lerp(Color.DarkRed, Color.Black, Main.rand.NextFloat(0.3f, 0.6f)),
                     30,
-                    Main.rand.NextFloat(0.8f, 1.4f),
+                    Main.rand.NextFloat(0.3f, 0.4f),
                     0.6f,
                     Main.rand.NextFloat(-0.02f, 0.02f),
                     false
@@ -133,21 +133,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
 
-            // 3️⃣ 脉冲波层次感
-            if (Main.GameUpdateCount % 12 == 0)
-            {
-                Particle pulse = new DirectionalPulseRing(
-                    Projectile.Center,
-                    Vector2.Zero,
-                    Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f)),
-                    new Vector2(1.0f, 2.5f),
-                    Main.rand.NextFloat(6f),
-                    0.15f,
-                    0.02f,
-                    20
-                );
-                GeneralParticleHandler.SpawnParticle(pulse);
-            }
 
         }
 
@@ -195,7 +180,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                         Projectile.Center,
                         Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(12f, 20f),
                         false,
-                        35,
+                        15,
                         Main.rand.NextFloat(1.2f, 2.0f),
                         Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.2f, 0.6f))
                     );
@@ -233,18 +218,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                     GeneralParticleHandler.SpawnParticle(line);
                 }
 
-                // 5️⃣ 爆心冲击脉冲波
-                Particle pulse = new DirectionalPulseRing(
-                    Projectile.Center,
-                    Vector2.Zero,
-                    Color.Lerp(Color.DarkRed, Color.OrangeRed, 0.5f),
-                    new Vector2(2.5f, 4f),
-                    Main.rand.NextFloat(6f),
-                    0.18f,
-                    0.02f,
-                    30
-                );
-                GeneralParticleHandler.SpawnParticle(pulse);
 
             }
 

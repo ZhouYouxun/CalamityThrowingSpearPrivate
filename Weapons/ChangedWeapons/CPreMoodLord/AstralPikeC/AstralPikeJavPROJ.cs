@@ -206,11 +206,11 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             float sideSpeedMultiplier = 1.0f; // 两边粒子的速度
 
             Vector2[] directions = new Vector2[] {
-    new Vector2(0, -1), // 正上方
-    new Vector2(0, 1),  // 正下方
-    new Vector2(-1, 0), // 正左方
-    new Vector2(1, 0)   // 正右方
-};
+                new Vector2(0, -1), // 正上方
+                new Vector2(0, 1),  // 正下方
+                new Vector2(-1, 0), // 正左方
+                new Vector2(1, 0)   // 正右方
+            };
 
             // 遍历四个方向
             foreach (Vector2 direction in directions)
