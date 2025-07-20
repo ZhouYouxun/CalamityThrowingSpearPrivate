@@ -69,7 +69,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void UpdateInventory(Player player)
         {
             if (rightClickCooldownTimer > 0)
+            {
                 rightClickCooldownTimer--;
+
+                if(rightClickCooldownTimer == 0)
+                {
+                    {
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/蒲牢鸣钟") with { Volume = 3f }, player.Center);
+                    }
+                }
+            }
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -122,7 +131,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Item.useTime = Item.useAnimation = 60;
 
                 // 给玩家添加 VulnerabilityHex 孱弱巫咒 和 Dragonfire 龙焰，持续时间为4秒（240帧）
-                player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 300);
+                player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
             }
             else
             {

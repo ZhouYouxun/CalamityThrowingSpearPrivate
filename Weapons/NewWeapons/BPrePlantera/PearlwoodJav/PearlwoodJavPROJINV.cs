@@ -28,7 +28,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Projectile.timeLeft = 100;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+            Projectile.idStaticNPCHitCooldown = -1;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
