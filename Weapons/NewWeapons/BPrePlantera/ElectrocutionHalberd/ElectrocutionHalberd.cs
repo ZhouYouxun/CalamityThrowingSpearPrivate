@@ -107,7 +107,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 30; // 设置伤害值
+                Item.damage = 40; // 设置伤害值
                 Item.useTime = 50;
                 Item.useAnimation = 50;
                 Item.useLimitPerAnimation = 1;

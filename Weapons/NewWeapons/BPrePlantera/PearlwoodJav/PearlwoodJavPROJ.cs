@@ -318,7 +318,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
                 // **数量未超限，正常生成**
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
-                    ModContent.ProjectileType<PearlwoodJavPROJINV>(), Projectile.damage, 0f, Projectile.owner);
+                    ModContent.ProjectileType<PearlwoodJavPROJINV>(), (int)(Projectile.damage * 0.8), 0f, Projectile.owner);
             }
 
 

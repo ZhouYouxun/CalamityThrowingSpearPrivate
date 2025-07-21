@@ -72,7 +72,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 7; // 设置为7次穿透
-            Projectile.timeLeft = 400;
+            Projectile.timeLeft = 420;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
@@ -179,7 +179,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 shardCooldown++;
                 if (shardCooldown % 12 == 0)
                 {
-                    int shardCount = 8;
+                    int shardCount = 12;
                     float spacing = 4 * 16f;
                     int index = (shardCooldown / 12) - 1;
 
@@ -203,7 +203,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                             shardPos,
                             shardVel,
                             ModContent.ProjectileType<EarthenJavSHARD>(),
-                            (int)(Projectile.damage * 0.5f),
+                            (int)(Projectile.damage * 2f),
                             0f,
                             Projectile.owner,
                             0f, // ai[0] 可用作其他功能

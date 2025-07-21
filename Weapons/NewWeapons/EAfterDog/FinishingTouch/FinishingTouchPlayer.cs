@@ -60,7 +60,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         // 如果未播放过音效，则播放并设置标记
                         if (!hasPlayedSound)
                         {
-                            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/RayquazaRoar"), Player.position);
+                            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiangcao"), Player.position);
                             hasPlayedSound = true;
                         }
                     }
@@ -241,7 +241,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 // 播放随机文本
                 string[] phrases = new string[]
                 {
-            "我自天穹而下，犹未见来人"
+            "经理老爷！！！！！把吾丢在这里上哪儿去啦！！！！！！！！！！！"
                 };
                 string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
 
@@ -253,9 +253,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 if (ModContent.GetInstance<CTSConfigs>().EnableFTSound)
                 {
                     // 播放对应的音效
-                    if (selectedPhrase == "我自天穹而下，犹未见来人")
+                    if (selectedPhrase == "经理老爷！！！！！把吾丢在这里上哪儿去啦！！！！！！！！！！！")
                     {
-                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/xiacangqiong") with { Volume = 1.5f }, Player.Center);
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Manager") with { Volume = 1.5f }, Player.Center);
                     }
                 }
 
@@ -276,7 +276,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     // 播放随机文本
                     string[] phrases = new string[]
                     {
-            "雷池铸剑，今霜刃即成，当振天下于大白！"
+            "各位乘客大家好！！！吾，已然，到来了！！！"
                     };
                     string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
                     Vector2 textPosition = Player.Center - new Vector2(0, Player.height / 2 + 20f); // 玩家头顶位置
@@ -286,9 +286,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     if (ModContent.GetInstance<CTSConfigs>().EnableFTSound)
                     {
                         // 播放对应的音效
-                        if (selectedPhrase == "雷池铸剑，今霜刃即成，当振天下于大白！")
+                        if (selectedPhrase == "各位乘客大家好！！！吾，已然，到来了！！！")
                         {
-                            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/tianjie") with { Volume = 1.5f }, Player.Center);
+                            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don spawn") with { Volume = 1.5f }, Player.Center);
                         }
                     }
 
@@ -307,6 +307,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f)
                 {
                     // 文本提示、音效同原逻辑
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don quixote") with { Volume = 2f }, Player.Center);
 
                     for (int i = 0; i < Main.maxPlayers; i++)
                     {
@@ -373,11 +374,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 "你我兄弟齐上，焉有一合之将？",
                 "筋疲力尽？厌倦。想要休息？肚子饿了。想离开这里？",
                 "平战乱，享太平",
+                "我自天穹而下，犹未见来人",
                 "8848画龙点睛",
                 "ZI-0...GRAND ZI-O",
                 "众流汇聚于江海，可引暗潮漫城",
                 "初平元年，第一次在泰拉打自由搏击，便一举夺魁！",
-                "我注定在这王座之上，独自统治……"
+                "我注定在这王座之上，独自统治……",
+                "*唐动静",
+                "oi?",
+                "Limbus Company!!!"
                         };
                         string selectedMessage = messages[Main.rand.Next(messages.Length)]; // 随机选取一个文本
 
@@ -461,6 +466,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                             {
                                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/pingzhanluan") with { Volume = 2f }, Player.Center);
                             }
+                            else if (selectedMessage == "我自天穹而下，犹未见来人")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/xiacangqiong") with { Volume = 2f }, Player.Center);
+                            }
                             else if (selectedMessage == "8848画龙点睛")
                             {
                                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/8848") with { Volume = 2f }, Player.Center);
@@ -480,6 +489,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                             else if (selectedMessage == "我注定在这王座之上，独自统治……")
                             {
                                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Bind") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "*唐动静")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don laugh") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "oi?")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don oi") with { Volume = 2f }, Player.Center);
+                            }
+                            else if (selectedMessage == "Limbus Company!!!")
+                            {
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Limbus") with { Volume = 2f }, Player.Center);
                             }
                         }
                         textTimer = 0; // 重置计时器
@@ -571,7 +592,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "背水立阵仿韩信，破釜沉舟学霸王",
         "纵使困顿难行，亦当砥砺奋进",
         "七尺男儿，有战无降",
-        "往来皆死战，热血盈袍铠！"
+        "往来皆死战，热血盈袍铠！",
+        "驰骋吧！驽骍难得！",
+        "小松鼠爵士！！！",
+        "呐！"
             };
             string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
             Vector2 textPosition = Player.Center - new Vector2(0, Player.height / 2 + 20f); // 玩家头顶位置
@@ -622,6 +646,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/rexueyingpaokai") with { Volume = 2.5f }, Player.Center);
                 }
+                else if (selectedPhrase == "驰骋吧！驽骍难得！")
+                {
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Gallop") with { Volume = 2.5f }, Player.Center);
+                }
+                else if (selectedPhrase == "小松鼠爵士！！！")
+                {
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiaosongshujueshi") with { Volume = 2.5f }, Player.Center);
+                }
+                else if (selectedPhrase == "呐！")
+                {
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Ne") with { Volume = 2.5f }, Player.Center);
+                }
             }
 
         }
@@ -640,7 +676,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             "无耻小人，胆敢暗算于我",
             "七情难掩，六欲难消，何谓之神",
             "吾主公短命无妨",
-            "都是你的错！"
+            "都是你的错！",
+            "啊……西八……"
                 };
                 string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
 
@@ -675,6 +712,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     else if (selectedPhrase == "都是你的错！")
                     {
                         SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/YourMistake") with { Volume = 2.5f }, Player.Center);
+                    }
+                    else if (selectedPhrase == "啊……西八……")
+                    {
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Xiba") with { Volume = 2.5f }, Player.Center);
                     }
                 }
 

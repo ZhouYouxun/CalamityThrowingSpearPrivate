@@ -48,7 +48,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             Projectile.tileCollide = false; // 允许与方块碰撞
             Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 24; // 无敌帧冷却时间为14帧
         }
 
         public override void AI()
@@ -143,7 +143,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             Projectile.rotation += 0.45f;
 
             // 每 6 帧生成一个 `PrimordialStateNight` 弹幕
-            if (phaseTimer % 6 == 0)
+            if (phaseTimer % 9 == 0)
             {
                 Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(50 * 16, 50 * 16);
                 Projectile.NewProjectile(
@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     spawnPos,
                     Vector2.Zero,
                     ModContent.ProjectileType<PrimordialStateNight>(),
-                    (int)(Projectile.damage * 0.75f), // 伤害倍率 1.0
+                    (int)(Projectile.damage * 0.72f), // 伤害倍率 1.0
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -171,6 +171,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             {
                 Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 28f, 0.08f);
+                Projectile.localNPCHitCooldown = 12;
             }
             Projectile.rotation += 0.45f;
             // 每隔 20 帧，增加随机冲刺的效果

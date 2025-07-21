@@ -53,7 +53,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             base.Projectile.penetrate = 1;
             base.Projectile.aiStyle = 1;
             base.Projectile.timeLeft = 250;
-            base.Projectile.tileCollide = false;
+            base.Projectile.tileCollide = true;
             AIType = ProjectileID.WoodenArrowFriendly;
         }
         public override void OnSpawn(IEntitySource source)
@@ -86,7 +86,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             {
                 spawnTime++;
 
-                if (spawnTime <= 20)
+                if (spawnTime <= 5)
                 {
                     Projectile.velocity = Vector2.Zero;
                 }
@@ -109,7 +109,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 
 
                     // 更真实的重力模拟（逐渐下落，而非速度指数增长）
-                    Projectile.velocity.Y += 0.15f; // 每帧叠加
+                    Projectile.velocity.Y += 0.1f; // 每帧叠加
                 }
             }
 

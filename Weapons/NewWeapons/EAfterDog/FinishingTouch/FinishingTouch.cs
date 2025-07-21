@@ -75,7 +75,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 if(rightClickCooldownTimer == 0)
                 {
                     {
-                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/蒲牢鸣钟") with { Volume = 3f }, player.Center);
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/蒲牢鸣钟") with { Volume = 5f }, player.Center);
                     }
                 }
             }
@@ -213,7 +213,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "雷池铸剑，今霜刃即成，当振天下于大白",
         "只需射击，一直射击",
         "同风暴一起消散吧！！！",
-        "扫腿直拳十字锁，裸绞肘击断头台"
+        "扫腿直拳十字锁，裸绞肘击断头台",
+        "呐！",
+        "biu！",
+        "听不懂韩语，反正我觉得这句可爱就加了"
 
                     };
 
@@ -266,7 +269,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/tianjie",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/FellBullet",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/wildhunt",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/saotuizhiquan"
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/saotuizhiquan",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Ne",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don biu",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiangcao"
                 };
 
                     // 随机选择文本和对应的音效

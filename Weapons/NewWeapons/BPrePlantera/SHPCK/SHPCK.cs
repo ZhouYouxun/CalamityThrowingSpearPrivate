@@ -54,7 +54,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 12; // 设置伤害值
+                Item.damage = 18; // 设置伤害值
                 Item.useTime = 20; // 右键攻击速度更快
                 Item.useAnimation = 20;
                 Item.shoot = ModContent.ProjectileType<SHPCKFast>(); // 右键使用SHPCKFast弹幕

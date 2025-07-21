@@ -130,7 +130,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
 
             // 设置蓄力时间，如果 getGoodWorld 或 zenithWorld 则是 30，否则为 60
-            float currentMaxChargeTime = (Main.getGoodWorld || Main.zenithWorld) ? 30f : MaxChargeTime;
+            float currentMaxChargeTime = MaxChargeTime;
 
             if (Projectile.velocity == Vector2.Zero)
             {
