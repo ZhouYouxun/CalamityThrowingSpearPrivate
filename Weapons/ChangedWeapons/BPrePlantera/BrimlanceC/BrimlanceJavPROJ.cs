@@ -55,6 +55,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
         }
+        // 添加字段
+        private float rotationTotal = 0f; // 累积旋转量
+        private int rotationDir = 0;      // 旋转方向：+1 顺，-1 逆
 
         public override void AI()
         {
@@ -89,11 +92,21 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             Projectile.ai[1]++;
             Projectile.tileCollide = Projectile.ai[1] >= 5;
 
-            // 💥 击中后进入减速阶段
+            // 减速和逐渐旋转的阶段
             if (Projectile.ai[2] == 1f)
             {
-                Projectile.velocity *= 0.97f;
+                float progress = Projectile.localAI[0] / 60f; // 进度从 0 到 1
+                float eased = (float)(0.5f - 0.5f * Math.Cos(progress * Math.PI)); // cos 曲线：先慢→快→慢
 
+                // ✳️ 旋转 360度，使用 easing 调控
+                float angle = MathHelper.TwoPi * eased;
+                rotationTotal = angle * rotationDir;
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + rotationTotal;
+
+                // ✳️ 显著减速（指数级下降）
+                Projectile.velocity *= 0.98f;
+
+                // 粒子
                 for (int i = 0; i < 2; i++)
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(12f, 12f);
@@ -101,10 +114,43 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     dust.noGravity = true;
                 }
 
-                Projectile.localAI[0]++;
-                if (Projectile.localAI[0] >= 30f)
                 {
-                    // 生成火墙
+                    // 💥 雨刮摆动计算
+                    float sprayCenterRot = Projectile.rotation - MathHelper.PiOver4;
+                    float sweepAmplitude = MathHelper.ToRadians(25f); // 扫动角度幅度
+                    float sweepSpeed = 0.15f;
+                    float sweepOffset = (float)Math.Sin(Projectile.localAI[0] * sweepSpeed) * sweepAmplitude;
+
+                    // ✅ 正确用角度 + ToRotationVector2 转换方向
+                    Vector2 sprayDir = (sprayCenterRot + sweepOffset).ToRotationVector2() * 6f;
+
+                    // 发射位置略偏前方
+                    Vector2 sprayPos = Projectile.Center + sprayDir.SafeNormalize(Vector2.UnitX) * 16f;
+
+                    // === 红色 Dust 喷射 ===
+                    Dust dust = Dust.NewDustPerfect(sprayPos, DustID.RedTorch, sprayDir * 0.3f, 0, Color.Red, 1.4f);
+                    dust.noGravity = true;
+
+                    // === 橙红色火星 SparkParticle ===
+                    Particle spark = new SparkParticle(
+                        sprayPos,
+                        sprayDir * 0.4f,
+                        false,
+                        20,
+                        Main.rand.NextFloat(0.9f, 1.3f),
+                        Color.OrangeRed
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+
+
+
+
+
+                Projectile.localAI[0]++;
+                if (Projectile.localAI[0] >= 60f)
+                {
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
                         Projectile.Center,
@@ -114,12 +160,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                         Projectile.knockBack,
                         Projectile.owner
                     );
-
                     Projectile.Kill();
                 }
 
                 return;
             }
+
 
             // 🚀 初始飞行时才执行加速
             Projectile.velocity *= 1.01f;
@@ -132,9 +178,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             // 仅在首次命中时进入减速阶段
             if (Projectile.ai[2] == 0f)
             {
-                Projectile.ai[2] = 1f;      // 标记进入减速
-                Projectile.localAI[0] = 0f; // 重置计时器
-                Projectile.friendly = false; // 禁止再继续伤害敌人
+                Projectile.ai[2] = 1f;
+                Projectile.localAI[0] = 0f;
+                Projectile.friendly = false;
+
+                // 💡根据玩家位置决定旋转方向
+                Player owner = Main.player[Projectile.owner];
+                rotationDir = (owner.Center.X < Projectile.Center.X) ? 1 : -1;
             }
         }
 

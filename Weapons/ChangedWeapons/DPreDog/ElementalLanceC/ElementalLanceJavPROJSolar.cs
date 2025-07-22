@@ -125,6 +125,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
         {
             target.AddBuff(ModContent.BuffType<ElementalMix>(), 300);
 
+            Projectile.tileCollide = false;
+
             // ✴️ 每次命中都生成爆炸弹幕
             int explosionType = ModContent.ProjectileType<FuckYou>();
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, explosionType, Projectile.damage, Projectile.knockBack, Projectile.owner);

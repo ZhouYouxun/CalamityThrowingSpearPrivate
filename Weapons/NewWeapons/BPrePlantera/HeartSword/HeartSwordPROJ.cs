@@ -40,7 +40,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 
             // 设置亮光的位置为弹幕的中心
             //Vector2 lensFlareWorldPosition = Projectile.Center; // 移除偏移，直接使用弹幕中心
-            Vector2 lensFlareWorldPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1); // 改为弹幕前端
+            Vector2 lensFlareWorldPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 0.7f); // 改为弹幕前端
 
             // 亮光颜色为红色和橙色渐变
             Color lensFlareColor = Color.Lerp(Color.Red, Color.Orange, 0.23f) with { A = 0 };

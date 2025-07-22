@@ -905,7 +905,7 @@ NewWeapons: {
 		}
 
 		TheOtherMiracleMatterJav: {
-			DisplayName: Horizon Probe,
+			DisplayName: Horizon Probe
 			Tooltip:
 				'''
 				Throws a slow-moving lance that explodes on impact, summoning lasers and fire from above.
