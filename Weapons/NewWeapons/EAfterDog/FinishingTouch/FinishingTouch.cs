@@ -106,7 +106,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             // === 外部 Spark 椭圆 ===
             int sparkPoints = 74;
-            float a = 124f; // 横轴半长轴
+            float a = 66f; // 横轴半长轴
             float b = 66f; // 纵轴半短轴
 
             for (int i = 0; i < sparkPoints; i++)
@@ -211,6 +211,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     // 第 10 次触发强化攻击
                     FinishingTouchPROJ.UseDragonSnakeMode = true;
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu"), player.position);
                     Item.damage = baseDamage * 2;
                     attackCounter = 0; // 重置
                 }
