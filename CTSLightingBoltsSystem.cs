@@ -991,6 +991,35 @@ namespace CalamityThrowingSpear
         }
 
 
+        // 画龙点睛冷却结束
+        public static void Spawn_FinishingTouchRing(Vector2 position)
+        {
+            int particleCount = 36; // 光点数量
+            float radius = 66f; // 半径
+            float angleOffset = Main.rand.NextFloat(MathHelper.TwoPi); // 随机起始角度，防止死板
+
+            for (int i = 0; i < particleCount; i++)
+            {
+                float angle = angleOffset + i * MathHelper.TwoPi / particleCount;
+                Vector2 offset = angle.ToRotationVector2() * radius;
+
+                PrettySparkleParticle particle = CTSLightingBoltsSystem._poolPrettySparkle.RequestParticle();
+                particle.ColorTint = new Color(1f, 0.5f, 0f, 1f); // 橙色
+                particle.LocalPosition = position + offset;
+                particle.Rotation = angle + MathHelper.PiOver2; // 让它"顺着圈转"
+                particle.Scale = new Vector2(2f, 0.5f); // 扁长形
+                particle.FadeInNormalizedTime = 5E-06f;
+                particle.FadeOutNormalizedTime = 0.95f;
+                particle.TimeToLive = 30;
+                particle.FadeOutEnd = 30;
+                particle.FadeInEnd = 15;
+                particle.FadeOutStart = 15;
+                particle.AdditiveAmount = 0.35f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(particle);
+            }
+        }
+
 
         // 上面这些是CTS的
         // ---------------------------------------------分界线---------------------------------------------

@@ -14,9 +14,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
     public class NuclearFuelRodPROJ : ModProjectile, ILocalizedModType
     {
+        public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";
+
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/NuclearFuelRod/NuclearFuelRod";
 
-        public new string LocalizationCategory => "Projectiles.NewWeapons.DPreDog";
 
         private int phase = 0;
         private int phaseTimer = 0;
@@ -99,6 +100,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                         Projectile.knockBack,
                         Projectile.owner,
                         Projectile.whoAmI); // ai[0] 存储父弹幕
+                    
+                    // ⭕ 同时生成一个附属的“环形光圈”弹幕
+                    int lightCircle = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<NuclearFuelRodLightCircle>(),
+                        0, // 不造成伤害
+                        0f,
+                        Projectile.owner,
+                        Projectile.whoAmI // 将主弹幕的whoAmI传入，用于绑定
+                    );
+
 
                     if (laser.WithinBounds(Main.maxProjectiles))
                     {

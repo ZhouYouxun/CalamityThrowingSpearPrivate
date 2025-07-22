@@ -51,6 +51,7 @@ Projectiles: {
 			EndlessDevourJavBlackHole.DisplayName: Endless Devour Jav Black Hole
 			EndlessDevourJavBlackHoleIBV.DisplayName: Endless Devour Jav Black Hole I B V
 			EndlessDevourJavBlackHole2.DisplayName: Endless Devour Jav Black Hole2
+			NuclearFuelRodLightCircle.DisplayName: Nuclear Fuel Rod Light Circle
 		}
 
 		BPrePlantera: {
@@ -282,9 +283,11 @@ ChangedWeapons: {
 			DisplayName: Amidias Trident
 			Tooltip:
 				'''
-				Throws a trident that flies straightly and pierces infinitely.
-				Upon explosion, it releases several water whirlpools that rotate for a while before homing in on enemies.
-				[c/5276fc:" Seemingly fishes swam in the air without support. "]
+				Throws a trident that embeds itself into enemies or terrain
+				Releases water blasts or lightning bolts upon disappearing
+				Right-click to recall the trident with infinite piercing during return
+				Emits a few homing waterspouts upon reaching the player
+				[c/5276fc:“So... do you want water, or do you want lightning?”]
 				'''
 		}
 
@@ -292,9 +295,11 @@ ChangedWeapons: {
 			DisplayName: Goldplume
 			Tooltip:
 				'''
-				Falls upwards.
-				Continuously shoots feathers towards enemies while in the air.
-				[c/52f2fc:"Down is up."]
+				While held, summons a whirlwind that follows the cursor
+				The javelin pierces twice and releases two feathers backward at fixed angles on hit
+				If the javelin hits the whirlwind, it gets pulled in and releases multiple feathers after a delay or upon impact
+				Feathers are affected by gravity and cannot pass through tiles or enemies
+				[c/52f2fc:“The Divine Feathers That Cleave Skulls”]
 				'''
 		}
 
@@ -312,9 +317,9 @@ ChangedWeapons: {
 			DisplayName: Yateveo Bloom
 			Tooltip:
 				'''
-				Bounces off tile and poisons enemies.
-				Releases leaves upon disappearing.
-				[c/34a212:"A rose in their hand, and thorns for their end."]
+				Bounces off tiles and releases deadly leaves toward the nearest enemy
+				Right-click to throw a poison vine javelin with infinite piercing
+				[c/34a212:“Give a rose, keep the blood”]
 				'''
 		}
 	}
@@ -324,19 +329,19 @@ ChangedWeapons: {
 			DisplayName: Brimlance
 			Tooltip:
 				'''
-				Bounces to the closest enemies after hitting the first target.
-				Releases brimstone flames upon the second hit.
-				[c/a21512:"Why does it bounce?"]
+				Continues flying after hitting an enemy and creates a brimstone ring
+				The ring damages enemies it touches and erupts with brimstone flames
+				[c/a21512:“Ah↑ha↓—a death circle!”]
 				'''
 		}
 
 		EarthenJav: {
-			DisplayName: Earthen Pike
+			DisplayName: Earthen
 			Tooltip:
 				'''
-				Can bounce multiple times.
-				Releases numerous rock fragments upon bouncing.
-				[c/ac8f50:"Stop hitting the floor; you're breaking it!"]
+				Sticks into tiles on hit
+				Then summons several flying rock shards in front of it
+				[c/ac8f50:“Tunnel warfare, Terra style”]
 				'''
 		}
 
@@ -344,9 +349,8 @@ ChangedWeapons: {
 			DisplayName: Starnight Lance
 			Tooltip:
 				'''
-				Homes in on targets.
-				Releases homing, turning starnight beam upon disappearing.
-				[c/f692ff:"Can it release one more sword beam, please?"]
+				Homes in on enemies and releases steering starlight beams upon disappearing
+				[c/f692ff:“Aurora Protocol”]
 				'''
 		}
 	}
@@ -356,10 +360,9 @@ ChangedWeapons: {
 			DisplayName: Astral Pike
 			Tooltip:
 				'''
-				Short a high-speed lance
-				While hits on enemies,lance will generate starburst and spawn astral stars in the distance
-				If it collides with tiles, it will pass through tiles and home in on enemies.
-				[c/ffbf73:"A burrowing meteor."]
+				On enemy hit, the spear triggers a starburst and summons an astral construct at a distance
+				If it hits a tile, it phases through and homes in on a nearby enemy
+				[c/ffbf73:“A burrowing meteor”]
 				'''
 		}
 
@@ -367,9 +370,9 @@ ChangedWeapons: {
 			DisplayName: Botanic Piercer
 			Tooltip:
 				'''
-				After a short flight, splits rapidly into two homing botanic energy beam.
-				Before splitting,the lance itself deal 150% damage.
-				[c/8dff73:"No, you don't want to hit the enemy directly with it"]
+				Splits into two homing botanical energy bolts shortly after being thrown
+				The original javelin deals 150% damage before splitting
+				[c/8dff73:“No, you really don’t want it to hit directly”]
 				'''
 		}
 
@@ -377,9 +380,9 @@ ChangedWeapons: {
 			DisplayName: Diseased Pike
 			Tooltip:
 				'''
-				Homes in on targets and releases multiple homing plague bolts upon disappearing.
-				Bounces out upon hitting enemies.
-				[c/49ff1f:"It flew away and never came back."]
+				Throws three homing spears that ricochet off enemies on contact
+				On second impact, releases a plague ring and three homing plague bolts
+				[c/49ff1f:“This plague does not include swine flu”]
 				'''
 		}
 
@@ -387,18 +390,20 @@ ChangedWeapons: {
 			DisplayName: Galvanizing Glaive
 			Tooltip:
 				'''
-				Releases multiple energy bolts or rotating Gauss flux vortices upon hitting enemies.
-				[c/1ffbff:"Neutral left and Live right,aid-needed me and aided Thor.
+				Releases multiple energy bolts on enemy hit
+				Or generates a stationary magnetic vortex
+				[c/1ffbff:“Hot and neutral, side by side. Just one touch—and Zeus takes the shot.”]
 				'''
 		}
 
 		HellionFlowerJav: {
-			DisplayName: Hellion Flower Spear
+			DisplayName: Hellion Flower
 			Tooltip:
 				'''
-				Releases vines extending forward and toxic clouds upon hitting enemies.
-				The vines pierce infinitely.
-				[c/007708:"It Spreads."]
+				Pierces infinitely, releasing petals to both sides while flying and spawning seeds that follow alongside the spear
+				Seeds carry invisible damage auras, and the spear gradually slows down
+				Upon stopping, it releases poisonous gas and 6 thorn spikes
+				[c/007708:“Spring has come—so has your end.”]
 				'''
 		}
 
@@ -406,10 +411,9 @@ ChangedWeapons: {
 			DisplayName: Tenebreus Tides
 			Tooltip:
 				'''
-				Continuously shoots small tridents to both sides during its flight.
-				Also generates tridents upon hiting enemeies
-				Has an extremely high pierce count.
-				[c/001087:"It calls for you."]
+				While charging, continuously summons small tridents around the cursor, aiming at its position
+				Releasing the charge throws the main spear, spawning additional small tridents along its path
+				[c/001087:“Yes, I can confirm—Poseidon buys wholesale from me.”]
 				'''
 		}
 
@@ -417,10 +421,9 @@ ChangedWeapons: {
 			DisplayName: Typhon's Greed
 			Tooltip:
 				'''
-				Bounces off while colliding tiles
-				Spins after flying for a while.
-				During the spinning phase, continuously releases homing water polo.
-				[c/2f366b:"Finally, it's somewhat useful."]
+				Releases a burst of water orbs and enters a spinning attack mode after hitting a wall or flying for a time
+				During the spin, continuously emits homing water projectiles
+				[c/2f366b:“Typhon has no heart—but it has a stomach.”]
 				'''
 		}
 
@@ -428,9 +431,10 @@ ChangedWeapons: {
 			DisplayName: Vulcanite Lance
 			Tooltip:
 				'''
-				Causes explosions upon hitting enemies.
-				Has a chance to release a homing flame sprite from the player.
-				[c/ff8400:"Overflowing magma."]
+				Throws a gravity-affected spear
+				After a short delay, it erupts with three homing fireballs
+				On hitting a tile or at least two enemies, creates a large area of lingering flames
+				[c/ff8400:“A 1200°C shard of basalt”]
 				'''
 		}
 	}
@@ -440,10 +444,10 @@ ChangedWeapons: {
 			DisplayName: Banshee Hook
 			Tooltip:
 				'''
-				Flies straightly and bounces off upon colliding enemies.
-				After that flies back to the enemy, dealing higher damage on the second hit.
-				Releases three scythes upon disappearing, which then return to the player.
-				[c/ffbcd5:"Recyclable material."]
+				Flies in a straight line and ricochets off enemies
+				Then returns to the same enemy, dealing increased damage on the second hit
+				Releases three scythes on disappearance, which later return to the player
+				[c/ffbcd5:“It says right there—this item is recyclable.”]
 				'''
 		}
 
@@ -451,27 +455,27 @@ ChangedWeapons: {
 			DisplayName: Elemental Lance
 			Tooltip:
 				'''
-				Releases five powerful lance in sequence:
-				The Solar Lance pierces infinitely and explodes.
-				The Vortex Lance releases homing missiles.
-				The Nebula Lance gains homing ability after the first hit.
-				The Stardust Lance creates additional Stardust projectiles.
-				The Meld Lance leaves behind an entropy explosion.
-				[c/8e8e8e:"The white dwarf that should have been there is absent."]
+				Throws five types of javelins in order
+				Solar javelin continues to pursue and strike the target four times after impact
+				Vortex javelin creates a vortex above the target, which rains down lightning and missiles after a few seconds
+				Nebula javelin generates several nebula beams on hit
+				Stardust javelin sticks to the target, dealing damage over time and spawning four stars when it expires
+				Meld javelin causes a massive explosion a few seconds after impact
+				[c/8e8e8e:“The white dwarf was the only one who didn’t show up.”]
 				'''
 		}
 
 		GildedProboscisJav: {
 			DisplayName: Gilded Proboscis
-			GFBName: Bumble 屮
+			GFBName: Seizure Spiker
 			Tooltip:
 				'''
-				Creates a Draconic Swarmer around the player upon hitting enemies.
-				Up to 21 Draconic Swarmer can exist; if the number is maxed, the lance deals increased damage.
-				Each Draconic Swarmer's damage will increases with their total count.
-				Right-click to launch all Draconic Swarmer at once.
-				Draconic Swarmer will persist even if you switch weapons.
-				[c/ffc71d:"Bird lovers strongly condemn this."]
+				On enemy hit, releases a static orb that returns to the player and spawns a Draconic Swarmer
+				Up to 21 Draconic Swarmers can exist at once; if at max, the lance itself deals increased damage
+				Each Swarmer deals more damage as their total number increases
+				Right-click to launch them all at once
+				Swarmers persist even when switching weapons
+				[c/ffc71d:“Bird lovers are absolutely outraged.”]
 				'''
 		}
 	}
@@ -481,10 +485,11 @@ ChangedWeapons: {
 			DisplayName: Dragon's Rage
 			Tooltip:
 				'''
-				Throws a spinning Dragon's Rage in the air.
-				Has limited range but infinite pierce.
-				Releases multiple homing fireballs upon disappearing.
-				[c/ffc27a:"I can do this all day."]
+				While held, Dragon Rage continuously spins and bombards any enemies it touches
+				Holding left-click allows it to chase the cursor at unlimited range, with damage decreasing by distance
+				Right-click makes it spin in place, generating light orbs that rotate rapidly before charging toward the cursor
+				Left-click overrides right-click
+				[c/ffc27a:“How long is it gonna keep spinning?”]
 				'''
 		}
 
@@ -492,11 +497,9 @@ ChangedWeapons: {
 			DisplayName: Nadir
 			Tooltip:
 				'''
-				Releases Abyssal Tentacles on hit, 
-				Also releases multiple homing Abyssal Essences
-				Holding Nadir grants damage which increases with decreasing movement speed
-				Provides a 35% damage increase when stationary.
-				[c/867891:" As Above, So Below."]
+				Generates ascending Abyssal Essence both while flying and on impact
+				Abyssal Essences home in on enemies and release several void tendrils upon hitting them
+				[c/867891:“Where did that even come from?”]
 				'''
 		}
 
@@ -504,9 +507,9 @@ ChangedWeapons: {
 			DisplayName: Scourge of the Cosmos
 			Tooltip:
 				'''
-				Restores health upon hitting enemies.
-				Releases explosions and homing Mini Devourers on hit.
-				[c/9d5ad0:"The universe's revenge."]
+				While held, apples randomly fall nearby; if the lance strikes an apple, it gains homing and heals you for 2 HP
+				On hit, releases several homing Mini Devourers that can only turn at right angles
+				[c/9d5ad0:“I'm Snake.exe — I eat, I grow, I conquer.”]
 				'''
 		}
 
@@ -514,10 +517,10 @@ ChangedWeapons: {
 			DisplayName: Stream Gouge
 			Tooltip:
 				'''
-				Creates multiple portals at its position after flying for a while, damaging enemies.
-				The main body can pierce infinitely before splitting but only pierces once after splitting.
-				Shoots multiple homing mini replicas forward upon splitting; the main body remains intact.
-				[c/9d5ad0:"What lies behind the portals?"]
+				Throws a high-speed lance that leaves behind damaging afterimages along its path
+				After piercing 7 times or flying for a short distance, it explodes in place
+				On explosion, releases an afterimage slash on up to 5 nearby enemies
+				[c/9d5ad0:“Worth it? Absolutely not—still cool as hell.”]
 				'''
 		}
 
@@ -547,60 +550,61 @@ NewWeapons: {
 		}
 
 		ElectrocoagulationTenmonJav: {
-			DisplayName: Electrocoagulation Tenmon
+			DisplayName: Electrocoagulation Cross
 			Tooltip:
 				'''
-				When hitting an enemy, releases electromagnetic gel bolts in four directions, piercing infinitely.
-				[c/ffabfa:"Delicious, flammable, and conductive!"]
+				On hit, releases infinitely piercing electro-gel bolts in four directions
+				[c/ffabfa:“Don’t worry, it’s food-grade certified—absolutely…edible…ible…ible…”]
 				'''
 		}
 
 		GraniteJav: {
-			DisplayName: Granite Spear
+			DisplayName: Granite Lance
 			Tooltip:
 				'''
-				Has a chance to cause a small explosion and bounce upwards upon hitting an enemy.
-				[c/8febff:"It's 10% luck, 20% skill, 15% concentrated power of will."]
+				The lance is thrown in a completely erratic, randomized trajectory
+				[c/8febff:“One part skill, ninety-nine parts luck.”]
 				'''
 		}
 
 		RedtideJav: {
-			DisplayName: Redtide Spear
+			DisplayName: Redtide Lance
 			Tooltip:
 				'''
-				Leaves bubbles in the air while piercing multiple times.
-				Causes a small explosion upon disappearing.
-				[c/ffc3c6:"The revenge of harmful algae."]
+				Left-click throws a lance that leaves bubbles midair and pierces multiple times  
+				Explodes in a small area upon disappearing  
+				Right-click throws a spinning, homing lance  
+				[c/ffc3c6:“That day, the algae began to bloom.”]
 				'''
 		}
 
 		WulfrimJav: {
-			DisplayName: Wulfrim Spear
+			DisplayName: Wulfrum Lance
 			Tooltip:
 				'''
-				Upon hitting an enemy, summons a heavy Wulfrim hammer from above to strike the unfortunate target.
-				[c/95b47c:"Can someone explain why this spear summons a hammer after hitting? All the materials are wasted this way."]
+				Explodes into multiple bouncing Wulfrum metal scraps  
+				Right-click to prematurely detonate all scraps  
+				[c/95b47c:“If wasting materials were a sport, this weapon would be world champion.”]
 				'''
 		}
 
 		TheBroken: {
+			DisplayName: Gilded Silver Lance
 			Tooltip:
 				'''
-				After flying for a while, throw a shuriken or a throwing knife.
-				Pierce once.
-				[c/e0e0e0: "What? Do you expect him to be strong?"]
+				Left-click throws a spear that, after a short delay, ejects four mithril phantoms in sequence  
+				[c/e0e0e0:“100% certified fake gold.”]
 				'''
-			DisplayName: Silver Spear
 		}
 
 		DLOAS: {
+			DisplayName: Snake Embellishment
 			Tooltip:
 				'''
-				Gradually slows down mid-air and summons 3 venomous serpents that spiral around the spear.
-				[c/492861:“If you add legs to a snake, is it a dragon or a lizard?”]
-				[c/FFA500:“Dragon or lizard, either way—this bottle’s mine.”]
+				Gradually slows down midair while summoning 3 venomous serpents to spiral around the spear  
+				[c/492861:“If a snake grows legs, is it a dragon or a lizard?”]  
+				[c/FFA500:“Whatever it is, the wine’s still mine.”]
 				'''
-			DisplayName: Drawing Legs on a Snake
 		}
 	}
 
@@ -609,18 +613,20 @@ NewWeapons: {
 			DisplayName: The Kaios
 			Tooltip:
 				'''
-				Explodes upon impact, releasing several firebombs.
-				Firebomb bounce off the screen edges.
-				[c/ff88a7:"Lack its mean,like its name."]
+				Explodes on impact and releases several firebolts  
+				Firebolts can bounce off the edges of the screen  
+				[c/ff88a7:“I walk out from the fire and smoke.”]
 				'''
 		}
 
 		ElectrocutionHalberd: {
-			DisplayName: Fulguration Halberd
+			DisplayName: Electrocution Halberd
 			Tooltip:
 				'''
-				Creates electric sparks upon hitting an enemy.
-				[c/99fffe:"Ampere's Law."]
+				Hold left-click to raise the halberd and charge unstable electricity before throwing  
+				On hit, generates an electric ring at the point of impact  
+				Right-click to launch three orbs of lightning, each spawning a lightning strike on contact  
+				[c/99fffe:“Ampère’s Law.”]
 				'''
 		}
 
@@ -628,18 +634,19 @@ NewWeapons: {
 			DisplayName: Heart Rapier
 			Tooltip:
 				'''
-				Restores a small amount of stable health when hitting an enemy
-				Restores a large amount of health to the player with a very small chance
-				[c/e97b7b: "It depends on whether you are lucky enough"]
+				Hold left-click to summon three piercing blades around you; release to launch them at the cursor  
+				Blades restore a small amount of health on hit  
+				[c/e97b7b:“A punishment of a thousand blades through the heart.”]
 				'''
 		}
 
 		PearlwoodJav: {
-			DisplayName: Pearlwood Spear
+			DisplayName: Pearlwood Pike
 			Tooltip:
 				'''
-				Releases three rainbows upon disappearing.
-				[c/bcb696:"Mercy and hatred coexist."]
+				Passes through walls and flies with gravity  
+				Pierces infinitely during flight  
+				[c/bcb696:“What was that that just flew past?”]
 				'''
 		}
 
@@ -647,9 +654,9 @@ NewWeapons: {
 			DisplayName: Frost Stream
 			Tooltip:
 				'''
-				Gains weak homing ability after the first hit.
-				Releases a homing snowflake shard upon disappearing.
-				[c/b06dc3:" Verium, purer Verium."]
+				Gains weak homing after the first hit  
+				Releases a homing snowflake burst upon disappearing  
+				[c/b06dc3:“Much quieter than her two brothers.”]
 				'''
 		}
 
@@ -657,9 +664,10 @@ NewWeapons: {
 			DisplayName: SHPCK
 			TooltipNormal:
 				'''
-				Left-click to release a superheated plasma cutter that gradually slows down,
-				stopping in the air and causing a plasma explosion.
-				Right-click to quickly throw fast superheated plasma cutters
+				Left-click to release a superheated plasma cutter that gradually slows down,  
+				stopping midair and causing a plasma explosion  
+				Right-click to summon a holographic plasma cutter inside an enemy, which rapidly returns to you  
+
 				[c/99b3ff:"A legend from another dimension."]
 				'''
 			Tooltip: "[GFB]"
@@ -670,9 +678,9 @@ NewWeapons: {
 			DisplayName: Radiant Sun
 			Tooltip:
 				'''
-				Spins rapidly in place upon hitting an enemy, attempting to follow the target.
-				During its spin, summons numerous heavenly Wyvern feathers from above.
-				[c/fffaa3:"This spear has entered molting season."]
+				On hit, rapidly spins in place while attempting to follow the struck enemy  
+				During the spin, summons numerous Sky Dragon Feathers from above  
+				[c/fffaa3:“Supersonic feathers.”]
 				'''
 		}
 
@@ -694,12 +702,12 @@ NewWeapons: {
 
 	CPreMoodLord: {
 		FestiveHalberd: {
-			DisplayName: Holiday Halberd
+			DisplayName: Festive Halberd
 			Tooltip:
 				'''
-				Continuously leaves behind numerous Christmas lights along its path.
-				The lights then fall to the ground.
-				[c/86ff4b:"We can celebrate Christmas every day."]
+				Sprays out streams of Christmas lights along its flight path  
+				On hit, releases a homing star along with a burst of spikes and tiny presents  
+				[c/86ff4b:“We can have Christmas every day.”]
 				'''
 		}
 
@@ -720,7 +728,7 @@ NewWeapons: {
 			DisplayName: Tidal
 			Tooltip:
 				'''
-				Gradually slows down and quickly homes in on the nearest enemy.
+				Quickly disappear and teleport upwards to try to hit the enemy
 				Upon disappearing, releases two orbiting, infinitely piercing typhoons at its position.
 				Right-click to create a bubble shield that blocks 1 projectile hits before vanishing,
 				then enters a 30-second cooldown, left-click is disabled, and right-click can cancel the shield early.
@@ -731,33 +739,56 @@ NewWeapons: {
 		}
 
 		Surfeiter: {
-			Tooltip: ""
-			DisplayName: Surfeiter
+			DisplayName: The Surfeiter
+			Tooltip:
+				'''
+				While held, summons a ritual drum above your head  
+				Left-click throws a lance that, on hit, conjures two stone walls to crush enemies in between  
+				Striking the drum triggers a soundwave and fire based on its current symbol  
+				Soundwaves apply debuffs; fire triggers another soundwave after a delay  
+
+				笞 (Chī) – Takes 3% more damage  
+				杖 (Zhàng) – Reduces contact damage by 30%  
+				徒 (Tú) – Lowers defense by 40  
+				流 (Liú) – Halves movement speed  
+				死 (Sǐ) – Takes 5000 true damage every 2 seconds  
+
+				Right-click to cycle drum symbols  
+				[c/B8860B:“Sins of greed, rage, folly, wrath, and doubt—punished by lash, cauldron, and flame.”]
+				'''
 		}
 	}
 
 	DPreDog: {
 		BloodstoneJav: {
-			DisplayName: Bloodflame Lance
+			DisplayName: Bloodforged Fang
+			Tooltip: "[GFB]"
+			TooltipGFB:
+				'''
+				Hold left-click to continuously consume your life in exchange for increased pierce and damage  
+				Right-click to unleash a fan of ricocheting spears toward the cursor  
+				Restores health on enemy hit  
+				Apparently, it actually works against DoG  
+				[c/cc0e11:“Let me borrow your life. I swear I’ll give it back... someday.”]
+				'''
 			TooltipNormal:
 				'''
-				Restores a large amount of health upon hitting an enemy.
-				No one would use this thing against the Devourer of Gods, would they?
-				[c/cc0e11:"Immortality."]
+				Hold left-click to continuously consume your life in exchange for increased pierce and damage  
+				Right-click to unleash a fan of ricocheting spears toward the cursor  
+				Restores health on enemy hit  
+				No way someone’s actually using this thing against DoG, right? LMAO  
+				[c/cc0e11:“Let me borrow your life. I swear I’ll give it back... someday.”]
 				'''
-			Tooltip: "[GFB]"
-			TooltipGFB: Seems like you could actually use it against The Devourer of Gods
 		}
 
 		ChaosWindJav: {
-			DisplayName: Weaveless Hurricane
+			DisplayName: Voltic Storm
 			Tooltip:
 				'''
-				Throws a high-energy storm lance affected by gravity.
-				If it does not hit an enemy within 1.5 seconds,
-				it creates an electromagnetic sphere that causes a massive explosion and numerous lightning strikes.
-				If it hits an enemy, it only causes a weaker explosion and fewer lightning strikes.
-				[c/6d63e0:" Winds！Obey my command! "]
+				Throw a gravity-affected high-energy storm cannon that generates a magnetic orb at its origin  
+				If it doesn’t hit an enemy within 1.5 seconds, it unleashes a massive explosion and a surge of lightning  
+				If it hits early, only a small blast and fewer lightning bolts are triggered  
+				[c/6d63e0:“Look up. No seriously—look up again.”]
 				'''
 		}
 
@@ -777,68 +808,73 @@ NewWeapons: {
 		}
 
 		EndlessDevourJav: {
-			DisplayName: Ceaseless Gnawing
+			DisplayName: Ceaseless Maw
 			Tooltip:
 				'''
-				Summon three homing void from afar upon hitting an enemy.
-				In the same time converts nearby enemy projectiles into Player’s projectiles and re-releases them.
-				Converted projectiles deal 6x their original damage.
-				[c/320055:"Theoretically, even light cannot escape, but this black hole is obviously a defective product."]
+				Hold to charge, then throw  
+				If charge time is under 150 frames, fires a homing projectile  
+				If over 150, creates a powerful supermassive black hole  
+				The black hole constantly spews dark ions and deals massive damage  
+				[c/D3D3D3:“Theoretically inescapable, but this one's clearly defective.”]
 				'''
 		}
 
 		InfiniteDarknessJav: {
-			DisplayName: Banishless Dim
+			DisplayName: Umbral Slip
 			Tooltip:
 				'''
-				Vanishes at extremely high speed, then reappears beside an enemy to strike.
-				Deals more damage if it hits an enemy before vanishing.
-				[c/492861:"Unstoppable and unexpected."]
+				Quickly vanishes and reappears beside the enemy, striking with a spear and throwing starry shurikens  
+				Deals greater damage if it hits an enemy before vanishing  
+				[c/492861:“No dodge. No warning.”]
 				'''
 		}
 
 		SoulHunterJav: {
 			DisplayName: Soul Hunter
+			Tooltip: "[GFB]"
+			TooltipGFB: Counselor, your butt’s up in the tree—it doesn’t hurt anymore.
 			TooltipNormal:
 				'''
-				Gradually halts in the air, attempting to locate enemies,
-				then repeatedly strikes.
-				[c/2836a1:" The eternal hunt...has begun..."]
+				The spear dashes once toward the nearest enemy while airborne.
+				On hit, it generates Soul Hunter clones that persist around the area.
+				After a short delay, triggers a massive abyssal explosion and summons 3 homing Soulsharks.
+				If no enemies are found, it returns to the player and restores HP.
+				[c/2836a1:"Brother! I’m here to end you!"]
 				'''
-			Tooltip: "[GFB]"
-			TooltipGFB: " Counselor,Your ass is on that tree.You can't feel it "
 		}
 
 		TerraLance: {
 			DisplayName: The Terraternal
 			Tooltip:
 				'''
-				Releases a Terra explosion upon hitting an enemy
-				and summons multiple infinitely piercing Terra lasers from the surroundings.
-				[c/89ff69:"It’s worthy of it, Finally."]
+				Releases a Terra explosion upon hitting an enemy  
+				Also summons multiple infinitely-piercing Terra beams around the impact  
+				[c/89ff69:“An emerald splash, half a screen in radius.”]
 				'''
 		}
 
 		NuclearFuelRod: {
-			DisplayName: Nuclear Fuel Rod
+			DisplayName: Nuclear Tempest
 			Tooltip:
 				'''
-				Aim and release an extremely powerful nuclear laser with infinite penetration.
-				A large number of bullets will be released during this period.
-				Has a 30-second cooldown
+				Aims and unleashes a tremendously powerful nuclear laser with infinite piercing  
+				Releases a barrage of projectiles during the attack  
+				Has a 30-second cooldown  
+				[c/95b47c:“I am become Death, the fryer of eggs.”]
 				'''
 		}
 	}
 
 	EAfterDog: {
 		AuricJav: {
-			DisplayName: Auric Quantum Charged Debug Rod
+			DisplayName: Auric Quantum Overcharged Debug Rod
 			Tooltip:
 				'''
-				Releases six infinitely piercing cooling cells to the left and right upon hitting an enemy.
-				The cooling cells do not deal damage during the first 12 frames.
-				[c/fff994:"Which genius thought of sticking cells on a stick as a weapon?"]
-				[c/fff994:"I'll use this thing to 'cool down' their brain."]
+				Upon hitting an enemy, releases six piercing cooldown batteries to both sides and stores charge  
+				Cooldown batteries deal no damage in their first 12 frames  
+				Right-click to consume charge and launch a fast-tracking bouncing lightning orb  
+				[c/fff994:“Whose genius idea was it to slap a battery onto a stick?”]  
+				[c/fff994:“I'm gonna help him *cool down* that big ol' brain of his.”]
 				'''
 		}
 
@@ -846,11 +882,14 @@ NewWeapons: {
 			DisplayName: Dragon's Ascent
 			Tooltip:
 				'''
-				Left-click to throw the lance directly, which explodes after a distance and releases numerous homing fireballs.
-				Right-click to hold the lance, consuming significant amounts of health over time.
-				After a certain charge time, continuously dash towards the cursor position.
-				During the dash, releases multiple rings of fireballs, dealing massive damage upon hitting enemies.
-				[c/ff7335:"When the red bonds begin to expand, the truth and spirit shall be delivered to all."]
+				Left-click to throw a lance that releases a series of shockwaves along its path, dealing repeated damage.
+				Every ninth thrown lance empowers the tenth one.
+				The empowered lance transforms into a dragon after flying a distance, then crashes down with force.
+				Right-click to raise the lance, summoning a dragon and several dragon orbs.
+				After charging for a time, both the dragon and orbs dash toward the cursor.
+				At the end of the dash, all orbs are launched forward and then home in on enemies after a delay.
+				If you find this spear too chatty, you can mute it in the [c/d3d3d3:Config Settings][c/ffa500::(]
+				[c/ff7335:“My name is... Ki’hote! My wrath is Ki’hote! With this spear—I shall end this absurd and childish dream!”]
 				'''
 		}
 
@@ -858,10 +897,21 @@ NewWeapons: {
 			DisplayName: Eternal Radiance
 			Tooltip:
 				'''
-				Imbeds itself in enemies or block, dealing continuous damage.
-				Releases multiple homing energy bolts upon disappearing.
-				Right-click to manually detonate all the Eternal Radiance that are stuck in the blocks
-				[c/757575:"Lighter compared to its counterpart."]
+				Sticks to enemies or tiles and deals continuous damage.
+				Explodes into multiple homing energy blasts upon disappearing.
+				Right-click to manually detonate all spears stuck in tiles.
+				[c/757575:"It’s a little lighter than the one next door."]
+				'''
+		}
+
+		TheOtherMiracleMatterJav: {
+			DisplayName: Horizon Probe,
+			Tooltip:
+				'''
+				Throws a slow-moving lance that explodes on impact, summoning lasers and fire from above.
+				If it doesn't hit anything after flying for a while, it returns to the player.
+				During the return phase, it gains infinite piercing.
+				[c/757575:"It’s a bit heavier than the one next door."]
 				'''
 		}
 
@@ -895,17 +945,6 @@ NewWeapons: {
 				'''
 		}
 
-		TheOtherMiracleMatterJav: {
-			DisplayName: Horizon Probe
-			Tooltip:
-				'''
-				Throws a slow lance that generates a big explosion and multiple lasers and flames from above upon hitting.
-				If it doesn’t hit an enemy after a while, it returns to the player,
-				piercing infinitely during the returning phase.
-				[c/757575:"Septilightly heavier compared to it counterpart."]
-				'''
-		}
-
 		Revelation: {
 			DisplayName: Revelation
 			Tooltip:
@@ -929,39 +968,42 @@ NewWeapons: {
 			DisplayName: Apex Remnant
 			Tooltip:
 				'''
-				Gains homing ability after it flying for a while or hitting a tile.
-				Each hit grants one Supreme Soul Seeker, which orbits the player without dealing damage.
-				Right-click to command all Supreme Soul Seekers to dash, applying a one-second Vulnerability Hex debuff.
-				Up to 10 Supreme Soul Seekers can exist; if the count is full, the lance deals more damage on hit.
-				Obtainable by exhumed Gilded Proboscis, reversible by throwing it into Shimmer.
+				Upon hitting an enemy, begins spiraling and continuously releases fireballs.
+				Each hit summons one Supreme Soul Seeker, which orbits the player.
+				These orbiters deal contact damage and perform coordinated strikes alongside the lance.
+				Right-click to command all orbiters to dash at enemies, applying a one-second Vulnerability Hex.
+				Up to 10 Supreme Soul Seekers can exist; at full count, the lance deals increased damage on hit.
+				Obtained by performing necromantic infusion on the Gilded Proboscis, reversible via Shimmer.
 				[c/630000:"The dragon is a Whispering spiral, drawing fundamental power from the world's fractured soul, growing relentlessly until the finale."]
 				'''
 		}
 
 		PrimordialState: {
-			DisplayName: Primordial State
+			DisplayName: Yin-Yang Genesis
 			Tooltip:
 				'''
-				Begins homing after a brief flight.
-				While homing, spawns a Yin-Yang Orb every 12 frames.
-				These orbs relentlessly pursue the spear, dealing rapid hits on contact.
-				After homing for a time, the spear will veer off in a random direction,
-				releasing a cluster of Yin-Yang Orbs as it does so.
-				Orbs ricochet on impact, triggering Yin-Yang explosions.
-				[c/e1ffff:"Let these clear skies be shrouded by my wandering thoughts. I offer up this body, that my blood may be spilled upon the earth."]
-				[c/2f2f2f:"This defiled vessel has no place in the heavens... All things impure, remain with me in eternal stillness."]
+				Begins homing after flying for a short while.  
+				During this phase, generates a Yin-Yang Orb every 12 frames.  
+				Each orb continuously follows the lance and deals rapid damage.  
+				After homing ends, the lance darts off in a random direction,  
+				emitting additional orbs on departure.  
+				Orbs bounce on impact and detonate in dual-aspect explosions.  
+				[c/e1ffff:"Thus comes judgment—there is no gray."]  
+				[c/2f2f2f:"Yet truth lies hidden between the black and white."]  
 				'''
 		}
 
 		StarsofDestiny: {
-			DisplayName: Stars of Destiny
+			DisplayName: Chronoseeker
 			Tooltip:
 				'''
-				Left-click to hurl a long needle spear, which rains down meteors upon reaching its destination.
-				Right-click to throw a short needle spear that embeds in targets, forming a field and can be detonated early by the long spear.
-				Holding left-click charges the long spear, increasing its damage, and grants a brief surge of mobility upon striking foes.
-				The first time use this weapon will experience a time-space distortion.
-				[c/FFFFFF:"The Queen of the Ocean and the Snowbound Realm mistook you for her beloved."]
+				Left-click to throw a long needle-lance that rains down meteors after reaching a set position.  
+				Right-click to throw a short needle that embeds in targets and creates a field,  
+				which can be prematurely detonated by the long needle.  
+				Holding left-click charges up the long needle for more damage;  
+				successful hits briefly enhance mobility.  
+				Causes temporal dissonance the first time it's used.  
+				[c/e1ffff:"The Queen of Snow and Sea mistook you for her beloved."]  
 				'''
 		}
 	}
@@ -1088,65 +1130,6 @@ Items: {
 	XiaoZhiTiaoEA2: {
 		DisplayName: Proverb of Starnight
 		Tooltip: Challenge:defeat Moon Lord without consuming any of the Calamity Permanent Health Upgrades items
-	}
-
-	TheSkillAcc: {
-		Tooltip: ""
-		DisplayName: The Skill Acc
-	}
-
-	Weapons: {
-		Rogue: {
-			PhantomShuriken: {
-				Tooltip: ""
-				DisplayName: Phantom Shuriken
-			}
-		}
-	}
-
-	PrimeMeridian: {
-		Tooltip: ""
-		DisplayName: Prime Meridian
-	}
-
-	Sunset2: {
-		Tooltip: ""
-		DisplayName: Sunset2
-	}
-
-	GlobalStorm: {
-		Tooltip: ""
-		DisplayName: Global Storm
-	}
-
-	ElectrocutionHalberdSpear: {
-		DisplayName: Electrocution Halberd Spear
-		Tooltip: ""
-	}
-
-	TidalMechanicsSpear: {
-		DisplayName: Tidal Mechanics Spear
-		Tooltip: ""
-	}
-
-	TheLastLanceSpear: {
-		Tooltip: ""
-		DisplayName: The Last Lance Spear
-	}
-
-	TheBrokenSpear: {
-		Tooltip: ""
-		DisplayName: The Broken Spear
-	}
-
-	HeartSwordSpear: {
-		DisplayName: Heart Sword Spear
-		Tooltip: ""
-	}
-
-	MirrorWater: {
-		DisplayName: Mirror Water
-		Tooltip: ""
 	}
 
 	XiaoZhiTiaoSoD: {

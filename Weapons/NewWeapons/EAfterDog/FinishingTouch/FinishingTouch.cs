@@ -22,6 +22,7 @@ using Microsoft.Build.Tasks;
 using CalamityThrowingSpear.Global;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework.Graphics;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -72,12 +73,80 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             {
                 rightClickCooldownTimer--;
 
-                if(rightClickCooldownTimer == 0)
-                {
-                    {
-                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/蒲牢鸣钟") with { Volume = 5f }, player.Center);
-                    }
+                if (rightClickCooldownTimer == 0 && player.whoAmI == Main.myPlayer)
+                {                    
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/蒲牢鸣钟") with { Volume = 5f }, player.Center);
+                    DrawFlameEye(player.Center);
+                    CTSLightingBoltsSystem.Spawn_FinishingTouchRing(player.Center);
                 }
+            }
+        }
+        public void DrawFlameEye(Vector2 center)
+        {
+            // === 内部 Dust 圆圈 ===
+            int dustPoints = 66;
+            float radius = 66f;
+
+            for (int i = 0; i < dustPoints; i++)
+            {
+                float angle = MathHelper.TwoPi / dustPoints * i;
+
+                Vector2 offset = angle.ToRotationVector2() * radius;
+                Vector2 tangent = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2); // ⬅️ 切线方向
+                Vector2 tangentReverse = -tangent;
+
+                // 顺时针 Dust
+                Dust d1 = Dust.NewDustPerfect(center + offset, DustID.Torch, tangent * 1.5f, 0, Color.Orange, 1.4f);
+                d1.noGravity = true;
+
+                // 逆时针 Dust
+                Dust d2 = Dust.NewDustPerfect(center + offset, DustID.Torch, tangentReverse * 1.5f, 0, Color.OrangeRed, 1.4f);
+                d2.noGravity = true;
+            }
+
+            // === 外部 Spark 椭圆 ===
+            int sparkPoints = 74;
+            float a = 124f; // 横轴半长轴
+            float b = 66f; // 纵轴半短轴
+
+            for (int i = 0; i < sparkPoints; i++)
+            {
+                float t = MathHelper.TwoPi / sparkPoints * i;
+
+                // 上半椭圆点
+                Vector2 posUp = center + new Vector2(a * (float)Math.Cos(t), b * (float)Math.Sin(t));
+                Vector2 tangentUp = new Vector2(-a * (float)Math.Sin(t), b * (float)Math.Cos(t));
+                Vector2 dirUp = tangentUp.SafeNormalize(Vector2.UnitX);
+
+                Particle p1 = new SparkParticle(
+                    posUp,
+                    dirUp * 3f,
+                    false,
+                    45,
+                    1.3f,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.3f, 0.7f))
+                );
+                GeneralParticleHandler.SpawnParticle(p1);
+            }
+
+            for (int i = 0; i < sparkPoints; i++)
+            {
+                float t = MathHelper.TwoPi / sparkPoints * i;
+
+                // 下半椭圆点（反向 Y）
+                Vector2 posDown = center + new Vector2(a * (float)Math.Cos(t), -b * (float)Math.Sin(t));
+                Vector2 tangentDown = new Vector2(-a * (float)Math.Sin(t), -b * (float)Math.Cos(t));
+                Vector2 dirDown = tangentDown.SafeNormalize(Vector2.UnitX);
+
+                Particle p2 = new SparkParticle(
+                    posDown,
+                    dirDown * 3f,
+                    false,
+                    45,
+                    1.3f,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat(0.3f, 0.7f))
+                );
+                GeneralParticleHandler.SpawnParticle(p2);
             }
         }
 
