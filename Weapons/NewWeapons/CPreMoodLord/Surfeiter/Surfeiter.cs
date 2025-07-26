@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Accessories;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 148; // 设置伤害值
+            Item.damage = 150; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -61,9 +62,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             return true;
         }
 
-
-
-
-
+        /*public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient<FleshTotem>();
+            recipe.AddIngredient(ItemID.Ectoplasm, 30);
+            recipe.AddIngredient(ItemID.Bone, 99);
+            recipe.AddTile(TileID.AdamantiteForge);
+            recipe.Register();
+        }*/
     }
 }

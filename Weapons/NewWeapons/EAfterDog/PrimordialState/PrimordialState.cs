@@ -50,10 +50,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             recipe.AddIngredient<PolarEssenceJav>();
             recipe.AddIngredient<ChaosEssenceJav>();
             recipe.AddIngredient<AuricBar>(5);
-            recipe.AddIngredient(ItemID.SoulofLight, 1);
-            recipe.AddIngredient(ItemID.SoulofNight, 1);
-            recipe.AddIngredient(ItemID.LightShard, 1);
+            recipe.AddIngredient(ItemID.SoulofNight, 5);
+            recipe.AddIngredient(ItemID.SoulofLight, 5);
             recipe.AddIngredient(ItemID.DarkShard, 1);
+            recipe.AddIngredient(ItemID.LightShard, 1);
             recipe.AddTile<CosmicAnvil>();
             recipe.Register();
         }

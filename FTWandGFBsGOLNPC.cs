@@ -1,25 +1,27 @@
-﻿using System;
+﻿using CalamityMod.Items.Weapons.Summon;
+using CalamityMod.NPCs.AstrumDeus;
+using CalamityMod.NPCs.Bumblebirb;
+using CalamityMod.NPCs.DevourerofGods;
+using CalamityMod.NPCs.ExoMechs.Apollo;
+using CalamityMod.NPCs.ExoMechs.Ares;
+using CalamityMod.NPCs.ExoMechs.Artemis;
+using CalamityMod.NPCs.ExoMechs.Thanatos;
+using CalamityMod.NPCs.OldDuke;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.NPCs.Bumblebirb;
-using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
-using CalamityMod.NPCs.ExoMechs.Apollo;
-using CalamityMod.NPCs.ExoMechs.Artemis;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav;
-using CalamityMod.NPCs.OldDuke;
-using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC;
-using CalamityMod.Items.Weapons.Summon;
-using CalamityMod.NPCs.ExoMechs.Ares;
-using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
-using CalamityMod.NPCs.DevourerofGods;
 using Terraria.ID;
-using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
+using Terraria.ModLoader;
 
 
 namespace CalamityThrowingSpear
@@ -83,11 +85,25 @@ namespace CalamityThrowingSpear
                 }
             }
 
-            if (npc.type == NPCID.WallofFleshEye || npc.type == NPCID.WallofFlesh)
+            /*if (npc.type == NPCID.WallofFleshEye || npc.type == NPCID.WallofFlesh)
             {
                 if (projectile.type == ModContent.ProjectileType<ElectrocoagulationTenmonJavLight>())
                 {
                     modifiers.SourceDamage *= 0.8f;
+                }
+            }*/
+
+            if (npc.type == ModContent.NPCType<AstrumDeusHead>() ||
+                npc.type == ModContent.NPCType<AstrumDeusBody>() ||
+                npc.type == ModContent.NPCType<AstrumDeusTail>())
+            {
+                if (projectile.type == ModContent.ProjectileType<SurfeiterDrumINV>() ||
+                    projectile.type == ModContent.ProjectileType<SurfeiterDrumINVBack>() ||
+                    projectile.type == ModContent.ProjectileType<SurfeiterDrum>() ||
+                    projectile.type == ModContent.ProjectileType<SurfeiterStonePillars>() ||
+                    projectile.type == ModContent.ProjectileType<SurfeiterDrumINVEXP>())
+                {
+                    modifiers.SourceDamage *= 0.1f;
                 }
             }
 

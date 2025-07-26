@@ -88,7 +88,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             {
                 if (proj.active && proj.type == ModContent.ProjectileType<SurfeiterPROJ>() && proj.Hitbox.Intersects(Projectile.Hitbox))
                 {
-                    int projDamage = (int)(proj.damage * 0.65f); // 继承 SurfeiterPROJ 的伤害 的1.0倍
+                    int projDamage = (int)(proj.damage * 0.6f); // 继承 SurfeiterPROJ 的伤害 的1.0倍
                     for (int i = 0; i < 5; i++)
                     {
                         int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(),

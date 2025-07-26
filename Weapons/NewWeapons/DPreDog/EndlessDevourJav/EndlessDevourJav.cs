@@ -68,16 +68,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<BraisedPorkJav>(1); // 两种邪恶长枪
-            recipe.AddIngredient<DarkPlasma>(1);
+            recipe.AddIngredient(ItemID.MagicMirror, 1); // 两种邪恶长枪
+            recipe.AddIngredient<DarkPlasma>(3);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
 
-            Recipe recipe2 = CreateRecipe();
+            /*Recipe recipe2 = CreateRecipe();
             recipe2.AddIngredient<SausageMakerJav>(1); // 两种邪恶长枪
-            recipe2.AddIngredient<DarkPlasma>(1);
+            recipe2.AddIngredient<DarkPlasma>(3);
             recipe2.AddTile(TileID.LunarCraftingStation);
-            recipe2.Register();
+            recipe2.Register();*/
         }
 
 

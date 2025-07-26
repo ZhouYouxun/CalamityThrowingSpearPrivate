@@ -49,7 +49,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ChaosWindJav
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ThunderSpear, 1); // 风暴长矛
-            recipe.AddIngredient<ArmoredShell>(1);
+            recipe.AddIngredient<ArmoredShell>(3);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
         }

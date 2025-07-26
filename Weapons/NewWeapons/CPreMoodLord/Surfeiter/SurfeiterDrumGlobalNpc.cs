@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using Terraria;
+using Terraria.Enums;
 using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
@@ -28,7 +30,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
         public override void AI(NPC npc)
         {
             // 检测 Buff 是否存在
-            if (npc.HasBuff(ModContent.BuffType<SurfeiterDrumEDebuff>()))
+            if (npc.lifeMax <= 50000 && npc.HasBuff(ModContent.BuffType<SurfeiterDrumEDebuff>()))
             {
                 switch (drumForm)
                 {
@@ -61,6 +63,43 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 
                             // 在敌人头顶弹出黑色的 "5000" 战斗文本
                             CombatText.NewText(npc.Hitbox, Color.Black, "5000", true, false);
+                        }
+                        break;
+                }
+            }
+            else if (npc.lifeMax > 50000 && npc.HasBuff(ModContent.BuffType<SurfeiterDrumEDebuff>()))
+            {
+                switch (drumForm)
+                {
+                    case 0: // 笞 (Flogging) - 敌怪获得1.02倍易伤
+                        npc.defense = (int)Math.Floor(npc.defense * 0.98);
+                        break;
+                    case 1: // 杖 (Beating) - 敌怪接触伤害减少30%
+                        npc.damage = (int)(npc.damage * 0.7f);
+                        break;
+                    case 2: // 徒 (Imprisoning) - 敌怪移动速度减少50%
+                        npc.velocity *= 0.9f;
+                        break;
+                    case 3: // 流 (Banishing) - 敌怪防御降低40
+                        npc.defense -= 40;
+                        if (npc.defense < 0)
+                            npc.defense = 0;
+                        break;
+                    case 4: // 死 (Executing) - 每 2 秒造成一次 5000 点伤害
+                        executionTimer--;
+
+                        if (executionTimer <= 0)
+                        {
+                            executionTimer = 120; // 重置计时器
+                            npc.StrikeNPC(new NPC.HitInfo
+                            {
+                                Damage = 300,
+                                Knockback = 0f,
+                                HitDirection = 0
+                            });
+
+                            // 在敌人头顶弹出黑色的 "5000" 战斗文本
+                            CombatText.NewText(npc.Hitbox, Color.Black, "200", true, false);
                         }
                         break;
                 }

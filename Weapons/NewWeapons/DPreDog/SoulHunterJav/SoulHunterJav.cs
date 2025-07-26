@@ -23,6 +23,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav;
 using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
 {
@@ -54,7 +55,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<RedtideJav>(1);
+            recipe.AddIngredient<Surfeiter>(1);
             recipe.AddIngredient<ReaperTooth>(6);
             recipe.AddIngredient<RuinousSoul>(5);
             recipe.AddTile(TileID.LunarCraftingStation);

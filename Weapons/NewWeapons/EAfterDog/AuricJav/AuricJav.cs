@@ -154,7 +154,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.HallowJoustingLance, 1);
             recipe.AddIngredient<AuricQuantumCoolingCell>();
-            recipe.AddIngredient(ItemID.Wire, 5);
+            recipe.AddIngredient(ItemID.Wire, 50);
             recipe.AddTile<CosmicAnvil>();
             recipe.Register();
         }

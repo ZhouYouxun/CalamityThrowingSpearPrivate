@@ -1,21 +1,24 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Summon;
+using CalamityMod.Items.Materials;
+using CalamityMod.Particles;
 using CalamityMod.Rarities;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.Audio;
-using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
@@ -230,11 +233,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
         }
 
-
-
-
-
-
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient<PhosphorescentGauntlet>(1);
+            recipe.AddIngredient<GammaHeart>(1);
+            recipe.AddIngredient<RuinousSoul>(5);
+            recipe.AddTile(TileID.LunarCraftingStation);
+            recipe.Register();
+        }
 
 
     }

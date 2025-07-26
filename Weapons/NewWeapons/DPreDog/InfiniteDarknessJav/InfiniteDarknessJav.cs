@@ -42,8 +42,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<ElectrocutionHalberd>();
-            recipe.AddIngredient<TwistingNether>(); 
+            recipe.AddIngredient(ItemID.ThrowingKnife,100);
+            recipe.AddIngredient<TwistingNether>(3); 
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
         }

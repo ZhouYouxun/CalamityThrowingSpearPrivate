@@ -31,6 +31,7 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
 {
@@ -94,10 +95,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
         {
             // 这把武器对应的是单体，粘附相关联的
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<DiseasedJav>(); // 瘟疫枪-单体高速武器
-            recipe.AddIngredient<BansheeHookJav>(); // 女妖之爪-回旋式回收式追踪单体+群体武器
-            recipe.AddIngredient<InfiniteDarknessJav>(); // 无边黑暗-单体武器
-            recipe.AddIngredient<SoulHunterJav>(); // 魂狩，较慢速单体武器
+            recipe.AddIngredient<ElementalLanceJav>(); // 瘟疫枪-单体高速武器
+            recipe.AddIngredient<AmidiasTridentJav>(); // 女妖之爪-回旋式回收式追踪单体+群体武器
+            //recipe.AddIngredient<InfiniteDarknessJav>(); // 无边黑暗-单体武器
+            //recipe.AddIngredient<SoulHunterJav>(); // 魂狩，较慢速单体武器
             recipe.AddIngredient<MiracleMatter>();
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();

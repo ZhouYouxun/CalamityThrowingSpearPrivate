@@ -23,6 +23,7 @@ using CalamityThrowingSpear.Global;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -374,8 +375,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<GildedProboscisJav>();
-            recipe.AddIngredient<YharonSoulFragment>(8);
+            recipe.AddIngredient<DragonRageJav>(1);
+            recipe.AddIngredient<AshesofAnnihilation>(15);
+            recipe.AddIngredient<YharonSoulFragment>(10);
             recipe.AddTile<CosmicAnvil>();
             recipe.Register();
         }

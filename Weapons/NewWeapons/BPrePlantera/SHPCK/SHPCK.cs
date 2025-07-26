@@ -219,7 +219,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient<PlasmaDriveCore>();
             recipe.AddIngredient<SuspiciousScrap>(4);
-            recipe.AddIngredient<ElectrocoagulationTenmonJav>(1);
             recipe.AddRecipeGroup("AnyMythrilBar", 10);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();

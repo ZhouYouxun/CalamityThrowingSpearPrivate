@@ -148,7 +148,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient<HeartSword>(1);
-            recipe.AddIngredient<BloodstoneCore>(4);
+            recipe.AddIngredient<BloodstoneCore>(7);
             recipe.AddTile(TileID.LunarCraftingStation);
             recipe.Register();
         }

@@ -41,9 +41,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ChristmasTreeSword, 1); // 圣诞树剑
-            recipe.AddIngredient(ItemID.NorthPole, 1); // 北极
-            recipe.AddIngredient(ItemID.Razorpine, 1); // 剃刀松
-            recipe.AddIngredient(ItemID.Present, 10);
+            recipe.AddIngredient(ItemID.Ectoplasm, 10);
+            //recipe.AddIngredient(ItemID.NorthPole, 1); // 北极
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();
         }

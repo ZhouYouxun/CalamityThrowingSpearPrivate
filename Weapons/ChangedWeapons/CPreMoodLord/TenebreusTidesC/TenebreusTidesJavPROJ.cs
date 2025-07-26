@@ -63,7 +63,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 设置穿透次数为20
+            Projectile.penetrate = 20; // 设置穿透次数为20
             Projectile.timeLeft = 1500; // 设置持续时间为1500帧
             Projectile.extraUpdates = 1; // 额外更新次数为1
             Projectile.usesLocalNPCImmunity = true;
@@ -337,6 +337,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            Projectile.damage = (int)(Projectile.damage * 0.95);
             target.AddBuff(ModContent.BuffType<CrushDepth>(), 300); // 深渊水压
         }
     }

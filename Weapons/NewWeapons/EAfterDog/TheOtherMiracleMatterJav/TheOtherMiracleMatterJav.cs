@@ -63,10 +63,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
         {
             // 这把武器是跟群体，范围攻击相关联的
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<ElementalLanceJav>(); // 元素长枪-多功能武器
+            //recipe.AddIngredient<ElementalLanceJav>(); // 元素长枪-多功能武器
             recipe.AddIngredient<SHPCK>(); // SHPCK-典型的群体类武器
             recipe.AddIngredient<TerraLance>(); // 泰拉巨枪-轮椅群体武器
-            recipe.AddIngredient<ChaosWindJav>(); // 风暴长矛-慢速超大范围群体武器
+            //recipe.AddIngredient<ChaosWindJav>(); // 风暴长矛-慢速超大范围群体武器
             recipe.AddIngredient<MiracleMatter>();
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();
