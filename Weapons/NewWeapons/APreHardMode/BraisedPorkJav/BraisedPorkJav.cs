@@ -43,7 +43,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient<RottenMatter>(12);
             recipe.AddIngredient(ItemID.RottenChunk, 4);
-            recipe.AddIngredient(ItemID.DemoniteBar, 4);
+            recipe.AddIngredient(ItemID.DemoniteBar, 5);
             recipe.AddTile(TileID.DemonAltar);
             recipe.Register();
         }

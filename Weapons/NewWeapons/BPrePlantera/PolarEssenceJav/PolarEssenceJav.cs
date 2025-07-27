@@ -40,10 +40,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddRecipeGroup("AnyCobaltBar", 5);
-            recipe.AddIngredient(ItemID.Frostbrand, 1); // 寒霜剑
-            recipe.AddIngredient<EssenceofEleum>(4); // 极地精华
-            recipe.AddIngredient(ItemID.IceBlock, 150); // 冰雪块
+            //recipe.AddRecipeGroup("AnyCobaltBar", 5);
+            //recipe.AddIngredient(ItemID.Frostbrand, 1); // 寒霜剑
+            recipe.AddIngredient<EssenceofEleum>(10); // 极地精华
+            recipe.AddIngredient(ItemID.IceBlock, 15); // 冰雪块
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
         }

@@ -40,10 +40,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddRecipeGroup("AnyCobaltBar", 5);
-            recipe.AddIngredient(ItemID.Starfury, 1); // 星怒
-            recipe.AddIngredient<EssenceofSunlight>(4); // 日光精华
-            recipe.AddIngredient(ItemID.SunplateBlock, 150); // 日盘块
+            //recipe.AddRecipeGroup("AnyCobaltBar", 5);
+            //recipe.AddIngredient(ItemID.Starfury, 1); // 星怒
+            recipe.AddIngredient<EssenceofSunlight>(10); // 日光精华
+            recipe.AddIngredient(ItemID.SunplateBlock, 15); // 日盘块
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
         }

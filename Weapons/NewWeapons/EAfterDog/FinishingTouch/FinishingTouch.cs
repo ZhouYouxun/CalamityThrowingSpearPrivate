@@ -38,7 +38,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 4));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }
-        private const int RightClickCooldownMax = 180; // 右键冷却最大帧数
+        private const int RightClickCooldownMax = 1200; // 右键冷却最大帧数
         public int rightClickCooldownTimer = 0;        // 当前右键冷却计时
 
         public override void SetDefaults()
@@ -107,8 +107,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             // === 外部 Spark 椭圆 ===
             int sparkPoints = 74;
-            float a = 66f; // 横轴半长轴
-            float b = 66f; // 纵轴半短轴
+            float a = 100f; // 横轴半长轴
+            float b = 100f; // 纵轴半短轴
 
             for (int i = 0; i < sparkPoints; i++)
             {
@@ -167,7 +167,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             float progress = 1f - rightClickCooldownTimer / (float)RightClickCooldownMax;
             Rectangle frameCrop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
 
-            Color barColor = Color.LimeGreen;
+            Color barColor = Color.OrangeRed;
             Vector2 totalScale = scale * barScale * Vector2.One;
 
             spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
@@ -201,7 +201,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Item.useTime = Item.useAnimation = 60;
 
                 // 给玩家添加 VulnerabilityHex 孱弱巫咒 和 Dragonfire 龙焰，持续时间为4秒（240帧）
-                player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
+                player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 300);
             }
             else
             {
@@ -212,7 +212,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     // 第 10 次触发强化攻击
                     FinishingTouchPROJ.UseDragonSnakeMode = true;
-                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu"), player.position);
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu Fire"), player.position);
                     Item.damage = baseDamage * 2;
                     attackCounter = 0; // 重置
                 }
@@ -287,7 +287,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "扫腿直拳十字锁，裸绞肘击断头台",
         "呐！",
         "biu！",
-        "听不懂韩语，反正我觉得这句可爱就加了"
+        "听不懂韩语，反正我觉得这句可爱就加了",
+        "就是现在！骷髅头！蜘蛛头！"
 
                     };
 
@@ -343,7 +344,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/saotuizhiquan",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Ne",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don biu",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiangcao"
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiangcao",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu"
                 };
 
                     // 随机选择文本和对应的音效

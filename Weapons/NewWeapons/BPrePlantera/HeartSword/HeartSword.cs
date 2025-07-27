@@ -76,6 +76,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.LifeCrystal, 10);
+            recipe.AddIngredient(ItemID.Pearlwood, 15);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();
         }

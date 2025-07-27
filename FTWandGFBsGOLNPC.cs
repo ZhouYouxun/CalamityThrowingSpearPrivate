@@ -63,7 +63,7 @@ namespace CalamityThrowingSpear
                 }
                 if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
                 {
-                    modifiers.SourceDamage *= 0.25f;
+                    modifiers.SourceDamage *= 0.2f;
                 }
             }
 
@@ -75,7 +75,7 @@ namespace CalamityThrowingSpear
             {
                 if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
                 {
-                    modifiers.SourceDamage *= 0.5f;
+                    modifiers.SourceDamage *= 0.75f;
                 }
                 if (projectile.type == ModContent.ProjectileType<DragonRageJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>())

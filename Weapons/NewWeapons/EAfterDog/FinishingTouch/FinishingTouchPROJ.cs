@@ -238,7 +238,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
                 // 设定弹幕的速度和伤害
                 Vector2 fireballVelocity = baseAngle.ToRotationVector2().RotatedBy(baseAngle * i) * 10f; // 初始速度为原来的8.5倍Main.rand.NextFloat(0.75f, 2f)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireballVelocity, fireballType, (int)(Projectile.damage * 0.25f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireballVelocity, fireballType, (int)(Projectile.damage * 0.275f), Projectile.knockBack, Projectile.owner);
             }
         }
 

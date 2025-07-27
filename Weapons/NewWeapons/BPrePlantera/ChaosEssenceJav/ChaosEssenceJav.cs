@@ -41,10 +41,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddRecipeGroup("AnyCobaltBar", 5); // 一级锭
-            recipe.AddIngredient(ItemID.FieryGreatsword, 1); // 火山大剑
-            recipe.AddIngredient<EssenceofHavoc>(4); // 混乱精华
-            recipe.AddIngredient<BrimstoneSlag>(150); // 硫磺火石砖
+            //recipe.AddRecipeGroup("AnyCobaltBar", 5); // 一级锭
+            //recipe.AddIngredient(ItemID.FieryGreatsword, 1); // 火山大剑
+            recipe.AddIngredient<EssenceofHavoc>(10); // 混乱精华
+            recipe.AddIngredient<BrimstoneSlag>(15); // 硫磺火石砖
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
         }
