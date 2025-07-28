@@ -14,3 +14,5 @@
 .vs/CalamityX/v17/.suo
 .vs/CalamityX/v17/fileList.bin
 obj/
+obj/Debug/net8.0/CalamityThrowingSpear.AssemblyInfo.cs
+obj/Debug/net8.0/CalamityThrowingSpear.AssemblyInfoInputs.cache
