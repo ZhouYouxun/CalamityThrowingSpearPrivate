@@ -16,3 +16,10 @@
 obj/
 obj/Debug/net8.0/CalamityThrowingSpear.AssemblyInfo.cs
 obj/Debug/net8.0/CalamityThrowingSpear.AssemblyInfoInputs.cache
+obj/CalamityThrowingSpear.csproj.nuget.dgspec.json
+obj/CalamityThrowingSpear.csproj.nuget.g.props
+obj/Debug/net8.0/CalamityThrowingSpear.assets.cache
+obj/Debug/net8.0/CalamityThrowingSpear.csproj.AssemblyReference.cache
+obj/Debug/net8.0/CalamityThrowingSpear.GeneratedMSBuildEditorConfig.editorconfig
+obj/project.assets.json
+obj/project.nuget.cache
