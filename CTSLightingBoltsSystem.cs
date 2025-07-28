@@ -19,6 +19,21 @@ namespace CalamityThrowingSpear
         // 注意！！注意！！
         // 本文件里的所有特效均不需要灾厄Calamity运行！这些东西完全独立，因为这些特效是基于原版1.4.4.9 Terraria的！
 
+        // 额外提一下：Terraria.GameContent.Drawing：TileDrawing
+        // 有现成的尾巴能用
+        // 然后主要看一下这：Terraria.Graphics;：RainbowRodDrawer通过它的调用，可以看到那5个：
+        //if (proj.type == 34)
+        //    default(FlameLashDrawer).Draw(proj);
+        //if (proj.type == 16)
+        //    default(MagicMissileDrawer).Draw(proj);
+        //if (proj.type == 106)
+        //    default(LightDiscDrawer).Draw(proj);
+        //if (proj.type == 933)
+        //    default(FinalFractalHelper).Draw(proj);
+        //if (proj.type == 79)
+        //    default(RainbowRodDrawer).Draw(proj);
+
+
 
         // 神圣晶石子弹-命中
         public static void Spawn_IonizingRadiation(Vector2 position)

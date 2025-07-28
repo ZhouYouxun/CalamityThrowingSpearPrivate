@@ -93,29 +93,29 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
                 Main.dust[fiery].noGravity = true;
                 Main.dust[fiery].velocity = Vector2.Zero;
 
-                // 粒子轨道旋转角度（围绕弹幕旋转）
-                float spinAngle = Main.GameUpdateCount * 0.2f; // 每帧推进角度，速度可调
-                float radius = 1f * 16f; // 1格半径 = 16像素
+                //// 粒子轨道旋转角度（围绕弹幕旋转）
+                //float spinAngle = Main.GameUpdateCount * 0.2f; // 每帧推进角度，速度可调
+                //float radius = 1f * 16f; // 1格半径 = 16像素
 
-                // 旋转前进
-                for (int i = 0; i < 1; i++)
-                {
-                    float angle = spinAngle + MathHelper.TwoPi / 3f * i;
-                    Vector2 offset = angle.ToRotationVector2() * radius;
+                //// 旋转前进
+                //for (int i = 0; i < 1; i++)
+                //{
+                //    float angle = spinAngle + MathHelper.TwoPi / 3f * i;
+                //    Vector2 offset = angle.ToRotationVector2() * radius;
 
-                    int glow = Dust.NewDust(
-                        Projectile.Center + offset,
-                        0, 0,
-                        DustID.InfernoFork,
-                        offset.X * 0.2f,
-                        offset.Y * 0.2f,
-                        100,
-                        default,
-                        Main.rand.NextFloat(1.2f, 1.6f)
-                    );
-                    Main.dust[glow].noGravity = true;
-                    Main.dust[glow].velocity = Vector2.Zero;
-                }
+                //    int glow = Dust.NewDust(
+                //        Projectile.Center + offset,
+                //        0, 0,
+                //        DustID.InfernoFork,
+                //        offset.X * 0.2f,
+                //        offset.Y * 0.2f,
+                //        100,
+                //        default,
+                //        Main.rand.NextFloat(1.2f, 1.6f)
+                //    );
+                //    Main.dust[glow].noGravity = true;
+                //    Main.dust[glow].velocity = Vector2.Zero;
+                //}
 
             }
 
