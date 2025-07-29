@@ -46,7 +46,7 @@ namespace CalamityThrowingSpear
         // 容器A和B，用于存储二二绑定的武器类类型
         // 注意！！这很重要！！
         // 因为容器是按照顺序进行读取，所以里面的武器顺序必须1:1的对照，如果要添加的话不可打乱，因为只要打乱了一个，后面的就全乱了
-        private static readonly List<Type> WeaponSetA = new List<Type>
+        public static readonly List<Type> WeaponSetA = new List<Type>
         {
             typeof(AmidiasTridentJav), // 海王三叉戟
             typeof(GoldplumeJav), // 金羽
@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear
             typeof(ViolenceJav), // 恣睢
         };
 
-        private static readonly List<Type> WeaponSetB = new List<Type>
+        public static readonly List<Type> WeaponSetB = new List<Type>
         {
             typeof(AmidiasTrident),
             typeof(GoldplumeSpear),

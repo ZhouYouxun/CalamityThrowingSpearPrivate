@@ -212,7 +212,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 {
                     // 第 10 次触发强化攻击
                     FinishingTouchPROJ.UseDragonSnakeMode = true;
-                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu Fire"), player.position);
+                    // 检查是否启用了独特音效播放的开关
+                    if (ModContent.GetInstance<CTSConfigs>().EnableFTSound)
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu Fire"), player.position);
                     Item.damage = baseDamage * 2;
                     attackCounter = 0; // 重置
                 }

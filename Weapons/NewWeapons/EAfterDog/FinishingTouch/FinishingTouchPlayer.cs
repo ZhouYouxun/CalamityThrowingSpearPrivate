@@ -338,11 +338,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
 
 
-
-
-
-
-
             {
                 // 检查条件：玩家背包中是否有 FinishingTouch，场上无Boss存活，且无进行中的事件
                 bool noBossAlive = !Main.npc.Any(npc => npc.boss && npc.active);

@@ -1215,12 +1215,21 @@ Configs: {
 
 		EnableRogue: {
 			Label: EnableRogue
-			Tooltip: Changed all weapons class type to Rogue
+			Tooltip: 
+			'''
+			Changed all weapons class type to Rogue
+			It will not include new forms of attacks
+			'''
 		}
 
 		MeleeSpeedMultiplierMode: {
-			Label: Melee Speed Multiplier Mode
-			Tooltip: ""
+			Label: Global Melee Speed Scaling
+			Tooltip: 
+			'''
+			Change how this mod's weapons
+			are affected by melee speed bonuses,
+			and to what extent.
+			'''
 		}
 	}
 }
@@ -1273,4 +1282,7 @@ Buffs: {
 	}
 }
 
-TheSpecialText.ElementalArkJav2: ingested too many pigments
+TheSpecialText: {
+	ElementalArkJav2: ingested too many pigments
+	ReworkPrompt: "CTS: This weapon can be converted into a throwing version"
+}

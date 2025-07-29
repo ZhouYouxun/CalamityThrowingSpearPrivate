@@ -568,7 +568,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             // 第3个参数armRotation决定了手臂的弯曲角度，你要想让他平行向前？高举45度？还是往下放？
 
             // 设置玩家前臂（主手）和后臂（副手）的角度，使其完全伸展并指向鼠标位置
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+            // Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
         }
 
