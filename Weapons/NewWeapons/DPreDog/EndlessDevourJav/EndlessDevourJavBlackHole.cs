@@ -293,10 +293,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
                     // 🚩 计算递增伤害倍率
                     float progressDamage = 1f - Projectile.timeLeft / 600f; // 0 ~ 1
-                    float damageMultiplier = MathHelper.Lerp(0.1f, 1.6f, progressDamage);
+                    float damageMultiplier = MathHelper.Lerp(0.1f, 1f, progressDamage);
 
                     // 限制最大倍率 = 3.5f
-                    damageMultiplier = Math.Min(damageMultiplier, 1.6f);
+                    damageMultiplier = Math.Min(damageMultiplier, 1f);
 
                     for (int i = 0; i < shootCount; i++)
                     {

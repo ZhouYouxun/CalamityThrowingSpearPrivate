@@ -13,6 +13,7 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
 using System;
@@ -60,13 +61,15 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<DragonRageFuckYou>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.8f;
+                    modifiers.FinalDamage *= 0.6f;
                 }
                 if (projectile.type == ModContent.ProjectileType<StreamGougeJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<StreamGougeJavEXP>() ||
-                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJSPLIT>())
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJSPLIT>() ||
+                    projectile.type == ModContent.ProjectileType<EndlessDevourJavBlackHole>() ||
+                    projectile.type == ModContent.ProjectileType<EndlessDevourJavOrbSmall>() ||
+                    projectile.type == ModContent.ProjectileType<EndlessDevourJavOrb>())
                 {
-                    // 将伤害降低为 60%
                     modifiers.FinalDamage *= 0.5f;
                 }
                 if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
@@ -112,6 +115,18 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<SurfeiterDrumINVEXP>())
                 {
                     modifiers.SourceDamage *= 0.1f;
+                }
+            }
+
+            if (npc.type == ModContent.NPCType<DevourerofGodsHead>() ||
+               npc.type == ModContent.NPCType<DevourerofGodsBody>() ||
+               npc.type == ModContent.NPCType<DevourerofGodsTail>())
+            {
+                if (projectile.type == ModContent.ProjectileType<EndlessDevourJavBlackHole>() ||
+                    projectile.type == ModContent.ProjectileType<EndlessDevourJavOrbSmall>() ||
+                    projectile.type == ModContent.ProjectileType<EndlessDevourJavOrb>())
+                {
+                    modifiers.FinalDamage *= 0.75f;
                 }
             }
 
