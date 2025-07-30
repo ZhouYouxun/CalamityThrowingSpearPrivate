@@ -206,6 +206,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Particle smoke = new HeavySmokeParticle(Projectile.Center, dustVelocity * Main.rand.NextFloat(1f, 2.6f), Color.Orange, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
+
+            // 记录角度，并调整inv的冲击波方向
+            if (Projectile.velocity.Length() > 0.1f)
+            {
+                recentVelocities.Enqueue(Projectile.velocity.SafeNormalize(Vector2.UnitY));
+                if (recentVelocities.Count > velocitySampleCount)
+                    recentVelocities.Dequeue();
+            }
         }
 
 
@@ -225,45 +233,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             }
         }
 
-        private void ReleaseFireballs()
-        {
-            int fireballType = ModContent.ProjectileType<FinishingTouchBALL>();
-            float baseAngle = MathHelper.TwoPi / 16; // 每个火球的角度
-            int splitCount = 4;
-
-            for (int i = 0; i < splitCount; i++)
-            {
-                float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 70f * 16f;
-
-                Vector2 velocitySPIT = Vector2.Normalize(Projectile.Center - spawnPosition) * 16;
-
-                // 生成分裂长枪，伤害为充能长枪的1/5
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<SagittariusSPIT>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
-            }
-
-
-            {
-                Vector2 sparkleVelocity = (Projectile.Center - Main.rand.NextVector2Circular(40f, 40f)) // 缩小随机偏移范围
-               .SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.25f, 0.75f); // 降低初始速度范围
-
-                Color startColor = Color.OrangeRed * 0.4f;
-                Color endColor = Color.LightGoldenrodYellow * 0.8f;
-            }
-            /*for (int i = 0; i < 16; i++)
-            {
-                float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-
-                // 计算每个弹幕的方向向量
-                Vector2 direction = new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle));
-
-                // 设定弹幕的速度和伤害
-                Vector2 fireballVelocity = baseAngle.ToRotationVector2().RotatedBy(baseAngle * i) * 10f; // 初始速度为原来的8.5倍Main.rand.NextFloat(0.75f, 2f)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireballVelocity, fireballType, (int)(Projectile.damage * 0.275f), Projectile.knockBack, Projectile.owner);
-            }*/
-        }
-
-
+     
         private void ReleaseLinearParticles()
         {
             float baseAngle = MathHelper.TwoPi / 24; // 20个粒子的扩散角度
@@ -283,10 +253,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
         public static bool UseDragonSnakeMode = false;
 
+        public readonly Queue<Vector2> recentVelocities = new(); // 保存最近的飞行方向
+        public const int velocitySampleCount = 6; // 保留多少帧的方向数据
 
         public override void OnKill(int timeLeft)
         {
-            ReleaseFireballs();
             ReleaseLinearParticles();
 
             {
@@ -297,15 +268,26 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         int invProjType = ModContent.ProjectileType<FinishingTouchINV>();
                         Vector2 shootDirection = Projectile.velocity.SafeNormalize(Vector2.UnitY);
                         float shootSpeed = Projectile.velocity.Length();
+                        // 取平均方向
+                        Vector2 avgDirection = Vector2.UnitY;
+                        if (recentVelocities.Count > 0)
+                        {
+                            avgDirection = Vector2.Zero;
+                            foreach (var v in recentVelocities)
+                                avgDirection += v;
+                            avgDirection = avgDirection.SafeNormalize(Vector2.UnitY);
+                        }
+
                         Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             Projectile.Center,
-                            shootDirection * shootSpeed * 2,
+                            avgDirection * shootSpeed * 2, // ✅ 不再用死亡瞬间速度，而是平均
                             invProjType,
                             (int)(Projectile.damage * 0.75f),
                             Projectile.knockBack,
                             Projectile.owner
                         );
+
                     }
                     else
                     {
@@ -328,12 +310,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                         {
                             (Main.projectile[proj].ModProjectile as FinishingTouchDragon)?.SetBPlan(false);
                         }
-
-
                     }
-
-
-
                 }
 
                 // 🌀 2️⃣ 生成 16 个橙色椭圆冲击波粒子（等角分布）
@@ -364,15 +341,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             target.AddBuff(ModContent.BuffType<Dragonfire>(), 300); // 龙焰
 
-            for (int i = 0; i < 5; i++)
+
+
+            if (target != null && target.active)
             {
-                float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 70f * 16f;
+                int ctrlID = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero, // 控制弹幕本身不需要移动
+                    ModContent.ProjectileType<FinishingTouchEchoCtrl>(),
+                    Projectile.damage, // 控制弹幕自身无伤害，但可以传过去
+                    0f,
+                    Projectile.owner,
+                    target.whoAmI // 👈 将 NPC 的 whoAmI 编码为 ai[0]
+                );
 
-                Vector2 velocitySPIT = Vector2.Normalize(Projectile.Center - spawnPosition) * 16;
-
-                // 生成分裂长枪，伤害为充能长枪的1/5
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<FinishingTouchEcho>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+                if (ctrlID.WithinBounds(Main.maxProjectiles))
+                    Main.projectile[ctrlID].originalDamage = Projectile.damage; // 可选：传递原始伤害
             }
 
 
@@ -384,14 +369,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Color endColor = Color.LightGoldenrodYellow * 0.8f;
             }
 
-            /*int slashCount = 2; // 生成2到3个斩击特效
-            for (int i = 0; i < slashCount; i++)
-            {
-                // 随机生成方向
-                Vector2 randomDirection = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-                int slashID = ModContent.ProjectileType<OrangeSLASH>();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, randomDirection, slashID, (int)(Projectile.damage * 2.5f), Projectile.knockBack, Projectile.owner);
-            }*/
 
             // 给予5秒钟的创造胜利
             int buffDuration = 5 * 60; // 5 秒钟，单位为帧（每秒 60 帧）

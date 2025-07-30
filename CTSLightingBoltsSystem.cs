@@ -35,6 +35,67 @@ namespace CalamityThrowingSpear
 
 
 
+        /*         
+            ⚠️ 特效系统必须严守边界，混用即是错误！
+
+            在 Terraria 的模组开发中，粒子系统存在三套完全独立且不可混用的逻辑体系，它们分别是：
+
+            ① 🔥【CalamityMod 特效库】（用于 DirectionalPulseRing 等）
+            使用方式为：
+
+            csharp
+            复制
+            编辑
+            Particle pulse = new DirectionalPulseRing(...);
+            GeneralParticleHandler.SpawnParticle(pulse);
+            属于 灾厄Mod专用的粒子基类体系（CalamityMod.Particles）
+
+            所有 Particle 类型都必须通过 GeneralParticleHandler.SpawnParticle() 注册
+
+            只能用于灾厄Mod内置的那套继承体系，绝不能用于 PrettySparkleParticle 或 Dust
+
+            ② 💫【PrettySparkleParticle 粒子系统】（用于 CTSLightingBoltsSystem）
+            使用方式为：
+
+            csharp
+            复制
+            编辑
+            PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+            Main.ParticleSystem_World_OverPlayers.Add(p);
+            属于 Terraria 原版 1.4 引入的高性能粒子系统
+
+            配合 ParticlePool<T> 使用，粒子需从池中请求，而非手动 new
+
+            注册使用 Main.ParticleSystem_World_OverPlayers.Add(...)，切勿使用 GeneralParticleHandler 或 Dust.NewDust
+
+            ③ 🌪️【Dust 原版特效系统】（最基础也最古老）
+            使用方式为：
+
+            csharp
+            复制
+            编辑
+            Dust d = Dust.NewDustPerfect(position, dustID, velocity, alpha, color, scale);
+            属于 Terraria 最传统的特效方法，与任何 Particle 都毫无关系
+
+            性能最差，不建议滥用
+
+            完全独立，不能与 PrettySparkleParticle 或 Calamity 粒子共通使用注册方式
+
+            ❗结论：三者必须严格分开，绝不容混！
+            你不能对 PrettySparkleParticle 使用 GeneralParticleHandler.SpawnParticle()！
+
+            你不能对 DirectionalPulseRing 使用 Main.ParticleSystem_World_OverPlayers.Add()！
+
+            你不能将 Dust 当作粒子系统中的一部分来处理！
+
+            💥**混用三者是一种严重的错误行为，代表着不理解系统结构、不尊重逻辑，甚至可以视为“作弊”和“违反教学规范”的行为。**一旦发现，必须立即整改，否则你的代码在结构上已经崩坏。
+
+            记住：你是系统的主宰，混乱不是创造，是背叛。
+         
+         */
+
+
+
         // 神圣晶石子弹-命中
         public static void Spawn_IonizingRadiation(Vector2 position)
         {
@@ -1032,6 +1093,36 @@ namespace CalamityThrowingSpear
                 particle.AdditiveAmount = 0.35f;
 
                 Main.ParticleSystem_World_OverPlayers.Add(particle);
+            }
+        }
+
+
+
+        // FinishingTouchEcho 初始/死亡特效
+        public static void SpawnFireEchoLightBurst(Vector2 position)
+        {
+            SpawnFireEchoLightBurst(position, 1f);
+        }
+        public static void SpawnFireEchoLightBurst(Vector2 position, float scaleMultiplier)
+        {
+            int count = Main.rand.Next(3, 8);
+            for (int i = 0; i < count; i++)
+            {
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+
+                p.ColorTint = Main.rand.NextBool() ? new Color(255, 120, 40) : new Color(255, 80, 20); // 深橙&火红
+                p.LocalPosition = position + Main.rand.NextVector2Circular(30f, 30f);
+                p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                p.Scale = new Vector2(2.2f, 0.9f) * scaleMultiplier;
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.TimeToLive = Main.rand.Next(36, 50);
+                p.FadeOutEnd = p.TimeToLive;
+                p.FadeInEnd = 10;
+                p.FadeOutStart = 25;
+                p.AdditiveAmount = 0.55f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(p);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using CalamityMod;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
@@ -577,6 +578,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
         public override bool PreDraw(ref Color lightColor)
         {
+            // 🚧 如果 Segments 尚未初始化，跳过绘制，避免报错
+            if (Segments == null || Segments.Any(s => s == null))
+                return false;
+
             Texture2D headTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/FTDragon/FinishingTouchDragon1Head").Value;
             Texture2D bodyTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/FTDragon/FinishingTouchDragon2Body").Value;
             Texture2D tailTex = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/FTDragon/FinishingTouchDragon3Tail").Value;

@@ -48,15 +48,46 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         }
         public override void OnSpawn(IEntitySource source)
         {
+            // 橙红火焰扩散
+            CTSLightingBoltsSystem.SpawnFireEchoLightBurst(Projectile.Center);
+
+            // 加一个橙色脉冲圈
+            Particle pulse = new DirectionalPulseRing(
+                Projectile.Center,
+                Vector2.Zero,
+                Color.Orange,
+                new Vector2(1.0f, 1.0f),
+                0f,
+                0.35f,
+                1.2f,
+                36
+            );
+            GeneralParticleHandler.SpawnParticle(pulse);
+
+
+            // === 橙色主题 Dust 特效（出生扩散） ===
+            for (int i = 0; i < 22; i++)
+            {
+                // 等角度分布，每个 Dust 稍微偏移一点角度
+                float angle = MathHelper.TwoPi * i / 12f + Main.rand.NextFloat(-0.1f, 0.1f);
+                Vector2 dir = angle.ToRotationVector2();
+
+                Vector2 spawnPos = Projectile.Center + dir * Main.rand.NextFloat(4f, 10f);
+                Vector2 velocity = dir * Main.rand.NextFloat(3f, 5.5f);
+
+                int dustID = Dust.NewDust(spawnPos, 0, 0, DustID.Torch, velocity.X, velocity.Y, 150, default, Main.rand.NextFloat(1.1f, 1.5f));
+                Dust dust = Main.dust[dustID];
+                dust.noGravity = true;
+                dust.color = Color.Lerp(Color.OrangeRed, Color.Goldenrod, Main.rand.NextFloat(0.3f, 0.7f));
+                dust.fadeIn = 0.5f;
+            }
 
         }
+
+
         public override void AI()
         {
-            // 在 AI 内加入一次性判断调用（只在出生时）
-            if (Projectile.timeLeft == 600) // 初始时调用
-            {
-                CTSLightingBoltsSystem.Spawn_SagittariusSpitBirth(Projectile.Center);
-            }
+
 
             // 加速效果，每帧速度乘以1.01
             Projectile.velocity *= 1.02f;
@@ -70,59 +101,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 Projectile.velocity *= 0.88f;
             }
 
-            // 小型冲击波生成，两个一大一小
-            if (Projectile.timeLeft == 600)
-            {
-                Vector2 smallPulseScale = new Vector2(0.3f, 1.2f); // 小型冲击波
-                Vector2 largePulseScale = new Vector2(0.6f, 1.6f); // 大型冲击波
 
-                // 第一个小型垂直椭圆冲击波
-                Particle smallPulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, smallPulseScale, MathHelper.PiOver2, 0.3f, 1f, 30);
-                GeneralParticleHandler.SpawnParticle(smallPulse);
 
-                // 第二个大型垂直椭圆冲击波
-                Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, largePulseScale, MathHelper.PiOver2, 0.2f, 1f, 30);
-                GeneralParticleHandler.SpawnParticle(largePulse);
-            }
+
 
         }
+
+
+
+
         public override void OnKill(int timeLeft)
         {
-            int arcCount = 5; // 弧段数
-            int pointsPerArc = 8;
-            float baseRadius = 60f;
+            // 🔥 橙红火焰强化爆裂
+            CTSLightingBoltsSystem.SpawnFireEchoLightBurst(Projectile.Center, 2f);
 
-            for (int arc = 0; arc < arcCount; arc++)
+
+            // 🔥大范围火星飞散
+            for (int i = 0; i < 16; i++)
             {
-                float arcStartAngle = MathHelper.TwoPi * arc / arcCount + Main.GameUpdateCount * 0.03f;
-                float arcSpan = MathHelper.PiOver4;
-                float arcRadius = baseRadius + arc * 6f;
-
-                for (int i = 0; i < pointsPerArc; i++)
-                {
-                    float t = (float)i / (pointsPerArc - 1);
-                    float angle = arcStartAngle - arcSpan * 0.5f + arcSpan * t;
-                    Vector2 baseDirection = angle.ToRotationVector2();
-
-                    // Dust 位于主弧线圆上（稳定结构）
-                    Vector2 dustPos = Projectile.Center + baseDirection * arcRadius;
-                    Dust dust = Dust.NewDustPerfect(dustPos, 267, Vector2.Zero, 0, Color.White, 1.3f);
-                    dust.noGravity = true;
-                }
+                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
+                SparkParticle spark = new SparkParticle(
+                    Projectile.Center,
+                    vel,
+                    false,
+                    20,
+                    2f,
+                    Color.OrangeRed
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            Particle pulse = new DirectionalPulseRing(
-                Projectile.Center,
-                Vector2.Zero,
-                Color.OrangeRed,
-                new Vector2(1.6f, 1.6f),
-                0f,
-                0.5f,
-                1.0f,
-                30
-                );
-            GeneralParticleHandler.SpawnParticle(pulse);
+            // 💨焦黑烟尘
+            for (int i = 0; i < 12; i++)
+            {
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke,
+                    Main.rand.NextVector2Circular(3f, 3f), 100, Color.DarkGray, 1.5f);
+                dust.noGravity = true;
+            }
         }
+
+
+
+
         public override bool PreDraw(ref Color lightColor)
         {
             // 获取 SpriteBatch 和投射物纹理
