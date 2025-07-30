@@ -171,8 +171,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             {
                 Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 28f, 0.08f);
-                Projectile.localNPCHitCooldown = 12;
             }
+            Projectile.localNPCHitCooldown = 9;
             Projectile.rotation += 0.45f;
             // 每隔 20 帧，增加随机冲刺的效果
             //if (phaseTimer % 20 == 0)
@@ -228,7 +228,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                     Projectile.Center,
                     shootDirection,
                     ModContent.ProjectileType<PrimordialStateLight>(),
-                    (int)(Projectile.damage * 1.0f),
+                    (int)(Projectile.damage * 1.28f),
                     Projectile.knockBack,
                     Projectile.owner
                 );

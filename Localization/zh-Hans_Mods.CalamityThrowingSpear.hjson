@@ -158,6 +158,7 @@ Projectiles: {
 			FinishingTouchINV.DisplayName: 龙玉
 			// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
 			FinishingTouchDragon.DisplayName: 应龙
+			// FinishingTouchEcho.DisplayName: Finishing Touch Echo
 		}
 	}
 

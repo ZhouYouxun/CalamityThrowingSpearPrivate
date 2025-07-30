@@ -60,8 +60,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         public void IncreaseX()
         {
             X = (int)MathHelper.Clamp(X + 1, 1, 20); // 最大 20 级
-            Player.statLife += 2; // 每次增加等级，回复 2 点生命值
-            Player.HealEffect(2);
+            Player.statLife += 5; // 每次增加等级，回复 2 点生命值
+            Player.HealEffect(5);
         }
     }
 }

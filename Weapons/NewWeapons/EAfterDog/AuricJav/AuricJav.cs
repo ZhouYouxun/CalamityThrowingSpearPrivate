@@ -35,13 +35,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 85; // 设置伤害值
+            Item.damage = 102; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 26; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 20; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
@@ -69,7 +69,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                float multiplier = 1 + 3 * (AngerMeter / MaxAnger);
+                float multiplier = 1 + 4 * (AngerMeter / MaxAnger);
                 damage = (int)(damage * multiplier);
 
                 // 让闪电初始速度翻X倍

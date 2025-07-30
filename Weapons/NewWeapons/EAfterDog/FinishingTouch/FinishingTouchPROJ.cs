@@ -1,26 +1,27 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Graphics.Primitives;
+using CalamityMod.NPCs.Bumblebirb;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Typeless;
+using CalamityMod.Sounds;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
+using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius;
+using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Typeless;
-using Microsoft.Xna.Framework.Graphics;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using CalamityMod.NPCs.Bumblebirb;
-using CalamityMod.Sounds;
-using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
-using Terraria.Audio;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Graphics.Primitives;
 using Terraria.Graphics.Shaders;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDragon;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
@@ -228,8 +229,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         {
             int fireballType = ModContent.ProjectileType<FinishingTouchBALL>();
             float baseAngle = MathHelper.TwoPi / 16; // 每个火球的角度
+            int splitCount = 4;
 
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < splitCount; i++)
+            {
+                float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 70f * 16f;
+
+                Vector2 velocitySPIT = Vector2.Normalize(Projectile.Center - spawnPosition) * 16;
+
+                // 生成分裂长枪，伤害为充能长枪的1/5
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<SagittariusSPIT>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
+            }
+
+
+            {
+                Vector2 sparkleVelocity = (Projectile.Center - Main.rand.NextVector2Circular(40f, 40f)) // 缩小随机偏移范围
+               .SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.25f, 0.75f); // 降低初始速度范围
+
+                Color startColor = Color.OrangeRed * 0.4f;
+                Color endColor = Color.LightGoldenrodYellow * 0.8f;
+            }
+            /*for (int i = 0; i < 16; i++)
             {
                 float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
 
@@ -239,7 +260,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 // 设定弹幕的速度和伤害
                 Vector2 fireballVelocity = baseAngle.ToRotationVector2().RotatedBy(baseAngle * i) * 10f; // 初始速度为原来的8.5倍Main.rand.NextFloat(0.75f, 2f)
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, fireballVelocity, fireballType, (int)(Projectile.damage * 0.275f), Projectile.knockBack, Projectile.owner);
-            }
+            }*/
         }
 
 
@@ -342,6 +363,26 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<Dragonfire>(), 300); // 龙焰
+
+            for (int i = 0; i < 5; i++)
+            {
+                float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 70f * 16f;
+
+                Vector2 velocitySPIT = Vector2.Normalize(Projectile.Center - spawnPosition) * 16;
+
+                // 生成分裂长枪，伤害为充能长枪的1/5
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<FinishingTouchEcho>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+            }
+
+
+            {
+                Vector2 sparkleVelocity = (Projectile.Center - Main.rand.NextVector2Circular(40f, 40f)) // 缩小随机偏移范围
+               .SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.25f, 0.75f); // 降低初始速度范围
+
+                Color startColor = Color.OrangeRed * 0.4f;
+                Color endColor = Color.LightGoldenrodYellow * 0.8f;
+            }
 
             /*int slashCount = 2; // 生成2到3个斩击特效
             for (int i = 0; i < slashCount; i++)

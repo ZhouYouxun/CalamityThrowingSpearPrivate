@@ -45,7 +45,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             Projectile.penetrate = -1;
             Projectile.timeLeft = 600; // X 秒后自动消失
             Projectile.MaxUpdates = 1;
-            Projectile.tileCollide = false; // 不与地形碰撞
+            Projectile.tileCollide = true; // 与地形碰撞
             Projectile.ignoreWater = true;
             //Projectile.aiStyle = ProjAIStyleID.Arrow;
         }

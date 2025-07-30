@@ -36,7 +36,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             Projectile.ignoreWater = true;
             Projectile.penetrate = 3;  // 穿透次数为-1
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 40;  // 存活时间120
+            Projectile.timeLeft = 45;  // 存活时间120
             Projectile.light = 0.5f;
             Projectile.extraUpdates = 2;  // 更多帧更新
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧

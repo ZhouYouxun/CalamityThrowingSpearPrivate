@@ -188,7 +188,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 20;
             Projectile.alpha = 1; // 完全不透明
         }
         private Vector2 lockedScreenPosition; // 黑洞生成时锁死的绘制位置
@@ -245,6 +245,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
         public override void AI()
         {
+
+            float lifeProgress = 1f - (Projectile.timeLeft / 250f); // 0 ~ 1
+            float scaleFactor = MathHelper.Lerp(160f, 3200f, lifeProgress);
+
+            Vector2 centerBefore = Projectile.Center; // 🚩 记录修改前中心
+            Projectile.width = (int)scaleFactor;
+            Projectile.height = (int)scaleFactor;
+            Projectile.Center = centerBefore;
+
             // 接收被传入的蓄力影响值（可持续使用）
             float chargeFactor = Projectile.ai[0];
 
@@ -284,10 +293,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
                     // 🚩 计算递增伤害倍率
                     float progressDamage = 1f - Projectile.timeLeft / 600f; // 0 ~ 1
-                    float damageMultiplier = MathHelper.Lerp(0.1f, 3.5f, progressDamage);
+                    float damageMultiplier = MathHelper.Lerp(0.1f, 1.6f, progressDamage);
 
                     // 限制最大倍率 = 3.5f
-                    damageMultiplier = Math.Min(damageMultiplier, 3.5f);
+                    damageMultiplier = Math.Min(damageMultiplier, 1.6f);
 
                     for (int i = 0; i < shootCount; i++)
                     {

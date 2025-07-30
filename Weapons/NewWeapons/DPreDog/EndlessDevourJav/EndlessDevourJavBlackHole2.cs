@@ -27,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             Projectile.penetrate = -1;
             Projectile.hide = true;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void AI()
@@ -42,13 +42,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
             // === 🌌 让体积从 16x16 平滑增大到 1600x1600，且中心固定 ===
 
-            float lifeProgress = 1f - (Projectile.timeLeft / 250f); // 0 ~ 1
+            /*float lifeProgress = 1f - (Projectile.timeLeft / 250f); // 0 ~ 1
             float scaleFactor = MathHelper.Lerp(16f, 1600f, lifeProgress);
 
             Vector2 centerBefore = Projectile.Center; // 🚩 记录修改前中心
             Projectile.width = (int)scaleFactor;
             Projectile.height = (int)scaleFactor;
-            Projectile.Center = centerBefore;         // 🚩 重置回中心
+            Projectile.Center = centerBefore;*/         // 🚩 重置回中心
 
         }
 
