@@ -9,6 +9,7 @@ using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.OldDuke;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
@@ -59,7 +60,14 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<DragonRageFuckYou>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.6f;
+                    modifiers.FinalDamage *= 0.8f;
+                }
+                if (projectile.type == ModContent.ProjectileType<StreamGougeJavPROJ>() ||
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavEXP>() ||
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJSPLIT>())
+                {
+                    // 将伤害降低为 60%
+                    modifiers.FinalDamage *= 0.5f;
                 }
                 if (projectile.type == ModContent.ProjectileType<FinishingTouchDASHFuckYou>())
                 {

@@ -20,6 +20,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
     {
         //public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
         public new string LocalizationCategory => "Projectiles.EAfterDog";
+        private NPC targetNPC;
+        public ref float Time => ref Projectile.ai[1];
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -89,14 +91,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
         public override void SetDefaults()
         {
             // 设置弹幕的基础属性
-            Projectile.width = 11; // 弹幕宽度
-            Projectile.height = 11; // 弹幕高度
+            Projectile.width = 36; // 弹幕宽度
+            Projectile.height = 36; // 弹幕高度
             Projectile.friendly = true; // 对敌人有效
             Projectile.DamageType = DamageClass.Melee; // 伤害类型
             Projectile.penetrate = 3; // 穿透力为1，击中一个敌人就消失
-            Projectile.timeLeft = 1200; // 弹幕存在时间为x帧
+            Projectile.timeLeft = 360; // 弹幕存在时间为x帧
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 10; // 无敌帧冷却时间为14帧
             Projectile.ignoreWater = true; // 弹幕不受水影响
             Projectile.arrow = true;
             Projectile.extraUpdates = 1;
@@ -105,8 +107,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
         public override void AI()
         {
             Projectile.rotation += 0.45f;
-
-
             // 生成光明主题粒子特效
             if (Main.rand.NextBool(2)) // 50% 概率生成粒子
             {
@@ -118,6 +118,44 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                 Dust dust = Dust.NewDustPerfect(dustPosition, dustType, Projectile.velocity * 0.1f, 150, default, Main.rand.NextFloat(1.55f, 2.0f));
                 dust.noGravity = true;
             }
+
+            if (Projectile.timeLeft <= 270)
+            {
+                targetNPC = FindTarget(3200f); // 寻找最近的敌人
+                if (targetNPC != null)
+                {
+                    Vector2 direction = Vector2.Normalize(targetNPC.Center - Projectile.Center);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 35f, 0.1f);
+                    //// 冲刺粒子效果
+                    //for (int i = 0; i < 30; i++)
+                    //{
+                    //    Vector2 offset = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f);
+                    //    Dust dust = Dust.NewDustPerfect(offset, DustID.Lava, Vector2.Zero, 0, Color.OrangeRed, Main.rand.NextFloat(1f, 1.5f));
+                    //    dust.noGravity = true;
+                    //}
+                }
+            }
+
+            Time++;
+
+        }
+        public override bool? CanDamage() => Time >= 6f;
+
+        private NPC FindTarget(float range)
+        {
+            NPC closestNPC = null;
+            float closestDistance = range;
+
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy(Projectile) && Projectile.Distance(npc.Center) < closestDistance)
+                {
+                    closestDistance = Projectile.Distance(npc.Center);
+                    closestNPC = npc;
+                }
+            }
+
+            return closestNPC;
         }
 
 

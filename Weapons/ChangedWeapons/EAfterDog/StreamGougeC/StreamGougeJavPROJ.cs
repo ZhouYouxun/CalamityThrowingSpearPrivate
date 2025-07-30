@@ -259,7 +259,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             var enemies = Main.npc
                 .Where(npc => npc.active && !npc.friendly && npc.life > 0)
                 .OrderBy(npc => Vector2.Distance(npc.Center, center))
-                .Take(6) // 取前 15 个
+                .Take(15) // 取前 15 个
                 .ToList();
 
             foreach (var enemy in enemies)
