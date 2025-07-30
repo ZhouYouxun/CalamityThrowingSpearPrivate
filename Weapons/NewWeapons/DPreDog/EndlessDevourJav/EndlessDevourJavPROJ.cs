@@ -123,7 +123,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         private void DoBehavior_Aim()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Projectile.timeLeft = 360;
+            Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
 
@@ -213,7 +213,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
                 float chargeTime = Projectile.localAI[1];
 
-                if (chargeTime < 360f)
+                if (chargeTime < 300f)
                 {
                     // ================= 🌑 蓄力未满 300：播放弱化特效 =================
                     if (Projectile.localAI[0] % 8 == 0)
@@ -262,7 +262,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                 else
                 {
                     // ================= 🌌 蓄力到达 300 时瞬间爆发一次强特效 =================
-                    if (Projectile.localAI[0] == 360)
+                    if (Projectile.localAI[0] == 300)
                     {
                         int burstCount = 64;          // 🔹 粒子数量
                         float burstRadius = 110f;     // 🔹 爆发环半径
@@ -337,7 +337,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
                     // DirectionalPulseRing
-                    if (Projectile.localAI[0] == 360)
+                    if (Projectile.localAI[0] == 300)
                     {
                         Particle shrinkPulse = new DirectionalPulseRing(
                             HeadPosition,
@@ -430,13 +430,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     float shakePower;
 
                     // 当蓄力未满 300 时，线性递增震动（最大 30）
-                    if (chargeTime < 360f)
+                    if (chargeTime < 300f)
                     {
-                        shakePower = MathHelper.Lerp(0f, 30f, chargeTime / 360f);
+                        shakePower = MathHelper.Lerp(0f, 24f, chargeTime / 300f);
                     }
                     else // 达到 300 后固定为 30
                     {
-                        shakePower = 30f;
+                        shakePower = 24f;
                     }
 
                     float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
@@ -728,7 +728,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             float transferredValue = 5f;
             //float finalDamage = chargeLevel1 * 0.1f;
 
-            if (chargeTime >= 360f)
+            if (chargeTime >= 300f)
             {
                 // =============== 蓄力足够时：生成黑洞 ===============
                 if (Main.myPlayer == Projectile.owner)
@@ -739,7 +739,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                         center,
                         Vector2.Zero,
                         ModContent.ProjectileType<EndlessDevourJavBlackHole>(),
-                        Projectile.damage,
+                        (int)(Projectile.damage * 2),
                         Projectile.knockBack,
                         Projectile.owner,
                         chargeTime / 5f // 通过 ai[0] 传入黑洞影响后续强度[暂时没用到]

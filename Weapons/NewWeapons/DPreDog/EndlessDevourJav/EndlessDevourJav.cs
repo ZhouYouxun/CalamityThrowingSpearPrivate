@@ -25,7 +25,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 180; // 设置伤害值
+            Item.damage = 125; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;

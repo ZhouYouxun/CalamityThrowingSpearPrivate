@@ -1228,11 +1228,11 @@ Configs: {
 
 		MeleeSpeedMultiplierMode: {
 			Label: 全局近战攻速加成调整
-			Tooltip: 
-			'''
-			更改本模组的武器
-			让他们是否以及受到多少近战攻速加成
-			'''
+			Tooltip:
+				'''
+				更改本模组的武器
+				让他们是否以及受到多少近战攻速加成
+				'''
 		}
 	}
 }
@@ -1291,5 +1291,5 @@ Buffs: {
 
 TheSpecialText: {
 	ElementalArkJav2: 摄入了过量的色素
-	ReworkPrompt: "CTS：此武器可被转化投掷版本"
+	ReworkPrompt: CTS：此武器可被转化投掷版本
 }
