@@ -61,7 +61,7 @@ namespace CalamityThrowingSpear
                     projectile.type == ModContent.ProjectileType<DragonRageFuckYou>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.6f;
+                    modifiers.FinalDamage *= 0.5f;
                 }
                 if (projectile.type == ModContent.ProjectileType<StreamGougeJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<StreamGougeJavEXP>() ||
