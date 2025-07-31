@@ -9,6 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
+using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {
@@ -70,6 +71,38 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 
         public override void AI()
         {
+            // 每隔一帧（或者你也可以改成 Main.GameUpdateCount % 2 == 0 每两帧）
+            if (Main.rand.NextBool(1))
+            {
+                // 所有可选的粒子特效
+                ParticleOrchestraType[] choices = new[]
+                {
+            ParticleOrchestraType.Keybrand,
+            ParticleOrchestraType.NightsEdge,
+            ParticleOrchestraType.TrueNightsEdge,
+            ParticleOrchestraType.Excalibur,
+            ParticleOrchestraType.TrueExcalibur,
+            ParticleOrchestraType.TerraBlade,
+            ParticleOrchestraType.RainbowRodHit,
+            ParticleOrchestraType.SilverBulletSparkle,
+            ParticleOrchestraType.ShimmerArrow
+        };
+
+                // 随机选一个
+                ParticleOrchestraType chosen = Main.rand.NextFromList(choices);
+
+                // 在当前位置生成特效
+                ParticleOrchestrator.RequestParticleSpawn(
+                    clientOnly: false,
+                    chosen,
+                    new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = Projectile.Center
+                    },
+                    Projectile.owner
+                );
+            }
+
             // 如果粘附在目标上，则保持投射物跟随目标
             if (Projectile.ai[0] == 1f)
             {
@@ -89,16 +122,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
                             Projectile.timeLeft = 600; // 一旦咬住就不会松口，除非手动取消
                         }
 
-                        // 粒子效果随机化释放
-                        if (Time % 3 == 0)
-                        {
-                            Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-                            particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
-                            Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
-                            Particle Smear = new CircularSmearVFX(particlePosition, Color.Black * Main.rand.NextFloat(0.78f, 0.85f), Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(1.2f, 1.3f));
-                            GeneralParticleHandler.SpawnParticle(Smear);
-                        }
-                        Time++;
+                        //// 粒子效果随机化释放
+                        //if (Time % 3 == 0)
+                        //{
+                        //    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
+                        //    particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
+                        //    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
+                        //    Particle Smear = new CircularSmearVFX(particlePosition, Color.Black * Main.rand.NextFloat(0.78f, 0.85f), Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(1.2f, 1.3f));
+                        //    GeneralParticleHandler.SpawnParticle(Smear);
+                        //}
+                        //Time++;
 
                         // 当弹幕黏附在敌人身上时，生成额外弹幕
                         if (Projectile.timeLeft % 5 == 0) // 每隔5帧生成一个额外弹幕
@@ -116,15 +149,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
                             Vector2 velocity = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.UnitX) * 15f;
 
                             // 生成额外的弹幕
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, Mod.Find<ModProjectile>(selectedProjectile).Type, (int)(Projectile.damage * 20f), 0f, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, Mod.Find<ModProjectile>(selectedProjectile).Type, (int)(Projectile.damage * 35f), 0f, Projectile.owner);
                         }
 
-                        // 亮黄色冲击波效果
-                        if (Projectile.timeLeft % 20 == 0)
-                        {
-                            Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Black, new Vector2(1.5f), Projectile.rotation, 1f, 0.1f, 30);
-                            GeneralParticleHandler.SpawnParticle(pulse);
-                        }
+                        //// 亮黄色冲击波效果
+                        //if (Projectile.timeLeft % 20 == 0)
+                        //{
+                        //    Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Black, new Vector2(1.5f), Projectile.rotation, 1f, 0.1f, 30);
+                        //    GeneralParticleHandler.SpawnParticle(pulse);
+                        //}
                     }
                     else
                     {

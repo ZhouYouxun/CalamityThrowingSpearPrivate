@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,7 +17,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
     {
         internal const float StartingScale = 1f;
 
-        internal const float SunlightBladeMaxVelocity = DefiledGreatsword.ShootSpeed * 2f;
+        internal const float SunlightBladeMaxVelocity = 16 * 2f;
         internal const int SunlightBladePierce = 10;
 
         internal const float FadeInTime = 30f;

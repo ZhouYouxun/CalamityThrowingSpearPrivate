@@ -11,6 +11,7 @@ using Terraria;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 {
@@ -104,6 +105,37 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
             Projectile.velocity *= 1.01f;
 
 
+            // 每隔一帧（或者你也可以改成 Main.GameUpdateCount % 2 == 0 每两帧）
+            if (Main.rand.NextBool(1))
+            {
+                // 所有可选的粒子特效
+                ParticleOrchestraType[] choices = new[]
+                {
+            ParticleOrchestraType.Keybrand,
+            ParticleOrchestraType.NightsEdge,
+            ParticleOrchestraType.TrueNightsEdge,
+            ParticleOrchestraType.Excalibur,
+            ParticleOrchestraType.TrueExcalibur,
+            ParticleOrchestraType.TerraBlade,
+            ParticleOrchestraType.RainbowRodHit,
+            ParticleOrchestraType.SilverBulletSparkle,
+            ParticleOrchestraType.ShimmerArrow
+        };
+
+                // 随机选一个
+                ParticleOrchestraType chosen = Main.rand.NextFromList(choices);
+
+                // 在当前位置生成特效
+                ParticleOrchestrator.RequestParticleSpawn(
+                    clientOnly: false,
+                    chosen,
+                    new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = Projectile.Center
+                    },
+                    Projectile.owner
+                );
+            }
 
             //if (Projectile.numUpdates % 3 == 0)
             {
@@ -137,7 +169,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
 
                 // 始终选择模组中的弹幕
                 string selectedProjectile = SplitProjectiles[Main.rand.Next(SplitProjectiles.Length)];
-                float damageMultiplier = Main.zenithWorld ? 175.0f : 25.0f; // 判断是否为 ZenithWorld 模式并设置伤害倍率
+                float damageMultiplier = Main.zenithWorld ? 195.0f : 40.0f; // 判断是否为 ZenithWorld 模式并设置伤害倍率
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, Mod.Find<ModProjectile>(selectedProjectile).Type, (int)(Projectile.damage * damageMultiplier), 0f, Projectile.owner);
 
                 // 生成复杂的黑色粒子特效

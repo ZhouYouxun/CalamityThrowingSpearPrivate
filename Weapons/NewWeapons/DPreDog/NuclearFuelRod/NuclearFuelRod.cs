@@ -233,15 +233,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             spriteBatch.Draw(barFG, drawPos, frameCrop, barColor, 0f, barOrigin, totalScale, SpriteEffects.None, 0f);
         }
 
-        public override void AddRecipes()
-        {
-            Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<PhosphorescentGauntlet>(1);
-            recipe.AddIngredient<GammaHeart>(1);
-            recipe.AddIngredient<RuinousSoul>(5);
-            recipe.AddTile(TileID.LunarCraftingStation);
-            recipe.Register();
-        }
+        //public override void AddRecipes()
+        //{
+        //    Recipe recipe = CreateRecipe();
+        //    recipe.AddIngredient<PhosphorescentGauntlet>(1);
+        //    recipe.AddIngredient<GammaHeart>(1);
+        //    recipe.AddIngredient<RuinousSoul>(5);
+        //    recipe.AddTile(TileID.LunarCraftingStation);
+        //    recipe.Register();
+        //}
 
 
     }

@@ -24,15 +24,19 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.DLOAS;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 {
     public class FinishingTouch : ModItem, ILocalizedModType
     {
         public new string LocalizationCategory => "NewWeapons.EAfterDog";
+
         public override void SetStaticDefaults()
         {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<DLOAS>();
 
             // 注册四帧动画，每六帧切换一次
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 4));
