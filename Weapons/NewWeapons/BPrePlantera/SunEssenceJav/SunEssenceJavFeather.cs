@@ -96,7 +96,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             if (Projectile.tileCollide)
             {
                 // === 🚩 1️⃣ 高密度 Dust 蓝绿色流动 ===
-                int dustCount = 5;
+                int dustCount = 2;
                 for (int i = 0; i < dustCount; i++)
                 {
                     float spread = MathHelper.ToRadians(45f);
@@ -118,7 +118,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 }
 
                 // === 🚩 2️⃣ DirectionalPulseRing 蓝绿色脉冲波 ===
-                if (Main.GameUpdateCount % 1 == 0)
+                if (Main.GameUpdateCount % 3 == 0)
                 {
                     int pulseLayers = 1;
                     for (int i = 0; i < pulseLayers; i++)
@@ -138,7 +138,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 }
 
                 // === 🚩 3️⃣ SparkParticle（偏外侧，随机发散）===
-                if (Main.rand.NextBool(3))
+                if (Main.rand.NextBool(6))
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(10f, 10f); // ⬅️ 比原来更远
                     Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(4f, 10f); // 速度范围拉大
@@ -155,7 +155,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 }
 
                 // === 🚩 4️⃣ AltSparkParticle（更靠近，集中）===
-                if (Main.rand.NextBool(2))
+                if (Main.rand.NextBool(5))
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(2f, 2f); // ⬅️ 比原来更小，贴近轨迹
                     Vector2 velocity = forward * 0.02f + Main.rand.NextVector2Circular(0.1f, 0.1f); // 更低速、轻扰动

@@ -318,24 +318,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             // 旋转长枪时，调整玩家手臂姿态
             ManipulatePlayerArmPositions();
 
-            // 粒子效果随机化释放
-            //if (Time % 3 == 0)
-            //{
-            //    Vector2 particleOffset = new Vector2(13.5f * Projectile.direction, 0);
-            //    particleOffset.X += Main.rand.NextFloat(-3f, 3f); // 随机左右偏移
-            //    Vector2 particlePosition = Projectile.Center + particleOffset + Projectile.velocity * 0.5f;
-
-            //    // 应用 2.1 倍缩放到光环特效
-            //    float scaleMultiplier = 2.1f;
-            //    Particle Smear = new CircularSmearVFX(
-            //        particlePosition,
-            //        Color.OrangeRed * Main.rand.NextFloat(0.78f, 0.85f),
-            //        Main.rand.NextFloat(-8, 8),
-            //        Main.rand.NextFloat(1.2f, 1.3f) * scaleMultiplier // 应用缩放
-            //    );
-            //    GeneralParticleHandler.SpawnParticle(Smear);
-            //}
-
             // 刀盘特效的处理
             if (currentMode == Mode.Attract)
             {
@@ -583,7 +565,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             switch (currentMode)
             {
                 case Mode.Return:
-                    finalDamageMultiplier = 1.2f; // 回归模式 1.1 倍伤害
+                    finalDamageMultiplier = 1.2f;
                     break;
 
                 case Mode.Charge:
@@ -599,7 +581,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
                     break;
 
                 case Mode.Attract:
-                    finalDamageMultiplier = 0.175f; // 吸引模式伤害降低至 0.5 倍
+                    finalDamageMultiplier = 0.175f;
                     break;
             }
 
@@ -621,87 +603,83 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero,
                         ModContent.ProjectileType<OrangeSLASH>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
                     SoundEngine.PlaySound(CommonCalamitySounds.SwiftSliceSound with { Volume = 0.5f }, Projectile.Center);
-
-
-                    if (currentMode == Mode.Charge)
                     {
-                        for (int i = 0; i < spiralShakeOffsets.Length; i++)
+                        if (currentMode == Mode.Charge)
                         {
-                            // 每个段 ±? ~ ±? px 随机震动
-                            spiralShakeOffsets[i] = Main.rand.NextFloat(-40f, 40f);
+                            for (int i = 0; i < spiralShakeOffsets.Length; i++)
+                            {
+                                // 每个段 ±? ~ ±? px 随机震动
+                                spiralShakeOffsets[i] = Main.rand.NextFloat(-40f, 40f);
+                            }
+                        }
+
+                        // 在敌人身上释放橙色火花特效
+                        for (int i = 0; i < 18; i++)
+                        {
+                            int sparkLifetime = Main.rand.Next(22, 36);
+                            float sparkScale = Main.rand.NextFloat(0.8f, 1f);
+                            Color sparkColor = Color.Lerp(Color.Orange, Color.OrangeRed, Main.rand.NextFloat(0.5f, 1f));
+
+                            if (Main.rand.NextBool(10))
+                                sparkScale *= 2f;
+
+                            // **固定方向：向上 + 左右随机扩散**
+                            //float angleOffset = Main.rand.NextFloat(-25f, 25f);
+                            //Vector2 sparkVelocity = new Vector2(0, -1).RotatedBy(MathHelper.ToRadians(angleOffset)) * Main.rand.NextFloat(10f, 25f);
+
+                            // **敌人方向**
+                            // 计算朝向弹幕的单位方向
+                            Vector2 dirAwayFromProjectile = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+
+                            // 加入 ±25° 随机旋转
+                            float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-25f, 25f));
+                            Vector2 rotatedDir = dirAwayFromProjectile.RotatedBy(angleOffset);
+
+                            // 随机速度
+                            float speed = Main.rand.NextFloat(10f, 25f);
+
+                            // 生成速度向量
+                            Vector2 sparkVelocity = rotatedDir * speed;
+
+
+                            SparkParticle spark = new SparkParticle(target.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
+                            GeneralParticleHandler.SpawnParticle(spark);
+                        }
+
+
+                        // 🔥 爆炸性火焰尘土特效
+                        for (int i = 0; i < 15; i++)
+                        {
+                            float speed = Main.rand.NextFloat(6f, 14f);
+                            float angle = MathHelper.TwoPi * Main.rand.NextFloat();
+                            Vector2 velocity = new Vector2(speed, 0).RotatedBy(angle);
+
+                            int dustType = Main.rand.NextBool() ? 6 : 174; // 火焰 or 狱炎
+                            Dust dust = Dust.NewDustPerfect(target.Center, dustType, velocity, 0, Color.Orange, Main.rand.NextFloat(1.2f, 1.8f));
+                            dust.noGravity = true;
+                        }
+
+                        // 💨 上升烟雾
+                        for (int i = 0; i < 10; i++)
+                        {
+                            Vector2 offset = Main.rand.NextVector2Circular(24f, 24f);
+                            Vector2 smokeVelocity = new Vector2(0, -1) * Main.rand.NextFloat(0.5f, 2f);
+                            Dust smoke = Dust.NewDustPerfect(target.Center + offset, DustID.Smoke, smokeVelocity, 50, Color.DarkOrange, Main.rand.NextFloat(1.4f, 2.2f));
+                            smoke.noGravity = true;
+                        }
+
+                        // 🔄 烈焰漩涡尘土
+                        for (int i = 0; i < 12; i++)
+                        {
+                            float angle = MathHelper.TwoPi * i / 12f;
+                            float radius = Main.rand.NextFloat(12f, 26f);
+                            Vector2 pos = target.Center + angle.ToRotationVector2() * radius;
+                            Vector2 vel = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 2.2f; // 切向旋转飞出
+
+                            Dust swirl = Dust.NewDustPerfect(pos, 35, vel, 0, Color.OrangeRed, 1.1f);
+                            swirl.noGravity = true;
                         }
                     }
-
-
-                    // 在敌人身上释放橙色火花特效
-                    for (int i = 0; i < 18; i++)
-                    {
-                        int sparkLifetime = Main.rand.Next(22, 36);
-                        float sparkScale = Main.rand.NextFloat(0.8f, 1f);
-                        Color sparkColor = Color.Lerp(Color.Orange, Color.OrangeRed, Main.rand.NextFloat(0.5f, 1f));
-
-                        if (Main.rand.NextBool(10))
-                            sparkScale *= 2f;
-
-                        // **固定方向：向上 + 左右随机扩散**
-                        //float angleOffset = Main.rand.NextFloat(-25f, 25f);
-                        //Vector2 sparkVelocity = new Vector2(0, -1).RotatedBy(MathHelper.ToRadians(angleOffset)) * Main.rand.NextFloat(10f, 25f);
-
-                        // **敌人方向**
-                        // 计算朝向弹幕的单位方向
-                        Vector2 dirAwayFromProjectile = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-
-                        // 加入 ±25° 随机旋转
-                        float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-25f, 25f));
-                        Vector2 rotatedDir = dirAwayFromProjectile.RotatedBy(angleOffset);
-
-                        // 随机速度
-                        float speed = Main.rand.NextFloat(10f, 25f);
-
-                        // 生成速度向量
-                        Vector2 sparkVelocity = rotatedDir * speed;
-
-
-                        SparkParticle spark = new SparkParticle(target.Center, sparkVelocity, true, sparkLifetime, sparkScale, sparkColor);
-                        GeneralParticleHandler.SpawnParticle(spark);
-                    }
-
-                    
-                    // 🔥 爆炸性火焰尘土特效
-                    for (int i = 0; i < 15; i++)
-                    {
-                        float speed = Main.rand.NextFloat(6f, 14f);
-                        float angle = MathHelper.TwoPi * Main.rand.NextFloat();
-                        Vector2 velocity = new Vector2(speed, 0).RotatedBy(angle);
-
-                        int dustType = Main.rand.NextBool() ? 6 : 174; // 火焰 or 狱炎
-                        Dust dust = Dust.NewDustPerfect(target.Center, dustType, velocity, 0, Color.Orange, Main.rand.NextFloat(1.2f, 1.8f));
-                        dust.noGravity = true;
-                    }
-
-                    // 💨 上升烟雾
-                    for (int i = 0; i < 10; i++)
-                    {
-                        Vector2 offset = Main.rand.NextVector2Circular(24f, 24f);
-                        Vector2 smokeVelocity = new Vector2(0, -1) * Main.rand.NextFloat(0.5f, 2f);
-                        Dust smoke = Dust.NewDustPerfect(target.Center + offset, DustID.Smoke, smokeVelocity, 50, Color.DarkOrange, Main.rand.NextFloat(1.4f, 2.2f));
-                        smoke.noGravity = true;
-                    }
-
-                    // 🔄 烈焰漩涡尘土
-                    for (int i = 0; i < 12; i++)
-                    {
-                        float angle = MathHelper.TwoPi * i / 12f;
-                        float radius = Main.rand.NextFloat(12f, 26f);
-                        Vector2 pos = target.Center + angle.ToRotationVector2() * radius;
-                        Vector2 vel = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 2.2f; // 切向旋转飞出
-
-                        Dust swirl = Dust.NewDustPerfect(pos, 35, vel, 0, Color.OrangeRed, 1.1f);
-                        swirl.noGravity = true;
-                    }
-
-                    
-
 
                     break;
 

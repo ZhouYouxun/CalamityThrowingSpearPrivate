@@ -7,7 +7,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod;
 using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Items.Weapons.Melee; // 引用你的武器
 
-namespace CalamityThrowingSpear.Systems
+namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 {
     public class NuclearFuelRodDropInjector : GlobalNPC
     {

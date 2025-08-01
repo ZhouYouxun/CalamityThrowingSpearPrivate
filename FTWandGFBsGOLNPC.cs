@@ -78,6 +78,7 @@ namespace CalamityThrowingSpear
                 }
             }
 
+            // 检查 NPC 是否是 阿瑞斯和他的四门炮
             if (npc.type == ModContent.NPCType<AresBody>() ||
                 npc.type == ModContent.NPCType<AresGaussNuke>() ||
                 npc.type == ModContent.NPCType<AresLaserCannon>() ||
@@ -91,7 +92,6 @@ namespace CalamityThrowingSpear
                 if (projectile.type == ModContent.ProjectileType<DragonRageJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>())
                 {
-                    // 将伤害降低为 60%
                     modifiers.FinalDamage *= 0.9f;
                 }
             }

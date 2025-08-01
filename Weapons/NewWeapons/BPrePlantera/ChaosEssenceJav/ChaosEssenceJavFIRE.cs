@@ -53,7 +53,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 
             {
                 // 绘制轨迹粒子特效
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     float t = i / 3f; // ✅ 强制浮点
                     Vector2 spawnPosition = Vector2.Lerp(Projectile.oldPosition, Projectile.position, t);
@@ -72,7 +72,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                         Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(6f, 12f),
                         false,
                         20,
-                        Main.rand.NextFloat(0.3f, 0.6f),
+                        Main.rand.NextFloat(0.3f, 0.4f),
                         Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f))
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
@@ -86,7 +86,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                         -Projectile.velocity * 0.05f,
                         false,
                         14,
-                        1.2f,
+                        0.3f,
                         Color.DarkRed * 0.25f
                     );
                     GeneralParticleHandler.SpawnParticle(altSpark);
@@ -116,20 +116,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
         public override void OnKill(int timeLeft)
         {
             // 消失时生成一圈粒子特效
-            int particleCount = 20;
+            int particleCount = 10;
             float angleIncrement = MathHelper.TwoPi / particleCount;
 
             for (int i = 0; i < particleCount; i++)
             {
                 Vector2 velocity = new Vector2(3f, 0f).RotatedBy(angleIncrement * i);
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CrimsonTorch, velocity, 0, Color.OrangeRed);
-                dust.scale = 0.62f;
+                dust.scale = 0.32f;
                 dust.noGravity = true;
             }
 
 
             // 1️⃣ 血焰爆裂 Dust
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 20; i++)
             {
                 Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
                 Dust dust = Dust.NewDustPerfect(
@@ -144,14 +144,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
             }
 
             // 2️⃣ 暗红火花射线
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Particle spark = new SparkParticle(
                     Projectile.Center,
                     Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(10f, 16f),
                     false,
                     30,
-                    Main.rand.NextFloat(0.18f, 1.4f),
+                    Main.rand.NextFloat(0.18f, 0.5f),
                     Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.2f, 0.5f))
                 );
                 GeneralParticleHandler.SpawnParticle(spark);

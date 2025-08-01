@@ -165,7 +165,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 
             {
                 // 1️⃣ 大范围火焰尘火爆炸
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     int type = Main.rand.Next(new int[] { DustID.Lava, DustID.Ash, DustID.Torch, DustID.Blood });
                     Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
@@ -174,7 +174,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 }
 
                 // 2️⃣ 高速射线火花
-                for (int i = 0; i < 40; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     Particle spark = new SparkParticle(
                         Projectile.Center,
@@ -188,7 +188,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 }
 
                 // 3️⃣ 大范围黑红烟雾升腾
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     Particle smoke = new HeavySmokeParticle(
                         Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
@@ -204,7 +204,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
                 }
 
                 // 4️⃣ 电光裂纹（线性粒子）
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < 6; i++)
                 {
                     Vector2 dir = Main.rand.NextVector2CircularEdge(1f, 1f);
                     LineParticle line = new LineParticle(

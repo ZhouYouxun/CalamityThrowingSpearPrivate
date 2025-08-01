@@ -36,8 +36,8 @@ namespace CalamityThrowingSpear.Players
                         Player.Center,
                         Vector2.Zero,
                         ModContent.ProjectileType<DragonRageJavPROJ>(),
-                        Player.HeldItem.damage,
-                        Player.HeldItem.knockBack,
+                        Player.GetWeaponDamage(Player.HeldItem),
+                        Player.GetWeaponKnockback(Player.HeldItem, Player.HeldItem.knockBack),
                         Player.whoAmI
                     );
                     hasSummonedProjectile = true;

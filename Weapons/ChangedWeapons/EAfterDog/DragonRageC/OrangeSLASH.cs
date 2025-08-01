@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
         {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
-            Projectile.DamageType = DamageClass.MeleeNoSpeed;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = 2;
@@ -47,7 +47,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             }
         }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size());
+        //public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size());
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            // 使用默认矩形判定
+            return projHitbox.Intersects(targetHitbox);
+        }
 
         public override Color? GetAlpha(Color lightColor) => Color.Lerp(Color.OrangeRed, Color.Orange, Projectile.identity / 7f % 1f) * Projectile.Opacity;
 

@@ -238,7 +238,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                 // 生成两个方向的粒子特效
                 {
                     // === 1️⃣ 黄金螺旋 Bloom 粒子（替代原对称发射）===
-                    int bloomCount = 4; // 粒子数量稍降
+                    int bloomCount = 2; // 粒子数量稍降
                     float goldenAngle = MathHelper.ToRadians(137.5f); // 黄金角
                     float baseAngle = Projectile.ai[0] * goldenAngle; // 利用 ai[0] 叠加旋转
 
@@ -263,7 +263,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                     }
 
                     // === 2️⃣ Dust 环绕效果（从半径扩大后的大圆环触发）===
-                    int dustCount = 7;
+                    int dustCount = 3;
                     float dustRadius = 3f * 16f; // 半径扩大为 3 格（48像素）
 
                     for (int k = 0; k < dustCount; k++)
@@ -286,8 +286,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                     }
 
                     // === 3️⃣ 改良 SparkParticle 放射线（加入偏移 + 蛇形轨迹）===
-                    int sparkCount = 6;
-                    float baseSparkAngle = Projectile.ai[1] * MathHelper.ToRadians(45f); // 每次旋转 45 度
+                    int sparkCount = 1;
+                    float baseSparkAngle = Projectile.ai[1] * MathHelper.ToRadians(15f); // 每次旋转 ? 度
                     float sparkRadius = 16f; // 起始位置圆环半径
 
                     for (int s = 0; s < sparkCount; s++)

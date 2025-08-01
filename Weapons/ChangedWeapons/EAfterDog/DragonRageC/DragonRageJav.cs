@@ -10,6 +10,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Rarities;
+using Terraria.DataStructures;
+using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 {
@@ -35,7 +37,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             Item.shoot = ModContent.ProjectileType<DragonRageJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
         }
-
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            // 禁用武器自带的弹幕发射
+            return false;
+        }
+        
         // 禁用左键攻击
         public override bool CanUseItem(Player player)
         {
