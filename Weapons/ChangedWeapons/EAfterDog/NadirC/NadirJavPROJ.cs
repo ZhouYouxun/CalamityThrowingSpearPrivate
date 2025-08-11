@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             Projectile.ai[0]++;
 
             // 从飞行后的第 15 帧开始，每 6 帧触发一次
-            if (Projectile.ai[0] >= 15 && Projectile.ai[0] % 6 == 0 && spawnedProjectiles < 25)
+            if (Projectile.ai[0] >= 15 && Projectile.ai[0] % 10 == 0 && spawnedProjectiles < 25)
             {
                 // 计算圆圈中心（绝对正下方 50~60 格）
                 Vector2 spawnCenter = Projectile.Center + new Vector2(0, Main.rand.NextFloat(50 * 16, 60 * 16));
@@ -168,7 +168,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
                     spawnPosition,
                     velocity,
                     ModContent.ProjectileType<NadirJavVoidEssence>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.75),
                     Projectile.knockBack,
                     Projectile.owner
                 );

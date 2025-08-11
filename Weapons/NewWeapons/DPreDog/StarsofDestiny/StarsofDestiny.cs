@@ -56,7 +56,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 666;
+                Item.damage = 600;
                 Item.useTime = 24;
                 Item.useAnimation = 24;
                 Item.shoot = ModContent.ProjectileType<StarsofDestinyRIGHT>();

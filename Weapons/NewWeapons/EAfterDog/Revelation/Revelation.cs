@@ -93,20 +93,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
 
             // 根据等级调整伤害倍率
-            float damageMultiplier = 1.0f; // 默认的0级倍率
+            float damageMultiplier = 1.2f; // 默认的0级倍率
             switch (playerRevelationLevel)
             {
                 case 1:
-                    damageMultiplier = 1.35f;
+                    damageMultiplier = 1.5f;
                     break;
                 case 2:
-                    damageMultiplier = 1.9f;
+                    damageMultiplier = 2f;
                     break;
                 case 3:
-                    damageMultiplier = 2.25f;
+                    damageMultiplier = 2.35f;
                     break;
                 case 4:
-                    damageMultiplier = 2.25f;
+                    damageMultiplier = 2.35f;
                     break;
             }
 

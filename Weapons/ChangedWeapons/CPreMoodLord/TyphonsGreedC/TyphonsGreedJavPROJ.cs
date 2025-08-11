@@ -70,7 +70,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
                 Projectile.velocity -= Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.03f;
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-                if (timeCounter >= 100 || hasCollided)
+                if (timeCounter >= 160 || hasCollided)
                 {
                     TransitionToSpinMode();
                 }

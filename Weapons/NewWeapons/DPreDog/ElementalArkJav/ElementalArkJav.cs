@@ -201,7 +201,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ModContent.RarityType<HotPink>();
             Item.Calamity().devItem = true;
-            //Item.shoot = ModContent.ProjectileType<ElementalArkJavFragments>();
+            Item.shoot = ModContent.ProjectileType<ElementalArkJavFragments>();
             Item.shootSpeed = 25f;
         }
 
