@@ -32,7 +32,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 20;
+            Projectile.width = Projectile.height = 10;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;

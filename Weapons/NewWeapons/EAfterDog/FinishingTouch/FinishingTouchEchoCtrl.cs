@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 3;
+            Projectile.localNPCHitCooldown = 60;
             Projectile.alpha = 255; // 完全透明
         }
 
@@ -55,7 +55,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
 
             shootTimer++;
-            if (shootTimer % 10 == 0 && shootCount < MaxShoot && target != null && target.active)
+            if (shootTimer % 5 == 0 && shootCount < MaxShoot && target != null && target.active)
             {
                 // 🌀随机一个方向
                 float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);

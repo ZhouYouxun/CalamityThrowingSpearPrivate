@@ -36,7 +36,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;

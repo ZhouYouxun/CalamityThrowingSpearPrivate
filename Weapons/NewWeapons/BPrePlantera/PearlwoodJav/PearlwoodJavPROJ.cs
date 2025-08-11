@@ -240,7 +240,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         private float lastProjSpawn = 0f; // 记录上次生成 PearlwoodJavPROJINV 时的距离
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;

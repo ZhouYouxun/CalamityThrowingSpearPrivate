@@ -149,7 +149,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 1; // 无敌帧冷却时间为1帧
+            Projectile.localNPCHitCooldown = 60; // 无敌帧冷却时间为1帧
         }
 
         public override void AI()

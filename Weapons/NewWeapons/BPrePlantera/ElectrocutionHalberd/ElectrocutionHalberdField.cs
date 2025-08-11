@@ -32,8 +32,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         }
         public override void SetDefaults()
         {
-            Projectile.width = 100;
-            Projectile.height = 100;
+            Projectile.width = 160;
+            Projectile.height = 160;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;

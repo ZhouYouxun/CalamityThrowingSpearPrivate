@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 18; // 设置伤害值
+            Item.damage = 15; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;

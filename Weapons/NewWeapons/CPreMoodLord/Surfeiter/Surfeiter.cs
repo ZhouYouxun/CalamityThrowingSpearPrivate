@@ -62,7 +62,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             return true;
         }
 
-        /*public override void AddRecipes()
+        public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient<FleshTotem>();
@@ -70,6 +70,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             recipe.AddIngredient(ItemID.Bone, 99);
             recipe.AddTile(TileID.AdamantiteForge);
             recipe.Register();
-        }*/
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 10;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;

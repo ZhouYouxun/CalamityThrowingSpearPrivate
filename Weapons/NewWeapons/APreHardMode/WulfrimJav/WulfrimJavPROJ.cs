@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.WulfrimJav
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 36;
+            Projectile.width = Projectile.height = 10;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
