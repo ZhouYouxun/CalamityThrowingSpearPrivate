@@ -34,6 +34,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             Projectile.timeLeft = 300;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 15;
         }
         private float mFireTimer = 0f; // M弹幕机枪计时
         private float mAngleOffset = 0f; // 顺时针旋转角

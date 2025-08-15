@@ -32,6 +32,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             Projectile.penetrate = 1;
             Projectile.timeLeft = 60;
             Projectile.Opacity = 0f;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 15;
         }
 
 

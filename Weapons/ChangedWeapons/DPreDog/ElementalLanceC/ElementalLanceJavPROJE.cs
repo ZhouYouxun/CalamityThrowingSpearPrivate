@@ -40,7 +40,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
                 { false, false, false, true, false },
                 { false, false, false, true, false },
             },
-            // Digit 3
+            // 3
             new bool[,]
             {
                 { true, true, true, true, false },
@@ -51,7 +51,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
                 { true, false, false, false, true },
                 { false, true, true, true, false },
             },
-            // Digit 2
+            // 2
             new bool[,]
             {
                 { false, true, true, true, false },
@@ -62,7 +62,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
                 { false, true, false, false, false },
                 { true, true, true, true, true },
             },
-            // Digit 1
+            // 1
             new bool[,]
             {
                 { false, false, true, false, false },

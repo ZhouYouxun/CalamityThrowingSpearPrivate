@@ -140,14 +140,38 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
 
         public override void OnKill(int timeLeft)
         {
-            // 发射Blood2 弹幕
+            // 发射 Blood2 弹幕
             for (int i = 0; i < Main.rand.Next(3, 7); i++)
             {
+<<<<<<< Updated upstream
                 //Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * Projectile.velocity.Length() * 3f;
                 Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * 5f; // 将速度统一为5
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, randomVelocity,
                     ModContent.ProjectileType<Blood2>(), (int)(Projectile.damage * 0.70), Projectile.knockBack, Projectile.owner);
+=======
+                Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * 5f; // 保留原速度逻辑
+
+                int projIndex = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.position,
+                    randomVelocity,
+                    ModContent.ProjectileType<Blood2>(),
+                    (int)(Projectile.damage * 0.75),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+
+                // ✅ 设置属性
+                if (projIndex.WithinBounds(Main.maxProjectiles))
+                {
+                    Projectile proj = Main.projectile[projIndex];
+                    proj.friendly = true;
+                    proj.hostile = false;
+                    proj.tileCollide = false; // 穿墙
+                }
+>>>>>>> Stashed changes
             }
+
 
 
             {
