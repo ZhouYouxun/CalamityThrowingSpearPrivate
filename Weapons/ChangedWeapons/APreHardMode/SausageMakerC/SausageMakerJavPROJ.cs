@@ -146,7 +146,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
                 //Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * Projectile.velocity.Length() * 3f;
                 Vector2 randomVelocity = Main.rand.NextVector2Circular(1f, 1f) * 5f; // 将速度统一为5
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, randomVelocity,
-                    ModContent.ProjectileType<Blood2>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<Blood2>(), (int)(Projectile.damage * 0.70), Projectile.knockBack, Projectile.owner);
             }
 
 

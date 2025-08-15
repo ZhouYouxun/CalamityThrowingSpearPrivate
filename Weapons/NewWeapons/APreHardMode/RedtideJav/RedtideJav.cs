@@ -47,14 +47,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 20;
+                Item.damage = 22;
                 Item.shoot = ModContent.ProjectileType<RedtideJavRight>();
                 Item.useTime = Item.useAnimation = 32; // 快速
                 Item.shootSpeed = 2f; // 保持或可微调
             }
             else // 左键
             {
-                Item.damage = 25;
+                Item.damage = 32;
                 Item.shoot = ModContent.ProjectileType<RedtideJavPROJ>();
                 Item.useTime = Item.useAnimation = 50; // 慢速
                 Item.shootSpeed = 17f; // 保持或可微调

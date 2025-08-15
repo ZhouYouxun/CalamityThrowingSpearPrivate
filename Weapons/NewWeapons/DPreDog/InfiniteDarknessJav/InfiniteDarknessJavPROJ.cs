@@ -198,7 +198,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
                         bombPosition,
                         reverseVelocity, // 初始速度为反向速度
                         ModContent.ProjectileType<InfiniteDarknessJavPROJStarBomb>(),
-                        (int)(Projectile.damage * 0.27f),
+                        (int)(Projectile.damage * 0.35f),
                         0,
                         Projectile.owner
                     );
@@ -277,7 +277,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             }
             else if (phase == 3) // 第三阶段：传送后，造成 较低的 伤害
             {
-                slashDamage = (int)(Projectile.damage * 0.75f);
+                slashDamage = (int)(Projectile.damage * 0.8f);
             }
 
 
@@ -300,7 +300,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             for (int i = 0; i < 2; i++)
             {
                 Vector2 slashPosition = Projectile.Center + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * 16;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), slashPosition, Vector2.Zero, ModContent.ProjectileType<BlackSLASH>(), (int)(Projectile.damage * 0.27f), 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), slashPosition, Vector2.Zero, ModContent.ProjectileType<BlackSLASH>(), (int)(Projectile.damage * 0.35f), 0, Projectile.owner);
             }
 
 

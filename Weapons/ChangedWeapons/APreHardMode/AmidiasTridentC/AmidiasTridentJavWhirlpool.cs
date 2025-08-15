@@ -56,6 +56,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Projectile.height = 58;
             Projectile.friendly = true;
             Projectile.penetrate = 1;
+            Projectile.ArmorPenetration = 5;
             Projectile.extraUpdates = 1;
             Projectile.alpha = 300;
             Projectile.tileCollide = false;

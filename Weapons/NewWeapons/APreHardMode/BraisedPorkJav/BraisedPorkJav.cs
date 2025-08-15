@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 22; // 设置伤害值
+            Item.damage = 27; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;

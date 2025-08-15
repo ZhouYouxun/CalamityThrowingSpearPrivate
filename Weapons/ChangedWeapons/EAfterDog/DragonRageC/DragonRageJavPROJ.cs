@@ -565,7 +565,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             switch (currentMode)
             {
                 case Mode.Return:
-                    finalDamageMultiplier = 1.2f;
+                    finalDamageMultiplier = 1.35f;
                     break;
 
                 case Mode.Charge:
@@ -575,13 +575,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 
                     if (distanceInTiles > 6f)
                     {
-                        float damageReduction = (distanceInTiles - 6f) * 0.01f; // 每增加 1 方块，减少 1% 伤害
-                        finalDamageMultiplier = MathHelper.Clamp(1f - damageReduction, 0.75f, 1f); // 最低伤害为 70%
+                        float damageReduction = (distanceInTiles - 6f) * 0.03f; // 每增加 1 方块，减少 3% 伤害
+                        finalDamageMultiplier = MathHelper.Clamp(1f - damageReduction, 0.33f, 1f); // 最低伤害为 70%
                     }
                     break;
 
                 case Mode.Attract:
-                    finalDamageMultiplier = 0.175f;
+                    finalDamageMultiplier = 0.25f;
                     break;
             }
 

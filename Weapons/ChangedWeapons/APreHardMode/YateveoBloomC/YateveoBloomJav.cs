@@ -47,7 +47,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 50;
+                Item.damage = 60;
                 Item.shoot = ModContent.ProjectileType<YateveoBloomJavRight>();
 
                 // 限制同屏仅一发右键弹幕
@@ -56,7 +56,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             }
             else // 左键
             {
-                Item.damage = 32;
+                Item.damage = 35;
                 Item.shoot = ModContent.ProjectileType<YateveoBloomJavPROJ>();
 
                 // 限制同屏仅一发左键弹幕

@@ -220,7 +220,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
                                 spawnPos,
                                 velocity,
                                 ModContent.ProjectileType<AmidiasTridentJavWhirlpool>(),
-                                (int)(Projectile.damage * 1.2f),
+                                (int)(Projectile.damage * 1.8f),
                                 2f,
                                 Projectile.owner
                             );
