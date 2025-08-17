@@ -25,7 +25,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Projectile.timeLeft = 10;
 
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 14;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void AI()

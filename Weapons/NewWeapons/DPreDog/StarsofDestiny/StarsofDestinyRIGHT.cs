@@ -176,7 +176,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                    (int)(Projectile.damage * 1.8),
+                    (int)(Projectile.damage * 0.8),
                     Projectile.knockBack,
                     Projectile.owner
                 );

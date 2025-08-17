@@ -19,7 +19,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 9; // 设置伤害值
+            Item.damage = 10; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
@@ -33,7 +33,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Item.value = CalamityGlobalItem.RarityGreenBuyPrice;
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<AmidiasTridentJavPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 6f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
 

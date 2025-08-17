@@ -83,7 +83,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
         }
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 50;
+            Projectile.width = Projectile.height = 80;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;

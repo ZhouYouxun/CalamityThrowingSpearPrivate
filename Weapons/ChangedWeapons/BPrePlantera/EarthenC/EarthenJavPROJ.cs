@@ -203,7 +203,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                             shardPos,
                             shardVel,
                             ModContent.ProjectileType<EarthenJavSHARD>(),
-                            (int)(Projectile.damage * 2f),
+                            (int)(Projectile.damage * 1f),
                             0f,
                             Projectile.owner,
                             0f, // ai[0] 可用作其他功能
