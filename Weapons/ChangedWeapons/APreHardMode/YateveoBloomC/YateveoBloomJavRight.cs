@@ -35,7 +35,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 8; // 穿透次数改为 10
+            Projectile.penetrate = 8;
             Projectile.timeLeft = 200;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;

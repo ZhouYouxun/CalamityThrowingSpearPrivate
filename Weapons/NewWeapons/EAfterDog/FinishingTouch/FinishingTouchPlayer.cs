@@ -306,8 +306,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             {
                 if (hasFinishingTouch && !hasTriggeredLowHealthEvent && boss.life <= boss.lifeMax * 0.1f)
                 {
-                    // 文本提示、音效同原逻辑
-                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don quixote") with { Volume = 2f }, Player.Center);
+                    // 检查是否启用了独特音效播放的开关
+                    if (ModContent.GetInstance<CTSConfigs>().EnableFTSound)
+                    {
+                        // 文本提示、音效同原逻辑
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don quixote") with { Volume = 2f }, Player.Center);
+                    }
 
                     for (int i = 0; i < Main.maxPlayers; i++)
                     {

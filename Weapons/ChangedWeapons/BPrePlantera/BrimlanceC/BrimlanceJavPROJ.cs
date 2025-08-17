@@ -61,13 +61,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
 
         public override void AI()
         {
-            // 保持旋转
+            // 保持旋转（基础旋转角度）
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
             // 添加橙色光
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
-            // 生成DNA结构粒子（红色）
+            // === DNA 粒子（红色） ===
             float frequency = 30f;
             float amplitude = 20f;
             Vector2 leftOffset = new Vector2(-amplitude * (float)Math.Sin(Projectile.ai[0] * MathHelper.TwoPi / frequency), 0);
@@ -78,10 +78,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                 Dust.NewDustPerfect(Projectile.Center + leftOffset, DustID.RedTorch, Vector2.Zero, 0, Color.Red, 1.2f).noGravity = true;
                 Dust.NewDustPerfect(Projectile.Center + rightOffset, DustID.RedTorch, Vector2.Zero, 0, Color.Red, 1.2f).noGravity = true;
             }
-
             Projectile.ai[0] += 2f;
 
-            // 橙红色火星尾迹
+            // === 尾迹火花 ===
             if (Main.rand.NextBool(5))
             {
                 Particle trail = new SparkParticle(Projectile.Center, Projectile.velocity * 0.2f, false, 60, Main.rand.NextFloat(0.8f, 1.2f), Color.OrangeRed);
@@ -92,21 +91,43 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             Projectile.ai[1]++;
             Projectile.tileCollide = Projectile.ai[1] >= 5;
 
-            // 减速和逐渐旋转的阶段
+            // === 减速旋转阶段 ===
             if (Projectile.ai[2] == 1f)
             {
-                float progress = Projectile.localAI[0] / 60f; // 进度从 0 到 1
-                float eased = (float)(0.5f - 0.5f * Math.Cos(progress * Math.PI)); // cos 曲线：先慢→快→慢
+                float progress = Projectile.localAI[0] / 60f; // 进度 0 → 1
+                float eased = (float)(0.5f - 0.5f * Math.Cos(progress * Math.PI)); // cos 曲线缓动
 
-                // ✳️ 旋转 360度，使用 easing 调控
+                // ✳️ 完整旋转 360°，带 easing
                 float angle = MathHelper.TwoPi * eased;
-                rotationTotal = angle * rotationDir;
+                float rotationTotal = angle * rotationDir;
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + rotationTotal;
 
-                // ✳️ 显著减速（指数级下降）
-                Projectile.velocity *= 0.98f;
+                // ✳️ 柔和减速（每帧 ×0.995）
+                Projectile.velocity *= 0.995f;
 
-                // 粒子
+                // === 第5帧之后才触发追踪 ===
+                if (Projectile.localAI[0] > 5f)
+                {
+                    int targetIndex = Projectile.FindTargetWithLineOfSight(1800f); // 合理点，范围不至于全屏
+                    if (targetIndex != -1)
+                    {
+                        NPC target = Main.npc[targetIndex];
+                        Vector2 toTarget = target.Center - Projectile.Center;
+
+                        // 🌀 中强度追踪
+                        float homingStrength = 0.52f; // 介于0.12f和0.35f之间
+                        Vector2 desiredVel = toTarget.SafeNormalize(Vector2.UnitY) * Projectile.velocity.Length();
+
+                        Projectile.velocity = Vector2.Lerp(
+                            Projectile.velocity,
+                            desiredVel,
+                            homingStrength
+                        );
+                    }
+                }
+
+
+                // 🔥 原有粒子逻辑不动
                 for (int i = 0; i < 2; i++)
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(12f, 12f);
@@ -114,41 +135,31 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     dust.noGravity = true;
                 }
 
-                {
-                    // 💥 雨刮摆动计算
-                    float sprayCenterRot = Projectile.rotation - MathHelper.PiOver4;
-                    float sweepAmplitude = MathHelper.ToRadians(25f); // 扫动角度幅度
-                    float sweepSpeed = 0.15f;
-                    float sweepOffset = (float)Math.Sin(Projectile.localAI[0] * sweepSpeed) * sweepAmplitude;
+                // 雨刮式喷射……
+                float sprayCenterRot = Projectile.rotation - MathHelper.PiOver4;
+                float sweepAmplitude = MathHelper.ToRadians(25f);
+                float sweepSpeed = 0.15f;
+                float sweepOffset = (float)Math.Sin(Projectile.localAI[0] * sweepSpeed) * sweepAmplitude;
 
-                    // ✅ 正确用角度 + ToRotationVector2 转换方向
-                    Vector2 sprayDir = (sprayCenterRot + sweepOffset).ToRotationVector2() * 6f;
+                Vector2 sprayDir = (sprayCenterRot + sweepOffset).ToRotationVector2() * 6f;
+                Vector2 sprayPos = Projectile.Center + sprayDir.SafeNormalize(Vector2.UnitX) * 16f;
 
-                    // 发射位置略偏前方
-                    Vector2 sprayPos = Projectile.Center + sprayDir.SafeNormalize(Vector2.UnitX) * 16f;
+                Dust d = Dust.NewDustPerfect(sprayPos, DustID.RedTorch, sprayDir * 0.3f, 0, Color.Red, 1.4f);
+                d.noGravity = true;
 
-                    // === 红色 Dust 喷射 ===
-                    Dust dust = Dust.NewDustPerfect(sprayPos, DustID.RedTorch, sprayDir * 0.3f, 0, Color.Red, 1.4f);
-                    dust.noGravity = true;
-
-                    // === 橙红色火星 SparkParticle ===
-                    Particle spark = new SparkParticle(
-                        sprayPos,
-                        sprayDir * 0.4f,
-                        false,
-                        20,
-                        Main.rand.NextFloat(0.9f, 1.3f),
-                        Color.OrangeRed
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-
-
-
-
-
+                Particle spark = new SparkParticle(
+                    sprayPos,
+                    sprayDir * 2.4f,
+                    false,
+                    20,
+                    Main.rand.NextFloat(0.9f, 1.3f),
+                    Color.OrangeRed
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
 
                 Projectile.localAI[0]++;
+
+                // 旋转结束 → 生成火圈
                 if (Projectile.localAI[0] >= 60f)
                 {
                     Projectile.NewProjectile(
@@ -162,12 +173,11 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     );
                     Projectile.Kill();
                 }
-
                 return;
             }
 
 
-            // 🚀 初始飞行时才执行加速
+            // 🚀 初始飞行阶段：持续加速
             Projectile.velocity *= 1.01f;
         }
 
@@ -175,14 +185,17 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
         {
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300); // 上硫磺火
 
-            // 仅在首次命中时进入减速阶段
+            // 仅在首次命中时进入旋转阶段
             if (Projectile.ai[2] == 0f)
             {
                 Projectile.ai[2] = 1f;
                 Projectile.localAI[0] = 0f;
                 Projectile.friendly = false;
 
-                // 💡根据玩家位置决定旋转方向
+                // ✅ 命中后立刻反向
+                Projectile.velocity = -Projectile.velocity.SafeNormalize(Vector2.UnitY) * 12f;
+
+                // ✅ 根据玩家位置决定旋转方向
                 Player owner = Main.player[Projectile.owner];
                 rotationDir = (owner.Center.X < Projectile.Center.X) ? 1 : -1;
             }

@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
             }
 
             // ✦ 每隔 15 帧发射 BrimlanceStandingFire 弹幕
-            if (Projectile.timeLeft % 15 == 0)
+            if (Projectile.timeLeft % 5 == 0)
             {
                 // 随机半径在 175 到 250 之间
                 float radius = Main.rand.NextFloat(175f, 250f);
@@ -98,7 +98,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     spawnPosition,
                     velocity,
                     ModContent.ProjectileType<BrimlanceStandingFire>(),
-                    (int)(Projectile.damage * 0.6),
+                    (int)(Projectile.damage * 1.6),
                     Projectile.knockBack,
                     Projectile.owner
                 );

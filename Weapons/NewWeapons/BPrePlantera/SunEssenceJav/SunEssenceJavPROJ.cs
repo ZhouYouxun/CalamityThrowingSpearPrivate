@@ -368,22 +368,35 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             }
             else
             {
-                // 旋转期间每次造成伤害时召唤羽毛
-                //int featherCount = Main.dayTime ? 3 : 1; // 白天时获得强化
-                int featherCount = 3; // 不再变得强化，而是固定三个
+                int featherCount = 3;
                 for (int i = 0; i < featherCount; i++)
                 {
-                    // 在主弹幕正上方50个方块的位置，以该点为圆心，半径15个方块的范围内随机生成
-                    Vector2 featherSpawnPosition = Projectile.Center + new Vector2(Main.rand.NextFloat(-15f, 15f) * 16f, -50f * 16f);
+                    // 生成点：在正上方 50×16 的高度，带椭圆随机扰动
+                    Vector2 offset = Main.rand.NextVector2Circular(15f * 16f, 8f * 16f);
+                    Vector2 featherSpawnPosition = Projectile.Center + new Vector2(0, -50f * 16f) + offset;
 
-                    // 计算羽毛向主弹幕位置的速度向量
-                    Vector2 featherVelocity = (Projectile.Center - featherSpawnPosition).SafeNormalize(Vector2.UnitY) * 45f;
+                    // 初速度：整体朝下，附带小角度扰动
+                    float angleOffset = Main.rand.NextFloat(-0.25f, 0.25f); // ±15°
+                    Vector2 featherVelocity = Vector2.UnitY.RotatedBy(angleOffset) * 30f;
 
-                    // 生成羽毛弹幕
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), featherSpawnPosition, featherVelocity, ModContent.ProjectileType<SunEssenceJavFeather>(), (int)(Projectile.damage * 0.6f), 0, Projectile.owner);
+                    // 生成羽毛
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        featherSpawnPosition,
+                        featherVelocity,
+                        ModContent.ProjectileType<SunEssenceJavFeather>(),
+                        (int)(Projectile.damage * 0.6f),
+                        0,
+                        Projectile.owner
+                    );
                 }
 
             }
+
+
+
+
+
         }
 
 

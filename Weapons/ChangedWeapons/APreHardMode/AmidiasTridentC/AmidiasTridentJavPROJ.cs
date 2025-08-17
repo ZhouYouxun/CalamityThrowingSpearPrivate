@@ -98,7 +98,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 不穿透物块
-            Projectile.extraUpdates = 1; // 额外更新次数
+            Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为14帧
             Projectile.aiStyle = ProjAIStyleID.Arrow;
@@ -108,6 +108,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
         {
             // 为每颗弹幕生成独立的随机相位偏移 [0, 2π)
             Projectile.localAI[0] = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+            Projectile.velocity *= 1.5f;
         }
 
         public override void AI()

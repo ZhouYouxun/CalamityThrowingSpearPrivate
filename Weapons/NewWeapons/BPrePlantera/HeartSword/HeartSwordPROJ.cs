@@ -173,6 +173,79 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
                 Particle smoke = new HeavySmokeParticle(Projectile.Center, dustVelocity * Main.rand.NextFloat(1f, 2.6f), Color.DarkRed, 18, Main.rand.NextFloat(0.9f, 1.6f), 0.35f, Main.rand.NextFloat(-1, 1), true);
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
+
+
+            // === 1. 心跳波线拖尾 ===
+            if (Projectile.localAI[0] % 3 == 0) // 每3帧一个点
+            {
+                float wave = (float)Math.Sin(Main.GameUpdateCount * 0.4f) * 6f; // 数学心跳波
+                Vector2 offset = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2) * wave;
+
+                LineParticle heartbeatTrail = new LineParticle(
+                    Projectile.Center + offset,
+                    Projectile.velocity * 0.15f,
+                    false,
+                    12,
+                    1.1f,
+                    Color.Lerp(Color.DarkRed, Color.Red, 0.6f)
+                );
+                GeneralParticleHandler.SpawnParticle(heartbeatTrail);
+            }
+
+            // === DNA 双螺旋轨迹 ===
+            float time = Projectile.localAI[0] * 0.2f; // 时间推进
+            float radius = 18f; // 缠绕半径
+            int segments = 2;   // 两股
+
+            for (int i = 0; i < segments; i++)
+            {
+                // 每股相差 180°
+                float angle = time + i * MathHelper.Pi;
+
+                // 核心：cos+sin 绕中心点转圈
+                Vector2 spiralOffset = new Vector2(
+                    (float)Math.Cos(angle) * radius,
+                    (float)Math.Sin(angle) * radius
+                );
+
+                // 叠加到主弹幕中心
+                Vector2 spawnPos = Projectile.Center + spiralOffset;
+
+                GlowOrbParticle spiral = new GlowOrbParticle(
+                    spawnPos,
+                    Vector2.Zero,
+                    false,
+                    35,    // 生命周期：要够长，能连成丝带
+                    1.1f,  // 缩放大一些，视觉更明显
+                    Color.Lerp(Color.DarkRed, Color.OrangeRed, (float)Math.Sin(angle) * 0.5f + 0.5f),
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(spiral);
+            }
+
+            Projectile.localAI[0]++;
+
+
+
+
+            // === 3. 血色流星碎片 ===
+            if (Main.rand.NextBool(3))
+            {
+                Vector2 scatter = (-Projectile.velocity).RotatedByRandom(MathHelper.ToRadians(15f)) * 0.3f;
+                PointParticle shard = new PointParticle(
+                    Projectile.Center,
+                    scatter,
+                    false,
+                    20,
+                    0.9f,
+                    Color.OrangeRed
+                );
+                GeneralParticleHandler.SpawnParticle(shard);
+            }
+
+
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         public override void AI()
         {
 
-            // 如果 ai[1] >= 0，表示需要跟随 NPC
+            // 优先跟随指定敌人
             if (Projectile.ai[1] >= 0)
             {
                 int npcIndex = (int)Projectile.ai[1];
@@ -86,13 +86,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 if (Main.npc[npcIndex].active && !Main.npc[npcIndex].friendly && !Main.npc[npcIndex].dontTakeDamage)
                 {
                     Projectile.Center = Main.npc[npcIndex].Center;
+                    return; // ✅ 已经锁定特定目标，不再往下执行
                 }
                 else
                 {
-                    // 如果目标 NPC 死亡或无效，则停止跟随，保持当前位置
-                    Projectile.ai[1] = -1f;
+                    Projectile.ai[1] = -1f; // 目标失效，转入通用追踪
                 }
             }
+
+            // === 通用追踪逻辑 ===
+            NPC closest = null;
+            float closestDist = 1500f; // 追踪范围
+
+            foreach (NPC npc in Main.npc)
+            {
+                if (npc.CanBeChasedBy(this))
+                {
+                    float dist = Vector2.Distance(Projectile.Center, npc.Center);
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closest = npc;
+                    }
+                }
+            }
+
+            if (closest != null)
+            {
+                Projectile.Center = closest.Center;
+            }
+
+
+
+
+
+
+
+
+
+
 
 
 

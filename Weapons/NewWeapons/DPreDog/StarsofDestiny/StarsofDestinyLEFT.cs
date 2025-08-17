@@ -264,7 +264,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
             string selectedSoundPath = soundPaths[Main.rand.Next(soundPaths.Length)];
 
-            SoundStyle boostedSound = new SoundStyle(selectedSoundPath).WithVolumeScale(3f); // ✅ 放大300%音量【这个没用，别看这玩意儿，这失效了，这tmd绝对是来捣乱的是吧】
+            SoundStyle boostedSound = new SoundStyle(selectedSoundPath).WithVolumeScale(3f);
 
             SoundEngine.PlaySound(boostedSound, Projectile.Center);
 

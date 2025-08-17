@@ -49,32 +49,44 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.VulcaniteLan
 
             if (Projectile.timeLeft == 325)
             {
-                int points = 5;
-                float radius = 24f; // 大小
+                int points = 8; // 爆发点数量
+                float spread = MathHelper.ToRadians(90f); // 爆发角度范围（90度扇形）
+                float baseAngle = Projectile.velocity.ToRotation(); // 以弹幕前进方向为中心
+
                 for (int i = 0; i < points; i++)
                 {
-                    // 内旋五角星公式 theta = 4π/5 * i
-                    float angle = MathHelper.TwoPi * 2f / 5f * i;
-                    Vector2 position = Projectile.Center + angle.ToRotationVector2() * radius;
+                    // 在扇形范围内随机偏移
+                    float angle = baseAngle + Main.rand.NextFloat(-spread / 2f, spread / 2f);
+                    Vector2 dir = angle.ToRotationVector2();
 
-                    // Dust 火花
-                    int dust = Dust.NewDust(position, 0, 0, DustID.InfernoFork, 0, 0, 100, Color.Orange, Main.rand.NextFloat(1.8f, 2.4f));
-                    Main.dust[dust].noGravity = false;
-                    Main.dust[dust].velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+                    // Dust 岩浆颗粒（大颗、亮）
+                    Vector2 dustVel = dir * Main.rand.NextFloat(5f, 9f);
+                    int dust = Dust.NewDust(
+                        Projectile.Center,
+                        0, 0,
+                        DustID.InfernoFork,
+                        dustVel.X, dustVel.Y,
+                        100,
+                        Color.OrangeRed,
+                        Main.rand.NextFloat(1.8f, 2.6f)
+                    );
+                    Main.dust[dust].noGravity = false; // ✅ 受重力，下坠感
+                    Main.dust[dust].velocity = dustVel;
 
-                    // Spark 熔岩滴落
-                    Vector2 sparkVelocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 7f);
+                    // Spark 熔岩滴落（小颗粒，拖尾感）
+                    Vector2 sparkVel = dir * Main.rand.NextFloat(6f, 11f);
                     SparkParticle spark = new SparkParticle(
-                        position,
-                        sparkVelocity,
-                        true, // gravity
-                        Main.rand.Next(20, 30),
-                        Main.rand.NextFloat(1.5f, 2.2f),
-                        Color.Yellow
+                        Projectile.Center,
+                        sparkVel,
+                        true, // ✅ 受重力
+                        Main.rand.Next(25, 40), // 生命周期更长
+                        Main.rand.NextFloat(1.0f, 1.8f),
+                        Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat())
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
+
 
             // 在 `timeLeft <= 325` 时开始生成粒子
             if (Projectile.timeLeft <= 325)

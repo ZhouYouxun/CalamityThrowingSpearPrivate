@@ -50,7 +50,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             base.Projectile.height = 10;
             base.Projectile.friendly = true;
             base.Projectile.DamageType = DamageClass.Melee;
-            base.Projectile.penetrate = 1;
+            base.Projectile.penetrate = 3;
             base.Projectile.aiStyle = 1;
             base.Projectile.timeLeft = 250;
             base.Projectile.tileCollide = true;
@@ -94,16 +94,40 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                 {
                     if (!hasJumped)
                     {
-                        // 读取主弹幕方向，默认向右
-                        float sideBias = spawnDirection < 0 ? -1f : 1f;
+                        // 搜索半径范围内的敌人
+                        float searchRadius = 800f; // 半径像素（50格）
+                        NPC target = null;
+                        float minDist = searchRadius;
 
-                        // 构造一个从上往下顺时针偏移角度（单位弧度）
-                        float offsetAngle = MathHelper.ToRadians(5f) * sideBias;
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            NPC npc = Main.npc[i];
+                            if (npc.active && !npc.friendly && npc.CanBeChasedBy())
+                            {
+                                float dist = Vector2.Distance(npc.Center, Projectile.Center);
+                                if (dist < minDist)
+                                {
+                                    minDist = dist;
+                                    target = npc;
+                                }
+                            }
+                        }
 
-                        // 起跳方向 = 正上方向 + 2度偏移
-                        Vector2 launchVelocity = Vector2.UnitY.RotatedBy(offsetAngle) * -10.5f;
+                        if (target != null)
+                        {
+                            // 🚀 朝敌人跳，速度 ×2.5
+                            Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                            Projectile.velocity = toTarget * 10.5f * 2.5f;
+                        }
+                        else
+                        {
+                            // 🪂 原有兜底逻辑：往上轻微偏移
+                            float sideBias = spawnDirection < 0 ? -1f : 1f;
+                            float offsetAngle = MathHelper.ToRadians(5f) * sideBias;
+                            Vector2 launchVelocity = Vector2.UnitY.RotatedBy(offsetAngle) * -10.5f;
+                            Projectile.velocity = launchVelocity;
+                        }
 
-                        Projectile.velocity = launchVelocity;
                         hasJumped = true;
                     }
 
@@ -237,6 +261,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 
         }
 
+        // 在类里新建一个字段
+        private float damageMultiplier = 1f;
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            // 每次击中，提升 25%
+            damageMultiplier *= 1.25f;
+
+            // 应用到伤害
+            modifiers.FinalDamage *= damageMultiplier;
+        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

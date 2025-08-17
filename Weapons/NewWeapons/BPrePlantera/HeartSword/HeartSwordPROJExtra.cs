@@ -168,51 +168,50 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
         {
             Player player = Main.player[Projectile.owner];
 
-            //// 如果主弹幕已经消失，直接进入冲刺阶段
-            //bool hasOwnerProjectile = false;
-            //for (int i = 0; i < Main.maxProjectiles; i++)
-            //{
-            //    Projectile proj = Main.projectile[i];
-            //    if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<HeartSwordPROJ>())
-            //    {
-            //        hasOwnerProjectile = true;
-            //        break;
-            //    }
-            //}
-            //if (!hasOwnerProjectile)
-            //{
-            //    Projectile.localAI[0] = 1;
-
-            //    // 尝试寻找最近敌人
-            //    NPC target = FindClosestNPC(1000f);
-            //    if (target != null)
-            //    {
-            //        Vector2 directionToTarget = target.Center - Projectile.Center;
-            //        directionToTarget.Normalize();
-            //        Projectile.velocity = directionToTarget * 30f;
-            //        Projectile.penetrate = 1;
-            //        Projectile.timeLeft = 300;
-            //        Projectile.tileCollide = true;
-            //    }
-            //    else
-            //    {
-            //        DoDashBehavior(); // 没有敌人时就朝鼠标方向冲刺
-            //    }
-            //    return;
-            //}
-
-
-            // 检查是否已经进入冲刺阶段
-            if (Projectile.localAI[0] == 1) // 冲刺阶段标志
+            // 如果已经进入冲刺阶段
+            if (Projectile.localAI[0] == 1)
             {
                 DoDashBehavior();
-                return;
+
+                // === 冲刺特效（保证会执行） ===
+                float time = Projectile.localAI[1]++ * 0.35f;
+
+                // 螺旋辉光球轨迹
+                Vector2 spiralOffset = new Vector2(
+                    (float)Math.Sin(time * 0.9f) * 14f,
+                    (float)Math.Cos(time * 0.45f) * 9f
+                );
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    Projectile.Center + spiralOffset,
+                    Vector2.Zero,
+                    false,
+                    20,
+                    0.6f,
+                    Color.Lerp(Color.DarkRed, Color.OrangeRed, (float)Math.Sin(time) * 0.5f + 0.5f),
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
+
+                // 暗淡丝线轨迹
+                AltSparkParticle spark = new AltSparkParticle(
+                    Projectile.Center - Projectile.velocity * 1.5f,
+                    Projectile.velocity * 0.01f,
+                    false,
+                    8,
+                    1.2f,
+                    Color.Cyan * 0.13f
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+
+                return; // ✅ 冲刺阶段直接结束
             }
 
-            // 检查玩家是否松开鼠标
+            // 检查是否切换到冲刺阶段
             if (!player.channel)
             {
-                Projectile.localAI[0] = 1; // 设置为冲刺阶段
+                Projectile.localAI[0] = 1;
                 DoDashBehavior();
                 return;
             }
@@ -220,6 +219,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             // 旋转阶段逻辑
             DoOrbitBehavior(player);
         }
+
+
+
         private NPC FindClosestNPC(float maxDetectDistance)
         {
             NPC closest = null;
@@ -266,6 +268,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
                 // 设置冲刺方向和速度
                 float speed = 30f;
                 Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Projectile.Center) * speed;
+
+
+ 
             }
 
         }
@@ -322,15 +327,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
 
         public override void OnKill(int timeLeft)
         {
-            // 生成血雾特效
+            // 血雾爆炸
             for (int i = 0; i < 20; i++)
             {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, Main.rand.Next(-3, 3), Main.rand.Next(-3, 3), 100, default, 1.5f);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height,
+                    DustID.Blood, Main.rand.Next(-3, 3), Main.rand.Next(-3, 3), 100, default, 1.5f);
             }
 
-            // 生成粒子特效（三角形形状）
+            // 原有三角 dust
             CreateTriangleParticles(Projectile.Center, Projectile.velocity);
+
+            // 顶点 GlowOrb 强化符纹感
+            for (int i = 0; i < 3; i++)
+            {
+                float angle = MathHelper.TwoPi / 3f * i;
+                Vector2 pos = Projectile.Center + angle.ToRotationVector2() * 50f;
+                GlowOrbParticle rune = new GlowOrbParticle(
+                    pos,
+                    Vector2.Zero,
+                    false,
+                    30,
+                    0.9f,
+                    Color.DarkRed,
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(rune);
+            }
         }
+
 
         //public override bool PreDraw(ref Color lightColor)
         //{

@@ -315,8 +315,45 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(ModContent.BuffType<Crumbling>(), 300); // 粉碎
+            target.AddBuff(ModContent.BuffType<Crumbling>(), 300); // 保留原有debuff
+
+            // === 岩石定向爆裂 ===
+            int shardCount = 8;
+            for (int i = 0; i < shardCount; i++)
+            {
+                // 均匀角度 + 随机扰动
+                float angle = MathHelper.TwoPi * i / shardCount + Main.rand.NextFloat(-0.25f, 0.25f);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(7f, 9f);
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    velocity,
+                    ModContent.ProjectileType<FossilShard>(),
+                    (int)(Projectile.damage * 0.7f),
+                    Projectile.knockBack * 0.5f,
+                    Projectile.owner
+                );
+            }
+
+            // 🌋 视觉效果：石屑冲击波
+            for (int d = 0; d < 20; d++)
+            {
+                Dust dust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    Main.rand.Next(new int[] { DustID.Stone, DustID.Sand, DustID.Dirt }),
+                    Main.rand.NextVector2Circular(4f, 4f),
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.2f, 1.6f)
+                );
+                dust.noGravity = true;
+            }
+
+            // 💥 爆裂音效
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
         }
+
 
 
 

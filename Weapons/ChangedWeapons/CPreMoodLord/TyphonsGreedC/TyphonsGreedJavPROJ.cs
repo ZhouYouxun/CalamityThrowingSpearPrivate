@@ -64,26 +64,104 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
                 dust.velocity = -Projectile.velocity * 0.5f; // 与弹幕方向相反的漂移效果
             }
 
-
-            if (phase == 1)
+            if (phase == 1) // === 普通飞行阶段：深海能量流 ===
             {
                 Projectile.velocity -= Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.03f;
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+                // 💧 淡蓝色流线（像水流拖尾）
+                if (Main.rand.NextBool(2))
+                {
+                    AltSparkParticle spark = new AltSparkParticle(
+                        Projectile.Center - Projectile.velocity * 1.5f,
+                        Projectile.velocity * 0.01f,
+                        false,
+                        10,
+                        1.2f,
+                        Color.Cyan * 0.18f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 🫧 微量气泡粒子（安静的深海氛围）
+                if (Main.rand.NextBool(5))
+                {
+                    Dust bubble = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        DustID.Water,
+                        Projectile.velocity * -0.2f + Main.rand.NextVector2Circular(0.3f, 0.3f),
+                        150,
+                        Color.LightBlue,
+                        0.9f
+                    );
+                    bubble.noGravity = true;
+                }
+
+                // ✨ 深海荧光
+                Lighting.AddLight(Projectile.Center, 0.05f, 0.15f, 0.25f);
 
                 if (timeCounter >= 160 || hasCollided)
                 {
                     TransitionToSpinMode();
                 }
             }
-            else if (phase == 2)
+            else if (phase == 2) // === 旋转阶段：深海漩涡 ===
             {
                 Projectile.rotation += MathHelper.ToRadians(10f);
 
-                if (Main.rand.NextBool(3))
+                // 🌪 漩涡烟雾（重型烟雾，蓝+紫，表现暗流）
+                if (Main.rand.NextBool(2))
                 {
-                    CreateSmokeEffect();
+                    HeavySmokeParticle smoke = new HeavySmokeParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),   // 位置
+                        Projectile.velocity * 0.1f,                                 // 速度
+                        Color.Lerp(Color.DarkBlue, Color.MediumPurple, Main.rand.NextFloat()) * 0.8f, // 颜色
+                        40,                                                         // 生命周期
+                        Main.rand.NextFloat(1.2f, 1.8f),                            // 缩放
+                        0.9f                                                        // 不透明度（你可以调节 0~1）
+                    );
+                    GeneralParticleHandler.SpawnParticle(smoke);
                 }
 
+                // 🌀 数学感螺旋粒子（环绕旋转的能量）
+                float time = timeCounter * 0.25f;
+                for (int i = 0; i < 2; i++) // 双螺旋
+                {
+                    float offsetAngle = MathHelper.Pi * i;
+                    Vector2 spiralOffset = new Vector2(
+                        (float)Math.Sin(time + offsetAngle) * 18f,
+                        (float)Math.Cos(time * 0.8f + offsetAngle) * 12f
+                    );
+
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        Projectile.Center + spiralOffset,
+                        Vector2.Zero,
+                        false,
+                        20,
+                        0.6f,
+                        Color.Lerp(Color.Cyan, Color.DeepSkyBlue, (float)Math.Sin(time + i) * 0.5f + 0.5f),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+
+                // ✨ 深蓝色线性闪光（像电流丝线）
+                if (Main.rand.NextBool(3))
+                {
+                    AltSparkParticle spark = new AltSparkParticle(
+                        Projectile.Center - Projectile.velocity * 1.2f,
+                        Projectile.velocity * 0.015f,
+                        false,
+                        12,
+                        1.3f,
+                        Color.Blue * 0.22f
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+                // 🫧 定期生成深海泡泡（保持原始特色）
                 if (timeCounter % 45 == 0)
                 {
                     SpawnBubbleProjectile();
@@ -144,10 +222,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
 
         private void ReleaseTransitionParticles()
         {
-            int innerCircleCount = 10; // 内圈粒子数量
-            int outerCircleCount = 20; // 外圈粒子数量
-            float innerCircleRadius = 10f; // 内圈半径
-            float outerCircleRadius = 20f; // 外圈半径
+            int innerCircleCount = 20; // 内圈粒子数量
+            int outerCircleCount = 40; // 外圈粒子数量
+            float innerCircleRadius = 15f; // 内圈半径
+            float outerCircleRadius = 30f; // 外圈半径
 
             // 随机颜色数组
             Color[] oceanColors = new Color[]

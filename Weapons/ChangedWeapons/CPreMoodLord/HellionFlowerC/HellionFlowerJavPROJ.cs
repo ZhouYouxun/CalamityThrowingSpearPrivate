@@ -125,6 +125,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
             // Lighting - 添加深橙色光源
             Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.55f);
 
+
+
+
             // 每隔一定帧数生成 HellionFlowerJavAbsorb
             if (Projectile.localAI[0] <= 0)
             {
@@ -139,13 +142,20 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
                     }
                 }
 
-                // 只有当数量小于等于 8 时才生成新的弹幕
-                if (absorbCount <= 8)
+                // 上限从 8 -> 20
+                if (absorbCount < 20)
                 {
-                    // 随机半径和角度
                     float radius = 80 * 16f;
-                    float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(randomAngle), (float)Math.Sin(randomAngle)) * radius;
+
+                    // ✨ 使用旋转角度，而不是完全随机
+                    // 利用 localAI[1] 存储旋转角度累计值
+                    if (Projectile.localAI[1] == 0)
+                        Projectile.localAI[1] = Main.rand.NextFloat(MathHelper.TwoPi); // 初始随机起点
+
+                    Projectile.localAI[1] += MathHelper.ToRadians(18f); // 每次旋转 18°（可调节旋转规律）
+                    float angle = Projectile.localAI[1];
+
+                    Vector2 spawnPosition = Projectile.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
 
                     // 朝向当前弹幕的速度
                     Vector2 velocityToSelf = (Projectile.Center - spawnPosition).SafeNormalize(Vector2.Zero) * 10f;
@@ -156,20 +166,22 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
                         spawnPosition,
                         velocityToSelf,
                         ModContent.ProjectileType<HellionFlowerJavAbsorb>(),
-                        (int)(Projectile.damage * 0.6f), // 伤害倍率 0.75
+                        (int)(Projectile.damage * 0.6f),
                         Projectile.knockBack,
                         Main.myPlayer
                     );
                 }
 
-                // 随机设置下一次触发时间（5 到 15 帧）
-                Projectile.localAI[0] = Main.rand.Next(5, 16);
+                // 触发时间从 5~15 帧 -> 1~8 帧
+                Projectile.localAI[0] = Main.rand.Next(1, 9);
             }
             else
             {
-                // 计时递减
                 Projectile.localAI[0]--;
             }
+
+
+
 
 
             // 每 12 帧发射两侧弹幕

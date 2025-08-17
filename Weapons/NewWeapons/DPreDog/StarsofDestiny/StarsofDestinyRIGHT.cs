@@ -205,7 +205,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             // 检查当前世界中同类型立场的数量
             int activeFields = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<StarsofDestinyRStandField>());
 
-            if (!hasCreatedStandField && activeFields < 2) // 如果数量小于2，允许生成新的立场
+            if (!hasCreatedStandField && activeFields < 2)
             {
                 hasCreatedStandField = true;
                 Projectile.NewProjectile(
@@ -216,10 +216,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     (int)(Projectile.damage * 0.96),
                     Projectile.knockBack,
                     Projectile.owner,
-                    0f,  // ai[0]
-                    -1f  // ai[1] = -1 表示不跟随 NPC
+                    0f,           // ai[0]
+                    target.whoAmI // ai[1] = 命中的敌人ID
                 );
             }
+
 
 
         }

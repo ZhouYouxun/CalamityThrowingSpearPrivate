@@ -47,10 +47,10 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
+            Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
+            //Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
 
         }
         private bool collided = false; // 标记是否发生碰撞
@@ -65,7 +65,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Lighting.AddLight(Projectile.Center, Color.WhiteSmoke.ToVector3() * 0.55f);
 
             // 每帧将速度乘以1.001
-            Projectile.velocity *= 1.001f;
+            Projectile.velocity *= 1.0f;
 
             // 粒子特效（Cloud、34、57 混合使用）
             int particleCount = Main.rand.Next(4, 10); // 随机生成 4 到 9 个粒子
@@ -150,23 +150,23 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                     Projectile.Center = targetWind.Center + new Vector2(Projectile.ai[0], 0f).RotatedBy(angle);
                     Projectile.rotation = (Projectile.Center - targetWind.Center).ToRotation() + MathHelper.PiOver2;
 
-                    {
-                        // 计算当前正前方方向（白色 Spark 初始方向）
-                        Vector2 forward = Projectile.rotation.ToRotationVector2();
+                    //{
+                    //    // 计算当前正前方方向（白色 Spark 初始方向）
+                    //    Vector2 forward = Projectile.rotation.ToRotationVector2();
 
-                        // 创建 SparkParticle
-                        Particle spark = new SparkParticle(
-                            Projectile.Center,
-                            forward * 3f, // 初速度，适中即可
-                            false, // 不受重力
-                            10,    // 生命周期
-                            1.2f,  // 缩放
-                            Color.White // 颜色
-                        );
-                        GeneralParticleHandler.SpawnParticle(spark);
-                        ownedSparkParticles.Add((SparkParticle)spark);
+                    //    // 创建 SparkParticle
+                    //    Particle spark = new SparkParticle(
+                    //        Projectile.Center,
+                    //        forward * 3f, // 初速度，适中即可
+                    //        false, // 不受重力
+                    //        10,    // 生命周期
+                    //        1.2f,  // 缩放
+                    //        Color.White // 颜色
+                    //    );
+                    //    GeneralParticleHandler.SpawnParticle(spark);
+                    //    ownedSparkParticles.Add((SparkParticle)spark);
 
-                    }
+                    //}
                 }
 
 
@@ -236,25 +236,25 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
 
 
 
-                // === Spark 右拐轨迹控制 ===
-                for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
-                {
-                    SparkParticle p = ownedSparkParticles[i];
+                //// === Spark 右拐轨迹控制 ===
+                //for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
+                //{
+                //    SparkParticle p = ownedSparkParticles[i];
 
-                    // 超时销毁时移除引用
-                    if (p.Time >= p.Lifetime)
-                    {
-                        ownedSparkParticles.RemoveAt(i);
-                        continue;
-                    }
+                //    // 超时销毁时移除引用
+                //    if (p.Time >= p.Lifetime)
+                //    {
+                //        ownedSparkParticles.RemoveAt(i);
+                //        continue;
+                //    }
 
-                    // 每帧持续右转（3°）
-                    float rotateAmount = MathHelper.ToRadians(3f);
-                    p.Velocity = p.Velocity.RotatedBy(rotateAmount);
+                //    // 每帧持续右转（3°）
+                //    float rotateAmount = MathHelper.ToRadians(3f);
+                //    p.Velocity = p.Velocity.RotatedBy(rotateAmount);
 
-                    // （可选）微弱加速
-                    // p.Velocity *= 1.01f;
-                }
+                //    // （可选）微弱加速
+                //    // p.Velocity *= 1.01f;
+                //}
 
 
             }
@@ -272,42 +272,83 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             SoundEngine.PlaySound(SoundID.Item39, Projectile.Center);
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/金羽音效") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
+
             if (collided)
             {
-                // 已碰撞：360度随机发射5发羽毛
-                for (int i = 0; i < 5; i++)
+                // 已碰撞：360度随机发射10发羽毛（普通逻辑）
+                for (int i = 0; i < 10; i++)
                 {
                     Vector2 velocity = Main.rand.NextVector2Circular(1f, 1f) * 10f; // 随机方向
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
-                        ModContent.ProjectileType<GoldplumeJavFeather>(), (int)(Projectile.damage * 0.33f), Projectile.knockBack, Projectile.owner);
+                    int proj = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        velocity,
+                        ModContent.ProjectileType<GoldplumeJavFeather>(),
+                        (int)(Projectile.damage * 0.33f),
+                        Projectile.knockBack,
+                        Projectile.owner,
+                        1f // ai[0] = 1 → 追踪逻辑
+                    );
+                    if (proj.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[proj].ai[0] = 0f; // 明确标记普通逻辑
                 }
 
                 // 释放破旧的特效（仅使用 DustID.YellowStarfish）
                 for (int i = 0; i < 20; i++)
                 {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarfish, Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.5f);
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        DustID.YellowStarfish,
+                        Main.rand.NextVector2Circular(3f, 3f),
+                        100,
+                        default,
+                        1.5f
+                    );
                     dust.noGravity = true; // 禁用重力
                 }
             }
             else
             {
-                // 未碰撞：正前方、左右各5度发射羽毛
+                // 未碰撞（被旋风吸入）：正前方、左右各5度发射羽毛（追踪逻辑）
                 for (int i = -1; i <= 1; i++)
                 {
                     Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(5f) * i) * 10f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
-                        ModContent.ProjectileType<GoldplumeJavFeather>(), (int)(Projectile.damage * 0.45f), Projectile.knockBack, Projectile.owner);
+                    int proj = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        Projectile.Center,
+                        velocity,
+                        ModContent.ProjectileType<GoldplumeJavFeather>(),
+                        (int)(Projectile.damage * 0.45f),
+                        Projectile.knockBack,
+                        Projectile.owner,
+                        0f // ai[0] = 0 → 普通直线逻辑
+                    );
+                    if (proj.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[proj].ai[0] = 1f; // 明确标记追踪逻辑
                 }
 
                 // 前方散射大量特效（Cloud、34、57 混合）
                 for (int i = 0; i < 30; i++)
                 {
                     int dustType = Main.rand.Next(new int[] { DustID.Cloud, 34, 57 });
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, Main.rand.NextVector2Circular(5f, 5f), 100, default, Main.rand.NextFloat(1.25f, 1.75f));
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center,
+                        dustType,
+                        Main.rand.NextVector2Circular(5f, 5f),
+                        100,
+                        default,
+                        Main.rand.NextFloat(1.25f, 1.75f)
+                    );
                     dust.velocity = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(0.8f, 1.2f);
                     dust.noGravity = true; // 禁用重力
                 }
             }
+
+
+
+
+
+
         }
 
 

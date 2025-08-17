@@ -84,7 +84,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             }
         }
         private int shootTimer = 0; // 添加一个计时器
-
+                                    // 初始生成频率
+        private int shootInterval = 28;
+        private int currentAngle = 0; // 角度累积
         private void DoBehavior_Aim()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -118,41 +120,67 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             );
             GeneralParticleHandler.SpawnParticle(smoke);
 
-
-            // 每隔10帧发射一次水剑
+            // 每隔 shootInterval 帧发射一次水剑
             shootTimer++;
-            if (shootTimer >= 15) // 如果计时器达到10帧
+            if (shootTimer >= shootInterval)
             {
                 shootTimer = 0; // 重置计时器
 
-                Vector2 spawnPosition = Main.MouseWorld + Main.rand.NextVector2Circular(15 * 16f, 15 * 16f);
-                Vector2 velocity = (Main.MouseWorld - spawnPosition).SafeNormalize(Vector2.Zero) * 12f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.7), Projectile.knockBack, Projectile.owner);
+                // 生成位置：固定半径，角度逐渐旋转（像时钟）
+                float radius = 15 * 16f;
+                float radians = MathHelper.ToRadians(currentAngle); // 把角度转成弧度
+                Vector2 spawnOffset = radians.ToRotationVector2() * radius;
+                Vector2 spawnPosition = Main.MouseWorld + spawnOffset;
+
+                // 计算朝向鼠标的速度
+                Vector2 velocity = (Main.MouseWorld - spawnPosition).SafeNormalize(Vector2.UnitY) * 12f;
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPosition,
+                    velocity,
+                    ModContent.ProjectileType<TenebreusTidesJavWaterSword>(),
+                    (int)(Projectile.damage * 0.7f),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
                 SoundEngine.PlaySound(SoundID.Item34, Projectile.position);
 
-                // 用粒子特效绘制线条
-                //for (int i = 0; i < 10; i++)
-                //{
-                //    Vector2 point = Vector2.Lerp(spawnPosition, Owner.Center, i / 10f) + Main.rand.NextVector2Circular(2f, 2f);
-                //    Particle waterEffect = new HeavySmokeParticle(point, Vector2.Zero, Color.Lerp(Color.DarkBlue, Color.CadetBlue, 0.5f), 20, 0.5f, 0.5f, 0f, true);
-                //    GeneralParticleHandler.SpawnParticle(waterEffect);
-                //}
+                // 递增角度（顺时针旋转），一圈360°
+                currentAngle = (currentAngle + 5) % 360; // 每次旋转5°，可调
 
-                // 添加单螺旋粒子特效并绘制线条
-                float progress = (Projectile.localAI[0] % 60) / 60f; // 粒子进度控制
-                float angle = MathHelper.TwoPi * progress; // 单螺旋角度
-                Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 10f; // 螺旋的偏移
+                // 逐渐缩短生成间隔，最低8帧
+                if (shootInterval > 8)
+                    shootInterval--;
 
-                // 单螺旋的粒子
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Water, Projectile.velocity * 0.2f, 0, Color.DarkBlue, 1.2f);
-                dust.noGravity = true;
-
-                // 绘制从 spawnPosition 到 Owner.Center 的线条
-                for (int i = 0; i < 10; i++)
+                // === 改进的水流线条粒子特效 ===
+                int segmentCount = 20; // 增加线条的粒子数量，让它更紧凑
+                for (int i = 0; i <= segmentCount; i++)
                 {
-                    Vector2 point = Vector2.Lerp(spawnPosition, Owner.Center, i / 10f);
-                    Dust lineDust = Dust.NewDustPerfect(point, DustID.Water, Vector2.Zero, 0, Color.CadetBlue, 1.0f);
+                    float t = i / (float)segmentCount;
+                    Vector2 point = Vector2.Lerp(spawnPosition, Owner.Center, t);
+
+                    // 主色（深蓝-浅蓝渐变）
+                    Color dustColor = Color.Lerp(Color.DarkBlue, Color.CadetBlue, t);
+
+                    // 在主线上生成水流粒子
+                    Dust lineDust = Dust.NewDustPerfect(
+                        point,
+                        DustID.Water,
+                        Vector2.Zero,
+                        0,
+                        dustColor,
+                        Main.rand.NextFloat(1.1f, 1.6f) // 更大些，显得更饱满
+                    );
                     lineDust.noGravity = true;
+
+                    // 偶尔额外生成一点偏移的水滴，模拟水花飞溅
+                    if (i % 4 == 0)
+                    {
+                        Vector2 jitter = Main.rand.NextVector2Circular(2f, 2f);
+                        Dust splashDust = Dust.NewDustPerfect(point + jitter, DustID.Water, Vector2.Zero, 0, Color.LightBlue, 1.2f);
+                        splashDust.noGravity = true;
+                    }
                 }
             }
 

@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
 {
@@ -142,6 +143,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
         // 在OnKill函数中处理死亡逻辑
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮开火") with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
+
+
+
+
             // PineNeedleFriendly发射逻辑
             int pineNeedleCount = Main.rand.Next(6, 11); // 随机生成6~10个弹幕
             for (int i = 0; i < pineNeedleCount; i++)

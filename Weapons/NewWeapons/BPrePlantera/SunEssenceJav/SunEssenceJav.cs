@@ -19,13 +19,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 36; // 设置伤害值
+            Item.damage = 76; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 40; // 更改使用时的武器攻击速度
+            //Item.useTime = Item.useAnimation = 40; // 更改使用时的武器攻击速度
+            Item.useTime = 70;
+            Item.useAnimation = 70;
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;

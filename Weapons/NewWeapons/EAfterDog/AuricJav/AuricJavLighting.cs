@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using CalamityMod.Particles;
 using Terraria.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 {
@@ -73,7 +74,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
 
 
-
+        public override void OnSpawn(IEntitySource source)
+        {
+            // 屏幕震动效果
+            float shakePower = 50f; // 设置震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+        }
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 50;
@@ -120,45 +127,161 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
                 GeneralParticleHandler.SpawnParticle(smear);
             }
 
-            // 2. 四角方形粒子环绕（旋转+固定偏移）
-            float radius1 = 10f;
-            float baseAngle = Main.GlobalTimeWrappedHourly * 4f; // 控制整体旋转速度
 
-            for (int i = 0; i < 4; i++)
+
             {
-                float angle = baseAngle + MathHelper.PiOver2 * i; // 四角方向：0, 90, 180, 270 度
-                Vector2 offset = angle.ToRotationVector2() * radius1;
+                // === 飞行特效：Auric Lightning Orb（36层动态版）===
 
-                Vector2 pos = Projectile.Center + offset;
-                Vector2 vel = offset.RotatedBy(MathHelper.PiOver2) * 0.05f; // 环绕旋动感
+                float globalTime = Main.GlobalTimeWrappedHourly * 60f; // 全局计时器
+                int layerCount = 16; // 层数
+                float baseRadius = 8f;
 
-                SquareParticle square = new SquareParticle(
-                    pos,
-                    vel, // 轻微动感轨迹
-                    false,
-                    30,
-                    0.9f + Main.rand.NextFloat(0.2f),
-                    Color.Lerp(Color.Cyan, Color.White, 0.3f) * 1.2f
-                );
-                GeneralParticleHandler.SpawnParticle(square);
+                for (int layer = 0; layer < layerCount; layer++)
+                {
+                    // 每层独立扰动：半径 + 角度 + 呼吸缩放
+                    float timeShift = globalTime * (0.02f + layer * 0.001f);
+                    float angleShift = timeShift + layer * 0.35f + Main.rand.NextFloat(-0.05f, 0.05f);
+                    float radius = baseRadius + layer * 2.5f + (float)Math.Sin(globalTime * 0.05f + layer) * 3f;
+
+                    // 每层多点（动态旋转）
+                    for (int i = 0; i < 8; i++)
+                    {
+                        float angle = angleShift + i * MathHelper.TwoPi / 8f;
+                        Vector2 pos = Projectile.Center + angle.ToRotationVector2() * radius;
+
+                        // --- 动态火花 ---
+                        LineParticle spark = new LineParticle(
+                            pos,
+                            angle.ToRotationVector2() * Main.rand.NextFloat(5f, 9f),
+                            false,
+                            1 + Main.rand.Next(10),
+                            1.9f + (float)Math.Sin(globalTime * 0.1f + layer) * 0.3f,
+                            Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat())
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+
+                        // --- 点状能量 ---
+                        if (Main.rand.NextBool(3))
+                        {
+                            PointParticle dot = new PointParticle(
+                                pos,
+                                -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.6f),
+                                false,
+                                15 + Main.rand.Next(10),
+                                0.8f + Main.rand.NextFloat(0.6f),
+                                Color.Lerp(Color.Cyan, Color.LightYellow, Main.rand.NextFloat())
+                            );
+                            GeneralParticleHandler.SpawnParticle(dot);
+                        }
+
+                        // --- 方形科技光点 ---
+                        if (Main.rand.NextBool(6))
+                        {
+                            SquareParticle sq = new SquareParticle(
+                                pos,
+                                Main.rand.NextVector2Circular(0.5f, 0.5f),
+                                false,
+                                25 + Main.rand.Next(15),
+                                1.0f + (float)Math.Cos(globalTime * 0.08f + i + layer) * 0.5f,
+                                Color.Lerp(Color.Cyan, Color.DeepSkyBlue, Main.rand.NextFloat())
+                            );
+                            GeneralParticleHandler.SpawnParticle(sq);
+                        }
+                    }
+                }
+
+                // 🔥 扩散喷流（随机方向，每帧不同角度偏移）
+                for (int i = 0; i < 200; i++)
+                {
+                    float dynamicAngle = globalTime * 0.02f + i * 0.07f + Main.rand.NextFloat(-0.1f, 0.1f);
+                    Vector2 dir = dynamicAngle.ToRotationVector2();
+                    float speed = Main.rand.NextFloat(6f, 12f);
+                    LineParticle burst = new LineParticle(
+                        Projectile.Center,
+                        dir * speed,
+                        false,
+                        2 + Main.rand.Next(15),
+                        1.7f + Main.rand.NextFloat(0.6f),
+                        Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat())
+                    );
+                    GeneralParticleHandler.SpawnParticle(burst);
+                }
+
+               
+
+                // 💎 GlowOrb 动态闪烁
+                if (Main.rand.NextBool(2))
+                {
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
+                        Vector2.Zero,
+                        false,
+                        15,
+                        1.0f + Main.rand.NextFloat(0.5f),
+                        Color.Lerp(Color.LightBlue, Color.Yellow, (float)Math.Sin(globalTime * 0.1f)),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+
+
+
+
+
+
+                // 3️⃣ 电弧裂纹（黄色，扩散叠加）
+                if (Main.rand.NextBool(2))
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        CrackParticle crack = new CrackParticle(
+                            Projectile.Center,
+                            Main.rand.NextVector2Circular(1f, 1f),
+                            Color.Lerp(Color.Yellow, Color.Orange, Main.rand.NextFloat()),
+                            new Vector2(1f, 1f),
+                            Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),
+                            0.1f,
+                            0.5f,
+                            25 + Main.rand.Next(10)
+                        );
+                        GeneralParticleHandler.SpawnParticle(crack);
+                    }
+                }
+
+                // 4️⃣ 原有刀盘粒子（保持，不动）
+                // 这部分是 PreDraw 里的 twirl_01 + Lightning，那些不要删
+
+                // 5️⃣ 外圈“电子环绕”强化（更稳定的四角小光点）
+                float rot = Main.GameUpdateCount * 0.12f;
+                for (int k = 0; k < 4; k++)
+                {
+                    Vector2 orbit = (rot + k * MathHelper.PiOver2).ToRotationVector2() * 20f;
+                    Dust d = Dust.NewDustPerfect(
+                        Projectile.Center + orbit,
+                        DustID.Electric,
+                        Vector2.Zero,
+                        100,
+                        Color.Lerp(Color.Cyan, Color.LightYellow, Main.rand.NextFloat()),
+                        1.3f
+                    );
+                    d.noGravity = true;
+                }
+
             }
 
 
-            // 3. 黄色电能尘链条
-            int[] electricDust = new int[] { 244, 246, 228, 269 };
-            for (int i = 0; i < 6; i++)
-            {
-                float angleOffset = MathHelper.TwoPi * i / 6f + Main.rand.NextFloat(-0.1f, 0.1f);
-                float radius = 8f + Main.rand.NextFloat(-2f, 2f);
-                Vector2 offset = angleOffset.ToRotationVector2() * radius;
 
-                Vector2 pos = Projectile.Center + offset;
-                int dustType = electricDust[Main.rand.Next(electricDust.Length)];
 
-                Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.Zero, 150, Color.Yellow, 0.5f);
-                d.noGravity = true;
-                d.fadeIn = 0.9f;
-            }
+
+
+
+
+
+
+
+
 
 
 

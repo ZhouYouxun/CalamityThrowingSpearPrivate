@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
 using Terraria.Audio;
+using System.Diagnostics.Metrics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
 {
@@ -18,7 +19,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/PolarEssenceJav/PolarEssenceJav";
 
         public new string LocalizationCategory => "Projectiles.NewWeapons.BPrePlantera";
-        private bool hasGainedHoming = false;
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -47,48 +47,108 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
             Projectile.scale = 0.75f;
         }
+        // 在类字段加上
+        private bool hasGainedHoming = false; // 是否开启追踪
+        private int postHitTimer = 0;         // 撞击后延迟计数
+        private int counter = 0;              // 平滑加速计数器
+        private int effectTimer = 0;          // 控制特效节奏
 
         public override void AI()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Color.WhiteSmoke.ToVector3() * 0.55f);
 
-            // DNA 双链粒子特效，一直存在不再取消
-            float offset = (float)Math.Sin(Projectile.localAI[0] * 0.1f) * 5f; // 将振幅从10f减小到5f
-            Vector2 dnaPos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
-            Vector2 dnaPos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
-            Dust.NewDustPerfect(dnaPos1, DustID.BlueCrystalShard, Vector2.Zero).noGravity = true;
-            Dust.NewDustPerfect(dnaPos2, 185, Vector2.Zero).noGravity = true;
 
-            // 第一阶段加速
-            if (!hasGainedHoming)
             {
-                Projectile.velocity *= 1.005f;
+                // DNA 双链粒子特效，一直存在不再取消
+                float offset = (float)Math.Sin(Projectile.localAI[0] * 0.1f) * 5f; // 将振幅从10f减小到5f
+                Vector2 dnaPos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
+                Vector2 dnaPos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
+                Dust.NewDustPerfect(dnaPos1, DustID.BlueCrystalShard, Vector2.Zero).noGravity = true;
+                Dust.NewDustPerfect(dnaPos2, 185, Vector2.Zero).noGravity = true;
+            }
 
+            // === 撞击后的阶段控制 ===
+            if (hasGainedHoming)
+            {
+                if (postHitTimer < 15)
+                {
+                    // 🚀 阶段 1：直线延续
+                    postHitTimer++;
+                    // 保持原有方向和速度，不调整
+                }
+                else if (postHitTimer < 35) // 再给 20 帧做“掉头”动作
+                {
+                    postHitTimer++;
 
+                    // 🎯 逐渐旋转 180°（掉头）
+                    float turnProgress = (postHitTimer - 15) / 20f; // 0~1
+                    float targetAngle = Projectile.velocity.ToRotation() + MathHelper.Pi; // 掉头 180°
+                    float newAngle = MathHelper.Lerp(Projectile.velocity.ToRotation(), targetAngle, turnProgress);
+                    float speed = Projectile.velocity.Length();
+                    Projectile.velocity = newAngle.ToRotationVector2() * speed;
+                }
+                else
+                {
+                    // === 阶段 3：开始追踪 ===
+                    int targetIndex = Projectile.FindTargetWithLineOfSight(2000f);
+                    if (targetIndex != -1)
+                    {
+                        NPC target = Main.npc[targetIndex];
+                        Vector2 toTarget = target.Center - Projectile.Center;
+
+                        // ➰ 正弦曲线扰动
+                        float curve = (float)Math.Sin(Main.GameUpdateCount * 0.25f) * 0.4f;
+                        Vector2 curvedDir = toTarget.SafeNormalize(Vector2.UnitY).RotatedBy(curve);
+
+                        // ⏱ 平滑加速
+                        counter++;
+                        float t = MathHelper.Clamp(counter / 90f, 0f, 1f);
+                        float easedSpeed = MathHelper.SmoothStep(6f, 22f, t);
+
+                        Projectile.velocity = curvedDir * easedSpeed;
+                    }
+                    {
+                        // === 冰刺特效（只要进入 homing 就会触发）===
+                        effectTimer++;
+                        Dust iceDust = Dust.NewDustPerfect(Projectile.Center, DustID.Ice, Projectile.velocity * 0.1f, 0, Color.SkyBlue, 1.2f);
+                        iceDust.noGravity = true;
+
+                        if (effectTimer % 3 == 0)
+                        {
+                            Dust subIceDust = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch, Projectile.velocity * 0.01f, 0, Color.SkyBlue, 1.1f);
+                            subIceDust.noGravity = true;
+                        }
+
+                        SparkParticle Visual = new SparkParticle(Projectile.Center, Projectile.velocity * 0.1f, false, 2, 1.2f, Color.SkyBlue);
+                        GeneralParticleHandler.SpawnParticle(Visual);
+
+                        if (effectTimer % 3 == 0)
+                        {
+                            LineParticle subTrail = new LineParticle(Projectile.Center, Projectile.velocity * 0.01f, false, 4, 1.1f, Color.SkyBlue);
+                            GeneralParticleHandler.SpawnParticle(subTrail);
+                        }
+                    }
+                }
             }
             else
             {
-                // 开启追踪效果
-                CalamityUtils.HomeInOnNPC(Projectile, true, 2000f, 18, 200f);
-
-                // 冰刺特效
-                Dust iceDust = Dust.NewDustPerfect(Projectile.Center, DustID.Ice, Projectile.velocity * 0.1f, 0, Color.SkyBlue, 1.2f);
-                iceDust.noGravity = true;
-                if (Projectile.localAI[0] % 3 == 0)
-                {
-                    Dust subIceDust = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch, Projectile.velocity * 0.01f, 0, Color.SkyBlue, 1.1f);
-                    subIceDust.noGravity = true;
-                }
-
-                SparkParticle Visual = new SparkParticle(Projectile.Center, Projectile.velocity * 0.1f, false, 2, 1.2f, Color.SkyBlue);
-                GeneralParticleHandler.SpawnParticle(Visual);
-                if (Projectile.localAI[0] % 3 == 0)
-                {
-                    LineParticle subTrail = new LineParticle(Projectile.Center, Projectile.velocity * 0.01f, false, 4, 1.1f, Color.SkyBlue);
-                    GeneralParticleHandler.SpawnParticle(subTrail);
-                }
+                // 初始阶段：飞行加速
+                Projectile.velocity *= 1.005f;
             }
+
+
+     
+
+
+
+
+
+
+
+
+
+
 
             Projectile.localAI[0]++; // 更新粒子动画
         }
@@ -105,6 +165,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                 // === ❄️ 命中后随机 ±？0° 偏转角度 ===
                 float randomRotation = Main.rand.NextFloat(-MathHelper.ToRadians(10f), MathHelper.ToRadians(10f));
                 Projectile.velocity = Projectile.velocity.RotatedBy(randomRotation);
+
+                hasGainedHoming = true;
+                postHitTimer = 0; // 重置延迟计时
 
             }
 

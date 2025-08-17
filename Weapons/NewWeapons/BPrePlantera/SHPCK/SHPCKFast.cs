@@ -69,32 +69,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             }
 
 
-            if (hasRecordedSpawnPosition)
-            {
-                Texture2D magicTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_03").Value;
+            //if (hasRecordedSpawnPosition)
+            //{
+            //    Texture2D magicTexture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_03").Value;
 
-                // 旋转和缩放逐渐减小
-                Projectile.localAI[0] += 0.075f; // 旋转
-                Projectile.localAI[1] -= 0.02f; // 大小
-                if (Projectile.localAI[1] < 0f)
-                    Projectile.localAI[1] = 0f;
+            //    // 旋转和缩放逐渐减小
+            //    Projectile.localAI[0] += 0.075f; // 旋转
+            //    Projectile.localAI[1] -= 0.02f; // 大小
+            //    if (Projectile.localAI[1] < 0f)
+            //        Projectile.localAI[1] = 0f;
 
-                Vector2 drawPos = spawnEffectPosition - Main.screenPosition;
-                Color technoBlue = new Color(80, 200, 255, 200) * (Projectile.localAI[1] / 2.5f);
-                Color deepBlue = new Color(30, 100, 220, 240) * (Projectile.localAI[1] / 2.5f);
+            //    Vector2 drawPos = spawnEffectPosition - Main.screenPosition;
+            //    Color technoBlue = new Color(80, 200, 255, 200) * (Projectile.localAI[1] / 2.5f);
+            //    Color deepBlue = new Color(30, 100, 220, 240) * (Projectile.localAI[1] / 2.5f);
 
-                Main.EntitySpriteDraw(
-                    magicTexture,
-                    drawPos,
-                    null,
-                    deepBlue,
-                    Projectile.localAI[0],
-                    magicTexture.Size() / 2f,
-                    Projectile.localAI[1],
-                    SpriteEffects.None,
-                    0
-                );
-            }
+            //    Main.EntitySpriteDraw(
+            //        magicTexture,
+            //        drawPos,
+            //        null,
+            //        deepBlue,
+            //        Projectile.localAI[0],
+            //        magicTexture.Size() / 2f,
+            //        Projectile.localAI[1],
+            //        SpriteEffects.None,
+            //        0
+            //    );
+            //}
 
             return false;
         }
@@ -210,60 +210,64 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             //}
 
 
+            
+
+
             {
-                // 1. 记录初始位置
+
+
+
                 Vector2 origin = Projectile.Center;
 
-                // 2. Dust 粒子：爆发式放射 + 时间扭曲
-                int dustCount = 30;
-                for (int i = 0; i < dustCount; i++)
+                // === 1. 螺旋能量环 ===
+                int spiralCount = 12;
+                for (int i = 0; i < spiralCount; i++)
                 {
-                    Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(80f, 124f); // 半径随机
-                    Vector2 pos = origin + offset;
-                    Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.8f, 3.2f); // 回吸式
+                    float angle = MathHelper.TwoPi * i / spiralCount;
+                    Vector2 offset = angle.ToRotationVector2() * 36f; // 半径固定
+                    Vector2 vel = offset.SafeNormalize(Vector2.Zero) * 6f; // 向外高速扩散
 
-                    Color dustColor = Main.rand.NextBool(2) ? Color.Cyan : Color.BlueViolet;
-                    float scale = Main.rand.NextFloat(1.2f, 2.1f);
-
-                    Dust d = Dust.NewDustPerfect(pos, DustID.Electric, vel, 0, dustColor, scale);
+                    Dust d = Dust.NewDustPerfect(origin + offset, DustID.Electric, vel, 0,
+                        (i % 2 == 0 ? Color.Cyan : Color.White), 1.5f);
                     d.noGravity = true;
-                    d.fadeIn = 1.2f;
+                    d.fadeIn = 1.1f;
                 }
 
-                // 3. 方块粒子：随机旋转散落，表现科技能量核心爆发
-                int squareCount = 30;
-                for (int i = 0; i < squareCount; i++)
+                // === 2. 方块粒子：少量点缀，旋转漂浮 ===
+                for (int i = 0; i < 8; i++)
                 {
-                    Vector2 vel = Main.rand.NextVector2Circular(3f, 3f); // 缓慢漂浮感
-                    Color c = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat());
+                    Vector2 vel = Main.rand.NextVector2Circular(2f, 2f);
+                    Color c = Color.Lerp(Color.Cyan, Color.BlueViolet, Main.rand.NextFloat());
                     SquareParticle square = new SquareParticle(
                         origin,
                         vel,
                         false,
-                        Main.rand.Next(36, 64), // 存活时间
-                        Main.rand.NextFloat(1.2f, 2.5f), // 大小
-                        c * 1.5f
+                        Main.rand.Next(28, 42),   // 寿命更短
+                        Main.rand.NextFloat(1f, 1.8f),
+                        c
                     );
                     GeneralParticleHandler.SpawnParticle(square);
                 }
 
-                // 4. 线性拖尾粒子：方向感，表现“时空能量流动”
-                int sparkCount = 12;
-                for (int i = 0; i < sparkCount; i++)
+                // === 3. 放射能量线：表现高速释放 ===
+                int rayCount = 6;
+                for (int i = 0; i < rayCount; i++)
                 {
-                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 4f);
-                    Color c = Color.Lerp(Color.OrangeRed, Color.Orange, Main.rand.NextFloat());
+                    float angle = MathHelper.TwoPi * i / rayCount + Main.rand.NextFloat(-0.1f, 0.1f);
+                    Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 10f);
 
-                    Particle trail = new SparkParticle(
-                        origin + Main.rand.NextVector2Circular(16f, 16f),
+                    Particle ray = new SparkParticle(
+                        origin,
                         vel,
                         false,
-                        60,
-                        Main.rand.NextFloat(0.8f, 1.4f),
-                        c
+                        25,                        // 更快消散
+                        Main.rand.NextFloat(1f, 1.4f),
+                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat())
                     );
-                    GeneralParticleHandler.SpawnParticle(trail);
+                    GeneralParticleHandler.SpawnParticle(ray);
                 }
+
+
 
             }
 
@@ -346,7 +350,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
 
             foreach (NPC npc in Main.npc)
             {
-                if (npc.active && !npc.friendly && npc.lifeMax > 5) // 过滤友方单位 & 生命值低的单位
+                if (npc.active
+                    && !npc.friendly
+                    && npc.lifeMax > 5
+                    && !npc.dontTakeDamage          // ❌ 排除无敌NPC
+                    && npc.chaseable                // ❌ 必须可被追踪
+                    && npc.CanBeChasedBy())         // ✅ tModLoader自带安全判断
                 {
                     float distance = Vector2.Distance(Main.player[Projectile.owner].Center, npc.Center);
                     if (distance < closestDistance)
@@ -358,6 +367,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
             }
             return closestTarget;
         }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             // 施加带电 Debuff

@@ -65,11 +65,11 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
             // 保持弹幕旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            // 生成尾迹烟雾效果，每隔6帧生成一次
+            // 生成尾迹烟雾效果，每隔X帧生成一次
             Projectile.ai[0] += 1f;
-            if (Projectile.ai[0] > 6f)
+            if (Projectile.ai[0] > 7f)
             {
-                for (int d = 0; d < 5; d++)
+                for (int d = 0; d < 3; d++)
                 {
                     // 在弹幕的中心点为圆心，X范围内随机生成粒子
                     Vector2 randomOffset = Main.rand.NextVector2Circular(1 * 16, 1 * 16);

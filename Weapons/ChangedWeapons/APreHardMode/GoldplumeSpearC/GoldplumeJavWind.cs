@@ -32,7 +32,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
         public override void SetDefaults()
         {
             // 基础属性设置
-            Projectile.width = Projectile.height = 50;
+            Projectile.width = Projectile.height = 90;
             Projectile.alpha = 255;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
