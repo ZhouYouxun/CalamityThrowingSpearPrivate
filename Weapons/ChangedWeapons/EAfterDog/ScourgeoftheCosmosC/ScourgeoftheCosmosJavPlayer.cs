@@ -26,7 +26,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             if (Player.HeldItem.type == ModContent.ItemType<ScourgeoftheCosmosJav>())
             {
                 appleSpawnTimer++;
-                if (appleSpawnTimer >= 60) // 每 X 秒生成一个苹果
+                if (appleSpawnTimer >= 45) // 每 X 秒生成一个苹果
                 {
                     appleSpawnTimer = 0;
                     SpawnApple();
@@ -60,8 +60,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         public void IncreaseX()
         {
             X = (int)MathHelper.Clamp(X + 1, 1, 20); // 最大 20 级
-            Player.statLife += 5; // 每次增加等级，回复 2 点生命值
-            Player.HealEffect(5);
+            Player.statLife += 10; // 每次增加等级，回复 2 点生命值
+            Player.HealEffect(10);
         }
     }
 }

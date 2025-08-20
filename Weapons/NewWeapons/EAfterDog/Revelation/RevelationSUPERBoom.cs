@@ -76,7 +76,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             // ===================================
             // 🚩【0️⃣ 屏幕震动与基础冲击波（保留，微调）】🚩
             // ===================================
-            Owner.Calamity().GeneralScreenShakePower = 15.9f; // 维持削减后幅度
+            Owner.Calamity().GeneralScreenShakePower = 10f; // 维持削减后幅度
 
             Particle finalPulse = new StaticPulseRing(
                 Projectile.Center,

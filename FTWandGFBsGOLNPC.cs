@@ -58,14 +58,15 @@ namespace CalamityThrowingSpear
                 // 检查是否为指定的弹幕 巨龙之怒
                 if (projectile.type == ModContent.ProjectileType<DragonRageJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>() ||
-                    projectile.type == ModContent.ProjectileType<DragonRageFuckYou>())
+                    projectile.type == ModContent.ProjectileType<DragonRageFuckYou>() ||
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJ>() ||
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavEXP>() ||
+                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJSPLIT>())
                 {
                     // 将伤害降低为 60%
-                    modifiers.FinalDamage *= 0.5f;
+                    modifiers.FinalDamage *= 0.33f;
                 }
-                if (projectile.type == ModContent.ProjectileType<StreamGougeJavPROJ>() ||
-                    projectile.type == ModContent.ProjectileType<StreamGougeJavEXP>() ||
-                    projectile.type == ModContent.ProjectileType<StreamGougeJavPROJSPLIT>() ||
+                if (
                     projectile.type == ModContent.ProjectileType<EndlessDevourJavBlackHole>() ||
                     projectile.type == ModContent.ProjectileType<EndlessDevourJavOrbSmall>() ||
                     projectile.type == ModContent.ProjectileType<EndlessDevourJavOrb>())
@@ -92,7 +93,7 @@ namespace CalamityThrowingSpear
                 if (projectile.type == ModContent.ProjectileType<DragonRageJavPROJ>() ||
                     projectile.type == ModContent.ProjectileType<OrangeSLASH>())
                 {
-                    modifiers.FinalDamage *= 0.9f;
+                    modifiers.FinalDamage *= 0.75f;
                 }
             }
 

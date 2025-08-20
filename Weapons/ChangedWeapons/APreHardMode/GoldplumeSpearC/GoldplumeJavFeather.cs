@@ -64,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                     // === 追踪逻辑（延迟20帧启动）===
                     if (Time > 20)
                     {
-                        NPC target = Projectile.Center.ClosestNPCAt(600f);
+                        NPC target = Projectile.Center.ClosestNPCAt(800f);
                         if (target != null)
                         {
                             Vector2 desired = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;

@@ -39,7 +39,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
             // 每当RevelationPROJ击中敌人时调用
             HitCounterForLevelUp++;
             //Main.NewText($"TrackHit：你当前的击中敌人的次数是 {HitCounterForLevelUp}", Microsoft.Xna.Framework.Color.Yellow);
-            if (HitCounterForLevelUp >= 5)
+            if (HitCounterForLevelUp >= 4)
             {
                 RevelationLevel++;
                 if (RevelationLevel > 4) RevelationLevel = 4; // 限制最大等级（如果需要）

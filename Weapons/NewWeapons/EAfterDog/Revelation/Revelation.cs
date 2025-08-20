@@ -44,13 +44,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 222;
+            Item.damage = 200;
             Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.useTime = Item.useAnimation = 45;
+            Item.useTime = Item.useAnimation = 60;
             Item.knockBack = 8.5f;
             //Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
@@ -93,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
 
 
             // 根据等级调整伤害倍率
-            float damageMultiplier = 1.2f; // 默认的0级倍率
+            float damageMultiplier = 1.0f; // 默认的0级倍率
             switch (playerRevelationLevel)
             {
                 case 1:
@@ -103,7 +103,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                     damageMultiplier = 2f;
                     break;
                 case 3:
-                    damageMultiplier = 2.35f;
+                    damageMultiplier = 2.25f;
                     break;
                 case 4:
                     damageMultiplier = 2.35f;

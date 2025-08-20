@@ -120,7 +120,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用通用无敌帧
-            Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 48; // 无敌帧冷却时间为14帧
         }
         private float lockedRotation;
         private bool stuck;
@@ -176,7 +176,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                    (int)(Projectile.damage * 0.8),
+                    (int)(Projectile.damage * 0.6),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -213,7 +213,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     Vector2.Zero,
                     ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                    (int)(Projectile.damage * 0.96),
+                    (int)(Projectile.damage * 0.6),
                     Projectile.knockBack,
                     Projectile.owner,
                     0f,           // ai[0]

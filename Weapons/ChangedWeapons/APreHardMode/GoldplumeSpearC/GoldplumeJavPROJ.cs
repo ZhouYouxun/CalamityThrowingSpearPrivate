@@ -42,14 +42,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 3;
-            Projectile.timeLeft = 400;
+            Projectile.penetrate = 4;
+            Projectile.timeLeft = 500;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true; // 允许与方块碰撞
             Projectile.extraUpdates = 2; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
+            Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为14帧
             //Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
 
         }
@@ -102,7 +102,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                             if (distance < (Projectile.width + otherProj.width) / 2f)
                             {
                                 collided = true; // 标记为已碰撞
-                                Projectile.timeLeft = 80; // 设置持续时间
+                                Projectile.timeLeft = 90; // 设置持续时间
                                 Projectile.penetrate = -1;
                                 Projectile.usesLocalNPCImmunity = true;
                                 Projectile.localNPCHitCooldown = 18; //让它在公转期间也能造成多次伤害
@@ -284,7 +284,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                         Projectile.Center,
                         velocity,
                         ModContent.ProjectileType<GoldplumeJavFeather>(),
-                        (int)(Projectile.damage * 0.33f),
+                        (int)(Projectile.damage * 0.1f),
                         Projectile.knockBack,
                         Projectile.owner,
                         1f // ai[0] = 1 → 追踪逻辑
@@ -318,7 +318,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
                         Projectile.Center,
                         velocity,
                         ModContent.ProjectileType<GoldplumeJavFeather>(),
-                        (int)(Projectile.damage * 0.45f),
+                        (int)(Projectile.damage * 0.4f),
                         Projectile.knockBack,
                         Projectile.owner,
                         0f // ai[0] = 0 → 普通直线逻辑

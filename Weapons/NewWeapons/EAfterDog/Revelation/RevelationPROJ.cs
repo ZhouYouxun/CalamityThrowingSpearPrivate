@@ -605,7 +605,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                 // 🚩 🚩 🚩 3️⃣ 屏幕震动
                 if (Main.player[Projectile.owner] == Main.LocalPlayer)
                 {
-                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, 15f);
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, 5f);
                 }
 
                 // 🚩 🚩 🚩 4️⃣ 有序：复杂“魔法阵”线性粒子阵

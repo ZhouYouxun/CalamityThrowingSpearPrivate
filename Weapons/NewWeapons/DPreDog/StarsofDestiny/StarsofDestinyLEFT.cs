@@ -371,7 +371,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                                     particlePosition,
                                     Vector2.Zero, // 静止不动
                                     ModContent.ProjectileType<StarsofDestinyINV>(),
-                                    (int)(Projectile.damage * 0.24f), // 伤害倍率 0.2
+                                    (int)(Projectile.damage * 0.3f), // 伤害倍率 0.2
                                     0f,
                                     Projectile.owner
                                 );
