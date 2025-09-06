@@ -113,7 +113,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 // 随机伤害倍率（0.95倍到1.5倍之间）
                 float damageMultiplier = Main.rand.NextFloat(0.6f, 1.1f);
 
-                // 创建散射弹幕
+                // 创建散射闪电球弹幕
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     headPosition,

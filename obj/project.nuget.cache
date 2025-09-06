@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HBVuHcYE0S0=",
+  "dgSpecHash": "0nCELJBH7tw=",
   "success": true,
   "projectFilePath": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Yitao\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

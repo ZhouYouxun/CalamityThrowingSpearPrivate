@@ -163,40 +163,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            //if (player.altFunctionUse == 2) // 右键攻击时
-            //{
-            //    // 生成三发子弹
-            //    for (int i = 0; i < 3; i++)
-            //    {
-            //        // 随机角度偏移（-10度到10度之间）
-            //        float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-20f, 20f));
-            //        Vector2 modifiedVelocity = velocity.RotatedBy(angleOffset);
-
-            //        // 随机初始速度调整（0.85倍到1.25倍之间）
-            //        float speedMultiplier = Main.rand.NextFloat(0.85f, 1.25f);
-            //        modifiedVelocity *= speedMultiplier;
-
-            //        // 随机伤害倍率（0.95倍到1.5倍之间）
-            //        float damageMultiplier = Main.rand.NextFloat(0.95f, 1.5f);
-
-            //        // 创建子弹
-            //        Projectile.NewProjectile(
-            //            source,
-            //            position,
-            //            modifiedVelocity,
-            //            type,
-            //            (int)(damage * damageMultiplier),
-            //            knockback,
-            //            player.whoAmI
-            //        );
-            //    }
-
-            //    // 生成粒子特效
-            //    //CreateParticleEffect(position, velocity);
-
-            //    return false; // 阻止生成默认弹幕
-            //}
-
+          
             if (player.altFunctionUse == 2) // 右键攻击
             {
                 // 默认发射一发子弹，目标为鼠标位置
@@ -223,22 +190,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             int projIndex = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false; // 阻止生成默认弹幕
         }
-        private void CreateParticleEffect(Vector2 position, Vector2 velocity)
-        {
-            int particleCount = Main.rand.Next(135, 196); // 粒子数量：135~195
-            for (int i = 0; i < particleCount; i++)
-            {
-                // 随机选择 Dust 类型
-                int dustType = Main.rand.Next(new int[] { DustID.Electric, DustID.UltraBrightTorch, DustID.IceTorch });
-
-                // 随机生成粒子速度和方向
-                Vector2 randomVelocity = velocity.RotatedByRandom(MathHelper.ToRadians(180)) * Main.rand.NextFloat(6f, 20f);
-
-                // 创建 Dust
-                Dust dust = Dust.NewDustPerfect(position, dustType, randomVelocity, 150, default, Main.rand.NextFloat(1.5f, 1.95f));
-                dust.noGravity = true; // 粒子无重力
-            }
-        }
+    
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
