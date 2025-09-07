@@ -32,6 +32,8 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.BansheeHookC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC;
+using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
 {
@@ -95,10 +97,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
         {
             // 这把武器对应的是单体，粘附相关联的
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<ElementalLanceJav>(); // 瘟疫枪-单体高速武器
-            recipe.AddIngredient<AmidiasTridentJav>(); // 女妖之爪-回旋式回收式追踪单体+群体武器
-            //recipe.AddIngredient<InfiniteDarknessJav>(); // 无边黑暗-单体武器
-            //recipe.AddIngredient<SoulHunterJav>(); // 魂狩，较慢速单体武器
+            recipe.AddIngredient<ElementalLanceJav>(); // 元素长枪-混合武器
+            recipe.AddIngredient<AmidiasTridentJav>(); // 海王三叉戟-能够扎在别人身上
+            recipe.AddIngredient<PearlwoodJav>(); // 珍珠木-直接做成了他的下位
+            recipe.AddIngredient<NadirJav>(); // 天底-同样具备追踪能力
             recipe.AddIngredient<MiracleMatter>();
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();

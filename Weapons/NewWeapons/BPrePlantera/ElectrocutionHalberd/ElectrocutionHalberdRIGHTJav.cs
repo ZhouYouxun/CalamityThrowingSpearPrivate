@@ -9,6 +9,9 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod.Particles;
+using CalamityMod.Sounds;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
@@ -31,16 +34,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 150;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 50 * Projectile.extraUpdates;
+            Projectile.extraUpdates = 3; // 额外更新次数
+            Projectile.timeLeft = 40 * Projectile.extraUpdates;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
-            Projectile.extraUpdates = 3; // 额外更新次数
+            Projectile.tileCollide = false; // 不允许与方块碰撞
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 14; // 无敌帧冷却时间为14帧
             //Projectile.scale = 0.7f; //
@@ -50,82 +53,118 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             Projectile.velocity *= 0.7f;
         }
+        private float selfRotation = 0f;
         public override void AI()
         {
-            // 保持弹幕旋转
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
+            // === 速度逐渐衰减到 0 ===
+            if (Projectile.velocity.Length() > 0.1f)
+                Projectile.velocity *= 0.97f; // 每帧慢慢衰减
+            else
+                Projectile.velocity = Vector2.Zero;
 
-            // Lighting - 添加深蓝色光源，光照强度为 0.55
+            {
+                // 自转角度累积
+                selfRotation += MathHelper.ToRadians(12f); // 每帧自转 12°
+
+                // 最终 rotation = 飞行朝向 + 自转角度
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + selfRotation;
+            }
+
+            {
+                // 每帧累积时间
+                Projectile.localAI[0]++;
+
+                // 每 x 帧触发一次音效
+                if (Projectile.localAI[0] % 2 == 0)
+                {
+                    // 递增音调：随存活时间越来越尖锐
+                    float progress = (float)Projectile.timeLeft / 300f; // 你可以换成自己的范围
+                    float pitch = MathHelper.Lerp(-0.5f, 1.0f, 1f - progress);
+
+                    SoundEngine.PlaySound(CommonCalamitySounds.SwiftSliceSound with
+                    {
+                        Volume = 2.5f,
+                        Pitch = pitch
+                    }, Projectile.Center);
+                }
+
+            }
+
+            // === 光效 ===
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.55f);
 
-            // 添加渐变透明度
-            Projectile.alpha = Math.Min(Projectile.alpha + 2, 255);
-
-            // 头部特效
-            Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.25f);
-            CreateDustEffect(headPosition, Projectile.velocity, 146, 50);
-
-            // 中心特效146【钛金】，50【精金】
-            CreateCenterDust(Projectile.Center, 146, 50);
+            CreateSideParticles();
         }
 
-        private void CreateDustEffect(Vector2 position, Vector2 velocity, int dustType1, int dustType2)
+        private void CreateSideParticles()
         {
-            // 生成粒子特效（两侧散开）
-            for (int i = 0; i < 2; i++)
-            {
-                int dustType = (i % 2 == 0) ? dustType1 : dustType2;
-                Vector2 offset = (i == 0) ? -Vector2.UnitX * 3f : Vector2.UnitX * 3f;
+            // 以弹幕的 rotation 为基准，算出左右两个喷口位置
+            Vector2 perp = Projectile.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2); // 垂直方向
+            Vector2 leftPos = Projectile.Center - perp * 4 * 16f;  // 左边偏移
+            Vector2 rightPos = Projectile.Center + perp * 2 * 16f; // 右边偏移
 
-                Dust dust = Dust.NewDustPerfect(position + offset, dustType, -velocity * 0.1f, 150, default, Main.rand.NextFloat(1.55f, 1.95f));
-                dust.noGravity = true;
+            // 左喷口（银色）
+            SpawnRadialPoints(leftPos, Color.Silver);
+
+            // 右喷口（红色）
+            SpawnRadialPoints(rightPos, Color.Red);
+        }
+
+        private void SpawnRadialPoints(Vector2 origin, Color color)
+        {
+            int count = 1; // 每次喷射数量
+            float spread = MathHelper.ToRadians(1f); // 放射角度范围（X°）
+
+            for (int i = 0; i < count; i++)
+            {
+                // 在 0~360° 范围内随机放射
+                float angle = Main.rand.NextFloat(-spread, spread);
+                Vector2 dir = (Projectile.rotation.ToRotationVector2()).RotatedBy(angle);
+
+                PointParticle spark = new PointParticle(
+                    origin,
+                    dir * Main.rand.NextFloat(3f, 7f), // 放射速度
+                    false,
+                    25,                                // 生命周期
+                    1.5f + Main.rand.NextFloat(0.4f),  // 粒子大小
+                    color
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
             }
         }
-
-        private void CreateCenterDust(Vector2 position, int dustType1, int dustType2)
-        {
-            // 中心生成粒子特效（左右偏移）
-            for (int i = 0; i < 2; i++)
-            {
-                int dustType = (i % 2 == 0) ? dustType1 : dustType2;
-                Vector2 offset = (i == 0) ? -Vector2.UnitX * 5f : Vector2.UnitX * 5f;
-
-                Dust dust = Dust.NewDustPerfect(position + offset, dustType, Vector2.Zero, 150, default, Main.rand.NextFloat(1.55f, 1.95f));
-                dust.noGravity = true;
-            }
-        }
-
         public override void OnKill(int timeLeft)
         {
-            Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.25f);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/新机炮") with { Volume = 1.5f, Pitch = 0.0f }, Projectile.Center);
 
-            // 生成三发子弹
-            for (int i = 0; i < 3; i++)
+            Vector2 headPosition = Projectile.Center; // 从自身正中心起始
+
+            int count = 3;
+            float baseAngle = Projectile.velocity.ToRotation(); // 参考原弹幕朝向
+            float speed = 16f; // 固定速度
+
+            for (int i = 0; i < count; i++)
             {
-                // 随机角度偏移（-20°到20°之间）
-                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-20f, 20f));
-                Vector2 modifiedVelocity = Projectile.velocity.RotatedBy(angleOffset);
+                // 平均分布：每颗间隔 120°
+                float angle = baseAngle + MathHelper.TwoPi / count * i;
 
-                // 随机初始速度调整（0.85倍到1.25倍之间）
-                float speedMultiplier = Main.rand.NextFloat(0.85f, 1.25f);
-                modifiedVelocity *= speedMultiplier;
+                // 发射方向
+                Vector2 direction = angle.ToRotationVector2();
 
-                // 随机伤害倍率（0.95倍到1.5倍之间）
-                float damageMultiplier = Main.rand.NextFloat(0.6f, 1.1f);
+                // 固定速度
+                Vector2 finalVelocity = direction * speed;
 
-                // 创建散射闪电球弹幕
+                // 生成子弹
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     headPosition,
-                    modifiedVelocity,
+                    finalVelocity,
                     ModContent.ProjectileType<ElectrocutionHalberdRIGHT>(),
-                    (int)(Projectile.damage * damageMultiplier),
+                    Projectile.damage,
                     Projectile.knockBack,
                     Projectile.owner
                 );
             }
         }
-
 
 
 

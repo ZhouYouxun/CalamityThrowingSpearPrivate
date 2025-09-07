@@ -121,7 +121,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation
                     Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                     Vector2 desiredVelocity = toTarget.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * currentSpeed;
 
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, 0.06f);
+                    // 转向强度随时间增加，前期小，后期大
+                    float turnStrength = MathHelper.Clamp(0.02f + Time / 600f, 0.06f, 0.08f);
+                    // 例如：刚开始 [倒数第二个数]，持续 10 秒后达到上限 [最后一个数]
+
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, turnStrength);
                 }
             }
 

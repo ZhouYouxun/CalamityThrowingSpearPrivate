@@ -32,6 +32,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowerC;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC;
+using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatterJav
 {
@@ -63,10 +64,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
         {
             // 这把武器是跟群体，范围攻击相关联的
             Recipe recipe = CreateRecipe();
-            //recipe.AddIngredient<ElementalLanceJav>(); // 元素长枪-多功能武器
-            recipe.AddIngredient<SHPCK>(); // SHPCK-典型的群体类武器
-            recipe.AddIngredient<TerraLance>(); // 泰拉巨枪-轮椅群体武器
-            //recipe.AddIngredient<ChaosWindJav>(); // 风暴长矛-慢速超大范围群体武器
+            recipe.AddIngredient<ElectrocutionHalberd>(); // 电灼长戟-具备旋转和电磁爆炸的能力
+            recipe.AddIngredient<SHPCK>(); // SHPCK-电磁爆炸
+            recipe.AddIngredient<TerraLance>(); // 泰拉巨枪-强追踪和生命爆炸
+            recipe.AddIngredient<ChaosWindJav>(); // 风暴长矛-超级风暴爆炸
             recipe.AddIngredient<MiracleMatter>();
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();

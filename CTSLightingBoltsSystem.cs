@@ -939,26 +939,48 @@ namespace CalamityThrowingSpear
 
 
         // 珍珠木-死亡
+        // 珍珠木-死亡（重写版）
         public static void Spawn_PinkHolyExplosion(Vector2 position)
         {
-            int count = Main.rand.Next(8, 12); // 光点数量
+            int count = Main.rand.Next(6, 12); // 光点数量更多，爆发更饱满
             for (int i = 0; i < count; i++)
             {
                 PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
-                p.ColorTint = Main.rand.NextBool() ? new Color(1f, 0.6f, 0.8f, 1f) : new Color(1f, 0.8f, 0.9f, 1f); // 粉红 / 浅粉
-                p.LocalPosition = position + Main.rand.NextVector2Circular(32f, 32f); // 爆发范围
-                p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-                p.Scale = new Vector2(2f, 1f);
-                p.FadeInNormalizedTime = 0.01f;
+
+                // 颜色：粉红 / 浅粉交替
+                p.ColorTint = Main.rand.NextBool()
+                    ? new Color(1f, 0.65f, 0.85f, 1f)   // 柔粉
+                    : new Color(1f, 0.85f, 0.95f, 1f);  // 浅粉
+
+                // 初始位置：中心 + 小范围偏移
+                p.LocalPosition = position + Main.rand.NextVector2Circular(16f, 16f);
+
+                // 随机角度 & 赋予速度（圆形爆炸扩散）
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float speed = Main.rand.NextFloat(2f, 5f); // 比较温和的扩散速度
+                p.Velocity = angle.ToRotationVector2() * speed;
+
+                // 粒子形状：更圆润（接近圆，而不是细长）
+                p.Scale = new Vector2(
+                    Main.rand.NextFloat(1.3f, 1.8f),
+                    Main.rand.NextFloat(1.1f, 1.5f)
+                );
+
+                // 动态淡入淡出
+                p.FadeInNormalizedTime = 0.02f;
                 p.FadeOutNormalizedTime = 0.9f;
                 p.TimeToLive = Main.rand.Next(36, 50);
                 p.FadeOutEnd = p.TimeToLive;
-                p.FadeInEnd = 12;
-                p.FadeOutStart = 24;
-                p.AdditiveAmount = 0.5f;
+                p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
+                p.FadeOutStart = (int)(p.TimeToLive * 0.6f);
+
+                // 光晕程度
+                p.AdditiveAmount = 0.55f;
+
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }
         }
+
 
         // 珍珠木-命中
         public static void Spawn_RainbowHolySpirals(Vector2 position)

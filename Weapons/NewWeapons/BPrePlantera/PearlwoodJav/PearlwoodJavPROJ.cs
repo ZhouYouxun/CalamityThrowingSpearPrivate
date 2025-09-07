@@ -139,67 +139,67 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             );
 
 
-            {
-                float fixedRotation = Projectile.rotation - MathHelper.PiOver4;
-                Vector2 gunTip = Projectile.Center + new Vector2(16f * 3f, 0).RotatedBy(fixedRotation); // 计算枪尖位置
-                Vector2 drawPositio1n = gunTip - Main.screenPosition;
+//            {
+//                float fixedRotation = Projectile.rotation - MathHelper.PiOver4;
+//                Vector2 gunTip = Projectile.Center + new Vector2(16f * 3f, 0).RotatedBy(fixedRotation); // 计算枪尖位置
+//                Vector2 drawPositio1n = gunTip - Main.screenPosition;
 
-                // 🌸 粉色 Extra_89 梦幻环（叠加层）
-                Texture2D pinkRing = Terraria.GameContent.TextureAssets.Extra[89].Value;
-                float pulse = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
-                Color pinkColor = new Color(255, 200, 240) * 0.8f;
+//                // 🌸 粉色 Extra_89 梦幻环（叠加层）
+//                Texture2D pinkRing = Terraria.GameContent.TextureAssets.Extra[89].Value;
+//                float pulse = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
+//                Color pinkColor = new Color(255, 200, 240) * 0.8f;
 
-                for (int i = 0; i < 5; i++)
-                {
-                    float angle = MathHelper.TwoPi * i / 5f + Main.GlobalTimeWrappedHourly * 2.5f;
-                    float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
+//                for (int i = 0; i < 5; i++)
+//                {
+//                    float angle = MathHelper.TwoPi * i / 5f + Main.GlobalTimeWrappedHourly * 2.5f;
+//                    float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
 
-                    Main.EntitySpriteDraw(
-                        pinkRing,
-                        drawPositio1n,
-                        null,
-                        pinkColor,
-                        angle,
-                        pinkRing.Size() * 0.5f,
-                        scale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
+//                    Main.EntitySpriteDraw(
+//                        pinkRing,
+//                        drawPositio1n,
+//                        null,
+//                        pinkColor,
+//                        angle,
+//                        pinkRing.Size() * 0.5f,
+//                        scale,
+//                        SpriteEffects.None,
+//                        0
+//                    );
+//                }
 
 
-                // 🌟 魔法阵纹理绘制
-                string[] magicCircles = new[]
-                {
-    "CalamityThrowingSpear/Texture/KsTexture/magic_01",
-    "CalamityThrowingSpear/Texture/KsTexture/magic_02",
-    "CalamityThrowingSpear/Texture/KsTexture/magic_04"
-};
+//                // 🌟 魔法阵纹理绘制
+//                string[] magicCircles = new[]
+//                {
+//    "CalamityThrowingSpear/Texture/KsTexture/magic_01",
+//    "CalamityThrowingSpear/Texture/KsTexture/magic_02",
+//    "CalamityThrowingSpear/Texture/KsTexture/magic_04"
+//};
 
-                for (int i = 0; i < magicCircles.Length; i++)
-                {
-                    Texture2D tex = ModContent.Request<Texture2D>(magicCircles[i]).Value;
+//                for (int i = 0; i < magicCircles.Length; i++)
+//                {
+//                    Texture2D tex = ModContent.Request<Texture2D>(magicCircles[i]).Value;
 
-                    float scale = (0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i)) * 0.4f;
-                    float rotation = Main.GlobalTimeWrappedHourly * (0.6f + 0.1f * i);
+//                    float scale = (0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i)) * 0.4f;
+//                    float rotation = Main.GlobalTimeWrappedHourly * (0.6f + 0.1f * i);
 
-                    Color magicColor = Color.Pink * 0.55f;
-                    magicColor.A = 0;
+//                    Color magicColor = Color.Pink * 0.55f;
+//                    magicColor.A = 0;
 
-                    Main.EntitySpriteDraw(
-                        tex,
-                        drawPositio1n,
-                        null,
-                        magicColor,
-                        rotation,
-                        tex.Size() * 0.5f,
-                        scale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
+//                    Main.EntitySpriteDraw(
+//                        tex,
+//                        drawPositio1n,
+//                        null,
+//                        magicColor,
+//                        rotation,
+//                        tex.Size() * 0.5f,
+//                        scale,
+//                        SpriteEffects.None,
+//                        0
+//                    );
+//                }
 
-            }
+//            }
 
 
             // 获取纹理资源和位置
@@ -238,211 +238,127 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         private bool hasStopped = false; // 控制弹幕是否停止
         private float distanceTraveled = 0f; // 记录弹幕飞行的总距离
         private float lastProjSpawn = 0f; // 记录上次生成 PearlwoodJavPROJINV 时的距离
-        public override void SetDefaults()
-        {
-            Projectile.width = Projectile.height = 14;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 只允许X次伤害
-            Projectile.timeLeft = 1000;
-            Projectile.light = 0.5f;
-            Projectile.ignoreWater = true;
-            Projectile.tileCollide = false; // 允许与方块碰撞
-            Projectile.extraUpdates = 1; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = -1; // 无敌帧冷却时间为14帧
-            Projectile.aiStyle = ProjAIStyleID.Arrow; // 让弹幕受到重力影响
 
-            // 记录初始位置
-            //Projectile.localAI[0] = Projectile.Center.X;
-            //Projectile.localAI[1] = Projectile.Center.Y;
-        }
         public override void OnSpawn(IEntitySource source)
         {
             //Projectile.ai[0] = 1f;
         }
         private float storedRotation = 0f;
 
+        public override void SetDefaults()
+        {
+            Projectile.width = Projectile.height = 32;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1; // 无限多次扎入伤害（靠本地无敌帧限制频率）
+            Projectile.timeLeft = 300;
+            Projectile.light = 0.5f;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = true; // 允许与方块碰撞
+            Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 30; // 每 X 帧伤害一次
+        }
+        private float lockedRotation;
+
         public override void AI()
         {
-            if (hasStopped)
+            if (Projectile.ai[0] == 2f)
             {
-                // **停止后，速度归零**
-                //Projectile.velocity = Vector2.Zero;
-                Projectile.velocity *= 0f;
-                Projectile.rotation = storedRotation;
-                return;
+                // 命中后保持锁定角度
+                Projectile.rotation = lockedRotation;
+            }
+            else
+            {
+                // 正常飞行才跟随速度旋转
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            }
+            // 圣洁飞行特效：粉红光雾 + 火花
+            if (Main.rand.NextBool(3))
+            {
+                int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.PinkTorch, 0, 0, 100, default, 1.3f);
+                Main.dust[dust].noGravity = true;
+                Main.dust[dust].velocity *= 0.3f;
             }
 
-            // **保持弹幕旋转**
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // **初始化起始位置**
-            if (Projectile.localAI[0] == 0f && Projectile.localAI[1] == 0f)
+            if (Main.rand.NextBool(6))
             {
-                Projectile.localAI[0] = Projectile.Center.X;
-                Projectile.localAI[1] = Projectile.Center.Y;
-            }
-
-            // **计算飞行距离**
-            float distanceX = Projectile.Center.X - Projectile.localAI[0];
-            float distanceY = Projectile.Center.Y - Projectile.localAI[1];
-            distanceTraveled = (float)Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
-
-            // **达到 X tile 后停止**
-            if (distanceTraveled >= 105 * 16f)
-            {
-                storedRotation = Projectile.rotation; // 记录进入静止模式前的旋转角度
-                hasStopped = true;
-                return;
-            }
-
-            // **每飞行 30 像素生成一个 PearlwoodJavPROJINV（限制最大数量 150）**
-            if (distanceTraveled - lastProjSpawn >= 30f)
-            {
-                lastProjSpawn = distanceTraveled;
-
-                // **统计当前已存在的 PearlwoodJavPROJINV 数量**
-                int existingProjCount = 0;
-                for (int i = 0; i < Main.maxProjectiles; i++)
-                {
-                    Projectile proj = Main.projectile[i];
-                    if (proj.active && proj.type == ModContent.ProjectileType<PearlwoodJavPROJINV>())
-                    {
-                        existingProjCount++;
-                        if (existingProjCount >= 150) // 达到 150 个时，不再生成新的
-                            return;
-                    }
-                }
-
-                // **数量未超限，正常生成**
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
-                    ModContent.ProjectileType<PearlwoodJavPROJINV>(), (int)(Projectile.damage * 0.8), 0f, Projectile.owner);
-            }
-
-
-            {
-                // === 🌈 PearlwoodJavPROJ 飞行特效（AI 内） ===
-
-                // 周期性彩虹圣光螺旋光点（已封装）
-                if (Main.GameUpdateCount % 30 == 0)
-                {
-                    //CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
-                }
-
-                // 持续外围粉红 Dust
-                if (Main.rand.NextBool(3))
-                {
-                    int dustID = DustID.PinkTorch;
-                    Vector2 dustVelocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
-                    int dust = Dust.NewDust(Projectile.Center, 0, 0, dustID, dustVelocity.X, dustVelocity.Y, 100, default, 1.2f);
-                    Main.dust[dust].noGravity = true;
-                    Main.dust[dust].fadeIn = 0.5f;
-                }
-
-                // 粉红色 SparkParticle 轻线性拖尾
-                if (Main.rand.NextBool(5))
-                {
-                    Particle spark = new SparkParticle(
-                        Projectile.Center,
-                        Projectile.velocity * -0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f),
-                        false,
-                        30,
-                        1.0f,
-                        Color.LightPink
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-
-                // 🌈 七彩有序尘埃环绕（飞行期间的有序部分）
-                if (Main.GameUpdateCount % 2 == 0) // 每 12 帧生成一圈
-                {
-                    Color[] rainbowColors = new Color[]
-                    {
-        Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet
-                    };
-
-                    float radius = 20f + Main.rand.NextFloat(-2f, 2f); // 微微抖动圆环大小
-                    float baseAngle = Main.GlobalTimeWrappedHourly * 3f; // 随时间旋转
-
-                    for (int i = 0; i < rainbowColors.Length; i++)
-                    {
-                        float angle = baseAngle + MathHelper.TwoPi * i / rainbowColors.Length;
-                        Vector2 offset = angle.ToRotationVector2() * radius;
-                        Vector2 spawnPos = Projectile.Center + offset;
-                        Vector2 velocity = offset.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.5f, 0.5f); // 缓慢平移
-
-                        int dustID = DustID.RainbowTorch;
-                        int dust = Dust.NewDust(spawnPos, 0, 0, dustID, velocity.X, velocity.Y, 100, rainbowColors[i], 0.8f);
-                        Main.dust[dust].noGravity = true;
-                        Main.dust[dust].fadeIn = 0.6f;
-                        Main.dust[dust].scale = 1.1f;
-                    }
-                }
-
-
+                Particle spark = new SparkParticle(
+                    Projectile.Center,
+                    Projectile.velocity.RotatedByRandom(0.2f) * 0.2f,
+                    false,
+                    30,
+                    1.2f,
+                    Color.LightPink
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
             }
         }
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-            hasStopped = true;
-            Projectile.timeLeft = 36000;
-            return false;
-        }
-
-
-        public override void OnKill(int timeLeft)
-        {
-            // === 🌈 PearlwoodJavPROJ 死亡特效（OnKill 内调用） ===
-            SoundEngine.PlaySound(SoundID.Item67 with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center); // 彩虹枪音效
-
-            // 触发粉色圣洁光点爆发（柔和补充）
-            CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);
-
-
-            {
-                // 🌟 极限夸张的七彩虹尘爆发
-                int totalBursts = 70; // 尘埃数量极大化
-                for (int i = 0; i < totalBursts; i++)
-                {
-                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 36f); // 超高速爆炸
-                    int dustID = DustID.RainbowTorch;
-                    int dustIndex = Dust.NewDust(Projectile.Center, 0, 0, dustID, velocity.X, velocity.Y, 100, default, Main.rand.NextFloat(1.2f, 2.4f));
-                    Main.dust[dustIndex].noGravity = true;
-                    Main.dust[dustIndex].fadeIn = Main.rand.NextFloat(0.5f, 1.2f);
-                }
-
-                // 💖 粉色柔和尘雾环绕柔化视觉冲击
-                for (int i = 0; i < 30; i++)
-                {
-                    Vector2 offset = Main.rand.NextVector2Circular(48f, 48f);
-                    Vector2 vel = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 4f);
-                    int dustID = DustID.PinkTorch;
-                    int dustIndex = Dust.NewDust(Projectile.Center + offset, 0, 0, dustID, vel.X, vel.Y, 150, default, Main.rand.NextFloat(1.5f, 2.5f));
-                    Main.dust[dustIndex].noGravity = true;
-                    Main.dust[dustIndex].fadeIn = Main.rand.NextFloat(0.3f, 0.8f);
-                }
-
-            }
-
-
-        }
-
+        private bool hasStuck = false; // 在类里加一个字段
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 通知玩家更新计数器
-            if (Main.player[Projectile.owner].GetModPlayer<PearlwoodJavPLAYER>() is PearlwoodJavPLAYER player)
+            // 第一次命中时刷新存在时间
+            if (!hasStuck)
             {
-                player.IncrementHitCounter();
+                Projectile.timeLeft = 150;
+                hasStuck = true; // 标记只执行一次
             }
-            CTSLightingBoltsSystem.Spawn_RainbowHolySpirals(Projectile.Center);
+
+            hasStuck = true; // 标记为已触发
+
+            // === 一次性逻辑 ===
+            Projectile.ai[0] = 2f;
+            lockedRotation = Projectile.rotation;
+            Projectile.velocity = Vector2.Zero;
+            Projectile.netUpdate = true;
+
+
+            // 圣洁爆发音效 & 特效
+            SoundEngine.PlaySound(SoundID.Item132.WithVolumeScale(1.2f), Projectile.Center);
+            CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);
+
+            // 召唤 X 个 INV 子弹
+            for (int i = 0; i < 1; i++) // 保留循环，但数量固定为 1
+            {
+                // 敌人下方 32~40 格的区域
+                Vector2 spawnPos = target.Center + new Vector2(
+                    Main.rand.NextFloat(-20f, 20f) * 16f,
+                    Main.rand.NextFloat(32f, 40f) * 16f
+                );
+
+                // 方向 = 从生成点指向本体
+                Vector2 baseDir = (Projectile.Center - spawnPos).SafeNormalize(Vector2.UnitY);
+
+                // 加一个 ±5° 的随机偏移
+                float angleOffset = MathHelper.ToRadians(Main.rand.NextFloat(-5f, 5f));
+                Vector2 velocity = baseDir.RotatedBy(angleOffset) * 13f;
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    velocity,
+                    ModContent.ProjectileType<PearlwoodJavPROJINV>(),
+                    (int)(Projectile.damage * 0.6f),
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+
 
         }
 
+
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            // 扎在地面也会停留
+            Projectile.ai[0] = 2f;
+            Projectile.velocity = Vector2.Zero;
+            Projectile.timeLeft = 300; // 停留一会再消失
+            return false;
+        }
 
 
 

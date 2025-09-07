@@ -119,8 +119,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         {
             Vector2 pos = Projectile.Center;
 
-            // ✦ 播放吸收音效
-            SoundEngine.PlaySound(SoundID.Item29, pos);
+            //// ✦ 播放吸收音效
+            //SoundEngine.PlaySound(SoundID.Item29, pos);
 
             // ✦ 核心烟雾向内缩吸
             for (int i = 0; i < 24; i++)

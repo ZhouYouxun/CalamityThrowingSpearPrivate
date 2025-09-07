@@ -78,7 +78,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             // 初始减速阶段
             if (Projectile.ai[1] <= 30)
             {
-                Projectile.velocity *= 0.985f; // 每帧减速
+                Projectile.velocity *= 0.975f; // 每帧减速
                 Projectile.ai[1]++;
             }
             else
@@ -106,7 +106,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                     (float)Math.Cos(time + i * MathHelper.Pi) * amplitude
                 );
 
-                int dustType = (i == 0) ? DustID.IceTorch : DustID.Electric;
+                int dustType = (i == 0) ? DustID.IceTorch : DustID.BlueTorch;
                 Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, dustType, Vector2.Zero, 150, default, 1.2f);
                 dust.noGravity = true;
                 dust.scale = Main.rand.NextFloat(1.1f, 1.6f);
@@ -139,7 +139,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             Lighting.AddLight(Projectile.Center, 0f, 0.3f, 0.4f);
 
             // 生成蓝色 Dust
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Vector2 position = Projectile.position - Projectile.velocity * (i * 0.25f);
                 int dust = Dust.NewDust(position, 1, 1, DustID.Electric, 0f, 0f, 0, default, 1f);
@@ -154,29 +154,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             }
 
             // 双螺旋粒子效果
-            CreateDoubleSpiralDust();
+            //CreateDoubleSpiralDust();
         }
 
-        private void CreateDoubleSpiralDust()
-        {
-            float amplitude = 16f; // 振幅
-            float speed = 0.1f;    // 旋转速度
-            float time = Projectile.timeLeft * speed;
+        //private void CreateDoubleSpiralDust()
+        //{
+        //    float amplitude = 16f; // 振幅
+        //    float speed = 0.1f;    // 旋转速度
+        //    float time = Projectile.timeLeft * speed;
 
-            for (int i = 0; i < 2; i++)
-            {
-                float direction = (i == 0) ? 1f : -1f;
-                Vector2 offset = new Vector2(
-                    (float)Math.Sin(time + i * MathHelper.Pi) * amplitude * direction,
-                    (float)Math.Cos(time + i * MathHelper.Pi) * amplitude
-                );
+        //    for (int i = 0; i < 2; i++)
+        //    {
+        //        float direction = (i == 0) ? 1f : -1f;
+        //        Vector2 offset = new Vector2(
+        //            (float)Math.Sin(time + i * MathHelper.Pi) * amplitude * direction,
+        //            (float)Math.Cos(time + i * MathHelper.Pi) * amplitude
+        //        );
 
-                int dustType = i == 0 ? 146 : 50; // 蓝紫交替
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, dustType, Vector2.Zero, 180, default, 1.2f);
-                dust.noGravity = true;
-                dust.scale = Main.rand.NextFloat(1.1f, 1.6f);
-            }
-        }
+        //        int dustType = i == 0 ? 146 : 50; // 蓝紫交替
+        //        Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, dustType, Vector2.Zero, 180, default, 1.2f);
+        //        dust.noGravity = true;
+        //        dust.scale = Main.rand.NextFloat(1.1f, 1.6f);
+        //    }
+        //}
 
 
 
@@ -272,7 +272,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         {
             // 检查是否存在Lighting弹幕
             bool lightningExists = Main.projectile.Any(proj => proj.active && proj.type == ModContent.ProjectileType<ElectrocutionHalberdLIGHTING>());
-            SoundEngine.PlaySound(SoundID.Item92, Projectile.position);
+            SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.7f, Pitch = 0.9f }, Projectile.Center);
 
             if (!lightningExists)
             {

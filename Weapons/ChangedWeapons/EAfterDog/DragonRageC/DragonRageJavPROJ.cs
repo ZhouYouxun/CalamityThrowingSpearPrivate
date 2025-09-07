@@ -216,55 +216,56 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
                 Main.EntitySpriteDraw(halfStar, screenPos, null, highlight, rotation * 0.5f, origin, scale * 0.65f, flip, 0);
             }
 
-            // 当处于 Charge 模式时绘制从弹幕到玩家的螺旋线
-            if (currentMode == Mode.Charge)
-            {
-                Player player = Main.player[Projectile.owner];
-                Vector2 startPosition = Projectile.Center;
-                Vector2 endPosition = player.Center;
+            //// 当处于 Charge 模式时绘制从弹幕到玩家的螺旋线
+            //禁用了，太掉价了
+            //if (currentMode == Mode.Charge)
+            //{
+            //    Player player = Main.player[Projectile.owner];
+            //    Vector2 startPosition = Projectile.Center;
+            //    Vector2 endPosition = player.Center;
 
-                int segmentCount = 12; // 分段数量
-                float maxOffset = 32f; // 最大摆动偏移
+            //    int segmentCount = 12; // 分段数量
+            //    float maxOffset = 32f; // 最大摆动偏移
 
-                Color lineColor = Color.Lerp(Color.OrangeRed, Color.Orange, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f);
+            //    Color lineColor = Color.Lerp(Color.OrangeRed, Color.Orange, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f);
 
-                Vector2 previousPos = startPosition;
+            //    Vector2 previousPos = startPosition;
 
-                // 每帧衰减震动
-                for (int j = 0; j < spiralShakeOffsets.Length; j++)
-                {
-                    spiralShakeOffsets[j] *= spiralShakeDamping;
-                }
+            //    // 每帧衰减震动
+            //    for (int j = 0; j < spiralShakeOffsets.Length; j++)
+            //    {
+            //        spiralShakeOffsets[j] *= spiralShakeDamping;
+            //    }
 
 
-                for (int i = 1; i <= segmentCount; i++)
-                {
-                    float t = i / (float)segmentCount;
-                    Vector2 straightPos = Vector2.Lerp(startPosition, endPosition, t);
+            //    for (int i = 1; i <= segmentCount; i++)
+            //    {
+            //        float t = i / (float)segmentCount;
+            //        Vector2 straightPos = Vector2.Lerp(startPosition, endPosition, t);
 
-                    // 螺旋偏移，沿弹幕->玩家方向的垂线方向摆动
+            //        // 螺旋偏移，沿弹幕->玩家方向的垂线方向摆动
 
-                    // 基础波动
-                    float spiralBase = (float)Math.Sin(t * MathHelper.TwoPi * 2 + Main.GlobalTimeWrappedHourly * 4f) * maxOffset * (1f - t);
+            //        // 基础波动
+            //        float spiralBase = (float)Math.Sin(t * MathHelper.TwoPi * 2 + Main.GlobalTimeWrappedHourly * 4f) * maxOffset * (1f - t);
 
-                    // 添加震动偏移，线性插值防止数组越界
-                    float shakeOffset = MathHelper.Lerp(spiralShakeOffsets[Math.Min(i, spiralShakeOffsets.Length - 1)], 0f, 1f - (1f - t));
+            //        // 添加震动偏移，线性插值防止数组越界
+            //        float shakeOffset = MathHelper.Lerp(spiralShakeOffsets[Math.Min(i, spiralShakeOffsets.Length - 1)], 0f, 1f - (1f - t));
 
-                    // 总偏移 = 基础波动 + 震动偏移
-                    float spiral = spiralBase + shakeOffset;
+            //        // 总偏移 = 基础波动 + 震动偏移
+            //        float spiral = spiralBase + shakeOffset;
 
-                    Vector2 direction = (endPosition - startPosition).SafeNormalize(Vector2.UnitY);
-                    Vector2 normal = direction.RotatedBy(MathHelper.PiOver2);
-                    Vector2 offset = normal * spiral;
+            //        Vector2 direction = (endPosition - startPosition).SafeNormalize(Vector2.UnitY);
+            //        Vector2 normal = direction.RotatedBy(MathHelper.PiOver2);
+            //        Vector2 offset = normal * spiral;
 
-                    Vector2 currentPos = straightPos + offset;
+            //        Vector2 currentPos = straightPos + offset;
 
-                    // 绘制线段
-                    Main.spriteBatch.DrawLineBetter(previousPos, currentPos, lineColor, 3f);
+            //        // 绘制线段
+            //        Main.spriteBatch.DrawLineBetter(previousPos, currentPos, lineColor, 3f);
 
-                    previousPos = currentPos;
-                }
-            }
+            //        previousPos = currentPos;
+            //    }
+            //}
 
 
             return false; // 允许默认绘制
