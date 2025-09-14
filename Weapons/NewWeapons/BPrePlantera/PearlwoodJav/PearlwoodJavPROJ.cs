@@ -255,7 +255,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = true; // 允许与方块碰撞
+            Projectile.tileCollide = false; // 允许与方块碰撞
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30; // 每 X 帧伤害一次
@@ -273,27 +273,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             {
                 // 正常飞行才跟随速度旋转
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            }
-            // 圣洁飞行特效：粉红光雾 + 火花
-            if (Main.rand.NextBool(3))
-            {
-                int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.PinkTorch, 0, 0, 100, default, 1.3f);
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity *= 0.3f;
-            }
 
-            if (Main.rand.NextBool(6))
-            {
-                Particle spark = new SparkParticle(
-                    Projectile.Center,
-                    Projectile.velocity.RotatedByRandom(0.2f) * 0.2f,
-                    false,
-                    30,
-                    1.2f,
-                    Color.LightPink
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
+                // 圣洁飞行特效：粉红光雾 + 火花
+                if (Main.rand.NextBool(3))
+                {
+                    int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.PinkTorch, 0, 0, 100, default, 1.3f);
+                    Main.dust[dust].noGravity = true;
+                    Main.dust[dust].velocity *= 0.3f;
+                }
+
+                if (Main.rand.NextBool(6))
+                {
+                    Particle spark = new SparkParticle(
+                        Projectile.Center,
+                        Projectile.velocity.RotatedByRandom(0.2f) * 0.2f,
+                        false,
+                        30,
+                        1.2f,
+                        Color.LightPink
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
+      
         }
         private bool hasStuck = false; // 在类里加一个字段
 
