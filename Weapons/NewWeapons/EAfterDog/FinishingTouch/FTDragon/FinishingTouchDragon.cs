@@ -365,7 +365,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
                 Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
 
-                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded"));
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 1.2f, Pitch = 0.0f }, Projectile.Center);
 
                 {
                     // ======================== 无序部分 1：极限狂野扩散烟雾 ========================

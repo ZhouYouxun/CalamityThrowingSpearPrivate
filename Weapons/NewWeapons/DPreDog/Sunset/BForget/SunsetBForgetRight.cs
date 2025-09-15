@@ -13,6 +13,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using Terraria.DataStructures;
 using static CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget.SunsetBForgetLeft;
+using Terraria.GameContent.Drawing;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 {
@@ -188,20 +189,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // 计算枪头位置
             Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
 
-            // 在枪头处生成粒子
-            bool useYellow = Main.rand.NextBool(); // 随机选择黄色或蓝色阵营
-            int dustType = useYellow ? Main.rand.Next(SunsetBForgetParticleManager.YellowDusts)
-                                     : Main.rand.Next(SunsetBForgetParticleManager.BlueDusts);
+            // 在枪头处生成 TerraBlade 特效
+            if (Main.rand.NextBool(1)) // 减低频率，避免过密
+            {
+                Vector2 randomOffset = Main.rand.NextVector2Circular(12f, 12f); // 随机小偏移
+                Vector2 spawnPos = gunHeadPosition + randomOffset;
 
-            Dust dust = Dust.NewDustPerfect(
-                gunHeadPosition + Main.rand.NextVector2Circular(16f, 16f), // 以枪头为中心的半径 16 圆圈
-                dustType,
-                -Vector2.UnitY * Main.rand.NextFloat(2f, 5f), // 让粒子向上喷射
-                100,
-                Color.White,
-                Main.rand.NextFloat(1f, 1.8f)
-            );
-            dust.noGravity = true;
+                ParticleOrchestrator.RequestParticleSpawn(
+                    clientOnly: false,
+                    ParticleOrchestraType.TerraBlade,
+                    new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = spawnPos
+                    },
+                    Projectile.owner
+                );
+            }
+
+            {
+                // 在枪头处生成粒子
+                bool useYellow = Main.rand.NextBool(); // 随机选择黄色或蓝色阵营
+                int dustType = useYellow ? Main.rand.Next(SunsetBForgetParticleManager.YellowDusts)
+                                         : Main.rand.Next(SunsetBForgetParticleManager.BlueDusts);
+
+                Dust dust = Dust.NewDustPerfect(
+                    gunHeadPosition + Main.rand.NextVector2Circular(16f, 16f), // 以枪头为中心的半径 16 圆圈
+                    dustType,
+                    -Vector2.UnitY * Main.rand.NextFloat(2f, 5f), // 让粒子向上喷射
+                    100,
+                    Color.White,
+                    Main.rand.NextFloat(1f, 1.8f)
+                );
+                dust.noGravity = true;
+            }
+
 
 
             // 检测松手，直接删除自身

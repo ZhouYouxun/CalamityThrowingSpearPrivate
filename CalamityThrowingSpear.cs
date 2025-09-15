@@ -710,12 +710,12 @@ namespace CalamityThrowingSpear
 
             //ParticleOrchestrator.RequestParticleSpawn(
             //    clientOnly: false,
-            //    ParticleOrchestraType.Keybrand,
+            //    ParticleOrchestraType.TerraBlade,
             //    new ParticleOrchestraSettings { PositionInWorld = explosionPosition + offset },
             //    Projectile.owner
             //);
 
-            
+
         }
 
 

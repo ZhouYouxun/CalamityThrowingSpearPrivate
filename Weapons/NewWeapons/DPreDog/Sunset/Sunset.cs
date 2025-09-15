@@ -63,6 +63,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
             Item.channel = true; // 确保右键能够长按
         }
+        // 公开当前形态的只读访问
+        public int CurrentMode => currentMode;   // 0=A, 1=B, 2=C
+        public bool IsCMode => currentMode == 2; // 是否是 C 形态
 
         public override bool AltFunctionUse(Player player) => true;
 

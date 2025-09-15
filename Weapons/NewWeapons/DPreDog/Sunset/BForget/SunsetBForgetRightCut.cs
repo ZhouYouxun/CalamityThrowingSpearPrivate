@@ -51,7 +51,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             for (int i = 0; i < 4; i++)
             {
                 float angle = MathHelper.TwoPi * i / 4f + Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 0.6f;
-                Color ringColor = Color.Lerp(Color.LimeGreen, Color.ForestGreen, (i % 2 == 0 ? 0.3f : 0.7f)) * 1.2f;
+                // 蓝紫渐变替代原 Lime/ForestGreen
+                Color ringColor = Color.Lerp(Color.DeepSkyBlue, Color.MediumPurple, (i % 2 == 0 ? 0.2f : 0.4f)) * 1.2f;
                 float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
 
                 // Extra_89
@@ -72,7 +73,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                     star07,
                     headDrawPos,
                     null,
-                    Color.Lerp(Color.Green, Color.Lime, 0.5f) * 0.8f,
+                    Color.Lerp(Color.CornflowerBlue, Color.MediumPurple, 0.25f) * 0.8f,
                     angle * 0.5f,
                     star07.Size() * 0.5f,
                     scale * 0.25f,
@@ -85,7 +86,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                     star08,
                     headDrawPos,
                     null,
-                    Color.Lerp(Color.ForestGreen, Color.SeaGreen, 0.7f) * 0.8f,
+                    Color.Lerp(Color.DeepSkyBlue, Color.Violet, 0.35f) * 0.8f,
                     -angle * 0.7f,
                     star08.Size() * 0.5f,
                     scale * 0.25f,
@@ -101,7 +102,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             float glowScale = Projectile.scale * (1.0f + pulseGlow * 0.15f);
             float chargeOffset = 3f;
 
-            // 绿色周期性渐变 + 动态旋转
+            // 蓝紫渐变呼吸光晕
             int segments = 16;
             float rotationPhase = Main.GlobalTimeWrappedHourly * 2f; // 整体旋转速度
 
@@ -110,9 +111,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                 float angle = MathHelper.TwoPi * i / segments + rotationPhase;
                 Vector2 drawOffset = angle.ToRotationVector2() * chargeOffset;
 
-                // 根据角度给不同绿色
+                // 改为蓝紫动态过渡
                 float lerpFactor = (float)Math.Sin(angle * 2f + Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
-                Color glowColor = Color.Lerp(Color.LimeGreen, Color.ForestGreen, lerpFactor) * 0.6f;
+                Color glowColor = Color.Lerp(Color.DeepSkyBlue, Color.MediumPurple, lerpFactor) * 0.6f;
                 glowColor.A = 0;
 
                 Main.spriteBatch.Draw(
@@ -127,6 +128,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                     0f
                 );
             }
+
 
             // ====================
             // ④ 渲染实际的投射物本体
@@ -160,7 +162,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Particle shrinkingpulse = new DirectionalPulseRing(
                 Projectile.Center, // 粒子生成位置，与弹幕中心重合
                 Vector2.Zero, // 粒子静止不动
-                Color.Lime, // 冲击波的颜色
+                new Color(40, 60, 90), // 冲击波的颜色
                 new Vector2(1f, 1f), // 冲击波的初始形状（圆形）
                 Main.rand.NextFloat(3f, 6f), // 初始缩放大小
                 0.15f, // 最终缩放大小（收缩到非常小）
@@ -234,132 +236,84 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // 始终保持朝向 = 正前
             Projectile.rotation = forward.ToRotation() + MathHelper.PiOver4;
 
-            // ============ 收敛版绿色特效 ============
-            if (Main.rand.NextBool(3))
             {
-                // 主体能流（比大武器细一点）
-                Particle trail = new SparkParticle(
-                    Projectile.Center,
-                    -Projectile.velocity * 0.15f,
-                    false,
-                    25,
-                    1.0f,
-                    Color.LimeGreen
-                );
-                GeneralParticleHandler.SpawnParticle(trail);
-            }
+                // =================== 优雅蓝紫配色 ===================
+                Color[] techColors = {
+    new Color(80, 160, 255),   // 明亮蓝
+    new Color(50, 120, 220),   // 深蓝
+    new Color(140, 100, 200),  // 紫罗兰
+    new Color(100, 80, 160)    // 深紫
+};
 
-            if (Main.rand.NextBool(5))
-            {
-                // 绿色方块碎片
-                SquareParticle sq = new SquareParticle(
-                    Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    forward * 0.5f,
-                    false,
-                    20,
-                    1.2f,
-                    Color.ForestGreen
-                );
-                sq.Rotation = Projectile.rotation;
-                GeneralParticleHandler.SpawnParticle(sq);
-            }
-
-            if (Main.rand.NextBool(4))
-            {
-                // 离子化雾
-                WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                    Projectile.Center,
-                    forward.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.3f, 0.8f),
-                    false,
-                    14,
-                    0.8f,
-                    Color.LimeGreen * 0.7f
-                );
-                GeneralParticleHandler.SpawnParticle(mist);
-            }
-
-            if (Main.rand.NextBool(6))
-            {
-                // 少量 Dust（绿色背景点缀）
-                Dust d = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.CursedTorch,
-                    forward.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.5f, 1.2f),
-                    120,
-                    Color.Green,
-                    1.0f
-                );
-                d.noGravity = true;
-                d.rotation = Projectile.rotation;
-            }
-
-
-
-            // 在 AI() 最前面或 flightTimer ++ 后
-            if (flightTimer == 20)
-            {
-                Vector2 forward1 = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-
-                // 1. 一圈绿色 Spark 往后喷射
-                for (int i = 0; i < 10; i++)
+                // Spark 主干能流（带轻微螺旋）
+                if (Main.rand.NextBool(3))
                 {
-                    Vector2 vel = (-forward1).RotatedByRandom(MathHelper.ToRadians(40)) * Main.rand.NextFloat(2f, 5f);
-                    Particle spark = new SparkParticle(
+                    float angleOffset = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.2f; // 螺旋感
+                    Vector2 vel = -Projectile.velocity.RotatedBy(angleOffset) * 0.2f;
+
+                    Particle trail = new SparkParticle(
                         Projectile.Center,
                         vel,
                         false,
-                        25,
+                        30,
                         1.2f,
-                        Color.LimeGreen
+                        techColors[Main.rand.Next(techColors.Length)]
                     );
-                    GeneralParticleHandler.SpawnParticle(spark);
+                    trail.Rotation = Projectile.rotation;
+                    GeneralParticleHandler.SpawnParticle(trail);
                 }
 
-                // 2. 加点矩阵碎片（Square）
-                for (int i = 0; i < 6; i++)
+                // 方块碎片（带随机旋转 + 波动）
+                if (Main.rand.NextBool(5))
                 {
-                    Vector2 vel = (-forward1).RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(1.5f, 3f);
+                    float wave = (float)Math.Sin(Main.GameUpdateCount * 0.3f + Projectile.whoAmI) * 6f;
+                    Vector2 offset = forward.RotatedBy(MathHelper.PiOver2) * wave;
+
                     SquareParticle sq = new SquareParticle(
-                        Projectile.Center,
-                        vel,
+                        Projectile.Center + offset,
+                        forward * 0.6f,
                         false,
-                        20,
-                        1.4f,
-                        Color.ForestGreen
+                        25,
+                        1.3f,
+                        techColors[Main.rand.Next(techColors.Length)]
                     );
-                    sq.Rotation = vel.ToRotation();
+                    sq.Rotation = Projectile.rotation + Main.rand.NextFloat(-0.4f, 0.4f);
                     GeneralParticleHandler.SpawnParticle(sq);
                 }
 
-                // 3. 雾化喷射
-                for (int i = 0; i < 5; i++)
+                // 水味能雾（带轻微旋转扩散）
+                if (Main.rand.NextBool(4))
                 {
+                    float spiral = Main.GameUpdateCount * 0.05f; // 螺旋扩散
+                    Vector2 vel = forward.RotatedBy(spiral + Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.4f, 1.0f);
+
                     WaterFlavoredParticle mist = new WaterFlavoredParticle(
                         Projectile.Center,
-                        (-forward1).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.8f, 1.5f),
+                        vel,
                         false,
                         18,
-                        1.1f,
-                        Color.LimeGreen * 0.8f
+                        1.0f,
+                        techColors[Main.rand.Next(techColors.Length)] * 0.8f
                     );
                     GeneralParticleHandler.SpawnParticle(mist);
                 }
 
-                // 4. 少量 Dust（背景感）
-                for (int i = 0; i < 12; i++)
+                // Dust 背景点缀（紫蓝混合）
+                if (Main.rand.NextBool(6))
                 {
                     Dust d = Dust.NewDustPerfect(
                         Projectile.Center,
-                        DustID.CursedTorch,
-                        (-forward1).RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f, 3f),
-                        150,
-                        Color.Green,
-                        Main.rand.NextFloat(1.0f, 1.4f)
+                        DustID.BlueCrystalShard,
+                        forward.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.5f, 1.5f),
+                        140,
+                        Color.Lerp(Color.CornflowerBlue, Color.MediumPurple, Main.rand.NextFloat()),
+                        1.1f
                     );
                     d.noGravity = true;
+                    d.rotation = Projectile.rotation;
                 }
-            }
 
+            }
         }
 
 

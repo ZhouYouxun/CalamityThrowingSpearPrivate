@@ -424,6 +424,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         {
             Vector2 explosionPosition = target.Center;
 
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 0.7f, Pitch = 0.0f }, Projectile.Center);
+
             //Particle bolt = new CustomPulse(
             //    Projectile.Center, // 粒子生成位置，与弹幕中心重合
             //    Vector2.Zero, // 粒子静止不动

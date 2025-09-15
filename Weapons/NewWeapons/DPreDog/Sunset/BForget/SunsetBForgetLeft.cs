@@ -68,7 +68,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             for (int i = 0; i < 4; i++)
             {
                 float angle = MathHelper.TwoPi * i / 4f + Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 0.6f;
-                Color ringColor = Color.Lime * 1.3f; // 改成亮绿色
+                Color ringColor = Color.AliceBlue * 1.3f; // 改成亮绿色
                 float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
 
                 Main.EntitySpriteDraw(
@@ -110,86 +110,190 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
+
+
+
+
+
+
+
+
         public override void AI()
         {
+            // ===== 统一朝向 =====
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
+            // ===== 参数区（可随时调）=====
+            float coreTrailScale = 2.0f;    // 主干线性粒子粗细
+            int coreTrailLife = 42;      // 主干线性粒子寿命
+            float sideWaveAmp = 10f;     // 两侧波浪振幅（像藤蔓一样摆）
+            float sideWaveFreq = 0.28f;   // 两侧波浪频率（越大摆得越密）
+            int sideWaveLife = 24;      // 两侧波浪寿命
+            float ringRadius = 14f;     // 小环起始半径（螺旋爆发层）
+            float ringSpeed = 2.6f;    // 小环外扩速度
+            int ringCount = 6;       // 小环点数
+            int ringEveryFrames = 10;      // 每隔多少帧放一圈
+            float squareScale = 1.8f;    // 科技方块大小
+            int squareLife = 26;      // 科技方块寿命
+            int mistLifeMin = 16;      // 水味寿命下限
+            int mistLifeMax = 22;      // 水味寿命上限
+            float smokeScaleMin = 0.28f;   // 深色烟雾缩放（尽量克制用量）
+            float smokeScaleMax = 0.6f;
 
+            // ===== 植物科技·蓝(8)：紫(2) 调色器 =====
+            Color[] blues = {
+        Color.DeepSkyBlue,
+        Color.CornflowerBlue,
+        new Color(80, 180, 255),
+        Color.Cyan
+    };
+            Color[] purples = {
+        Color.MediumPurple,
+        new Color(170, 120, 235),
+        new Color(140, 100, 210)
+    };
+            const float purpleRatio = 0.20f; // 紫色占比 20%
+            Color PickTechColor()
+            {
+                Color c = (Main.rand.NextFloat() < purpleRatio)
+                    ? purples[Main.rand.Next(purples.Length)]
+                    : blues[Main.rand.Next(blues.Length)];
+                // 稍加一点白，显“能量感”
+                return Color.Lerp(c, Color.White, 0.18f);
+            }
 
-
+            // ===== 基向量与时间相位 =====
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
             float forwardAngle = forward.ToRotation();
+            float t = (float)Main.GameUpdateCount * 0.06f;
 
-            // 1. 主干能量藤蔓（粗壮）
+            // =========================================================
+            // A. 主干能量束（强力蓝、少量紫）——厚重+稳定（植物科技主干）
+            // =========================================================
             if (Main.rand.NextBool(2))
             {
-                Particle trail = new SparkParticle(
+                Particle core = new SparkParticle(
                     Projectile.Center,
-                    -Projectile.velocity * 0.25f,
+                    forward * 0.02f,             // 沿前进方向极慢推进，强调“拖曳能量”
                     false,
-                    50, // 更长寿
-                    2.2f, // 粗壮
-                    Main.rand.NextBool() ? Color.Green : Color.LimeGreen
+                    coreTrailLife,
+                    coreTrailScale,
+                    PickTechColor()
                 );
-                trail.Rotation = forwardAngle;
-                GeneralParticleHandler.SpawnParticle(trail);
+                core.Rotation = forwardAngle;
+                GeneralParticleHandler.SpawnParticle(core);
             }
 
-            // 2. 并行能流（左右分布）
-            if (Main.rand.NextBool(3))
+            // =========================================================
+            // B. 双股侧藤（波浪并行）——左右两条，同步但反相，曲线更优雅
+            // =========================================================
+            for (int i = 0; i < 2; i++)
             {
-                Vector2 side = forward.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-6f, 6f);
-                AltSparkParticle wire = new AltSparkParticle(
-                    Projectile.Center + side,
+                float sideSign = (i == 0) ? +1f : -1f;
+                // 正弦波：相位与 whoAmI 叠加，避免同屏同质
+                float wave = (float)Math.Sin(t * (1f + 0.35f * Projectile.whoAmI) + sideSign * MathHelper.PiOver2);
+                Vector2 lateral = forward.RotatedBy(MathHelper.PiOver2) * (sideWaveAmp * wave);
+
+                var waveLine = new AltSparkParticle(
+                    Projectile.Center + lateral,
                     forward * 0.02f,
                     false,
-                    20,
-                    1.8f, // 更大
-                    Color.GreenYellow * 0.8f
+                    sideWaveLife,
+                    1.6f,                         // 比主干略细
+                    PickTechColor()
                 );
-                wire.Rotation = forwardAngle;
-                GeneralParticleHandler.SpawnParticle(wire);
+                waveLine.Rotation = forwardAngle;
+                GeneralParticleHandler.SpawnParticle(waveLine);
             }
 
-            // 3. 爆裂能块（绿色碎片）
-            if (Main.rand.NextBool(4))
+            // =========================================================
+            // C. 科技碎片（方块）——黄金角分布，连贯却不凌乱
+            // =========================================================
+            if (Main.rand.NextBool(3))
             {
-                SquareParticle sq = new SquareParticle(
-                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    forward * Main.rand.NextFloat(0.5f, 1.5f),
+                // 黄金角分布，显“数学美感”
+                const float golden = 2.39996323f; // 约等于 π*(3-√5)
+                float k = (Projectile.whoAmI * 1.618f + Main.GameUpdateCount * 0.15f) % 17;
+                float ang = golden * k;
+                Vector2 radial = ang.ToRotationVector2() * Main.rand.NextFloat(4f, 12f);
+
+                var sq = new SquareParticle(
+                    Projectile.Center + radial,
+                    forward * Main.rand.NextFloat(0.6f, 1.3f),
                     false,
-                    30,
-                    2.0f, // 放大
-                    Color.ForestGreen
+                    squareLife,
+                    squareScale,
+                    PickTechColor()
                 );
-                sq.Rotation = forwardAngle + Main.rand.NextFloat(-0.2f, 0.2f);
+                sq.Rotation = forwardAngle + Main.rand.NextFloat(-0.25f, 0.25f);
                 GeneralParticleHandler.SpawnParticle(sq);
             }
 
-            // 4. 蒸腾气雾（大范围）
+            // =========================================================
+            // D. 螺旋小环（点阵外抛）——每 N 帧从半径 r 的环上同时外抛
+            // =========================================================
+            if (Main.GameUpdateCount % ringEveryFrames == 0)
+            {
+                float baseRot = t * 1.4f; // 整体旋转，形成“螺旋感”
+                for (int j = 0; j < ringCount; j++)
+                {
+                    float angle = baseRot + MathHelper.TwoPi * j / ringCount;
+                    Vector2 pos = Projectile.Center + angle.ToRotationVector2() * ringRadius;
+                    Vector2 vel = angle.ToRotationVector2() * ringSpeed * Main.rand.NextFloat(0.85f, 1.15f);
+
+                    // 采用两种粒子交替：线性粒子/水味
+                    if (j % 2 == 0)
+                    {
+                        var sp = new SparkParticle(
+                            pos, vel, false,
+                            24,
+                            1.0f,
+                            PickTechColor()
+                        );
+                        sp.Rotation = angle;
+                        GeneralParticleHandler.SpawnParticle(sp);
+                    }
+                    else
+                    {
+                        var mist = new WaterFlavoredParticle(
+                            pos, vel, false,
+                            Main.rand.Next(mistLifeMin, mistLifeMax),
+                            0.9f + Main.rand.NextFloat(0.25f),
+                            PickTechColor() * 0.9f
+                        );
+                        GeneralParticleHandler.SpawnParticle(mist);
+                    }
+                }
+            }
+
+            // =========================================================
+            // E. 背景能雾（水味）——稀疏大片，烘托体积感
+            // =========================================================
             if (Main.rand.NextBool(3))
             {
-                WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    forward.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.5f, 1.2f),
+                var mist = new WaterFlavoredParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                    forward.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.4f, 0.9f),
                     false,
-                    Main.rand.Next(20, 26),
-                    1.5f + Main.rand.NextFloat(0.4f), // 比之前更大
-                    Color.LimeGreen * 0.9f
+                    Main.rand.Next(mistLifeMin, mistLifeMax),
+                    1.2f + Main.rand.NextFloat(0.3f),
+                    PickTechColor() * 0.85f
                 );
                 GeneralParticleHandler.SpawnParticle(mist);
             }
 
-            // 4b. 少量重烟雾（撑场）
-            if (Main.rand.NextBool(1))
+            // =========================================================
+            // F. 深色烟（极少量）——只作层次，不喧宾夺主
+            // =========================================================
+            if (Main.rand.NextBool(6))
             {
-                HeavySmokeParticle smoke = new HeavySmokeParticle(
-                    Projectile.Center,
-                    forward.RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 2f),
-                    Color.DarkGreen,
-                    30,
-                    Main.rand.NextFloat(0.2f,0.8f),
-                    0.6f,
+                var smoke = new HeavySmokeParticle(
+                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                    forward.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.5f, 1.2f),
+                    new Color(40, 60, 90), // 深蓝灰
+                    22,
+                    Main.rand.NextFloat(smokeScaleMin, smokeScaleMax),
+                    0.55f,
                     Main.rand.NextFloat(-1f, 1f),
                     true
                 );
@@ -197,45 +301,30 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
 
-            // 5. Dust 背景散射
+            // =========================================================
+            // G. 轻点尘（Dust）——科技冷色调点缀
+            // =========================================================
             if (Main.rand.NextBool(4))
             {
+                int dustType = Main.rand.NextBool() ? DustID.DungeonWater : DustID.BlueTorch;
                 Dust d = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    DustID.CursedTorch,
-                    forward.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.8f, 2f),
+                    dustType,
+                    forward.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.8f, 1.6f),
                     120,
-                    Color.Green,
-                    Main.rand.NextFloat(1.2f, 1.6f) // 大一点
+                    PickTechColor(),
+                    Main.rand.NextFloat(1.1f, 1.4f)
                 );
                 d.noGravity = true;
                 d.rotation = forwardAngle;
                 d.fadeIn = 0.8f;
             }
-
-            // 波浪能流（左右各一条，摆动更夸张）
-            float time = Main.GameUpdateCount * 0.25f; // 控制波动频率
-
-            for (int i = 0; i < 2; i++) // 左右两条波浪
-            {
-                float side = (i == 0 ? 1f : -1f);
-                // 波动位移：正弦函数 * 振幅
-                Vector2 offset = forward.RotatedBy(MathHelper.PiOver2) * side * (float)Math.Sin(time + i * MathHelper.Pi) * 12f;
-
-                AltSparkParticle wave = new AltSparkParticle(
-                    Projectile.Center + offset,               // 位置 = 弹幕中心 + 波动偏移
-                    forward * 0.02f,                          // 仍然沿前进方向微速前进
-                    false,
-                    24,                                       // 寿命
-                    1.6f,                                     // 粗一些
-                    Color.LimeGreen * 0.9f
-                );
-                wave.Rotation = forwardAngle;
-                GeneralParticleHandler.SpawnParticle(wave);
-            }
-
-
         }
+
+
+
+
+
 
 
 

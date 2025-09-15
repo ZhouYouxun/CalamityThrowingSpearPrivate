@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Projectiles.Typeless;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 {
@@ -108,6 +109,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Vector2 explosionPosition = Projectile.Center;
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮开火") with { Volume = 1.2f, Pitch = 0.0f }, Projectile.Center);
+
 
             // 生成爆炸粒子
             Particle explosion = new DetailedExplosion(
