@@ -264,17 +264,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
         public override void AI()
         {
-            if (Projectile.ai[0] == 2f)
+            if (Projectile.ai[0] == 0f)
             {
-                // 命中后保持锁定角度
-                Projectile.rotation = lockedRotation;
-            }
-            else
-            {
-                // 正常飞行才跟随速度旋转
+                // 正常飞行旋转
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-                // 圣洁飞行特效：粉红光雾 + 火花
+                Projectile.spriteDirection = Projectile.direction = (Projectile.velocity.X > 0).ToDirectionInt();
+                //Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
+                //Projectile.rotation += Projectile.spriteDirection * MathHelper.ToRadians(45f);
+
+
+                // ✨ 圣洁飞行特效：粉红光雾 + 火花
                 if (Main.rand.NextBool(3))
                 {
                     int dust = Dust.NewDust(Projectile.Center, 0, 0, DustID.PinkTorch, 0, 0, 100, default, 1.3f);
@@ -295,9 +295,31 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
-      
+
+
+            //Sticky Behaviour
+            Projectile.StickyProjAI(15);
+            if (Projectile.ai[0] == 2f)
+            {
+                Projectile.velocity *= 0f;
+            }
+            // 粘附逻辑（与 MiracleMatterJavPROJ 保持一致）
+            Projectile.StickyProjAI(15);
+
+            if (Projectile.ai[0] == 2f)
+            {
+                // 粘住时清空速度，由 StickyProjAI 负责跟随目标
+                Projectile.velocity = Vector2.Zero;
+
+                // 保持命中瞬间的角度
+                Projectile.rotation = lockedRotation;
+            }
         }
+
+
+
         private bool hasStuck = false; // 在类里加一个字段
+
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
@@ -311,14 +333,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             hasStuck = true; // 标记为已触发
 
             // === 一次性逻辑 ===
-            Projectile.ai[0] = 2f;
-            lockedRotation = Projectile.rotation;
-            Projectile.velocity = Vector2.Zero;
-            Projectile.netUpdate = true;
+            //Projectile.ai[0] = 2f;
+            //lockedRotation = Projectile.rotation;
+            //Projectile.velocity = Vector2.Zero;
+            //Projectile.netUpdate = true;
 
 
             // 圣洁爆发音效 & 特效
-            SoundEngine.PlaySound(SoundID.Item132.WithVolumeScale(1.2f), Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item132 with { Volume = 0.5f, Pitch = -0.0f }, Projectile.Center);
             CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);
 
             // 召唤 X 个 INV 子弹
@@ -350,6 +372,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
 
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            // 确保粘附逻辑正常
+            Projectile.ModifyHitNPCSticky(20);
+        }
+
 
 
 

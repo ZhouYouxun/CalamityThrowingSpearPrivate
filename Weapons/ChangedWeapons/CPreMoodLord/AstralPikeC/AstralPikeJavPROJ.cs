@@ -16,6 +16,7 @@ using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Buffs.DamageOverTime;
 using static CalamityThrowingSpear.CTSLightingBoltsSystem;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 {
@@ -89,6 +90,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             // 反弹一次后继续穿过方块
             if (!hasBounced)
             {
+                SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact with { Volume = 1.2f, Pitch = -0.0f }, Projectile.Center);
+
                 hasBounced = true;
                 //Projectile.penetrate = -1; // 禁止进一步反弹，允许穿过方块
                 Projectile.tileCollide = false; // 不在允许与方块碰撞

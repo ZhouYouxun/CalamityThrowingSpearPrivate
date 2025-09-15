@@ -93,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Vector2 baseDir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
             // === 核心直射层（Spark，圣光碎片） ===
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 8; i++)
             {
                 float angle = Main.rand.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4); // ±45°
                 Vector2 dir = baseDir.RotatedBy(angle) * Main.rand.NextFloat(8f, 14f);
@@ -112,7 +112,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             }
 
             // === 环绕散射层（WaterFlavored，柔和光雾） ===
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 12; i++)
             {
                 float angle = MathHelper.TwoPi * i / 24f; // 均匀一圈
                 Vector2 dir = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);

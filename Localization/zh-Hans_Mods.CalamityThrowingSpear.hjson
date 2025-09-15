@@ -79,6 +79,7 @@ Projectiles: {
 			ElectrocutionHalberdField.DisplayName: 电圈
 			ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
 			// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
+			// PearlwoodJavPROJ2.DisplayName: Pearlwood Jav P R O J2
 		}
 
 		APreHardMode: {
@@ -277,6 +278,9 @@ Projectiles: {
 	}
 
 	// PrimordialStateSlash.DisplayName: Primordial State Slash
+	// SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
+	// SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
+	// SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
 }
 
 ChangedWeapons: {
@@ -861,6 +865,11 @@ NewWeapons: {
 				拥有30秒的冷却
 				[c/95b47c:“我成为了死神，煎蛋的毁灭者”]
 				'''
+		}
+
+		Sunset: {
+			// DisplayName: Sunset
+			// Tooltip: ""
 		}
 	}
 
