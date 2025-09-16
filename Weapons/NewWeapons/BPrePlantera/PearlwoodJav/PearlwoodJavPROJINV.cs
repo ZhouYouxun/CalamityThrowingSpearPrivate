@@ -40,7 +40,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
         public override void SetDefaults() // 设置弹幕的默认值
         {
-            Projectile.width = Projectile.height = 12;
+            Projectile.width = Projectile.height = 24;
             Projectile.arrow = true;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
@@ -50,7 +50,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             Projectile.MaxUpdates = MaxUpdate;
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 80;
+            Projectile.localNPCHitCooldown = 60;
         }
 
         public override void AI()
