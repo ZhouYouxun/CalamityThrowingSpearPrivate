@@ -39,7 +39,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 4;
+            Projectile.penetrate = 2;
             Projectile.timeLeft = 150;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;

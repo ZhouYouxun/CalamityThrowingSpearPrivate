@@ -318,7 +318,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             target.AddBuff(ModContent.BuffType<Crumbling>(), 300); // 保留原有debuff
 
             // === 岩石定向爆裂 ===
-            int shardCount = 8;
+            int shardCount = 4;
             for (int i = 0; i < shardCount; i++)
             {
                 // 均匀角度 + 随机扰动
@@ -330,7 +330,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
                     Projectile.Center,
                     velocity,
                     ModContent.ProjectileType<FossilShard>(),
-                    (int)(Projectile.damage * 0.7f),
+                    (int)(Projectile.damage * 0.6f),
                     Projectile.knockBack * 0.5f,
                     Projectile.owner
                 );
