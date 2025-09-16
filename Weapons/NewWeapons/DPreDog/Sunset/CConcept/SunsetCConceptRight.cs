@@ -115,6 +115,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
     Color.WhiteSmoke           // 高光
         };
 
+
+        // 在类的字段区定义（和 shootTimer / holdTime 一样）
+        private int shotIndex = 0;
+        private int roundIndex = 0;
+        private int frameTimer = 0;
+        private bool waitingRoundGap = false;
+
+
         private void DoBehavior_Aim()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -131,102 +139,141 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
             Owner.heldProj = Projectile.whoAmI;
 
-            // 如果大招释放过，则进入冷却状态
-            if (postBigShotCooldown > 0)
+
+
             {
-                postBigShotCooldown--;
-                return; // 直接跳过小弹幕的释放逻辑
-            }
+                // ====== 自定义环形射击逻辑 ======
+                const float ringRadius = 20f * 16f;  // 小弹幕“出生圆环”的半径（单位像素）
+                const int shotsPerRound = 10;         // 每一圈发射的小弹幕数量
+                const int frameBetweenShots = 4;          // 同一圈内每两发之间的帧数间隔
+                const int frameBetweenRounds = 15;         // 两圈之间的停顿时间（帧）
+                const int roundsBeforeBig = 3;          // 连续多少圈之后，触发一次大弹幕
 
-            // 计时器增加
-            shootTimer++;
-            holdTime++;
+                frameTimer++;
 
-            if (shootTimer >= 15) // 每 15 帧执行一次
-            {
-                shootTimer = 0;
-
-                NPC target = FindClosestTarget();
-                if (target != null)
+                if (!waitingRoundGap)
                 {
-                    float smallShotDistance = 12 * 16f;
-                    float randomAngle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                    Vector2 spawnOffset = randomAngle.ToRotationVector2() * smallShotDistance;
-                    Vector2 spawnPos = target.Center + spawnOffset;
-                    Vector2 velocity = (target.Center - spawnPos).SafeNormalize(Vector2.Zero) * 20f;
-
-                    // **生成小型弹幕**
-                    int smallProjIndex = Projectile.NewProjectile(
-                        Projectile.GetSource_FromThis(),
-                        spawnPos,
-                        velocity,
-                        ModContent.ProjectileType<SunsetCConceptRightCut>(),
-                        Projectile.damage / 2,
-                        Projectile.knockBack,
-                        Projectile.owner
-                    );
-
-                    // **调整小弹幕的属性**
-                    if (Main.projectile[smallProjIndex].active)
+                    if (frameTimer >= frameBetweenShots)
                     {
-                        Projectile smallProj = Main.projectile[smallProjIndex];
-                        smallProj.penetrate = 1;  // **具备 1 次穿透**
-                        smallProj.tileCollide = true; // **小弹幕会碰撞地形**
-                        smallProj.usesLocalNPCImmunity = true;
-                        smallProj.localNPCHitCooldown = 10;
-                        smallProj.netUpdate = true;
-                    }
+                        frameTimer = 0;
 
-                    SoundEngine.PlaySound(SoundID.Item122, Projectile.position);
+                        // 计算当前这一发在圆环上的角度（0°, 36°, 72° ...）
+                        float angle = MathHelper.ToRadians(36f * shotIndex);
+                        Vector2 spawnOffset = angle.ToRotationVector2() * ringRadius;
+
+                        // === 关键改动：以“最近敌人”为圆心来计算出生位置 ===
+                        NPC target = FindClosestTarget();
+                        Vector2 ringCenter = (target != null) ? target.Center : Projectile.Center;
+
+                        // 出生点在「以最近敌人为圆心」的圆环上
+                        Vector2 spawnPos = ringCenter + spawnOffset;
+
+                        // 发射方向：优先指向最近敌人；若无敌人，则向内（指向圆心）退化
+                        Vector2 shootDir;
+                        if (target != null)
+                            shootDir = (target.Center - spawnPos).SafeNormalize(Vector2.UnitY);
+                        else
+                            shootDir = (-spawnOffset).SafeNormalize(Vector2.UnitY);
+
+                        Vector2 velocity = shootDir * 20f;
+
+                        // 发射小弹幕
+                        int proj = Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            spawnPos,
+                            velocity,
+                            ModContent.ProjectileType<SunsetCConceptRightCut>(),
+                            Projectile.damage / 2,
+                            Projectile.knockBack,
+                            Projectile.owner
+                        );
+
+                        if (proj.WithinBounds(Main.maxProjectiles) && Main.projectile[proj].active)
+                        {
+                            Projectile small = Main.projectile[proj];
+                            small.penetrate = 1;
+                            small.tileCollide = true;
+                            small.usesLocalNPCImmunity = true;
+                            small.localNPCHitCooldown = 10;
+                            small.netUpdate = true;
+                        }
+
+                        SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+
+                        // 轮次推进
+                        shotIndex++;
+                        if (shotIndex >= shotsPerRound)
+                        {
+                            shotIndex = 0;
+                            roundIndex++;
+                            waitingRoundGap = true;
+                            frameTimer = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    if (frameTimer >= frameBetweenRounds)
+                    {
+                        frameTimer = 0;
+                        waitingRoundGap = false;
+
+                        // 检查是否需要发射大弹幕（每 3 圈一次）
+                        if (roundIndex >= roundsBeforeBig)
+                        {
+                            roundIndex = 0;
+
+                            // === 大弹幕逻辑：以最近敌人为基准 ===
+                            NPC target = FindClosestTarget();
+                            if (target != null)
+                            {
+                                // 出生在敌人头顶 30 格位置
+                                Vector2 explosionPos = target.Center + new Vector2(0, -30 * 16);
+                                // 向下冲击，速度 ×3
+                                Vector2 explosionVelocity = Vector2.UnitY * 30f * 3f;
+
+                                int bigProj = Projectile.NewProjectile(
+                                    Projectile.GetSource_FromThis(),
+                                    explosionPos,
+                                    explosionVelocity,
+                                    ModContent.ProjectileType<SunsetCConceptRightCut>(),
+                                    Projectile.damage * 10,
+                                    Projectile.knockBack,
+                                    Projectile.owner,
+                                    1f // ai[0] 标记为“大弹幕”
+                                );
+
+                                if (bigProj.WithinBounds(Main.maxProjectiles) && Main.projectile[bigProj].active)
+                                {
+                                    Projectile big = Main.projectile[bigProj];
+                                    big.penetrate = 6;
+                                    big.tileCollide = false;
+                                    big.usesLocalNPCImmunity = true;
+                                    big.localNPCHitCooldown = 1;
+                                    big.netUpdate = true;
+                                    big.scale *= 5f;
+                                }
+
+                                SoundEngine.PlaySound(
+                                    new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded")
+                                    { Volume = 1.5f },
+                                    target.Center
+                                );
+
+                                // 屏幕震动
+                                float shakePower = 55f;
+                                float distanceFactor = Utils.GetLerpValue(
+                                    1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                                Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                                    Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+                            }
+                        }
+                    }
                 }
             }
 
-            // **释放大弹幕**
-            if (holdTime >= 600) // 600 帧 = 10 秒
-            {
-                Projectile.Kill();
-                NPC target = FindClosestTarget();
-                if (Main.myPlayer == Projectile.owner && target != null)
-                {
-                    Vector2 explosionPos = target.Center + new Vector2(0, -30 * 16);
-                    Vector2 explosionVelocity = Vector2.UnitY * 30f * 3f; // 向下冲击（速度 ×3）
-
-                    int bigProjIndex = Projectile.NewProjectile(
-                        Projectile.GetSource_FromThis(),
-                        explosionPos,
-                        explosionVelocity,
-                        ModContent.ProjectileType<SunsetCConceptRightCut>(),
-                        Projectile.damage * 10,
-                        Projectile.knockBack,
-                        Projectile.owner,
-                        1f,   // ai[0] = scaleMultiplier 标记
-                        0f
-                    );
 
 
-                    // **调整大弹幕的属性**
-                    if (Main.projectile[bigProjIndex].active)
-                    {
-                        Projectile bigProj = Main.projectile[bigProjIndex];
-                        bigProj.penetrate = 6;  // **具备 6 次穿透**
-                        bigProj.tileCollide = false; // **不会碰撞地形**
-                        bigProj.usesLocalNPCImmunity = true;
-                        bigProj.localNPCHitCooldown = 1; // **无敌帧为 1**
-                        bigProj.netUpdate = true;
-                    }
-
-                    Main.projectile[bigProjIndex].scale *= 5f; // 放大 5 倍
-
-                    postBigShotCooldown = 150; // 进入 `2.5 秒` 冷却
-
-                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 1.5f, Pitch = 0.0f }, Projectile.Center);
-
-                    // 屏幕震动效果
-                    float shakePower = 55f;
-                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-                }
-            }
 
 
 

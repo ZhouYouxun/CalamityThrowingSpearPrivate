@@ -46,10 +46,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 27; // 更改使用时的武器攻击速度
+            Item.useTime = Item.useAnimation = 15; // 更改使用时的武器攻击速度
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
+
 
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ModContent.RarityType<HotPink>();
@@ -58,9 +59,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
             Item.shoot = ModContent.ProjectileType<SoulHunterJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 27f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
-
-            UpdateModeProperties(); // 初始化模式属性
-
             Item.channel = true; // 确保右键能够长按
         }
         // 公开当前形态的只读访问
@@ -80,7 +78,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
             if (KeybindSystem.WeaponSkill.JustPressed)
             {
                 currentMode = (currentMode + 1) % 3; // 循环切换形态
-                UpdateModeProperties();
                 CombatText.NewText(player.getRect(), Color.Red, modeNames[currentMode]);
                 SoundEngine.PlaySound(SoundID.Item4, player.position);
 
@@ -168,48 +165,86 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     Item.UseSound = null;
                     Item.shoot = ModContent.ProjectileType<SunsetCConceptLeftListener>(); // **替换为 Listener**
                 }
-                else // **A/B 形态仍然单点**
+                else // **A/B 形态分开处理**
                 {
-                    Item.UseSound = SoundID.Item1;
                     Item.channel = false;
-                    Item.useTime = Item.useAnimation = 27;
-                    Item.shoot = currentMode switch
+
+                    if (currentMode == 0) // === A 模式：四连发 ===
                     {
-                        0 => ModContent.ProjectileType<SunsetASunsetLeft>(),
-                        1 => ModContent.ProjectileType<SunsetBForgetLeft>(),
-                        _ => ModContent.ProjectileType<SunsetASunsetLeft>()
-                    };
+                        Item.UseSound = SoundID.Item1;
+
+                        Item.useTime = 5;              // 每发间隔 5 帧
+                        Item.useAnimation = 60;        // 总动画 60 帧
+                        Item.useLimitPerAnimation = 4; // 一次动画内打 4 发
+                        Item.autoReuse = true;         // 允许长按持续触发
+
+                        Item.shoot = ModContent.ProjectileType<SunsetASunsetLeft>();
+                    }
+                    else if (currentMode == 1) // === B 模式：双发交替 ===
+                    {
+                        Item.UseSound = SoundID.Item2;
+
+                        Item.useTime = 9;              // 每发间隔 9 帧
+                        Item.useAnimation = 50;        // 总动画 50 帧
+                        Item.useLimitPerAnimation = 2; // 一次动画内打 2 发
+
+                        Item.autoReuse = true;
+
+                        Item.shoot = ModContent.ProjectileType<SunsetBForgetLeft>();
+                    }
+                    else // 兜底（如果不是 A 或 B）
+                    {
+                        Item.UseSound = SoundID.Item1;
+                        Item.useTime = 10;
+                        Item.useAnimation = 10;
+                        Item.useLimitPerAnimation = 1;
+                        Item.autoReuse = true;
+
+                        Item.shoot = ModContent.ProjectileType<SunsetASunsetLeft>();
+                    }
                 }
+
+
             }
         }
 
-        private void UpdateModeProperties()
+        public override bool CanUseItem(Player player)
         {
             switch (currentMode)
             {
-                case 0: // A形态
-                    Item.shoot = ModContent.ProjectileType<SunsetASunsetLeft>(); // 左键弹幕
+                case 0: // A形态：四连发
+                    Item.shoot = ModContent.ProjectileType<SunsetASunsetLeft>();
                     Item.shootSpeed = 27f;
                     Item.damage = 371;
                     Item.UseSound = SoundID.Item1;
                     Item.channel = false;
                     break;
-                case 1: // B形态
+
+                case 1: // B形态：双连发
                     Item.shoot = ModContent.ProjectileType<SunsetBForgetLeft>();
                     Item.shootSpeed = 24f;
                     Item.damage = 410;
                     Item.UseSound = SoundID.Item2;
+
+                    Item.useTime = 3;
+                    Item.useAnimation = 6;  // 2连发
+                    Item.useLimitPerAnimation = 2;
+
                     Item.channel = false;
                     break;
-                case 2: // C形态
+
+                case 2: // C形态：Listener 持续
                     Item.shoot = ModContent.ProjectileType<SunsetCConceptLeftListener>();
                     Item.shootSpeed = 30f;
                     Item.damage = 450;
                     Item.UseSound = null;
-                    Item.channel = true; // **启用长按**
+                    Item.channel = true;
                     break;
             }
+
+            return base.CanUseItem(player);
         }
+
 
         //public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         //{
@@ -248,22 +283,76 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
         public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            // **如果当前模式是 `C模式`（即 `SunsetCConceptLeftListener`），先检查是否已存在**
+            // === 全局拦截：如果场上已有任意右键长按弹幕（A/B/C），直接拒绝左键攻击 ===
+            foreach (Projectile proj in Main.projectile)
+            {
+                if (proj.active && proj.owner == player.whoAmI)
+                {
+                    if (proj.type == ModContent.ProjectileType<SunsetASunsetRight>() ||
+                        proj.type == ModContent.ProjectileType<SunsetBForgetRight>() ||
+                        proj.type == ModContent.ProjectileType<SunsetCConceptRight>())
+                    {
+                        return false; // 阻止左键生成
+                    }
+                }
+            }
+
+            // === C模式（概念形态）===
             if (type == ModContent.ProjectileType<SunsetCConceptLeftListener>())
             {
                 foreach (Projectile proj in Main.projectile)
                 {
                     if (proj.active && proj.type == type && proj.owner == player.whoAmI)
                     {
-                        return false; // **已有 `SunsetCConceptLeftListener`，拒绝生成**
+                        return false; // 已有 Listener，拒绝生成
                     }
                 }
             }
 
-            // **如果是其他模式（A、B），直接生成**
+            // === A模式：四连发 ===
+            if (currentMode == 0)
+            {
+                return true; // ✅ 返回 true，让默认逻辑生效
+            }
+
+            // === B模式：双射交叉 ===
+            if (currentMode == 1)
+            {
+                // 左右各一个偏移
+                for (int i = -1; i <= 1; i += 2)
+                {
+                    Vector2 offset = velocity.RotatedBy(MathHelper.ToRadians(2f * i));
+                    Projectile.NewProjectile(source, position, offset, type, damage, knockback, player.whoAmI);
+                }
+                return false;
+            }
+
+            // === 其他情况（容错处理）===
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
+
+
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            type = Item.shoot;
+
+            if (currentMode == 0) // A模式：单发 + 随机水平偏移
+            {
+                // 找到水平向量（垂直于射击方向）
+                Vector2 offset = Vector2.Normalize(velocity.RotatedBy(MathHelper.PiOver2));
+
+                // 在 [-19, 19] 的范围内随机偏移
+                position += offset * Main.rand.NextFloat(-19f, 19f);
+
+                // 稍微往后移，让子弹有生成感
+                position -= 3f * velocity;
+            }
+        }
+
+
+
     }
 }
 

@@ -127,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             // 使投射物与玩家保持一致并瞄准鼠标位置
             if (Main.myPlayer == Projectile.owner)
             {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
+                Vector2 aimDirection = -Vector2.UnitY; // 朝正上方
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
             }
 
@@ -257,8 +257,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 }
                 Projectile.friendly = true;
                 Projectile.netUpdate = true;
-                Projectile.timeLeft = 300;
-                Projectile.penetrate = 2;
+                Projectile.timeLeft = 900;
+                Projectile.extraUpdates = 3;
+                Projectile.penetrate = 1;
                 CurrentState = BehaviorState.Dash;
             }
 
@@ -309,7 +310,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 {
                     float sign = (arm == 0) ? 1f : -1f;
                     float theta0 = forward.ToRotation() + sign * (MathHelper.PiOver4 * (0.6f + 0.4f * ease));
-                    int steps = 18; // 段数适中
+                    int steps = 8; // 段数适中
                     for (int k = 0; k <= steps; k++)
                     {
                         float t = k / (float)steps;
@@ -331,8 +332,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 }
 
                 // ================== 3) 刻度短弧（几何刻度感）——“读数/灌能”的视觉语言 ==================
-                int ticks = 12;
-                int seg = 5;
+                int ticks = 6;
+                int seg = 4;
                 float arcR = MathHelper.Lerp(20f, 50f, ease);
                 for (int m = 0; m < ticks; m++)
                 {
@@ -349,6 +350,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                     }
                 }
 
+
+
                 // ================== 4) 轻量粒子点缀（不喧宾夺主） ==================
                 if ((chargeTimer % 3) == 0) // 频率很低
                 {
@@ -358,7 +361,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                         Vector2.Zero,
                         Color.Lerp(Color.Gold, Color.LightYellow, 0.5f + 0.5f * ease),
                         MathHelper.Lerp(1.2f, 1.9f, ease),
-                        12
+                        6
                     );
                     GeneralParticleHandler.SpawnParticle(bloom);
                 }
@@ -384,10 +387,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
         }
 
+
+        // 在类里新建两个字段
+        private int dashPhaseTimer = 0;
+        private bool enteredFinalCharge = false;
+
+
         private void DoBehavior_Dash()
         {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Projectile.tileCollide = true;
 
             // 重置速度的逻辑
             {
@@ -421,16 +428,75 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 GeneralParticleHandler.SpawnParticle(trail);
             }
 
-            // 采用 PlagueTaintedDrone 同款 的追踪方式
-            NPC target = Projectile.FindTargetWithinRange(1600f); // 1600 像素范围内寻找目标
-            if (Projectile.timeLeft < 415 && target != null) // 飞行 65 帧后开始追踪
-            {
-                float trackingSpeed = 30f;  // 追踪速度
-                float maxTurnRate = 22f;    // 最大旋转角度
 
-                // 使用平滑的逐帧调整方式
-                Projectile.velocity = Projectile.SuperhomeTowardsTarget(target, trackingSpeed, maxTurnRate);
+
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.tileCollide = true;
+
+            NPC target = GetClosestChaseableNPC(2400f);
+            dashPhaseTimer++;
+
+            if (!enteredFinalCharge)
+            {
+                // ========== 第一子阶段：软追踪、速度逐渐衰减 ==========
+                Projectile.velocity *= 0.95f;
+
+                if (target != null)
+                {
+                    Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                    // 慢慢旋向目标
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, dir * Projectile.velocity.Length(), 0.05f);
+                }
+
+                // 持续 30 帧后进入第二子阶段
+                if (dashPhaseTimer >= 30)
+                {
+                    enteredFinalCharge = true;
+                    dashPhaseTimer = 0;
+
+                    if (target != null)
+                    {
+                        // ========== 第二子阶段：一次性高速冲刺 ==========
+                        Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                        Projectile.velocity = dir * 45f; // 直接锁定敌人高速突刺
+                    }
+                    else
+                    {
+                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * 45f;
+                    }
+                }
             }
+            else
+            {
+                // 第二子阶段：不再调整角度，保持直线突刺
+            }
+
+
+
+        }
+        // === 工具函数：寻找可追踪的最近 NPC（可穿墙可选）===
+        private NPC GetClosestChaseableNPC(float maxDetectDistance, bool requireLineOfSight = false)
+        {
+            NPC closest = null;
+            float sqrBest = maxDetectDistance * maxDetectDistance;
+
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (!npc.active) continue;
+                if (!npc.CanBeChasedBy(Projectile, false)) continue; // 可被追踪（不无敌/不友好）
+
+                float sqrDist = Vector2.DistanceSquared(Projectile.Center, npc.Center);
+                if (sqrDist >= sqrBest) continue;
+
+                // 可选：要求无障碍视线（不想受地形影响就传 false）
+                if (requireLineOfSight && !Collision.CanHitLine(Projectile.Center, 1, 1, npc.Center, 1, 1))
+                    continue;
+
+                sqrBest = sqrDist;
+                closest = npc;
+            }
+            return closest;
         }
 
 
