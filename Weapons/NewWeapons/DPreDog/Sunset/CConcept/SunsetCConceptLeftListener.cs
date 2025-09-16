@@ -18,7 +18,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         private List<int> subordinateProjectiles = new List<int>(); // 存储子弹幕的 ID
         public int Time;
-        private const int SpinTime = 120; // 旋转阶段持续时间
+        private const int SpinTime = 160; // 旋转阶段持续时间
         private const float SpinSpeed = 8f; // 旋转速度
         private bool HasTransitioned = false; // 标志是否已经进入固定状态
 

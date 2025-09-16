@@ -22,7 +22,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             // 📏 全局缩放因子（整体缩小到原来的 X%）
-            float globalScale = 1.1f;
+            float globalScale = currentScale;
 
             // === 🌌 外围魔法圈（蓝色星空） ===
             string[] outerRings = new[]
@@ -104,12 +104,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
         }
-
+        private int growTimer = 0;
+        private float currentScale = 0f; // 实时缩放值
         public override void AI()
         {
-            // 爆炸持续比例 (0 ~ 1)
+            // 让 growTimer 累积，最多 X 帧
+            if (growTimer < 20)
+                growTimer++;
+
+            // 线性插值：0 到 1.1f
+            currentScale = MathHelper.Lerp(0f, 1.1f, growTimer / 20f);
+
+            // 原本的爆炸逻辑保持不变
             float progress = 1f - (Projectile.timeLeft / 50f);
             float radius = MathHelper.Lerp(20f, 250f, progress);
+
 
             // ====== 环形扩散 ======
             int count = 10;

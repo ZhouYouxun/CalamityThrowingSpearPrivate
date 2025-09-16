@@ -12,6 +12,7 @@ using Terraria.Audio;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using Terraria.DataStructures;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -102,6 +103,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private int holdTime = 0; // 握持时间（帧）
 
         private int postBigShotCooldown = 0; // 大招释放后进入冷却的计时器
+                                             // === 右键瞄准阶段·科技蓝 VFX ===
+        private int vfxTimer = 0;
+        // 科技蓝主色 + 辅色
+        private static readonly Color[] TechBluePalette = new Color[]
+        {
+    new Color( 80, 200, 255),  // Electric Blue
+    new Color(120, 220, 255),  // Light Tech Blue
+    Color.Cyan,
+    new Color(180, 220, 255),  // 冷白蓝
+    Color.WhiteSmoke           // 高光
+        };
 
         private void DoBehavior_Aim()
         {
@@ -177,7 +189,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 if (Main.myPlayer == Projectile.owner && target != null)
                 {
                     Vector2 explosionPos = target.Center + new Vector2(0, -30 * 16);
-                    Vector2 explosionVelocity = Vector2.UnitY * 30f; // 向下冲击
+                    Vector2 explosionVelocity = Vector2.UnitY * 30f * 3f; // 向下冲击（速度 ×3）
 
                     int bigProjIndex = Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
@@ -186,8 +198,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                         ModContent.ProjectileType<SunsetCConceptRightCut>(),
                         Projectile.damage * 10,
                         Projectile.knockBack,
-                        Projectile.owner
+                        Projectile.owner,
+                        1f,   // ai[0] = scaleMultiplier 标记
+                        0f
                     );
+
 
                     // **调整大弹幕的属性**
                     if (Main.projectile[bigProjIndex].active)
@@ -204,12 +219,118 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                     postBigShotCooldown = 150; // 进入 `2.5 秒` 冷却
 
+                    SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 1.5f, Pitch = 0.0f }, Projectile.Center);
+
                     // 屏幕震动效果
-                    float shakePower = 5f;
+                    float shakePower = 55f;
                     float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
                     Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
                 }
             }
+
+
+
+            {
+                // ========= 枪口（枪头）空间点：指向速度方向 5 * 16 =========
+                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
+
+                // ========= 科技蓝 VFX（瞄准阶段常驻）=========
+                vfxTimer++;
+                float phase = vfxTimer * 0.1f;
+
+                // —— 环参数：以枪头为圆心的小环发射，观感更“顺滑”，不是硬贴中心 —— //
+                int ringCount = 6;                  // 每圈数量
+                float ringRadius = 18f;                // 初始半径
+                float ringPulse = 4f * (float)Math.Sin(phase * 1.2f); // 轻微呼吸脉动
+                float radiusNow = ringRadius + ringPulse;
+
+                // 【1】EXO之光（SquishyLightParticle）：高亮柔光，密度适中（每2帧一圈）
+                if ((vfxTimer % 2) == 0)
+                {
+                    for (int i = 0; i < ringCount; i++)
+                    {
+                        float a = MathHelper.TwoPi * i / ringCount + phase * 0.25f;  // 有序 + 缓慢相位
+                        Vector2 dir = a.ToRotationVector2();
+                        Vector2 pos = gunHeadPosition + dir * radiusNow;              // ★ 环上生成
+                                                                                      // 径向外喷 + 少量切向（微旋）
+                        Vector2 vel = dir * Main.rand.NextFloat(1.6f, 2.8f) + dir.RotatedBy(MathHelper.PiOver2) * 0.3f;
+
+                        // 科技蓝主色
+                        Color c = TechBluePalette[Main.rand.Next(TechBluePalette.Length)];
+
+                        SquishyLightParticle exo = new SquishyLightParticle(
+                            pos,
+                            vel,
+                            Main.rand.NextFloat(0.22f, 0.34f),  // 缩放更“亮点”
+                            c,
+                            Main.rand.Next(20, 28),             // 短寿命更干净
+                            opacity: 1f,
+                            squishStrenght: Main.rand.NextFloat(0.9f, 1.2f),
+                            maxSquish: 3.2f,
+                            hueShift: 0f
+                        );
+                        GeneralParticleHandler.SpawnParticle(exo);
+                    }
+                }
+
+                // 【2】辉光球（GlowOrbParticle）：清爽的亮点，稀疏（每3帧，半圈）
+                if ((vfxTimer % 3) == 0)
+                {
+                    int orbCount = ringCount / 2; // 半圈
+                    for (int i = 0; i < orbCount; i++)
+                    {
+                        float a = MathHelper.TwoPi * i / orbCount + phase * 0.35f + 0.7f;
+                        Vector2 dir = a.ToRotationVector2();
+                        Vector2 pos = gunHeadPosition + dir * (radiusNow + 4f);
+                        // 轻微向外
+                        Vector2 vel = dir * Main.rand.NextFloat(0.6f, 1.2f);
+
+                        Color c = TechBluePalette[Main.rand.Next(TechBluePalette.Length)];
+
+                        GlowOrbParticle orb = new GlowOrbParticle(
+                            pos,
+                            vel,
+                            false,
+                            Main.rand.Next(6, 10),          // 6~9帧
+                            Main.rand.NextFloat(0.75f, 0.95f),
+                            c,
+                            true,                           // 加法混合，提亮
+                            false,
+                            true                            // 中心叠白
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+                }
+
+                // 【3】四方粒子（SquareParticle）：赛博能量片，适度点缀（每4帧 1~2 个）
+                if ((vfxTimer % 4) == 0)
+                {
+                    int squares = Main.rand.Next(1, 3);
+                    for (int s = 0; s < squares; s++)
+                    {
+                        float a = Main.rand.NextFloat(MathHelper.TwoPi);
+                        Vector2 dir = a.ToRotationVector2();
+                        Vector2 pos = gunHeadPosition + dir * Main.rand.NextFloat(radiusNow - 6f, radiusNow + 6f); // 环附近“带宽”
+                        Vector2 vel = dir * Main.rand.NextFloat(0.8f, 1.6f) + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.6f, 0.6f);
+
+                        // 主色+少量白/浅金作高光
+                        Color c = (Main.rand.NextBool(4) ? Color.Gold : TechBluePalette[Main.rand.Next(TechBluePalette.Length)]);
+                        c *= 1.1f;
+
+                        SquareParticle sq = new SquareParticle(
+                            pos,
+                            vel,
+                            false,
+                            Main.rand.Next(24, 36),                            // 24~35帧
+                            1.2f + Main.rand.NextFloat(0.6f),                 // 1.2~1.8
+                            c
+                        );
+                        GeneralParticleHandler.SpawnParticle(sq);
+                    }
+                }
+
+            }
+
 
             // 检测松手，直接删除自身
             Player player = Main.player[Projectile.owner];

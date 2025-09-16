@@ -7,6 +7,7 @@ using System;
 using Terraria.DataStructures;
 using ReLogic.Content;
 using Terraria.Audio;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -33,8 +34,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private float catchProgress = 0f;     // 捕捉进度
 
         // ======= 可调参数（直接改数值即可） =======
-        public const float AngleStepDegrees = 72f; // 每个刀片之间的夹角（改成 5f/60f 都行）
+        public const float AngleStepDegrees = 51f; // 每个刀片之间的夹角（改成 5f/60f 都行）
         private static readonly float AngleStepRadians = MathHelper.ToRadians(AngleStepDegrees);
+
+
         private const float OrbitRadius = 290f;    // 魔法阵公转半径
 
         public Color ProjectileColor; // 颜色由 ai[1] 决定
@@ -54,6 +57,62 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             NoDamageIndex = (int)Projectile.ai[1]; // 初始化编号
             SoundEngine.PlaySound(SoundID.Item110 with { Volume = 1.2f, Pitch = -0.0f }, Projectile.Center);
 
+            // ========== 参数 ==========
+            bool isBig = Projectile.scale > 1.5f; // 🚩 判断是否特大号（可换成 ai[2] 等显式标志）
+            int dustCount = isBig ? 48 : 24;
+            float dustScale = isBig ? 1.5f : 1f;
+            float baseRadius = isBig ? 36f : 24f;
+
+            // ========== 1) 往后喷射（尾焰） ==========
+            for (int i = 0; i < (isBig ? 12 : 6); i++)
+            {
+                Vector2 backDir = -Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(0.25f);
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                    DustID.Electric,
+                    backDir * Main.rand.NextFloat(2f, 5f),
+                    150,
+                    Color.Cyan,
+                    1.2f * dustScale
+                );
+                d.noGravity = true;
+                d.fadeIn = 0.8f;
+            }
+
+            // ========== 2) 黄金角向外扩散（有序印刻） ==========
+            float golden = MathHelper.ToRadians(137.5f);
+            for (int n = 0; n < dustCount; n++)
+            {
+                float angle = n * golden;
+                float rad = baseRadius * MathF.Sqrt((n + 1f) / dustCount);
+                Vector2 pos = Projectile.Center + angle.ToRotationVector2() * rad;
+
+                Dust d = Dust.NewDustPerfect(
+                    pos,
+                    (n % 2 == 0) ? DustID.BlueTorch : DustID.GemDiamond,
+                    angle.ToRotationVector2() * Main.rand.NextFloat(0.5f, 1.5f),
+                    160,
+                    Color.Lerp(Color.Cyan, Color.WhiteSmoke, 0.5f),
+                    0.9f * dustScale
+                );
+                d.noGravity = true;
+            }
+
+            // ========== 3) 粒子点缀（科技感） ==========
+            for (int i = 0; i < (isBig ? 4 : 2); i++)
+            {
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    pos,
+                    Vector2.Zero,
+                    false,
+                    12,
+                    0.8f * dustScale,
+                    Color.LightCyan,
+                    true, false, true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
         }
 
         public override void AI()

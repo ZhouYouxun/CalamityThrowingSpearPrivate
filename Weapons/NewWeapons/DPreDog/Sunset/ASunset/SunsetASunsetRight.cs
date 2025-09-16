@@ -263,100 +263,119 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             }
 
 
-            if (chargeTimer == 300 && !hasReleasedPulse)
+            if (chargeTimer <= 300 && !hasReleasedPulse)
             {
-                hasReleasedPulse = true;
+                // ================== 数学化蓄力特效：向日葵 + 对数螺线 + 刻度短弧 ==================
+                // 枪头空间锚点（不抖动，稳定）
+                Vector2 head = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
 
-                Vector2 HeadPosition = Projectile.Center
-                    + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
+                // 归一化的朝前方向
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-                // 1️⃣ 爆心闪光
-                GenericBloom bloom = new GenericBloom(
-                    HeadPosition,
-                    Vector2.Zero,
-                    Color.Gold,
-                    2.0f,
-                    25
-                );
-                GeneralParticleHandler.SpawnParticle(bloom);
+                // 0..1 的蓄力进度（300 帧满）
+                float p = MathHelper.Clamp(chargeTimer / 300f, 0f, 1f);
+                // 平滑插值（smoothstep），更“顺”
+                float ease = p * p * (3f - 2f * p);
+                // 随时间自转相位（统一相位，避免乱）
+                float phase = Main.GlobalTimeWrappedHourly;
 
-                // 2️⃣ 冲击波环（内圈 + 外圈）
-                Particle innerRing = new DirectionalPulseRing(
-                    HeadPosition,
-                    Vector2.Zero,
-                    Color.Orange,
-                    new Vector2(1f, 1f),
-                    0f,
-                    0.1f,   // 初始 scale
-                    1.2f,   // 最终 scale (约 120px)
-                    20
-                );
-                GeneralParticleHandler.SpawnParticle(innerRing);
-
-                Particle outerRing = new DirectionalPulseRing(
-                    HeadPosition,
-                    Vector2.Zero,
-                    Color.Yellow,
-                    new Vector2(1f, 1f),
-                    0f,
-                    0.2f,
-                    2.2f,   // 扩散到更大 (~220px)
-                    35
-                );
-                GeneralParticleHandler.SpawnParticle(outerRing);
-
-                // 3️⃣ 扩散烟雾
-                for (int i = 0; i < 40; i++)
+                // ================== 1) 向日葵分布（黄金角）——稳定聚拢的“能量花盘” ==================
+                // 公式：θ = n * goldenAngle，r ~ sqrt(n/N)，N 随蓄力逐渐增大
+                int seeds = (int)MathHelper.Lerp(5f, 12f, ease);             // 点数从少 → 多
+                float golden = MathHelper.ToRadians(137.50776f);              // 黄金角
+                float baseR = MathHelper.Lerp(6f, 28f, ease);                 // 花盘半径渐增
+                for (int n = 0; n < seeds; n++)
                 {
-                    Vector2 dir = Main.rand.NextVector2Unit();
-                    Particle smoke = new HeavySmokeParticle(
-                        HeadPosition + dir * 8f,
-                        dir * Main.rand.NextFloat(3f, 6f),
-                        Color.Lerp(Color.Gray, Color.Orange, 0.4f),
-                        Main.rand.Next(35, 50),
-                        Main.rand.NextFloat(1.0f, 1.8f),
-                        0.8f,
-                        Main.rand.NextFloat(-1f, 1f),
-                        true
-                    );
-                    GeneralParticleHandler.SpawnParticle(smoke);
-                }
+                    float ang = n * golden + phase * (0.8f + 0.4f * ease);    // 随时间慢转
+                    float rad = baseR * MathF.Sqrt((n + 1f) / (seeds + 1f));  // sqrt 分布更匀
+                    Vector2 pos = head + ang.ToRotationVector2() * rad;
 
-                // 4️⃣ 爆裂火花
-                for (int i = 0; i < 24; i++)
-                {
-                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f, 8f);
-                    PointParticle spark = new PointParticle(
-                        HeadPosition,
-                        vel,
-                        false,
-                        20,
-                        1.3f,
-                        Main.rand.NextBool() ? Color.Orange : Color.Yellow
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                    // 切向 + 轻微外扩，体现“旋着聚气”
+                    Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
+                    Vector2 tan = dir.RotatedBy(MathHelper.PiOver2);
 
-                // 5️⃣ Dust 环绕
-                int dustCount = 32;
-                float radius = 32f;
-                for (int i = 0; i < dustCount; i++)
-                {
-                    float angle = MathHelper.TwoPi / dustCount * i;
-                    Vector2 vel = angle.ToRotationVector2() * 4f;
-                    Dust d = Dust.NewDustPerfect(
-                        HeadPosition,
-                        DustID.YellowTorch,
-                        vel,
-                        150,
-                        Color.Gold,
-                        1.3f
-                    );
+                    int dustType = (n % 2 == 0) ? DustID.Electric : DustID.UltraBrightTorch;
+                    Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.5f + 0.5f * ease);
+
+                    Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.Zero, 150, c, 0.9f + 0.6f * ease);
                     d.noGravity = true;
+                    d.fadeIn = 0.8f;
+                    d.velocity = tan * (0.6f + 1.0f * ease) + dir * (0.2f + 0.6f * ease);
                 }
 
-                // 💥 播放强力音效
-                SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f, Pitch = -0.2f }, HeadPosition);
+                // ================== 2) 对数螺线臂（双臂反向）——有“吸附/缠绕”的动态感 ==================
+                // 极坐标：r = r0 * e^(b t)，θ = θ0 + a t，t ∈ [0,1]
+                for (int arm = 0; arm < 2; arm++)
+                {
+                    float sign = (arm == 0) ? 1f : -1f;
+                    float theta0 = forward.ToRotation() + sign * (MathHelper.PiOver4 * (0.6f + 0.4f * ease));
+                    int steps = 18; // 段数适中
+                    for (int k = 0; k <= steps; k++)
+                    {
+                        float t = k / (float)steps;
+                        // 角度和半径随 t 增长
+                        float theta = theta0 + sign * (2.6f * t + 1.2f * ease * t);
+                        float rr = MathF.Exp(0.9f * t) * (8f + 28f * ease);
+                        Vector2 pos = head + new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * rr;
+
+                        int type = (k % 2 == 0) ? DustID.GemDiamond : DustID.YellowTorch;
+                        Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.3f + 0.7f * t);
+                        float sc = (0.8f + 0.9f * t) * (0.8f + 0.4f * ease);
+
+                        Dust d = Dust.NewDustPerfect(pos, type, Vector2.Zero, 140, c, sc);
+                        d.noGravity = true;
+
+                        Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
+                        d.velocity = dir * (1.0f + 2.0f * t) + dir.RotatedBy(sign * MathHelper.PiOver2) * (0.25f + 0.65f * ease);
+                    }
+                }
+
+                // ================== 3) 刻度短弧（几何刻度感）——“读数/灌能”的视觉语言 ==================
+                int ticks = 12;
+                int seg = 5;
+                float arcR = MathHelper.Lerp(20f, 50f, ease);
+                for (int m = 0; m < ticks; m++)
+                {
+                    float ang0 = forward.ToRotation() + MathHelper.TwoPi * m / ticks + phase * (0.4f + 0.2f * ease);
+                    for (int t = 0; t < seg; t++)
+                    {
+                        float a = ang0 + (t - seg / 2f) * 0.07f;        // 很短的一小段弧
+                        Vector2 dir = a.ToRotationVector2();
+                        Vector2 pos = head + dir * (arcR + t);
+
+                        Dust d = Dust.NewDustPerfect(pos, DustID.UltraBrightTorch, Vector2.Zero, 160, Color.Lerp(Color.White, Color.Orange, 0.4f), 0.8f + 0.4f * ease);
+                        d.noGravity = true;
+                        d.velocity = dir * (0.5f + 0.8f * ease) + dir.RotatedBy(MathHelper.PiOver2) * (0.45f + 0.3f * ease);
+                    }
+                }
+
+                // ================== 4) 轻量粒子点缀（不喧宾夺主） ==================
+                if ((chargeTimer % 3) == 0) // 频率很低
+                {
+                    // 微型能量核 Bloom
+                    GenericBloom bloom = new GenericBloom(
+                        head,
+                        Vector2.Zero,
+                        Color.Lerp(Color.Gold, Color.LightYellow, 0.5f + 0.5f * ease),
+                        MathHelper.Lerp(1.2f, 1.9f, ease),
+                        12
+                    );
+                    GeneralParticleHandler.SpawnParticle(bloom);
+                }
+                if ((chargeTimer % 5) == 0)
+                {
+                    // 细小亮点沿环轻轻旋
+                    float a = forward.ToRotation() + phase * 0.8f;
+                    Vector2 pos = head + a.ToRotationVector2() * MathHelper.Lerp(18f, 36f, ease);
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        pos, Vector2.Zero, false,
+                        8 + (int)(4 * ease),
+                        MathHelper.Lerp(0.7f, 1.0f, ease),
+                        Color.LightYellow,
+                        true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
             }
 
 
@@ -372,7 +391,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
             // 重置速度的逻辑
             {
-                float initialSpeed = 15f; // 设定初始速度值，可根据需求替换具体值
+                float initialSpeed = 35f; // 设定初始速度值，可根据需求替换具体值
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
 
@@ -406,8 +425,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             NPC target = Projectile.FindTargetWithinRange(1600f); // 1600 像素范围内寻找目标
             if (Projectile.timeLeft < 415 && target != null) // 飞行 65 帧后开始追踪
             {
-                float trackingSpeed = 12f;  // 追踪速度
-                float maxTurnRate = 15f;    // 最大旋转角度
+                float trackingSpeed = 30f;  // 追踪速度
+                float maxTurnRate = 22f;    // 最大旋转角度
 
                 // 使用平滑的逐帧调整方式
                 Projectile.velocity = Projectile.SuperhomeTowardsTarget(target, trackingSpeed, maxTurnRate);

@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.ignoreWater = true;
             Projectile.Opacity = 0f; // 初始完全透明
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 3; // 受击无敌帧
+            Projectile.localNPCHitCooldown = 4; // 受击无敌帧
             Projectile.timeLeft = 36000;
         }
 
@@ -209,6 +209,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Vector2 explosionPosition = target.Center;
+
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/空中分裂") with { Volume = 0.7f, Pitch = 0.0f }, Projectile.Center);
+
 
             for (int i = 0; i < 2; i++)
             {
