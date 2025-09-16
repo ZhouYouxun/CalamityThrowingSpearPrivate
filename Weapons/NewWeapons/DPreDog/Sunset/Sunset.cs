@@ -21,11 +21,101 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using Terraria.ModLoader.IO;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 {
-    internal class Sunset : ModItem, ILocalizedModType
+    public class Sunset : ModItem, ILocalizedModType
     {
+        public static Texture2D TextureA;
+        public static Texture2D TextureB;
+        public static Texture2D TextureC;
+
+        public override void Load()
+        {
+            if (!Main.dedServ)
+            {
+                TextureA = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/SunsetA").Value;
+                TextureB = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/SunsetB").Value;
+                TextureC = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/SunsetC").Value;
+            }
+        }
+
+
+        // 主函数：优先用缓存，不行再即时请求，最后兜底
+        // 直接即时加载，不依赖静态缓存
+        private Texture2D GetTextureByMode()
+        {
+            string basePath = "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/";
+            string name = currentMode switch
+            {
+                0 => "SunsetA",
+                1 => "SunsetB",
+                2 => "SunsetC",
+                _ => "SunsetA"
+            };
+
+            return ModContent.Request<Texture2D>(basePath + name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+        }
+
+
+        public override void UpdateInventory(Player player)
+        {
+            switch (currentMode)
+            {
+                case 0:
+                    Item.SetNameOverride("落日"); // 可选
+                    Item.width = 44;
+                    Item.height = 50;
+                    break;
+
+                case 1:
+                    Item.SetNameOverride("勿忘草");
+                    Item.width = 44;
+                    Item.height = 50;
+                    break;
+
+                case 2:
+                    Item.SetNameOverride("概念");
+                    Item.width = 44;
+                    Item.height = 50;
+                    break;
+            }
+        }
+        // 通用能量粒子系统
+        internal static ChargingEnergyParticleSet SunsetEnergyParticles = new ChargingEnergyParticleSet(-1, 2, Color.White, Color.White, 0.04f, 20f);
+
+
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            Texture2D tex = GetTextureByMode();
+
+            // 原先 position 已经是基于 origin 的绘制点，所以不要再加 frame.Width/2
+            Vector2 slotCenter = position;
+
+            // 我们要修正 origin：用贴图自身中心替换默认 origin
+            Vector2 drawOrigin = tex.Size() * 0.5f;
+
+            spriteBatch.Draw(tex, slotCenter, null, drawColor, 0f, drawOrigin, scale, SpriteEffects.None, 0f);
+            return false;
+        }
+
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            Texture2D tex = GetTextureByMode();
+            Vector2 position = Item.position - Main.screenPosition + new Vector2(Item.width / 2f, Item.height / 2f);
+            spriteBatch.Draw(tex, position, null, lightColor, rotation, tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+            return false;
+        }
+
+
+
+
+
+
+
+
         public new string LocalizationCategory => "NewWeapons.DPreDog";
         public override void SetStaticDefaults()
         {
@@ -86,7 +176,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     player.Center,
                     Vector2.Zero,
                     Color.Red,
-                    "CalamityThrowingSpear/Texture/IonizingRadiation",
+                    "CalamityThrowingSpear/Texture/SunsetChange",
                     Vector2.One * 0.33f,
                     Main.rand.NextFloat(-10f, 10f),
                     0.07f,
@@ -98,6 +188,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
             if (player.Calamity().mouseRight && rightClickCooldown == 0 && CanUseItem(player) && player.whoAmI == Main.myPlayer && !Main.mapFullscreen && !Main.blockMouse)
             {
+                // 🚫 如果正在左键攻击动画中，直接禁止右键触发
+                if (player.itemAnimation > 0 && player.altFunctionUse != 2)
+                    return;
+
                 // 🚨 **检查所有投射物，拦截所有形态的 `Aim` 状态**
                 foreach (Projectile proj in Main.projectile)
                 {
@@ -129,11 +223,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 // 设置右键冷却时间
                 rightClickCooldown = 40;
             }
+
+
+
         }
 
 
 
-
+        // 所见攻击
         public override void UseAnimation(Player player)
         {
             if (player.altFunctionUse == 2f)
@@ -184,9 +281,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     {
                         Item.UseSound = SoundID.Item2;
 
-                        Item.useTime = 9;              // 每发间隔 9 帧
-                        Item.useAnimation = 50;        // 总动画 50 帧
-                        Item.useLimitPerAnimation = 2; // 一次动画内打 2 发
+                        Item.useTime = 20;
+                        Item.useAnimation = 20;
 
                         Item.autoReuse = true;
 
@@ -225,11 +321,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     Item.shootSpeed = 24f;
                     Item.damage = 410;
                     Item.UseSound = SoundID.Item2;
-
-                    Item.useTime = 3;
-                    Item.useAnimation = 6;  // 2连发
-                    Item.useLimitPerAnimation = 2;
-
                     Item.channel = false;
                     break;
 
@@ -315,17 +406,37 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 return true; // ✅ 返回 true，让默认逻辑生效
             }
 
-            // === B模式：双射交叉 ===
-            if (currentMode == 1)
+            // B 模式：植物孢子散射
+            if (currentMode == 1) 
             {
-                // 左右各一个偏移
-                for (int i = -1; i <= 1; i += 2)
+                int numberProjectiles = Main.rand.Next(4, 7); // 4~6 发
+                for (int i = 0; i < numberProjectiles; i++)
                 {
-                    Vector2 offset = velocity.RotatedBy(MathHelper.ToRadians(2f * i));
-                    Projectile.NewProjectile(source, position, offset, type, damage, knockback, player.whoAmI);
+                    // 在 ±15° 内随机偏转
+                    float rotation = MathHelper.ToRadians(Main.rand.Next(-15, 16));
+                    Vector2 perturbedSpeed = velocity.RotatedBy(rotation);
+
+                    // 给速度一个 0.8x ~ 1.2x 的随机缩放
+                    perturbedSpeed *= Main.rand.NextFloat(0.8f, 1.2f);
+
+                    // 生成弹幕
+                    int proj = Projectile.NewProjectile(
+                        source,
+                        position,
+                        perturbedSpeed,
+                        type,
+                        damage,
+                        knockback,
+                        player.whoAmI
+                    );
+
+                    // 随机缩放大小（写进 ai[0] 或 localAI 传递给弹幕去应用）
+                    Main.projectile[proj].scale *= Main.rand.NextFloat(0.85f, 1.15f);
                 }
-                return false;
+
+                return false; // 阻止原逻辑（不走二连发）
             }
+
 
             // === 其他情况（容错处理）===
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -350,6 +461,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 position -= 3f * velocity;
             }
         }
+
+
+   
+
+
+
+
+
+
+
+
 
 
 

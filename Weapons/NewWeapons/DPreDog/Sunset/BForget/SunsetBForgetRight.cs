@@ -164,7 +164,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                     float angle2 = angle1 + MathHelper.Pi; // 计算对立角度（180° 相反方向）
 
                     // 控制对立弹幕的生成距离（更远或更近）
-                    float spawnDistance = 25 * 16f;
+                    float spawnDistance = 15 * 16f;
 
                     // 计算对立面位置
                     Vector2 directionToTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);

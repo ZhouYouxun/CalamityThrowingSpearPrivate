@@ -10,6 +10,7 @@ using Terraria.GameContent.Drawing;
 using CalamityMod;
 using System;
 using CalamityMod.Particles;
+using System.Collections.Generic;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -236,6 +237,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     proj.Kill();
                 }
             }
+        }
+
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
+    List<int> behindNPCs, List<int> behindProjectiles,
+    List<int> overPlayers, List<int> overWiresUI)
+        {
+            // 魔法阵始终算作“下层投射物”
+            behindProjectiles.Add(index);
         }
 
         public override bool PreDraw(ref Color lightColor)

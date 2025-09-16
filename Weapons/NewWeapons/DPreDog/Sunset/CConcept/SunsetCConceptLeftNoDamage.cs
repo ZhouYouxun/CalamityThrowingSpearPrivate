@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using ReLogic.Content;
 using Terraria.Audio;
 using CalamityMod.Particles;
+using System.Collections.Generic;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -232,6 +233,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         //public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage0";
 
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
+    List<int> behindNPCs, List<int> behindProjectiles,
+    List<int> overPlayers, List<int> overWiresUI)
+        {
+            // 碎片始终算作“上层”，压在魔法阵之上
+            overPlayers.Add(index);
+        }
 
         public override bool PreDraw(ref Color lightColor)
         {

@@ -1149,6 +1149,127 @@ namespace CalamityThrowingSpear
         }
 
 
+
+        /// <summary>
+        /// 🌱 植物科技·飞行光点外包（蓝/紫孢子 + 正弦信号波纹）
+        /// - 在飞行期间持续调用：生成会移动的蓝紫色孢子（沿着前进方向微漂移）
+        /// - 同时生成以自身为中心的“信号波纹”（半径按正弦起伏）
+        /// - 仅使用 PrettySparkleParticle：与 Calamity 粒子体系严格分离，避免混用
+        /// </summary>
+        /// <param name="center">当前弹幕中心</param>
+        /// <param name="forward">当前弹幕前进向量（可为零，会自动 SafeNormalize）</param>
+        /// <param name="intensity">总强度（默认 1.0，可调小做性能/密度控制）</param>
+        public static void Spawn_PlantTechSporeTrail(Vector2 center, Vector2 forward, float intensity = 1f)
+        {
+            // 归一化前进方向，避免出现NaN
+            forward = forward.SafeNormalize(Vector2.UnitY);
+
+            // ===== 颜色池：蓝、紫（更偏能量感） =====
+            Color[] blues = {
+                new Color( 80, 180, 255), // 亮蓝
+                new Color(120, 200, 255), // 淡蓝
+                Color.CornflowerBlue
+            };
+            Color[] purples = {
+                new Color(170, 120, 235), // 淡紫
+                new Color(140, 100, 210), // 深紫
+                Color.MediumPurple
+            };
+
+            // ===== A) 移动孢子：顺前进方向轻微飘动 =====
+            // 4~6 颗/秒的观感：每帧大约 0~1 颗（根据 intensity 稀释）
+            if (Main.rand.NextFloat() < 0.6f * intensity)
+            {
+                var p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = (Main.rand.NextBool(3) ? purples[Main.rand.Next(purples.Length)] : blues[Main.rand.Next(blues.Length)]);
+                p.LocalPosition = center + Main.rand.NextVector2Circular(6f, 6f);          // 出生在中心附近
+                // 速度：前进向量 + 少量横向扰动（像孢子乱流）
+                Vector2 lateral = forward.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.6f, 0.6f);
+                p.Velocity = forward * Main.rand.NextFloat(0.8f, 1.4f) + lateral;
+
+                p.Scale = new Vector2(Main.rand.NextFloat(1.3f, 1.8f), Main.rand.NextFloat(0.6f, 1.0f));
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.92f;
+
+                p.TimeToLive = Main.rand.Next(26, 42);     // 寿命更短，存在感适中
+                p.FadeOutEnd = p.TimeToLive;
+                p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
+                p.FadeOutStart = (int)(p.TimeToLive * 0.7f);
+
+                p.AdditiveAmount = 0.5f; // 发光量
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+
+            // ===== B) 正弦信号波纹（环形点阵随时间伸缩） =====
+            // 每 6 帧尝试发一圈（整体弱，不会干扰主体），可用 intensity 调稀密
+            if (Main.GameUpdateCount % (int)MathHelper.Clamp(6 / intensity, 4, 60) == 0)
+            {
+                float t = Main.GameUpdateCount * 0.16f;
+                // 半径：8 ± 3 随正弦波动（信号起伏）
+                float r = 8f + (float)Math.Sin(t + (center.X + center.Y) * 0.003f) * 3f;
+                int points = 6; // 6点一圈，简洁而不喧宾
+
+                for (int i = 0; i < points; i++)
+                {
+                    float ang = MathHelper.TwoPi * i / points + t * 0.6f;    // 略带旋转
+                    Vector2 pos = center + ang.ToRotationVector2() * r;
+                    var p = _poolPrettySparkle.RequestParticle();
+                    // 蓝紫交替
+                    p.ColorTint = (i % 2 == 0) ? blues[Main.rand.Next(blues.Length)] : purples[Main.rand.Next(purples.Length)];
+                    p.LocalPosition = pos;
+                    // 轻微外抛速度，随后淡出
+                    p.Velocity = ang.ToRotationVector2() * Main.rand.NextFloat(0.4f, 0.9f);
+
+                    p.Scale = new Vector2(1.4f, 0.6f);
+                    p.FadeInNormalizedTime = 0.01f;
+                    p.FadeOutNormalizedTime = 0.95f;
+                    p.TimeToLive = Main.rand.Next(20, 30);
+                    p.FadeOutEnd = p.TimeToLive;
+                    p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
+                    p.FadeOutStart = (int)(p.TimeToLive * 0.65f);
+                    p.AdditiveAmount = 0.45f;
+
+                    Main.ParticleSystem_World_OverPlayers.Add(p);
+                }
+            }
+        }
+
+
+        public static void Spawn_PlantScatterBurst(Vector2 center, int count = 18, float baseSpeed = 6f)
+        {
+            // 黄金角度分布（137.5°），让点排列有“自然美感”
+            const float goldenAngle = 2.39996323f;
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = i * goldenAngle;
+                Vector2 dir = angle.ToRotationVector2();
+
+                // 基础速度 + 少量随机
+                Vector2 velocity = dir * (baseSpeed * Main.rand.NextFloat(0.9f, 1.2f));
+
+                // 生成光点
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+                p.ColorTint = Main.rand.NextBool() ? new Color(120, 200, 255) : new Color(170, 120, 235); // 蓝/紫交替
+                p.LocalPosition = center;
+                p.Velocity = velocity;
+                p.Scale = new Vector2(
+                    Main.rand.NextFloat(1.4f, 2.0f),
+                    Main.rand.NextFloat(0.6f, 1.0f)
+                );
+                p.FadeInNormalizedTime = 0.01f;
+                p.FadeOutNormalizedTime = 0.92f;
+                p.TimeToLive = Main.rand.Next(28, 40);
+                p.FadeOutEnd = p.TimeToLive;
+                p.FadeInEnd = 10;
+                p.FadeOutStart = 20;
+                p.AdditiveAmount = 0.55f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+
         // 上面这些是CTS的
         // ---------------------------------------------分界线---------------------------------------------
         // 下面这些是CX除了CTS部分的
