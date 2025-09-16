@@ -19,7 +19,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 52; // 设置伤害值
+            Item.damage = 50; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;

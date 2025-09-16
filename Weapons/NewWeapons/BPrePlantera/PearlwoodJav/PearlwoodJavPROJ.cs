@@ -247,18 +247,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 无限多次扎入伤害（靠本地无敌帧限制频率）
+            Projectile.penetrate = 3;
             Projectile.timeLeft = 300;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false; // 允许与方块碰撞
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 30; // 每 X 帧伤害一次
+            Projectile.localNPCHitCooldown = 20; // 每 X 帧伤害一次
         }
         private float lockedRotation;
 
@@ -344,7 +344,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             CTSLightingBoltsSystem.Spawn_PinkHolyExplosion(Projectile.Center);
 
             // 召唤 X 个 INV 子弹
-            for (int i = 0; i < 1; i++) // 保留循环，但数量固定为 1
+            for (int i = 0; i < 2; i++) // 保留循环，但数量固定为 1
             {
                 // 敌人下方 32~40 格的区域
                 Vector2 spawnPos = target.Center + new Vector2(
@@ -364,7 +364,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<PearlwoodJavPROJINV>(),
-                    (int)(Projectile.damage * 0.6f),
+                    (int)(Projectile.damage * 0.5f),
                     Projectile.knockBack,
                     Projectile.owner
                 );
