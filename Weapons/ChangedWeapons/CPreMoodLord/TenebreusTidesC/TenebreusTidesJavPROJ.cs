@@ -156,7 +156,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                     leftSpawn,
                     leftDir,
                     ModContent.ProjectileType<TenebreusTidesJavWaterSword>(),
-                    (int)(Projectile.damage * 0.7f),
+                    (int)(Projectile.damage * 0.27f),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -166,7 +166,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                     rightSpawn,
                     rightDir,
                     ModContent.ProjectileType<TenebreusTidesJavWaterSword>(),
-                    (int)(Projectile.damage * 0.7f),
+                    (int)(Projectile.damage * 0.27f),
                     Projectile.knockBack,
                     Projectile.owner
                 );
@@ -230,8 +230,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                 // 往左右固定角度发射水剑
                 Vector2 leftVelocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(-10)) * 1f;
                 Vector2 rightVelocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(10)) * 1f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, leftVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.7f), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, rightVelocity, ModContent.ProjectileType<TenebreusTidesJavWaterSword>(), (int)(Projectile.damage * 0.7f), Projectile.knockBack, Projectile.owner);
             }
         }
 

@@ -66,7 +66,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             }
             else // 左键
             {
-                Item.damage = 666;
+                Item.damage = 720;
                 Item.useTime = 24;
                 Item.useAnimation = 24;
                 Item.shootSpeed = 5f; 
