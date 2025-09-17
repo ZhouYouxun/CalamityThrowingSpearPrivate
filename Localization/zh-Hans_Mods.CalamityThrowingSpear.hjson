@@ -650,8 +650,7 @@ NewWeapons: {
 			DisplayName: 珍珠木矛
 			Tooltip:
 				'''
-				穿墙并受重力飞行
-				飞行期间无限贯穿
+				扎在敌人身上，并从下方召唤多个追踪的神圣光束
 				[c/bcb696:“刚刚是什么东西飞过来了”]
 				'''
 		}
@@ -1151,6 +1150,11 @@ Items: {
 		DisplayName: 不思议之旅
 		Tooltip: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉祭坛
 	}
+
+	SunsetSEED: {
+		// DisplayName: Sunset S E E D
+		// Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1302,4 +1306,9 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: 摄入了过量的色素
 	ReworkPrompt: CTS：此武器可被转化投掷版本
+}
+
+Tiles: {
+	// SunsetSEEDTile1.MapEntry: Sunset S E E D Tile1
+	// SunsetSEEDTile2.MapEntry: Sunset S E E D Tile2
 }

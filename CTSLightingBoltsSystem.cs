@@ -5,6 +5,8 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.GameContent;
+using CalamityMod.Particles;
+using Terraria.ID;
 
 namespace CalamityThrowingSpear
 {
@@ -1266,6 +1268,202 @@ namespace CalamityThrowingSpear
                 p.AdditiveAmount = 0.55f;
 
                 Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+        /// <summary>
+        /// 🌋 Sun Inferno 级超级爆炸（黄+橙+红）：数学优雅 + 狂野混沌
+        /// - 结构：中心Bloom强闪 → 多层冲击波 → 黄金角螺旋喷发 → 几何环 → 尘雾/火花收尾
+        /// - 绝不使用：刀盘/刀光系列、Metaball 系列
+        /// </summary>
+        public static void Spawn_SunInfernoSuperExplosion(Vector2 center, float scale = 1f)
+        {
+            // ===== 0) 颜色预设 =====
+            Color cCore = new Color(255, 220, 150); // 明亮金黄
+            Color cHot = new Color(255, 170, 60); // 炽热橙
+            Color cDeep = new Color(230, 90, 40); // 深橙红
+            Color cEmber = new Color(180, 60, 30); // 余烬红
+
+            // ===== 1) 中心强闪 + 光环 =====
+            {
+                // 中心超强光晕（瞬时压场）
+                var strong = new StrongBloom(center, Vector2.Zero, cCore, 2.8f * scale, 36);
+                GeneralParticleHandler.SpawnParticle(strong);
+
+                // 柔和外 Bloom
+                var gb = new GenericBloom(center, Vector2.Zero, cHot, 2.0f * scale, 48);
+                GeneralParticleHandler.SpawnParticle(gb);
+
+                // 掏空环（更有“日冕”感）
+                var ring = new BloomRing(center, Vector2.Zero, cDeep, 2.2f * scale, 42);
+                GeneralParticleHandler.SpawnParticle(ring);
+            }
+
+            // ===== 2) 多层冲击波（外扩 + 内收）=====
+            {
+                // 外扩：三层，不同 squish 形成层叠
+                for (int i = 0; i < 3; i++)
+                {
+                    float rot = Main.rand.NextFloat(-0.6f, 0.6f);
+                    var outward = new DirectionalPulseRing(
+                        center,
+                        Vector2.Zero,
+                        Color.Lerp(cHot, cDeep, i / 2f),
+                        new Vector2(1f + 0.2f * i, 1f + 0.1f * i),
+                        rot,
+                        0.10f * (1f + 0.15f * i),
+                        0.90f + 0.05f * i,
+                        24 + 4 * i
+                    );
+                    GeneralParticleHandler.SpawnParticle(outward);
+                }
+                // 内收：一层（视觉上像热波回吸）
+                var inward = new DirectionalPulseRing(center, Vector2.Zero, cEmber * 0.9f,
+                    new Vector2(1.05f, 1.05f), 0f, 0.9f, 0.08f, 22);
+                GeneralParticleHandler.SpawnParticle(inward);
+            }
+
+            // ===== 3) 黄金角螺旋喷发（有序的数学美）=====
+            {
+                const float golden = 2.39996323f; // 约等于 137.5°
+                int seeds = 64;                   // 螺旋点数
+                float baseSpeed = 9.5f * scale;
+
+                for (int i = 0; i < seeds; i++)
+                {
+                    float ang = i * golden;
+                    Vector2 dir = ang.ToRotationVector2();
+
+                    // 主体火花（长线）
+                    var sp = new SparkParticle(
+                        center,
+                        dir * (baseSpeed * Main.rand.NextFloat(0.85f, 1.25f)),
+                        false,
+                        Main.rand.Next(20, 34),
+                        Main.rand.NextFloat(1.1f, 1.7f),
+                        Color.Lerp(cHot, cDeep, Main.rand.NextFloat())
+                    );
+                    sp.Rotation = dir.ToRotation();
+                    GeneralParticleHandler.SpawnParticle(sp);
+
+                    // 辅助尖点（短促）
+                    if (i % 3 == 0)
+                    {
+                        var pt = new PointParticle(
+                            center,
+                            dir.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * (baseSpeed * Main.rand.NextFloat(0.9f, 1.35f)),
+                            false,
+                            Main.rand.Next(12, 18),
+                            Main.rand.NextFloat(1.0f, 1.3f),
+                            Color.Lerp(cCore, cHot, 0.5f)
+                        );
+                        GeneralParticleHandler.SpawnParticle(pt);
+                    }
+                }
+            }
+
+            // ===== 4) 几何环（同心/星形错位）=====
+            {
+                int rings = 3;
+                for (int r = 0; r < rings; r++)
+                {
+                    float radius = (18f + 16f * r) * scale;
+                    int points = 18 + 6 * r;
+                    float phase = Main.GameUpdateCount * 0.05f * (r + 1);
+
+                    for (int i = 0; i < points; i++)
+                    {
+                        float a = MathHelper.TwoPi * i / points + phase;
+                        Vector2 pos = center + a.ToRotationVector2() * radius;
+                        // 细小辉光球做“星粒”
+                        var orb = new GlowOrbParticle(
+                            pos, a.ToRotationVector2() * Main.rand.NextFloat(0.6f, 1.2f), false,
+                            12 + r * 4,
+                            0.9f - 0.1f * r,
+                            Color.Lerp(cCore, cHot, 0.35f + 0.25f * r),
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+
+                        // 少量“裂纹”让边缘更凶
+                        if (Main.rand.NextBool(10 - r * 2))
+                        {
+                            var crack = new CrackParticle(
+                                pos,
+                                a.ToRotationVector2() * Main.rand.NextFloat(0.6f, 1.4f),
+                                Color.Lerp(cDeep, cEmber, 0.5f),
+                                new Vector2(1f, 1f),
+                                Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),
+                                0.6f,
+                                1.6f,
+                                18 + 2 * r
+                            );
+                            GeneralParticleHandler.SpawnParticle(crack);
+                        }
+                    }
+                }
+            }
+
+            // ===== 5) 狂野尘雾/火屑（无序的力量感）=====
+            {
+                // 重烟雾团
+                for (int i = 0; i < 40; i++)
+                {
+                    var smokeH = new HeavySmokeParticle(
+                        center + Main.rand.NextVector2Circular(14f, 14f),
+                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.4f, 3.2f),
+                        Color.Lerp(Color.Gray, cEmber, 0.5f),
+                        34,
+                        Main.rand.NextFloat(0.6f, 1.1f) * scale,
+                        0.9f,
+                        Main.rand.NextFloat(-0.8f, 0.8f),
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(smokeH);
+                }
+                // 轻烟 + 火星
+                for (int i = 0; i < 90; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(
+                        center + Main.rand.NextVector2Circular(20f, 20f),
+                        (i % 3 == 0) ? DustID.GoldFlame : DustID.Torch,
+                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f),
+                        150,
+                        (i % 3 == 0) ? cCore : cHot,
+                        Main.rand.NextFloat(0.9f, 1.4f)
+                    );
+                    d.noGravity = true;
+                    d.fadeIn = 1.0f;
+                }
+                // 方块碎屑（科技味）
+                for (int i = 0; i < 24; i++)
+                {
+                    var sq = new SquareParticle(
+                        center,
+                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
+                        false,
+                        16 + Main.rand.Next(10),
+                        Main.rand.NextFloat(0.9f, 1.4f),
+                        Color.Lerp(cCore, cHot, 0.4f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(sq);
+                }
+            }
+
+            // ===== 6) 细节爆炸贴图（高质量层）=====
+            {
+                var exp = new DetailedExplosion(
+                    center, Vector2.Zero, Color.OrangeRed * 0.95f, Vector2.One,
+                    Main.rand.NextFloat(-5f, 5f),
+                    0.03f * (1.5f * scale),
+                    0.30f * (1.5f * scale),
+                    10
+                );
+                GeneralParticleHandler.SpawnParticle(exp);
+
+                // 外层再铺一圈 BloomParticle，做余辉放射
+                var bp = new BloomParticle(center, Vector2.Zero, cHot, 0.8f, 2.6f, 50);
+                GeneralParticleHandler.SpawnParticle(bp);
             }
         }
 

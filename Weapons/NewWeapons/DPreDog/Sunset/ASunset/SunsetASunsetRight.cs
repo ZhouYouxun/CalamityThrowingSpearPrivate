@@ -14,6 +14,8 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using CalamityMod.Particles;
 using Terraria.Audio;
+using Terraria.Graphics.CameraModifiers; // PunchCameraModifier
+
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 {
@@ -503,7 +505,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         public override void OnKill(int timeLeft)
         {
 
-            
+
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
@@ -565,6 +567,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             }         
 
             target.AddBuff(ModContent.BuffType<SunsetASunsetEDebuff>(), 300); // 300 帧 = 5 秒
+
+            // 屏幕震动
+            float shakePower = 55f;
+            float distanceFactor = Utils.GetLerpValue(
+                1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
+            // ========== 调用外包：Sun Inferno 超级爆炸（黄红混合，数学+狂野） ==========
+            CalamityThrowingSpear.CTSLightingBoltsSystem.Spawn_SunInfernoSuperExplosion(Projectile.Center, 1.0f);
+
+
+            // 额外少许“向外伞状”强火花，补一点“爆裂”感
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            int rays = 10;
+            float cone = MathHelper.ToRadians(42f);
+            for (int i = 0; i < rays; i++)
+            {
+                float off = MathHelper.Lerp(-cone, cone, i / (float)(rays - 1));
+                Vector2 dir = forward.RotatedBy(off);
+                float speed = Main.rand.NextFloat(7f, 11.5f);
+
+                var sp = new SparkParticle(
+                    Projectile.Center,
+                    dir * speed,
+                    false,
+                    Main.rand.Next(20, 28),
+                    Main.rand.NextFloat(1.3f, 1.8f),
+                    Color.Lerp(Color.Orange, Color.OrangeRed, 0.5f)
+                );
+                sp.Rotation = dir.ToRotation();
+                GeneralParticleHandler.SpawnParticle(sp);
+            }
 
             SoundEngine.PlaySound(SoundID.Item34, Projectile.position);
         }

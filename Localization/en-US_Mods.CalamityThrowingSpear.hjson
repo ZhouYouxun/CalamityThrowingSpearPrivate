@@ -650,8 +650,7 @@ NewWeapons: {
 			DisplayName: Pearlwood Pike
 			Tooltip:
 				'''
-				Passes through walls and flies with gravity  
-				Pierces infinitely during flight  
+				Entombs an enemy and summons multiple homing holy beams from below.
 				[c/bcb696:“What was that that just flew past?”]
 				'''
 		}
@@ -1152,6 +1151,11 @@ Items: {
 		DisplayName: Xiao Zhi Tiao So D2
 		Tooltip: ""
 	}
+
+	SunsetSEED: {
+		DisplayName: Sunset S E E D
+		Tooltip: ""
+	}
 }
 
 ModBuff: {
@@ -1296,4 +1300,9 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: ingested too many pigments
 	ReworkPrompt: CTS: This weapon can be converted into a throwing version
+}
+
+Tiles: {
+	SunsetSEEDTile1.MapEntry: Sunset S E E D Tile1
+	SunsetSEEDTile2.MapEntry: Sunset S E E D Tile2
 }
