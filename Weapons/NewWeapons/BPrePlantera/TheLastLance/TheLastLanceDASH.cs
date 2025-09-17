@@ -278,6 +278,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             lockedDirection = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
             Projectile.velocity = lockedDirection * DashSpeed;
 
+            // 检查玩家是否处于海洋群系，以便造成额外的两倍伤害
+            if (owner != null && owner.ZoneBeach)
+            {
+                Projectile.damage = (int)(Projectile.damage * 2.0f); // 造成两倍伤害
+            }
+
             // 如果是超级冲刺，设置冲刺时间和生存时间无限制
             if (isSuperDash)
             {
@@ -303,20 +309,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
         }
 
 
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             int freezeDuration = 180; // 冻结持续时间，单位为帧
             target.AddBuff(ModContent.BuffType<GlacialState>(), freezeDuration); // 冰河时代
             target.AddBuff(BuffID.Frostburn, freezeDuration); // 原版的霜火效果
             target.AddBuff(BuffID.Chilled, freezeDuration); // 原版的寒冷效果
-
-            // 检查玩家是否处于海洋群系，以便造成额外的两倍伤害
-            Player owner = Main.player[Projectile.owner];
-            if (owner != null && owner.ZoneBeach)
-            {
-                Projectile.damage = (int)(Projectile.damage * 2.0f); // 造成两倍伤害
-            }
         }
 
         public override void SetStaticDefaults()

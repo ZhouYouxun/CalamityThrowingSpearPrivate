@@ -162,7 +162,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
             }
         }
 
-
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2) // 右键点击
