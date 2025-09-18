@@ -32,12 +32,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 62;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 1;
-            Projectile.timeLeft = 480;
+            Projectile.timeLeft = 30;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
@@ -47,6 +47,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
         public override void OnSpawn(IEntitySource source)
         {
+
             // 生成粒子爆炸效果
             Particle blastRing = new CustomPulse(
                 Projectile.Center, // 以弹幕为中心
@@ -61,14 +62,82 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             );
             GeneralParticleHandler.SpawnParticle(blastRing);
         }
+        private int lifeTimer = 0; // 存活帧数计时器
+        private bool flightInited = false; // 是否已初始化飞行方向
+        private Vector2 launchDir;         // 出生时的“前进方向”，只记录一次
 
         public override void AI()
         {
-            // 直线飞行旋转
+
+            // ===== 在 AI() 里，原来的飞行逻辑整段替换为下面这段 =====
+
+            // 仅第一次进入时，记录“出生前进方向”
+            if (!flightInited)
+            {
+                flightInited = true;
+
+                // 以出生初速度为基准；若为零，用朝向/朝右兜底
+                if (Projectile.velocity.LengthSquared() > 0.0001f)
+                    launchDir = Vector2.Normalize(Projectile.velocity);
+                else
+                    launchDir = (Projectile.spriteDirection >= 0) ? Vector2.UnitX : -Vector2.UnitX;
+
+                // 可选：保证 launchDir 单位化
+                if (launchDir.LengthSquared() < 0.5f)
+                    launchDir = (Projectile.direction >= 0) ? Vector2.UnitX : -Vector2.UnitX;
+
+                lifeTimer = 0; // 第一次进来重置计时
+            }
+
+            lifeTimer++;
+
+            // iOS 风格缓动参数（可调）
+            const int backFrames = 5;     // 退后用 5 帧
+            const int dashAccelFrames = 20; // 前冲的加速阶段时长
+            const float backSpeedStart = 10f; // 刚退后时较快
+            const float backSpeedEnd = 2f;  // 退后尾声放缓
+            const float dashSpeedStart = 6f;  // 前冲起步较慢
+            const float dashSpeedEnd = 228f; // 前冲末端较快（爆发）
+
+            // 固定正向 / 反向
+            Vector2 dirFwd = launchDir;       // 一直用“出生时前进方向”
+            Vector2 dirBack = -launchDir;      // 其反向：退后用
+
+            float speed;
+
+            // 阶段一：退后（仅前 5 帧，ease-out：先快后慢）
+            if (lifeTimer <= backFrames)
+            {
+                float t = lifeTimer / (float)backFrames;         // 0→1
+                float easeOut = 1f - MathF.Pow(1f - t, 0.7f);    // 缓出
+                                                                 // 先快后慢：从 backSpeedStart 过渡到 backSpeedEnd
+                speed = MathHelper.Lerp(backSpeedStart, backSpeedEnd, easeOut);
+                Projectile.velocity = dirBack * speed;
+            }
+            else
+            {
+                // 阶段二：前冲（第 6 帧开始，ease-in：先慢后快）
+                float t = (lifeTimer - backFrames) / (float)dashAccelFrames; // 0→1
+                t = Math.Clamp(t, 0f, 1f);
+                float easeIn = MathF.Pow(t, 1.8f); // 缓入
+
+                // 从 dashSpeedStart 加速到 dashSpeedEnd；超过加速阶段后保持 dashSpeedEnd
+                speed = MathHelper.Lerp(dashSpeedStart, dashSpeedEnd, easeIn);
+                Projectile.velocity = dirFwd * speed;
+            }
+
+            // 旋转跟随速度方向
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
+
+
+
+
+
+
+
             // === 飞行科技蓝特效 ===
-            if (Main.rand.NextBool(3)) // 大约每3帧一个
+            if (Main.rand.NextBool(1)) // 大约每x帧一个
             {
                 Color[] techBlue = {
             new Color(80, 200, 255),
@@ -189,7 +258,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             CreateMagicCircle(target.Center);
 
             // 播放独特击中音效
-            SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
+            //SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
         }
 
 

@@ -875,7 +875,50 @@ NewWeapons: {
 
 		Sunset: {
 			DisplayName: Sunset
-			Tooltip: ""
+			Tooltip: "[Stage]"
+			DisplayNameS0: Sunset
+			TooltipS0:
+				'''
+				The crimson spear, burning with twilight.
+				Left-click — unleash a four-strike volley, each spear detonating into a miniature starburst.
+				Right-click — raise the spear to the heavens, gathering the light of every star,
+				then hurl it as a newborn sun, collapsing into a cataclysmic explosion.
+
+				— This is the sight he cherished most,
+				made beautiful by her presence, burning in his grasp.
+				At the very end, he crushed the cosmos into a single sun,
+				only to share one final sunset with her.
+				'''
+			DisplayNameS1: Forget-Me-Not
+			TooltipS1:
+				'''
+				The blue spear, a flower of memory.
+				Left-click — scatter luminous bolts, summoning spectral tendrils that lash again and again.
+				Right-click — hide the spear within the hand, calling forth shards and tentacles,
+				closing around the foe in a merciless cage.
+
+				— She followed him through countless resets of the timeline,
+				trying to free him from the script of fate.
+				As his memory of her faded away, only the forget-me-nots remained,
+				whispering softly across eternity:  
+				“Please, don’t forget me.”
+				'''
+			DisplayNameS2: Concept
+			TooltipS2:
+				'''
+				The silver-gold spear, manifestation of dominion.
+				Switching to this form — ten fragments of inspiration rise and orbit your body.
+				Left-click — whirl the spear in a deadly dance, then raise it high;
+				a vast magic circle brands the enemy, gnawing at its soul,
+				while the fragments dive into the seal, weaving a storm of ruin.
+				Right-click — lock onto the nearest foe, summoning falling shards of time.
+				Every thirty shards merge into a colossal timebreaker,
+				crashing down from above to shatter space itself.
+
+				— This is his true power:
+				beyond all limits, ruling over everything.
+				Even “concepts” themselves bow at the tip of his spear.
+				'''
 		}
 	}
 

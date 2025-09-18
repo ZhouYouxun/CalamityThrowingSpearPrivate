@@ -198,8 +198,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             small.netUpdate = true;
                         }
 
-                        SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
-
+                        SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = 0.0f }, Projectile.Center);
+    
                         // 轮次推进
                         shotIndex++;
                         if (shotIndex >= shotsPerRound)
@@ -254,11 +254,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                     big.scale *= 5f;
                                 }
 
-                                SoundEngine.PlaySound(
-                                    new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded")
-                                    { Volume = 1.5f },
-                                    target.Center
-                                );
+                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/电弧发射器发射") with { Volume = 2.2f, Pitch = -0.0f }, Projectile.Center);
+
 
                                 // 屏幕震动
                                 float shakePower = 55f;

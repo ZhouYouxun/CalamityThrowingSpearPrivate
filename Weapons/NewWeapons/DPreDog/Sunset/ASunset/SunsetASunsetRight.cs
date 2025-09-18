@@ -404,78 +404,233 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
 
-            // 仅在冲刺阶段添加粒子特效
-            if (Main.rand.NextFloat() < 0.6f) // 控制粒子生成的概率
+            // 飞行期间粒子特效：狂野放射
+            //if (Main.rand.NextFloat() < 0.8f) // 提高整体出现概率
+            for (int i = 0; i < 7; i++)
             {
-                // 计算枪头位置
-                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
+                Vector2 headPos = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
+                Vector2 offset = Projectile.velocity.RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(-1f, 1f);
+                Vector2 basePos = headPos + offset;
+                Vector2 vel = Projectile.velocity.SafeNormalize(Vector2.Zero);
 
-                // 在枪头周围 1×16 半径的矩形区域内均匀分布
-                Vector2 particlePos = gunHeadPosition + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1f, 1f);
+                float choice = Main.rand.NextFloat();
 
-                // **修正粒子的运动方向，使其与弹幕方向一致**
-                Vector2 particleVelocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 2f;
-
-                // 创建金黄色线性粒子
-                Particle trail = new SparkParticle(
-                    particlePos, // 粒子初始位置
-                    particleVelocity, // **粒子运动方向修正**
-                    false, // ❌ 不受重力影响
-                    60, // 生命周期 60 帧
-                    1.0f, // 缩放大小
-                    Color.Gold // 颜色改为金黄色
-                );
-
-                // 生成粒子
-                GeneralParticleHandler.SpawnParticle(trail);
+                if (choice < 0.3f)
+                {
+                    // 🔥 SparkParticle（锐利拖尾）
+                    Particle spark = new SparkParticle(
+                        basePos,
+                        vel * 2f,
+                        false,
+                        50,
+                        1.1f,
+                        Color.Lerp(Color.Orange, Color.Gold, 0.5f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+                else if (choice < 0.6f)
+                {
+                    // ✨ GlowOrbParticle（放射性光球）
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        basePos,
+                        vel.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f, 2f),
+                        false,
+                        20,
+                        Main.rand.NextFloat(0.8f, 1.2f),
+                        Color.Lerp(Color.Gold, Color.White, 0.7f),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+                else if (choice < 0.8f)
+                {
+                    // ◼️ SquareParticle（科技碎片）
+                    SquareParticle sq = new SquareParticle(
+                        basePos,
+                        vel.RotatedByRandom(0.8f) * Main.rand.NextFloat(2f, 5f),
+                        false,
+                        25,
+                        Main.rand.NextFloat(1.3f, 1.8f),
+                        Color.Lerp(Color.OrangeRed, Color.Yellow, 0.6f)
+                    );
+                    GeneralParticleHandler.SpawnParticle(sq);
+                }
+                else
+                {
+                    // 🌌 Dust（无序星屑）
+                    int dustType = Main.rand.NextBool() ? DustID.Torch : DustID.SolarFlare;
+                    Dust d = Dust.NewDustPerfect(
+                        basePos,
+                        dustType,
+                        vel.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 3f),
+                        150,
+                        Color.Lerp(Color.Orange, Color.Gold, 0.8f),
+                        1.2f
+                    );
+                    d.noGravity = true;
+                    d.fadeIn = 1.1f;
+                }
             }
 
 
 
+
+
+            // ========== 🔧 参数 ==========
+            int teleportDelayFrames = 10;     // 直线飞行多久后传送（按“帧”计算）
+            float straightSpeed = 30f;    // 直线飞行速度
+            float postTeleportUpSpeed = 30f;    // 传送后向上突刺速度
+            float searchRadius = 240000f;  // 寻敌半径
+            float teleportOffsetX = 0f;     // 传送到敌人正下方时的横向偏移
+            float teleportOffsetY = 20f;    // 传送到敌人正下方时的纵向偏移
+            float shakePower = 8f;     // 屏幕震动强度（会按距离衰减）
+
+            // ========== 朝向 & 碰撞 ==========
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.tileCollide = true;
 
-            NPC target = GetClosestChaseableNPC(2400f);
-            dashPhaseTimer++;
+            // ========== 计时：只在“真实帧”递增 ==========
+            // extraUpdates > 0 时，一个游戏帧会多次调用 AI；
+            // 只在 numUpdates == 0 的那次算“1帧”，从而保证 teleportDelayFrames 真正按帧数生效。
+            if (Projectile.numUpdates == 0)
+                dashPhaseTimer++;
 
-            if (!enteredFinalCharge)
+            // ========== 直线飞行，不追踪（直到边界帧） ==========
+            Vector2 dir = Projectile.velocity.LengthSquared() > 0.001f
+                ? Vector2.Normalize(Projectile.velocity)
+                : -Vector2.UnitY; // 兜底向上
+
+            if (dashPhaseTimer < teleportDelayFrames)
             {
-                // ========== 第一子阶段：软追踪、速度逐渐衰减 ==========
-                Projectile.velocity *= 0.95f;
+                Projectile.velocity = dir * straightSpeed;
 
-                if (target != null)
+                // （可选）你的“狂野放射拖尾”可以继续放在这里
+                // EmitFlightTrailFancy(); // 就是你那段 Spark/Orb/Square/Dust 组合
+
+                return; // 直线阶段直接返回（注意：我们已经在上面先递增了计时器）
+            }
+
+            // ========== 边界帧：先放特效，再传送 ==========
+            if (dashPhaseTimer == teleportDelayFrames)
+            {
+                // ——1) 记录传送前位置，播放恒星爆炸风格的法阵（保留在原地）——
+                Vector2 preTeleportPos = Projectile.Center;
+                EmitTeleportStarburst(preTeleportPos, shakePower);
+
+                // ——2) 寻找最近可追踪目标——
+                NPC target = GetClosestChaseableNPC(searchRadius);
+
+
+
+                if (target != null && target.active && !target.friendly && !target.dontTakeDamage)
                 {
-                    Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                    // 慢慢旋向目标
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, dir * Projectile.velocity.Length(), 0.05f);
+                    Rectangle r = target.getRect();
+
+                    // ❌ 不再用固定的 +20px，而是用目标高度来计算偏移
+                    float offsetMultiplier = 4f; // 出现在敌人高度的 4 倍下方
+                    float spawnDistanceBelow = r.Height * offsetMultiplier;
+
+                    Vector2 teleportPos = new Vector2(r.Center.X, r.Bottom + spawnDistanceBelow);
+                    Projectile.Center = teleportPos;
                 }
 
-                // 持续 30 帧后进入第二子阶段
-                if (dashPhaseTimer >= 30)
-                {
-                    enteredFinalCharge = true;
-                    dashPhaseTimer = 0;
+                // 传送后设定高速向上突刺
+                Projectile.velocity = -Vector2.UnitY * postTeleportUpSpeed;
 
-                    if (target != null)
-                    {
-                        // ========== 第二子阶段：一次性高速冲刺 ==========
-                        Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                        Projectile.velocity = dir * 45f; // 直接锁定敌人高速突刺
-                    }
-                    else
-                    {
-                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * 45f;
-                    }
-                }
+
+
+
+                // ——5) 同步一次（联机更稳）——
+                Projectile.netUpdate = true;
             }
-            else
-            {
-                // 第二子阶段：不再调整角度，保持直线突刺
-            }
+
+            // （剩余帧：保持上冲，不再改角度/速度）
 
 
 
         }
+
+
+
+
+
+
+
+
+        // 封装：传送前“恒星爆炸”法阵（与你切换武器时的特效不同）
+        private void EmitTeleportStarburst(Vector2 pos, float shakePower)
+        {
+            // A. 五角星顶点的收缩脉冲环
+            int points = 5;
+            float R = 80f;
+            for (int i = 0; i < points; i++)
+            {
+                float ang = MathHelper.TwoPi * i / points;
+                Vector2 starPos = pos + ang.ToRotationVector2() * R;
+                Particle ring = new DirectionalPulseRing(
+                    starPos,
+                    Vector2.Zero,
+                    Color.Lerp(Color.OrangeRed, Color.Yellow, 0.5f),
+                    Vector2.One,
+                    12f,
+                    0.18f,
+                    3.5f,
+                    16
+                );
+                GeneralParticleHandler.SpawnParticle(ring);
+            }
+
+            // B. 对数螺旋的高亮光点（“星爆喷涌”）
+            for (int arm = 0; arm < 2; arm++)
+            {
+                float sign = arm == 0 ? 1f : -1f;
+                for (int k = 0; k < 18; k++)
+                {
+                    float t = k / 18f;
+                    float theta = sign * (t * 6.28f);
+                    float rr = 6f * MathF.Exp(0.25f * t);
+                    Vector2 p = pos + theta.ToRotationVector2() * rr * 15f;
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        p,
+                        Vector2.Zero,
+                        false,
+                        18,
+                        1.2f,
+                        Color.Lerp(Color.Yellow, Color.White, 0.5f),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+            }
+
+            // C. 星尘喷射（环向爆散）
+            for (int i = 0; i < 12; i++)
+            {
+                float ang = MathHelper.TwoPi * i / 12f;
+                Vector2 dir = ang.ToRotationVector2();
+                var sp = new SparkParticle(
+                    pos,
+                    dir * Main.rand.NextFloat(6f, 11f),
+                    false,
+                    Main.rand.Next(18, 26),
+                    Main.rand.NextFloat(1.2f, 1.6f),
+                    Color.Lerp(Color.OrangeRed, Color.Orange, 0.5f)
+                );
+                sp.Rotation = dir.ToRotation();
+                GeneralParticleHandler.SpawnParticle(sp);
+            }
+
+            // D. 轻量屏幕震动 + 音效
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Vector2.Distance(pos, Main.LocalPlayer.Center), true);
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+            SoundEngine.PlaySound(SoundID.Item74, pos);
+        }
+
         // === 工具函数：寻找可追踪的最近 NPC（可穿墙可选）===
         private NPC GetClosestChaseableNPC(float maxDetectDistance, bool requireLineOfSight = false)
         {
@@ -511,7 +666,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         {
             Vector2 explosionPosition = target.Center;
 
-            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 0.7f, Pitch = 0.0f }, Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/explosion-6801") with { Volume = 1.7f, Pitch = 0.0f }, Projectile.Center);
 
             //Particle bolt = new CustomPulse(
             //    Projectile.Center, // 粒子生成位置，与弹幕中心重合

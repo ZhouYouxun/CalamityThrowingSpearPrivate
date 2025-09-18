@@ -28,17 +28,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             SpriteBatch spriteBatch = Main.spriteBatch;
 
             // ========== 可调参数 ==========
-            int totalLifetime = 15; // 总耗时
-            float baseScale = 2.2f; // 初始缩放
-            Color baseColor = Color.Cyan; // 基础颜色
-            Color edgeColor = Color.White; // 渐变到的颜色
-            float rotationSpeed = 0.25f; // 每帧旋转速度
-                                         // =============================
+            int totalLifetime = 15;        // 总耗时
+            float startScale = 0.6f;       // 出生时的缩放
+            float endScale = 0.0f;         // 消失时的缩放
+            Color baseColor = Color.Cyan;  // 初始颜色
+            Color edgeColor = Color.White; // 结束渐变颜色
+            float rotationSpeed = 0.25f;   // 每帧旋转速度
+                                           // =============================
 
             // 生命周期进度（0 = 出生, 1 = 死亡）
             float progress = 1f - (Projectile.timeLeft / (float)totalLifetime);
-            float fade = 1f - progress; // 渐隐
-            float scale = baseScale * (1f - progress); // 缩小
+            float fade = 1f - progress;
+
+            // 使用线性插值计算缩放
+            float scale = MathHelper.Lerp(startScale, endScale, progress);
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
@@ -58,7 +61,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             // 颜色渐变
             Color col = Color.Lerp(baseColor, edgeColor, progress) * fade;
 
-            // 中心点
             Vector2 origin;
 
             // ====== 魔法系列绘制 ======
@@ -92,6 +94,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
             return false;
         }
+
 
 
 

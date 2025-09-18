@@ -144,53 +144,56 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 
         public void ProduceBeamDust()
         {
-            // 保护：无方向或无长度时不生成特效
+            // ========== 可调参数 ==========
+            float particleSpacing = 24f;    // 粒子间隔（越小越紧凑）
+            int minPoints = 6;              // 最少采样点数
+            int maxPoints = 28;             // 最多采样点数
+
+            // BloomLine 设置
+            float bloomThickness = 0.6f;    // BloomLine 粗细（比原来大幅缩小）
+            int bloomLifetime = 40;         // BloomLine 寿命
+            Color bloomColor = Color.Lerp(Color.White, Color.Cyan, 0.2f);
+
+            // 其他粒子设置
+            float exoVelocityMult = 2.8f;   // EXO之光速度倍率
+            float orbVelocityMult = 1.6f;   // 辉光球速度倍率
+            float squareVelocityMult = 2.2f;// 方块粒子速度倍率
+            float dustVelocityMult = 2.5f;  // Dust 粒子速度倍率
+                                            // ==============================
+
             if (beamVector == Vector2.Zero || Projectile.ai[0] <= 2f)
                 return;
 
             Vector2 start = Projectile.Center;
             Vector2 end = Projectile.Center + beamVector * Projectile.ai[0];
 
-            // =========================
-            // ① BloomLineVFX（首位，极重要）
-            // =========================
-            {
-                // 线段长度做个上限，避免离谱过长；粗细随 scale 轻微波动
-                float lineLen = Math.Min(Projectile.ai[0], 240f);
-                float thickness = 1.4f * MathHelper.Lerp(0.9f, 1.1f, (float)Main.rand.NextDouble());
-                Color lineColor = Color.Lerp(Color.White, Color.Cyan, 0.25f) * Projectile.Opacity;
+            // ====== BloomLine 覆盖整条激光 ======
+            BloomLineVFX bloomLine = new BloomLineVFX(
+                start,
+                beamVector * Projectile.ai[0], // 覆盖整条激光
+                bloomThickness,
+                bloomColor * Projectile.Opacity,
+                bloomLifetime
+            );
+            GeneralParticleHandler.SpawnParticle(bloomLine);
 
-                BloomLineVFX bloomLine = new BloomLineVFX(
-                    start,                       // 起点
-                    beamVector * lineLen,        // 方向与长度
-                    thickness,                   // 粗细
-                    lineColor,                   // 颜色（浅蓝靠白）
-                    40                           // 生命周期（帧）
-                );
-                GeneralParticleHandler.SpawnParticle(bloomLine);
-            }
+            // ====== 计算路径采样点 ======
+            int points = Math.Clamp((int)(Projectile.ai[0] / particleSpacing), minPoints, maxPoints);
 
-            // =========================
-            // 路径等距采样：优雅混合三类粒子 + Dust
-            // =========================
-            int points = Math.Clamp((int)(Projectile.ai[0] / 48f), 3, 14); // 距离越长采样越多
             for (int i = 0; i < points; i++)
             {
                 float t = (points == 1) ? 0f : i / (float)(points - 1);
-                Vector2 pos = Vector2.Lerp(start, end, t) + Main.rand.NextVector2Circular(2f, 2f);
+                Vector2 pos = Vector2.Lerp(start, end, t);
 
-                // ② EXO之光（SquishyLightParticle）：高亮柔光，主能量感
-                if (Main.rand.NextBool(2)) // 约 50% 采样点生成
+                // ① EXO之光：亮度极高，速度更快
+                if (Main.rand.NextBool(2))
                 {
-                    // 冰蓝偏白：科技蓝基调
-                    Color exoColor = Color.Lerp(Color.White, new Color(120, 200, 255), 0.55f) * Projectile.Opacity;
-
                     SquishyLightParticle exoEnergy = new SquishyLightParticle(
                         pos,
-                        (-beamVector).RotatedByRandom(0.39f) * Main.rand.NextFloat(0.4f, 1.6f), // 轻微回喷动感
-                        0.26f + Main.rand.NextFloat(0.06f), // 细微随机缩放
-                        exoColor,
-                        25,                  // 寿命
+                        (-beamVector).RotatedByRandom(0.39f) * Main.rand.NextFloat(0.8f, 2.2f) * exoVelocityMult,
+                        0.28f,
+                        Color.Lerp(Color.White, Color.Cyan, 0.55f),
+                        25,
                         opacity: 1f,
                         squishStrenght: 1f,
                         maxSquish: 3f,
@@ -199,73 +202,58 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
                     GeneralParticleHandler.SpawnParticle(exoEnergy);
                 }
 
-                // ③ 辉光球（GlowOrbParticle）：清爽的小亮点，提“线”的纯净感
+                // ② 辉光球：清爽光点，快速漂移
+                if (Main.rand.NextBool(2))
                 {
-                    Color orbColor = Color.Lerp(new Color(80, 200, 255), Color.White, 0.6f) * Projectile.Opacity;
                     GlowOrbParticle orb = new GlowOrbParticle(
                         pos,
-                        Vector2.Zero,
-                        false,   // 不受重力
-                        6,       // 短寿命灵动
-                        0.8f + Main.rand.NextFloat(0.25f),
-                        orbColor,
-                        true,    // 加法混合
+                        beamVector.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.2f, 2.5f) * orbVelocityMult,
                         false,
-                        true     // 中心叠加高亮
+                        10,
+                        0.9f,
+                        Color.Lerp(Color.White, Color.Cyan, 0.6f),
+                        true,
+                        false,
+                        true
                     );
                     GeneralParticleHandler.SpawnParticle(orb);
                 }
 
-                // ④ 四方粒子（SquareParticle）：赛博/数字化味道
-                if (Main.rand.NextBool(3)) // 约 33%
+                // ③ 四方粒子：几何感，往旁边飞
+                if (Main.rand.NextBool(3))
                 {
-                    Color squareC = (Color.Cyan * 1.4f) * Projectile.Opacity;
-                    SquareParticle squareParticle = new SquareParticle(
+                    SquareParticle square = new SquareParticle(
                         pos,
-                        beamVector * Main.rand.NextFloat(0.8f, 1.6f), // 沿束方向轻速漂移
-                        false,     // 不受重力
-                        30,        // 寿命
-                        1.5f + Main.rand.NextFloat(0.8f), // 尺寸随机
-                        squareC
+                        beamVector.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(1.5f, 3.2f) * squareVelocityMult,
+                        false,
+                        30,
+                        1.7f + Main.rand.NextFloat(0.6f),
+                        Color.Cyan * 1.5f
                     );
-                    GeneralParticleHandler.SpawnParticle(squareParticle);
+                    GeneralParticleHandler.SpawnParticle(square);
                 }
 
-                // ⑤ Dust 混合（电弧 + 蓝晶 + 蓝宝石）：轻量点缀，避免噪点过多
-                if (Main.rand.NextBool(2)) // 约 50%
+                // ④ Dust：小碎光，快速外飘
+                if (Main.rand.NextBool(2))
                 {
-                    // 电弧：细小闪烁，贴着束流
                     Dust d1 = Dust.NewDustPerfect(
                         pos,
                         DustID.Electric,
-                        beamVector.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.1f, 0.6f)
+                        beamVector.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.6f, 1.4f) * dustVelocityMult
                     );
                     d1.noGravity = true;
-                    d1.scale = 0.9f + Main.rand.NextFloat(0.4f);
+                    d1.scale = 1.1f + Main.rand.NextFloat(0.4f);
 
-                    // 蓝晶：更“晶体化”的冷光
                     if (Main.rand.NextBool(3))
                     {
                         Dust d2 = Dust.NewDustPerfect(
                             pos,
                             DustID.BlueCrystalShard,
-                            Main.rand.NextVector2Circular(0.4f, 0.4f)
+                            Main.rand.NextVector2Circular(0.6f, 0.6f) * dustVelocityMult
                         );
                         d2.noGravity = true;
-                        d2.scale = 1.05f + Main.rand.NextFloat(0.5f);
+                        d2.scale = 1.2f;
                         d2.color = Color.Lerp(Color.White, Color.LightBlue, 0.5f);
-                    }
-
-                    // 蓝宝石：偶发性亮斑
-                    if (Main.rand.NextBool(4))
-                    {
-                        Dust d3 = Dust.NewDustPerfect(
-                            pos,
-                            DustID.GemSapphire,
-                            -beamVector * Main.rand.NextFloat(0.1f, 0.5f)
-                        );
-                        d3.noGravity = true;
-                        d3.scale = 0.9f + Main.rand.NextFloat(0.3f);
                     }
                 }
             }

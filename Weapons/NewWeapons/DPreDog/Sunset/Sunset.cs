@@ -171,19 +171,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 CombatText.NewText(player.getRect(), Color.Red, modeNames[currentMode]);
                 SoundEngine.PlaySound(SoundID.Item4, player.position);
 
-                // 触发粒子特效
-                Particle blastRing = new CustomPulse(
-                    player.Center,
-                    Vector2.Zero,
-                    Color.Red,
-                    "CalamityThrowingSpear/Texture/SunsetChange",
-                    Vector2.One * 0.33f,
-                    Main.rand.NextFloat(-10f, 10f),
-                    0.07f,
-                    0.53f,
-                    30
-                );
-                GeneralParticleHandler.SpawnParticle(blastRing);
+                // 播放切换特效
+                PlaySwitchEffect(player.Center, currentMode);
             }
 
             if (player.Calamity().mouseRight && rightClickCooldown == 0 && CanUseItem(player) && player.whoAmI == Main.myPlayer && !Main.mapFullscreen && !Main.blockMouse)
@@ -227,6 +216,250 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
 
         }
+
+
+        // ==============================
+        // 形态切换时播放的“数学魔法阵”特效（可调参数版，整体放大）
+        // ==============================
+        private void PlaySwitchEffect(Vector2 center, int mode)
+        {
+            // ---------- 🔧 可调参数（整体放大约 2 倍） ----------
+            float sigilScale = 0.56f;        // 符印初始缩放基准
+            float sigilScaleGrowth = 0.12f;  // 符印层间递增
+            float sigilEndScale = 1.12f;     // 符印终点缩放基准
+
+            float satelliteRadius = 120f;    // 卫星冲击波环半径
+            int satelliteCount = 6;          // 卫星数量
+
+            int lissaPoints = 128;           // Lissajous 点数
+            float lissaAamp = 84f;           // Lissajous X 振幅
+            float lissaBamp = 52f;           // Lissajous Y 振幅
+
+            int phylloSeeds = 110;           // 向日葵点数
+            float phylloDensity = 7.2f;      // 向日葵常数
+
+            float spiroR = 68f;              // Spirograph 大圆半径
+            float spiror = 18f;              // Spirograph 小圆半径
+            float spirod = 36f;              // Spirograph 笔尖距
+            int spiroPoints = 280;           // Spirograph 点数
+
+            float pulseInit = 13f;           // 同心脉冲初始大小
+            float pulseGrowth = 2.4f;        // 同心脉冲层间递增
+            int pulseCount = 3;              // 脉冲环层数
+
+            int sparkCount = 36;             // 星屑数量
+            float sparkRadius = 128f;        // 星屑散布半径
+
+            // ---------- 🎨 三种形态的配色 ----------
+            Color core, edge, accent;
+            switch (mode)
+            {
+                case 0: // 赤红 + 金黄
+                    core = new Color(220, 40, 40);   // 深赤红
+                    edge = new Color(255, 200, 60);  // 金黄
+                    accent = new Color(255, 120, 90); // 点缀：暖橙红
+                    break;
+                case 1: // 深蓝 + 浅黄
+                    core = new Color(40, 80, 200);   // 深蓝
+                    edge = new Color(255, 240, 150); // 浅黄
+                    accent = new Color(100, 180, 255); // 点缀：亮蓝
+                    break;
+                default: // 银白 + 金色
+                    core = new Color(230, 230, 240); // 银白
+                    edge = new Color(255, 210, 80);  // 金色
+                    accent = new Color(180, 220, 255); // 点缀：冰蓝
+                    break;
+            }
+
+            // ========= A. 中央“符印”脉冲（有序基底） =========
+            // 用自定义贴图做三层相位脉冲，奠基“秩序感”
+            for (int layer = 0; layer < 3; layer++)
+            {
+                float rot = Main.rand.NextFloat(-12f, 12f);
+                float s0 = 0.28f + 0.06f * layer;
+                float s1 = 0.56f + 0.07f * layer;
+                Particle sigil = new CustomPulse(
+                    center,
+                    Vector2.Zero,
+                    Color.Lerp(core, edge, 0.35f + 0.3f * layer),
+                    "CalamityThrowingSpear/Texture/SunsetChange",
+                    Vector2.One * s0,
+                    rot,
+                    0.08f,
+                    s1,
+                    34 + 3 * layer
+                );
+                GeneralParticleHandler.SpawnParticle(sigil);
+            }
+
+            // ========= B. 卫星冲击波 =========
+            for (int k = 0; k < satelliteCount; k++)
+            {
+                float ang = MathHelper.TwoPi * k / satelliteCount;
+                Vector2 p = center + new Vector2(satelliteRadius, 0f).RotatedBy(ang);
+                Particle ring = new DirectionalPulseRing(
+                    p,
+                    Vector2.Zero,
+                    edge,
+                    Vector2.One,
+                    Main.rand.NextFloat(11f, 17f),
+                    0.18f,
+                    3.2f,
+                    12
+                );
+                GeneralParticleHandler.SpawnParticle(ring);
+            }
+
+            // ========= C. Lissajous 曲线 =========
+            int a = (mode == 0) ? 3 : (mode == 1) ? 4 : 5;
+            int b = (mode == 0) ? 4 : (mode == 1) ? 5 : 6;
+            float delta = Main.GlobalTimeWrappedHourly * 1.8f;
+            for (int i = 0; i < lissaPoints; i++)
+            {
+                float t = MathHelper.TwoPi * i / lissaPoints;
+                Vector2 pos = center + new Vector2(
+                    lissaAamp * (float)Math.Sin(a * t + delta),
+                    lissaBamp * (float)Math.Sin(b * t)
+                );
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    pos,
+                    Vector2.Zero,
+                    false,
+                    14,
+                    1.3f,
+                    Color.Lerp(core, accent, 0.5f),
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
+
+            // ========= D. Phyllotaxis 分布 =========
+            float golden = MathHelper.ToRadians(137.50776405f);
+            for (int n = 0; n < phylloSeeds; n++)
+            {
+                float theta = n * golden;
+                float r = phylloDensity * (float)Math.Sqrt(n);
+                Vector2 pos = center + r * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
+
+                Vector2 vel = new Vector2(0f, -1f).RotatedBy(theta + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.4f, 1.4f);
+                SquishyLightParticle exo = new(
+                    pos,
+                    vel,
+                    0.44f + n * 0.005f,
+                    Color.Lerp(edge, accent, 0.35f + 0.35f * (n / (float)phylloSeeds)),
+                    28 + Main.rand.Next(6),
+                    opacity: 1f,
+                    squishStrenght: 1f,
+                    maxSquish: 2.7f,
+                    hueShift: 0f
+                );
+                GeneralParticleHandler.SpawnParticle(exo);
+            }
+
+            // ========= E. Spirograph 摆线 =========
+            float Rbig = spiroR, rSmall = spiror, dPen = spirod;
+            float kRatio = Rbig / rSmall;
+            for (int i = 0; i < spiroPoints; i++)
+            {
+                float t = MathHelper.TwoPi * i / spiroPoints;
+                float x = (Rbig + rSmall) * (float)Math.Cos(t) - dPen * (float)Math.Cos((kRatio + 1) * t);
+                float y = (Rbig + rSmall) * (float)Math.Sin(t) - dPen * (float)Math.Sin((kRatio + 1) * t);
+                Vector2 pos = center + new Vector2(x, y);
+
+                SquareParticle sq = new SquareParticle(
+                    pos,
+                    (pos - center).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.3f, 1.1f),
+                    false,
+                    34,
+                    2.4f,
+                    Color.Lerp(core, edge, 0.25f)
+                );
+                GeneralParticleHandler.SpawnParticle(sq);
+
+                if (i % 20 == 0)
+                {
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        pos,
+                        Vector2.Zero,
+                        false,
+                        16,
+                        1.6f,
+                        Color.Lerp(edge, accent, 0.6f),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+            }
+
+            // ========= F. 同心脉冲环 =========
+            for (int k = 0; k < pulseCount; k++)
+            {
+                float init = pulseInit + k * pulseGrowth;
+                Particle ring = new DirectionalPulseRing(
+                    center,
+                    Vector2.Zero,
+                    Color.Lerp(core, edge, 0.4f + 0.2f * k),
+                    Vector2.One,
+                    init,
+                    0.18f,
+                    3.2f,
+                    18 + 2 * k
+                );
+                GeneralParticleHandler.SpawnParticle(ring);
+            }
+
+            // ========= G. 星屑闪烁 =========
+            for (int i = 0; i < sparkCount; i++)
+            {
+                Vector2 randPos = center + Main.rand.NextVector2Circular(sparkRadius, sparkRadius);
+                GlowOrbParticle spark = new GlowOrbParticle(
+                    randPos,
+                    Vector2.Zero,
+                    false,
+                    10 + Main.rand.Next(6),
+                    1.1f + Main.rand.NextFloat(0.7f),
+                    Color.Lerp(accent, edge, Main.rand.NextFloat(0.2f, 0.7f)),
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+        }
+
+
+
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            // 三个形态对应不同的键
+            string stageKey = currentMode switch
+            {
+                0 => "TooltipS0",
+                1 => "TooltipS1",
+                2 => "TooltipS2",
+                _ => "TooltipS0"
+            };
+            string nameKey = currentMode switch
+            {
+                0 => "DisplayNameS0",
+                1 => "DisplayNameS1",
+                2 => "DisplayNameS2",
+                _ => "DisplayNameS0"
+            };
+
+            // 替换名字
+            Item.SetNameOverride(this.GetLocalizedValue(nameKey));
+
+            // 替换 Tooltip 中的占位符
+            tooltips.FindAndReplace("[Stage]", this.GetLocalizedValue(stageKey));
+        }
+
+
 
 
 
