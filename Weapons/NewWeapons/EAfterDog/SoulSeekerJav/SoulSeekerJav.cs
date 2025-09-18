@@ -18,11 +18,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 {
     public class SoulSeekerJav : ModItem, ILocalizedModType
     {
+
+        public new string LocalizationCategory => "NewWeapons.EAfterDog";
         public override void SetStaticDefaults()
         {
             ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GildedProboscisJav>();
         }
-        public new string LocalizationCategory => "NewWeapons.EAfterDog";
         public override void SetDefaults()
         {
             Item.width = 44;

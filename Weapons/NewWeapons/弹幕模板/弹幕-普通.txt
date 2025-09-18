@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Projectiles.Tutorial
             // 绘制控制函数，可用于绘制自定义贴图、添加发光效果、叠加特效等
             // 若不需要可返回 true 使用默认绘制【很不推荐】
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-            return true;
+            return false;
         }
 
         public override void SetDefaults()

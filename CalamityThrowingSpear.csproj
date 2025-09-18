@@ -193,6 +193,7 @@
 	  <None Remove="Weapons\NewWeapons\EAfterDog\SoulSeekerJav\终幕残翼.txt" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\StarsofDestiny\StarsofDestiny.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\StarsofDestiny\StarsofDestinyPBuff.png" />
+	  <None Remove="Weapons\NewWeapons\EAfterDog\TEM00\Laser\TEM00LeftLazer.png" />
 	  <None Remove="Weapons\NewWeapons\EAfterDog\TheOtherRevelation\TheOtherRevelation.png" />
 	  <None Remove="Weapons\NewWeapons\ZOthers\GlobalStorm\GlobalStorm.png" />
 	  <None Remove="Weapons\NewWeapons\ZOthers\GlobalStorm\GlobalStormCloud.png" />
@@ -226,7 +227,6 @@
 	  <Folder Include="Sound\新文件夹\" />
 	  <Folder Include="Weapons\NewWeapons\AAA这下面是新的武器-----------------\" />
 	  <Folder Include="Weapons\NewWeapons\DPreDog\Sunset\新文件夹\" />
-	  <Folder Include="Weapons\NewWeapons\EAfterDog\TEM00\Laser\" />
 	</ItemGroup>
 
 	<!-- References -->

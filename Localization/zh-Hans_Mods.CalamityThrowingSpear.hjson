@@ -161,6 +161,10 @@ Projectiles: {
 			FinishingTouchDragon.DisplayName: 应龙
 			// FinishingTouchEcho.DisplayName: Finishing Touch Echo
 			// FinishingTouchEchoCtrl.DisplayName: Finishing Touch Echo Ctrl
+			// TEM00LeftLazer.DisplayName: T E M00 Left Lazer
+			// TEM00Left.DisplayName: T E M00 Left
+			// TEM00Right.DisplayName: T E M00 Right
+			// TEM00RightAIM.DisplayName: T E M00 Right A I M
 		}
 	}
 
@@ -1011,6 +1015,11 @@ NewWeapons: {
 				首次使用该武器时会产生时空错乱
 				[c/e1ffff:“海洋与冰雪之国的女王把你误认为自己的爱人”]
 				'''
+		}
+
+		TEM00: {
+			// DisplayName: T E M00
+			// Tooltip: ""
 		}
 	}
 }

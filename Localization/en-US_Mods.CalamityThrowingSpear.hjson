@@ -161,6 +161,10 @@ Projectiles: {
 			FinishingTouchDragon.DisplayName: Finishing Touch Dragon
 			FinishingTouchEcho.DisplayName: Finishing Touch Echo
 			FinishingTouchEchoCtrl.DisplayName: Finishing Touch Echo Ctrl
+			TEM00LeftLazer.DisplayName: T E M00 Left Lazer
+			TEM00Left.DisplayName: T E M00 Left
+			TEM00Right.DisplayName: T E M00 Right
+			TEM00RightAIM.DisplayName: T E M00 Right A I M
 		}
 	}
 
@@ -1015,6 +1019,11 @@ NewWeapons: {
 				Causes temporal dissonance the first time it's used.  
 				[c/e1ffff:"The Queen of Snow and Sea mistook you for her beloved."]  
 				'''
+		}
+
+		TEM00: {
+			DisplayName: T E M00
+			Tooltip: ""
 		}
 	}
 }
