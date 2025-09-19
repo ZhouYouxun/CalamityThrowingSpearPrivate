@@ -16,6 +16,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
+using Terraria.DataStructures;
+using CalamityMod.Buffs.DamageOverTime;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 {
@@ -29,9 +31,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
             set => Projectile.ai[0] = value;
         }
 
-        public override float MaxScale => 1.2f;
+        public override float MaxScale => 0.7f;
         public override float MaxLaserLength => 2000f;
-        public override float Lifetime => 180; // 持续 X 帧
+        public override float Lifetime => 1800000; // 持续 X 帧
         public override Color LaserOverlayColor => new Color(90, 200, 255, 130); // 科技蓝(带Alpha)
         public override Color LightCastColor => Color.White;
         public override Texture2D LaserBeginTexture => Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
@@ -61,11 +63,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 
 
 
-        // 修改大激光锚点跟随弹幕位置保持同步
+        // 替换 AttachToSomething() 为下面版本：
+        // 功能：每帧检查父弹幕，父存在 -> 刷新 timeLeft（保持永生）；父不存在 -> Kill()
+        // 已使用类内的 OwnerIndex 属性 (ai[0]) 与之前的类型兼容判断。
         public override void AttachToSomething()
         {
-            // ai[0] 存放了父弹幕索引（我们在生成时写入了 this.whoAmI）
-            int ownerIndex = OwnerIndex; // 读取 ai[0]
+            int ownerIndex = OwnerIndex; // 从 ai[0] 读取父弹幕索引
+                                         // 索引越界或无效直接自毁
             if (!ownerIndex.WithinBounds(Main.maxProjectiles))
             {
                 Projectile.Kill();
@@ -73,54 +77,134 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
             }
 
             Projectile ownerProj = Main.projectile[ownerIndex];
-            // 兼容原先的 NuclearFuelRodPROJ，也兼容新的父弹幕 TEM00Left
-            int nuclearType = ModContent.ProjectileType<NuclearFuelRodPROJ>();
-            int leftType = ModContent.ProjectileType<CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.TEM00Left>(); // 注意命名空间/类名需与项目一致
 
-            // 如果父弹幕存在且是允许的类型 → 绑定位置与方向
+            // 允许的父弹幕类型（兼容旧类型与 TEM00Left）
+            int nuclearType = ModContent.ProjectileType<NuclearFuelRodPROJ>();
+            int leftType = ModContent.ProjectileType<CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.TEM00Left>();
+
+            // 父弹幕存在且活跃且为我们接受的类型 -> 绑定位置和朝向，并刷新寿命
             if (ownerProj != null && ownerProj.active && (ownerProj.type == nuclearType || ownerProj.type == leftType))
             {
-                // 这里把激光顶点贴到父弹幕的“枪口”位置
-                // 你的父弹幕使用 rotation + PiOver4 偏移作为枪头方向，上面的实现参考了你原始实现
+                // 绑定到父弹幕的“枪口”位置与朝向（与你原实现一致）
                 Projectile.Center = ownerProj.Center + (ownerProj.rotation - MathHelper.PiOver4).ToRotationVector2() * 48f;
-                Projectile.rotation = (ownerProj.rotation - MathHelper.PiOver4); // 完全匹配父弹幕枪头方向
+                Projectile.rotation = (ownerProj.rotation - MathHelper.PiOver4);
+
+                // --------- 关键：只要父弹幕存在，就不断刷新自身寿命，确保永远不死 ---------
+                // 这里把 timeLeft 设为 2，基类/引擎会每帧调用 AttachToSomething 并把 timeLeft 再设回 2
+                // 因此只要父弹幕活着，本弹幕就会一直存活；父消失则下方分支会 Kill()
+                Projectile.timeLeft = 2;
+
+                // （可选）如果你需要把“持续存在”状态同步到客户端，可在首次绑定时做一次 netUpdate
+                // 但频繁 netUpdate 会增加流量，所以这里不每帧调用
             }
             else
             {
-                // 父弹幕不存在/类型不匹配 → 激光自毁，确保不会漂浮在空中
+                // 父弹幕不存在/类型不匹配 -> 自毁
+                // 为了多人同步，先设置 netUpdate 再 Kill()
+                Projectile.netUpdate = true;
                 Projectile.Kill();
             }
         }
 
 
-
         public override void UpdateLaserMotion()
         {
-            // 找到最近的敌人
-            NPC target = Projectile.Center.ClosestNPCAt(1500f);
-            if (target != null)
-            {
-                // 计算目标方向
-                float targetRotation = (target.Center - Projectile.Center).ToRotation();
-                float maxTurnSpeed = MathHelper.ToRadians(3f); // 限制每帧最大旋转 3°
-
-                // **平滑转向目标**
-                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, maxTurnSpeed);
-                Projectile.velocity = Projectile.rotation.ToRotationVector2(); // 让激光朝向目标
-            }
+            // 不再寻敌，逻辑完全交给 AttachToSomething()
+            Projectile.velocity = Projectile.rotation.ToRotationVector2();
         }
 
 
+        // 命中VFX节流（避免每帧命中都刷爆）
+        private int impactVfxCooldown;
 
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            impactVfxCooldown = 0; // 初始化节流计时器
+        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(ModContent.BuffType<Irradiated>(), 120);
+            // 仍可保留你的Debuff
+            target.AddBuff(ModContent.BuffType<MiracleBlight>(), 300); // 超位崩解
+
+            //// 8帧节流，避免localNPCHitCooldown=1导致每帧都生成海量粒子
+            //if (impactVfxCooldown > 0)
+            //    return;
+            //impactVfxCooldown = 8;
+
+            // ===== 计算与光束轴对齐的“命中点” =====
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            float t = Vector2.Dot(target.Center - Projectile.Center, dir);
+            t = MathHelper.Clamp(t, 0f, LaserLength); // 限制在光束范围
+            Vector2 hitPos = Projectile.Center + dir * t;
+            Vector2 nrm = dir.RotatedBy(MathHelper.PiOver2); // 法线（用于“方”感的左右分布）
+
+            // ===== 颜色与随机工具 =====
+            Color coreC = new Color(120, 220, 255) * 1.45f; // 亮一些的科技蓝
+            Color edgeC = new Color(90, 200, 255) * 1.35f; // 稍暗边缘蓝
+            Color flashC = new Color(170, 235, 255) * 1.60f; // 接近白的电光蓝
+
+            // ===== Ⅰ. 破碎环 =====
+            int ringCount = Main.rand.Next(24, 33); // 24~32
+            for (int i = 0; i < ringCount; i++)
+            {
+                float ang = MathHelper.TwoPi * i / ringCount + Main.rand.NextFloat(-0.08f, 0.08f);
+                Vector2 v = ang.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
+                SquareParticle sq = new SquareParticle(
+                    hitPos + v.SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(4f, 12f), // 初始离散
+                    v,
+                    false,
+                    26 + Main.rand.Next(16),               // 26~41帧
+                    1.6f + Main.rand.NextFloat(0.9f),     // 1.6~2.5
+                    i % 3 == 0 ? flashC : edgeC
+                );
+                GeneralParticleHandler.SpawnParticle(sq);
+            }
+
+            // ===== Ⅱ. 切削流（沿光束切线，强调“方截面”）=====
+            int shearCount = Main.rand.Next(10, 15); // 10~14
+            for (int i = 0; i < shearCount; i++)
+            {
+                // 在法线两侧，沿切线（±nrm）+少量dir抖动
+                float side = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 vel = nrm * side * Main.rand.NextFloat(5f, 11f) + dir * Main.rand.NextFloat(-2.5f, 2.5f);
+                SquareParticle sq = new SquareParticle(
+                    hitPos + nrm * side * Main.rand.NextFloat(6f, 14f),
+                    vel,
+                    false,
+                    22 + Main.rand.Next(10),               // 22~31帧
+                    1.7f + Main.rand.NextFloat(0.7f),     // 1.7~2.4
+                    edgeC
+                );
+                GeneralParticleHandler.SpawnParticle(sq);
+            }
+
+            // ===== Ⅲ. 核心碎片（高亮、短命、速度快）=====
+            int coreCount = Main.rand.Next(10, 15); // 10~14
+            for (int i = 0; i < coreCount; i++)
+            {
+                Vector2 v = Main.rand.NextVector2Circular(8f, 8f) + dir * Main.rand.NextFloat(2f, 6f);
+                SquareParticle sq = new SquareParticle(
+                    hitPos + Main.rand.NextVector2Circular(6f, 6f),
+                    v,
+                    false,
+                    14 + Main.rand.Next(6),                // 14~19帧
+                    1.4f + Main.rand.NextFloat(0.6f),     // 1.4~2.0
+                    flashC
+                );
+                GeneralParticleHandler.SpawnParticle(sq);
+            }
+
+            // 可选：轻音效（与小激光区分开）
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item122, hitPos);
         }
+
 
         public override void ExtraBehavior()
         {
+            //if (impactVfxCooldown > 0) impactVfxCooldown--; // 递减命中爆破节流
+
             // ===== 科技蓝主光照 =====
             Lighting.AddLight(Projectile.Center, 0.10f, 0.28f, 0.55f); // 柔和科技蓝环境光
 

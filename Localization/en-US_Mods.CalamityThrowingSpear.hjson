@@ -1107,12 +1107,12 @@ NewWeapons: {
 
 		TEM00: {
 			DisplayName: TEM00
-			Tooltip: 
-			'''
-			Left-click channels energy into a serialized array of laser bursts, firing in five volleys before releasing the ultimate beam.
-			Right-click summons an orbital laser warship that traces elliptical paths around foes, raining down beams before ending in a self-destructive charge.
-			Every trajectory of this weapon follows the elegant order of mathematics.
-			'''
+			Tooltip:
+				'''
+				Left-click channels energy into a serialized array of laser bursts, firing in five volleys before releasing the ultimate beam.
+				Right-click summons an orbital laser warship that traces elliptical paths around foes, raining down beams before ending in a self-destructive charge.
+				Every trajectory of this weapon follows the elegant order of mathematics.
+				'''
 		}
 	}
 }

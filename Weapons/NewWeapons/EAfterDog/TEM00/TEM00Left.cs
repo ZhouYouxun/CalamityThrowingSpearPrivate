@@ -21,7 +21,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         public override void SetStaticDefaults()
         {
             // 设置弹幕拖尾长度和模式
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
 
@@ -211,11 +211,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             {
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 300;
-                Projectile.penetrate = 10; // 可调穿透次数
+                Projectile.penetrate = -1; // 可调穿透次数
 
                 CurrentState = BehaviorState.Dash;
             }
         }
+
+
+
+
+
+
+        private int dashFrameCounter = 0; // 在类里新建计数器字段
 
         private void DoBehavior_Dash() // 冲刺阶段
         {
@@ -223,15 +230,63 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             Projectile.tileCollide = true;
 
             // 设置冲刺速度
-            float initialSpeed = 15f;
+            float initialSpeed = 35f;
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * initialSpeed;
 
+            // 每帧计数
+            dashFrameCounter++;
 
+            if (dashFrameCounter % 3 == 0 && Main.myPlayer == Projectile.owner)
+            {
+                // ====== 1. 在自己正下方随机位置生成一发激光 ======
+                float xOffset = Main.rand.NextFloat(-120f, 120f); // 左右随机
+                float yOffset = Main.rand.NextFloat(35 * 16f, 35 * 16f);  // 在正下方一定范围
+                Vector2 spawnPos = Projectile.Center + new Vector2(xOffset, yOffset);
 
+                // 方向：指向本体  
+                Vector2 dir = (Projectile.Center - spawnPos).SafeNormalize(Vector2.UnitY);
 
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    dir,
+                    ModContent.ProjectileType<TEM00LeftLazer>(),
+                    Projectile.damage,
+                    0f,
+                    Projectile.owner
+                );
 
+                SoundEngine.PlaySound(SoundID.Item33, spawnPos);
 
+                // ====== 2. 疯狂的飞行特效 ======
+                for (int i = 0; i < 6; i++) // 比平时多，显得更夸张
+                {
+                    // Square 方块能量片
+                    SquareParticle sq = new SquareParticle(
+                        spawnPos,
+                        dir.RotatedByRandom(0.8f) * Main.rand.NextFloat(2f, 6f),
+                        false,
+                        18 + Main.rand.Next(12),
+                        1.5f + Main.rand.NextFloat(0.8f),
+                        new Color(90, 200, 255) * 1.5f
+                    );
+                    GeneralParticleHandler.SpawnParticle(sq);
 
+                    // GlowOrb 光点
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        spawnPos,
+                        dir * Main.rand.NextFloat(1f, 3f),
+                        false,
+                        6,
+                        0.9f + Main.rand.NextFloat(0.5f),
+                        new Color(120, 220, 255),
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

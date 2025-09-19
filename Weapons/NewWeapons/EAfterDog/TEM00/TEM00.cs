@@ -26,7 +26,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             Item.noUseGraphic = true; // 持枪时隐藏物品贴图（使用弹幕显示）
             Item.noMelee = true; // 不直接造成近战伤害（由弹幕控制）
 
-            Item.UseSound = SoundID.Item1;
+            //Item.UseSound = SoundID.Item1;
 
             Item.shoot = ModContent.ProjectileType<TEM00Left>(); // 调用专用【蓄力型弹幕】
             Item.shootSpeed = 6f; // 初始速度，真实速度由弹幕控制
@@ -61,7 +61,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 Item.useAnimation = 60;
                 Item.shootSpeed = 15f;
                 Item.shoot = ModContent.ProjectileType<TEM00Left>(); // 左键发射 TEM00Left
-                Item.UseSound = SoundID.Item92;
+                //Item.UseSound = SoundID.Item92;
             }
             return base.CanUseItem(player);
         }

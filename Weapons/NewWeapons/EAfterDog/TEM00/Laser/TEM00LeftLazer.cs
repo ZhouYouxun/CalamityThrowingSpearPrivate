@@ -233,29 +233,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
                 //    GeneralParticleHandler.SpawnParticle(square);
                 //}
 
-                // ④ Dust：小碎光，快速外飘
-                if (Main.rand.NextBool(1))
-                {
-                    Dust d1 = Dust.NewDustPerfect(
-                        pos,
-                        DustID.Electric,
-                        beamVector.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.6f, 1.4f) * dustVelocityMult
-                    );
-                    d1.noGravity = true;
-                    d1.scale = 1.1f + Main.rand.NextFloat(0.4f);
+                //// ④ Dust：小碎光，快速外飘
+                //if (Main.rand.NextBool(1))
+                //{
+                //    Dust d1 = Dust.NewDustPerfect(
+                //        pos,
+                //        DustID.Electric,
+                //        beamVector.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.6f, 1.4f) * dustVelocityMult
+                //    );
+                //    d1.noGravity = true;
+                //    d1.scale = 1.1f + Main.rand.NextFloat(0.4f);
 
-                    if (Main.rand.NextBool(3))
-                    {
-                        Dust d2 = Dust.NewDustPerfect(
-                            pos,
-                            DustID.BlueCrystalShard,
-                            Main.rand.NextVector2Circular(0.6f, 0.6f) * dustVelocityMult
-                        );
-                        d2.noGravity = true;
-                        d2.scale = 1.2f;
-                        d2.color = Color.Lerp(Color.White, Color.LightBlue, 0.5f);
-                    }
-                }
+                //    if (Main.rand.NextBool(3))
+                //    {
+                //        Dust d2 = Dust.NewDustPerfect(
+                //            pos,
+                //            DustID.BlueCrystalShard,
+                //            Main.rand.NextVector2Circular(0.6f, 0.6f) * dustVelocityMult
+                //        );
+                //        d2.noGravity = true;
+                //        d2.scale = 1.2f;
+                //        d2.color = Color.Lerp(Color.White, Color.LightBlue, 0.5f);
+                //    }
+                //}
             }
         }
 
