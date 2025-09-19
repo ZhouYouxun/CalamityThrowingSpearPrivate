@@ -143,11 +143,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             {
                 // ====== 自定义环形射击逻辑 ======
-                const float ringRadius = 20f * 16f;  // 小弹幕“出生圆环”的半径（单位像素）
-                const int shotsPerRound = 10;         // 每一圈发射的小弹幕数量
-                const int frameBetweenShots = 4;          // 同一圈内每两发之间的帧数间隔
-                const int frameBetweenRounds = 15;         // 两圈之间的停顿时间（帧）
-                const int roundsBeforeBig = 3;          // 连续多少圈之后，触发一次大弹幕
+                const float ringRadius = 20f * 16f;  // 小弹幕出生圆环的半径
+                const int shotsPerRound = 30;        // 每一轮 30 发小弹幕
+                const int frameBetweenShots = 15;     // 小弹幕之间的间隔
+                const int frameBetweenRounds = 20;   // 每轮之间的停顿时间，略微增加
 
                 frameTimer++;
 
@@ -157,27 +156,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     {
                         frameTimer = 0;
 
-                        // 计算当前这一发在圆环上的角度（0°, 36°, 72° ...）
-                        float angle = MathHelper.ToRadians(36f * shotIndex);
+                        // 计算角度
+                        float angle = MathHelper.ToRadians(360f / shotsPerRound * shotIndex);
                         Vector2 spawnOffset = angle.ToRotationVector2() * ringRadius;
 
-                        // === 关键改动：以“最近敌人”为圆心来计算出生位置 ===
+                        // 寻找目标
                         NPC target = FindClosestTarget();
                         Vector2 ringCenter = (target != null) ? target.Center : Projectile.Center;
-
-                        // 出生点在「以最近敌人为圆心」的圆环上
                         Vector2 spawnPos = ringCenter + spawnOffset;
 
-                        // 发射方向：优先指向最近敌人；若无敌人，则向内（指向圆心）退化
-                        Vector2 shootDir;
-                        if (target != null)
-                            shootDir = (target.Center - spawnPos).SafeNormalize(Vector2.UnitY);
-                        else
-                            shootDir = (-spawnOffset).SafeNormalize(Vector2.UnitY);
+                        Vector2 shootDir = (target != null) ?
+                            (target.Center - spawnPos).SafeNormalize(Vector2.UnitY) :
+                            (-spawnOffset).SafeNormalize(Vector2.UnitY);
 
                         Vector2 velocity = shootDir * 20f;
 
-                        // 发射小弹幕
+                        // === 1) 小弹幕 ===
                         int proj = Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             spawnPos,
@@ -187,7 +181,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             Projectile.knockBack,
                             Projectile.owner
                         );
-
                         if (proj.WithinBounds(Main.maxProjectiles) && Main.projectile[proj].active)
                         {
                             Projectile small = Main.projectile[proj];
@@ -198,9 +191,44 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             small.netUpdate = true;
                         }
 
-                        SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = 0.0f }, Projectile.Center);
-    
-                        // 轮次推进
+                        // === 2) 大弹幕：仅在本轮第一个小弹幕时生成（但跳过第一轮） ===
+                        if (shotIndex == 0 && target != null && roundIndex > 0)
+                        {
+                            Vector2 bigSpawnPos = target.Center + new Vector2(0, -30 * 16);
+                            Vector2 bigVelocity = Vector2.UnitY * 30f;
+
+                            int bigProj = Projectile.NewProjectile(
+                                Projectile.GetSource_FromThis(),
+                                bigSpawnPos,
+                                bigVelocity,
+                                ModContent.ProjectileType<SunsetCConceptRightCutBig>(),
+                                Projectile.damage * 10,
+                                Projectile.knockBack,
+                                Projectile.owner
+                            );
+
+                            if (bigProj.WithinBounds(Main.maxProjectiles) && Main.projectile[bigProj].active)
+                            {
+                                Projectile big = Main.projectile[bigProj];
+                                big.penetrate = 6;
+                                big.tileCollide = false;
+                                big.usesLocalNPCImmunity = true;
+                                big.localNPCHitCooldown = 1;
+                                big.netUpdate = true;
+                                big.scale *= 3f;
+                            }
+
+                            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 3.2f, Pitch = -0.0f }, Projectile.Center);
+
+                            // 屏幕震动
+                            float shakePower = 45f;
+                            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                            Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                                Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+                        }
+
+
+                        // 推进索引
                         shotIndex++;
                         if (shotIndex >= shotsPerRound)
                         {
@@ -217,57 +245,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     {
                         frameTimer = 0;
                         waitingRoundGap = false;
-
-                        // 检查是否需要发射大弹幕（每 3 圈一次）
-                        if (roundIndex >= roundsBeforeBig)
-                        {
-                            roundIndex = 0;
-
-                            // === 大弹幕逻辑：以最近敌人为基准 ===
-                            NPC target = FindClosestTarget();
-                            if (target != null)
-                            {
-                                // 出生在敌人头顶 30 格位置
-                                Vector2 explosionPos = target.Center + new Vector2(0, -30 * 16);
-                                // 向下冲击，速度 ×3
-                                Vector2 explosionVelocity = Vector2.UnitY * 30f * 3f;
-
-                                int bigProj = Projectile.NewProjectile(
-                                    Projectile.GetSource_FromThis(),
-                                    explosionPos,
-                                    explosionVelocity,
-                                    ModContent.ProjectileType<SunsetCConceptRightCut>(),
-                                    Projectile.damage * 10,
-                                    Projectile.knockBack,
-                                    Projectile.owner,
-                                    1f // ai[0] 标记为“大弹幕”
-                                );
-
-                                if (bigProj.WithinBounds(Main.maxProjectiles) && Main.projectile[bigProj].active)
-                                {
-                                    Projectile big = Main.projectile[bigProj];
-                                    big.penetrate = 6;
-                                    big.tileCollide = false;
-                                    big.usesLocalNPCImmunity = true;
-                                    big.localNPCHitCooldown = 1;
-                                    big.netUpdate = true;
-                                    big.scale *= 5f;
-                                }
-
-                                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/电弧发射器发射") with { Volume = 2.2f, Pitch = -0.0f }, Projectile.Center);
-
-
-                                // 屏幕震动
-                                float shakePower = 55f;
-                                float distanceFactor = Utils.GetLerpValue(
-                                    1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                                Main.LocalPlayer.Calamity().GeneralScreenShakePower =
-                                    Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-                            }
-                        }
                     }
                 }
             }
+
 
 
 

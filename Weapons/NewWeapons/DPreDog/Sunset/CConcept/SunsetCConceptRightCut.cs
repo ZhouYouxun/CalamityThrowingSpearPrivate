@@ -113,6 +113,130 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                                                  // 先快后慢：从 backSpeedStart 过渡到 backSpeedEnd
                 speed = MathHelper.Lerp(backSpeedStart, backSpeedEnd, easeOut);
                 Projectile.velocity = dirBack * speed;
+
+                {
+
+                    // —— 退后阶段：正后方扇形喷射特效（仅 backFrames 帧内播放） ——
+                    // 🔧 可调参数
+                    float coneHalfAngle = MathHelper.ToRadians(40f); // 扇形半角
+                    float radialMin = 8f;    // 出生点离中心最小半径
+                    float radialMax = 26f;   // 出生点离中心最大半径
+                    float speedMin = 1.2f;  // 粒子初速区间
+                    float speedMax = 5.0f;
+
+                    int exoPerTick = 6;   // EXO 强光数量（镁粉燃烧感）
+                    int orbPerTick = 4;   // 辉光球数量（丝带亮点）
+                    int sparkPerTick = 8;   // 线性火花数量（锐利喷射）
+                    int squarePerTick = 3;   // 方形碎片数量（科技碎屑）
+                    int dustPerTick = 8;   // Dust 数量（无序点缀）
+
+                    // 颜色：沿用“科技蓝”调色板（与文件内飞行特效一致）
+                    Color[] techBlue = {
+    new Color( 80, 200, 255),
+    new Color(120, 220, 255),
+    Color.Cyan,
+    new Color(180, 220, 255),
+    Color.WhiteSmoke
+};
+
+                    // 基向量：前/后/切向（以出生方向为准）
+                    Vector2 fwd = dirFwd;
+                    Vector2 back = dirBack;
+                    Vector2 tan = fwd.RotatedBy(MathHelper.PiOver2);
+
+                    // 工具：正后方扇形随机方向 & 出生点
+                    Vector2 RandConeDir() => back.RotatedBy(Main.rand.NextFloat(-coneHalfAngle, coneHalfAngle));
+                    Vector2 RandSpawnPos()
+                    {
+                        Vector2 d = RandConeDir();
+                        float r = Main.rand.NextFloat(radialMin, radialMax);
+                        // 加一点切向扰动，喷口“雾化”
+                        return Projectile.Center + d * r + tan * Main.rand.NextFloat(-6f, 6f);
+                    }
+
+                    // 1) EXO 之光（高亮主体）
+                    for (int i = 0; i < exoPerTick; i++)
+                    {
+                        Vector2 pos = RandSpawnPos();
+                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(speedMin, speedMax);
+                        var exo = new SquishyLightParticle(
+                            pos, vel,
+                            Main.rand.NextFloat(0.24f, 0.32f) * Projectile.scale,
+                            techBlue[Main.rand.Next(techBlue.Length)],
+                            Main.rand.Next(18, 26),
+                            opacity: 1f,
+                            squishStrenght: 1f,
+                            maxSquish: Main.rand.NextFloat(2.2f, 3.0f),
+                            hueShift: 0f
+                        );
+                        GeneralParticleHandler.SpawnParticle(exo);
+                    }
+
+                    // 2) 辉光球（丝带亮点）
+                    for (int i = 0; i < orbPerTick; i++)
+                    {
+                        Vector2 pos = RandSpawnPos();
+                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(0.5f, 2.2f);
+                        var orb = new GlowOrbParticle(
+                            pos, vel,
+                            false,
+                            Main.rand.Next(10, 16),
+                            Main.rand.NextFloat(0.8f, 1.15f) * Projectile.scale,
+                            techBlue[Main.rand.Next(techBlue.Length)],
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+
+                    // 3) 线性火花（锐利喷射）
+                    for (int i = 0; i < sparkPerTick; i++)
+                    {
+                        Vector2 pos = RandSpawnPos();
+                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(2.0f, 5.6f);
+                        var sp = new SparkParticle(
+                            pos, vel,
+                            false,
+                            Main.rand.Next(20, 30),
+                            Main.rand.NextFloat(0.9f, 1.3f) * Projectile.scale,
+                            Color.Lerp(new Color(120, 220, 255), Color.White, 0.5f)
+                        );
+                        GeneralParticleHandler.SpawnParticle(sp);
+                    }
+
+                    // 4) 方形碎片（数码撕裂感）
+                    for (int i = 0; i < squarePerTick; i++)
+                    {
+                        Vector2 pos = RandSpawnPos();
+                        Vector2 vel = (RandConeDir() + tan * Main.rand.NextFloat(-0.35f, 0.35f)).SafeNormalize(back)
+                                      * Main.rand.NextFloat(1.2f, 3.0f);
+                        var sq = new SquareParticle(
+                            pos, vel,
+                            false,
+                            Main.rand.Next(18, 26),
+                            Main.rand.NextFloat(1.1f, 1.7f) * Projectile.scale,
+                            techBlue[Main.rand.Next(techBlue.Length)]
+                        );
+                        GeneralParticleHandler.SpawnParticle(sq);
+                    }
+
+                    // 5) Dust（无序星屑，点缀“狂野”）
+                    for (int i = 0; i < dustPerTick; i++)
+                    {
+                        Vector2 pos = RandSpawnPos();
+                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(0.8f, 2.4f);
+                        int type = (i % 2 == 0) ? DustID.Electric : DustID.UltraBrightTorch;
+                        Dust d = Dust.NewDustPerfect(
+                            pos, type, vel, 150,
+                            techBlue[Main.rand.Next(techBlue.Length)],
+                            Main.rand.NextFloat(0.9f, 1.2f) * Projectile.scale
+                        );
+                        d.noGravity = true;
+                        d.fadeIn = Main.rand.NextFloat(0.6f, 1.0f);
+                    }
+
+                }
+
+
             }
             else
             {
@@ -205,6 +329,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/焦土开枪")
+    with
+            { Volume = 2.0f, Pitch = 0.0f }, Projectile.Center);
+
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetCConceptPBuff>(), 300); // 5 秒
 
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);

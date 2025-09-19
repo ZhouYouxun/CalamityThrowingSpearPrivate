@@ -215,11 +215,23 @@ namespace CalamityThrowingSpear
                     1.1f, // 粒子的缩放大小，数值越大粒子越大
                     Color.Orange // 设定粒子的颜色（橙色）
                 );
-
                 // 生成该粒子，使其出现在游戏世界中
                 GeneralParticleHandler.SpawnParticle(leftSpark);
 
 
+                // 5+. 水雾粒子特效💧💧💧---------------------------------
+                // 原灾示范：海神之馈赠的小弹幕、极寒的那俩弹药【是新英雄哦】
+                // 适用于模拟湿润蒸汽、能量雾化、柔和散逸的效果
+                WaterFlavoredParticle mist = new WaterFlavoredParticle(
+                    Projectile.Center,                // 初始位置
+                    -Projectile.velocity * 0.3f,      // 反向喷出，制造散逸感
+                    false,                            // ❌ 不受重力影响
+                    Main.rand.Next(18, 26),           // 生命周期（18~26 帧）
+                    0.9f + Main.rand.NextFloat(0.3f), // 缩放大小
+                    Color.LightBlue * 0.9f            // 柔和蓝色水雾
+                );
+                // 生成该粒子，使其出现在游戏世界中
+                GeneralParticleHandler.SpawnParticle(mist);
 
 
                 // 6.椭圆形冲击波🔄🔄🔄---------------------------------
