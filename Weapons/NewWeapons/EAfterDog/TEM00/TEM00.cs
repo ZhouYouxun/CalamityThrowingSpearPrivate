@@ -19,7 +19,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 100; // 示例伤害
+            Item.damage = 1; // 示例伤害
             Item.DamageType = DamageClass.Melee;
             Item.knockBack = 6.5f;
             Item.useTime = Item.useAnimation = 30; // 决定挥舞速度（影响开枪速率）
@@ -46,16 +46,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 18; // 右键伤害
-                Item.useTime = 20;
-                Item.useAnimation = 20;
+                Item.damage = 500; // 右键伤害
+                Item.useTime = 10;
+                Item.useAnimation = 45;
+                Item.useLimitPerAnimation = 2;
                 Item.shoot = ModContent.ProjectileType<TEM00Right>(); // 右键发射 TEM00Right
                 Item.shootSpeed = 30f;
                 Item.UseSound = SoundID.Item73; // 激光音效
             }
             else // 左键
             {
-                Item.damage = 75;
+                Item.damage = 666;
                 Item.useTime = 60;
                 Item.useAnimation = 60;
                 Item.shootSpeed = 15f;

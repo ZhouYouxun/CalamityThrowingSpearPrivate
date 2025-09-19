@@ -166,6 +166,7 @@ Projectiles: {
 			// TEM00Left.DisplayName: T E M00 Left
 			// TEM00Right.DisplayName: T E M00 Right
 			// TEM00RightAIM.DisplayName: T E M00 Right A I M
+			// TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
 		}
 	}
 
@@ -953,9 +954,6 @@ NewWeapons: {
 				   最终一击，化为四倍的破灭之力。
 				'''
 		}
-
-
-
 	}
 
 	EAfterDog: {
@@ -1100,9 +1098,17 @@ NewWeapons: {
 		}
 
 		TEM00: {
-			// DisplayName: T E M00
-			// Tooltip: ""
+			DisplayName: TEM00
+			Tooltip: 
+			'''
+			左键将能量汇聚为序列化的激光阵列，连续五轮扫射后释放终极主束；
+			右键召唤环绕的激光战舰，在敌群间描绘椭圆轨迹并倾泻光束，最终以自毁冲锋收尾。
+			武器的一切轨迹，都遵循优雅的数学秩序。
+			'''
 		}
+
+
+
 	}
 }
 

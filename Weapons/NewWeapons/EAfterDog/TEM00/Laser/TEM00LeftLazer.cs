@@ -32,7 +32,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
         public override void OnSpawn(IEntitySource source)
         {
             // 在这里统一赋值，方便运行时热重载修改
-            Lifetime = 24;
+            Lifetime = 14;
             MaxBeamScale = 1.2f;
             MaxBeamLength = 1200f;
             BeamTileCollisionWidth = 1f;
@@ -151,7 +151,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 
             // BloomLine 设置
             float bloomThickness = 0.6f;    // BloomLine 粗细（比原来大幅缩小）
-            int bloomLifetime = 40;         // BloomLine 寿命
+            int bloomLifetime = 14;         // BloomLine 寿命
             Color bloomColor = Color.Lerp(Color.White, Color.Cyan, 0.2f);
 
             // 其他粒子设置
@@ -202,39 +202,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
                     GeneralParticleHandler.SpawnParticle(exoEnergy);
                 }
 
-                // ② 辉光球：清爽光点，快速漂移
-                if (Main.rand.NextBool(2))
-                {
-                    GlowOrbParticle orb = new GlowOrbParticle(
-                        pos,
-                        beamVector.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.2f, 2.5f) * orbVelocityMult,
-                        false,
-                        10,
-                        0.9f,
-                        Color.Lerp(Color.White, Color.Cyan, 0.6f),
-                        true,
-                        false,
-                        true
-                    );
-                    GeneralParticleHandler.SpawnParticle(orb);
-                }
+                //// ② 辉光球：清爽光点，快速漂移
+                //if (Main.rand.NextBool(2))
+                //{
+                //    GlowOrbParticle orb = new GlowOrbParticle(
+                //        pos,
+                //        beamVector.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.2f, 2.5f) * orbVelocityMult,
+                //        false,
+                //        10,
+                //        0.9f,
+                //        Color.Lerp(Color.White, Color.Cyan, 0.6f),
+                //        true,
+                //        false,
+                //        true
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(orb);
+                //}
 
-                // ③ 四方粒子：几何感，往旁边飞
-                if (Main.rand.NextBool(3))
-                {
-                    SquareParticle square = new SquareParticle(
-                        pos,
-                        beamVector.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(1.5f, 3.2f) * squareVelocityMult,
-                        false,
-                        30,
-                        1.7f + Main.rand.NextFloat(0.6f),
-                        Color.Cyan * 1.5f
-                    );
-                    GeneralParticleHandler.SpawnParticle(square);
-                }
+                //// ③ 四方粒子：几何感，往旁边飞
+                //if (Main.rand.NextBool(3))
+                //{
+                //    SquareParticle square = new SquareParticle(
+                //        pos,
+                //        beamVector.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(1.5f, 3.2f) * squareVelocityMult,
+                //        false,
+                //        30,
+                //        1.7f + Main.rand.NextFloat(0.6f),
+                //        Color.Cyan * 1.5f
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(square);
+                //}
 
                 // ④ Dust：小碎光，快速外飘
-                if (Main.rand.NextBool(2))
+                if (Main.rand.NextBool(1))
                 {
                     Dust d1 = Dust.NewDustPerfect(
                         pos,

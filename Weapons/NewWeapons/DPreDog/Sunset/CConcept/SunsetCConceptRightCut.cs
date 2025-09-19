@@ -331,7 +331,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/焦土开枪")
     with
-            { Volume = 2.0f, Pitch = 0.0f }, Projectile.Center);
+            { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
 
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetCConceptPBuff>(), 300); // 5 秒
 

@@ -166,6 +166,7 @@ Projectiles: {
 			TEM00Left.DisplayName: T E M00 Left
 			TEM00Right.DisplayName: T E M00 Right
 			TEM00RightAIM.DisplayName: T E M00 Right A I M
+			TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
 		}
 	}
 
@@ -1105,8 +1106,13 @@ NewWeapons: {
 		}
 
 		TEM00: {
-			DisplayName: T E M00
-			Tooltip: ""
+			DisplayName: TEM00
+			Tooltip: 
+			'''
+			Left-click channels energy into a serialized array of laser bursts, firing in five volleys before releasing the ultimate beam.
+			Right-click summons an orbital laser warship that traces elliptical paths around foes, raining down beams before ending in a self-destructive charge.
+			Every trajectory of this weapon follows the elegant order of mathematics.
+			'''
 		}
 	}
 }

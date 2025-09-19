@@ -10,6 +10,7 @@ using CalamityMod;
 using Terraria.ID;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
@@ -73,6 +74,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         private int chargeTimer = 0; // 在类里新建字段
         private int chargeCount = 0; // 已经触发几次（最多 8）
 
+
+                                     // ===== 攻击控制 =====
+        private int attackPhase = 0;    // 当前第几轮攻击 (0~4, 共5轮)
+        private int shotsThisPhase = 0; // 本轮需要发射多少发
+        private int shotsFired = 0;     // 本轮已发射多少发
+        private int fireCooldown = 0;   // 单发冷却
+        private int phaseCooldown = 0;  // 轮与轮之间的间隔
+        private bool specialAttack = false; // 是否进入特殊攻击阶段
+
         private void DoBehavior_Aim() // 瞄准阶段
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -99,63 +109,99 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
 
             {
-                chargeTimer++;
-                if (chargeTimer >= 30 && chargeCount < 8)
+                // ====== 攻击流程逻辑 ======
+                if (!specialAttack)
                 {
-                    chargeTimer = 0;
-                    chargeCount++;
-
-                    // ① 发射大量散射激光
-                    for (int i = 0; i < 12; i++)
+                    if (phaseCooldown > 0)
                     {
-                        Vector2 dir = (MathHelper.TwoPi * i / 12f).ToRotationVector2();
-                        Projectile.NewProjectile(
-                            Projectile.GetSource_FromThis(),
-                            headPosition,
-                            dir * 12f,
-                            ModContent.ProjectileType<TEM00LeftLazer>(),
-                            Projectile.damage / 2,
-                            0f,
-                            Projectile.owner
-                        );
+                        phaseCooldown--;
                     }
-
-                    // ② 屏幕震动
-                    float shakePower = 5f;
-                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                    Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-
-                    // ③ 收缩冲击波
-                    Particle shrinkingpulse = new DirectionalPulseRing(
-                        headPosition,
-                        Vector2.Zero,
-                        Color.Cyan, // 改为科技蓝
-                        new Vector2(1f, 1f),
-                        Main.rand.NextFloat(6f, 10f),
-                        0.15f,
-                        3f,
-                        10
-                    );
-                    GeneralParticleHandler.SpawnParticle(shrinkingpulse);
-
-                    // ④ 额外光能特效（你交给我发挥）
-                    for (int i = 0; i < 6; i++)
+                    else
                     {
-                        Vector2 vel = Main.rand.NextVector2Circular(2f, 2f);
-                        GlowOrbParticle orb = new GlowOrbParticle(
-                            headPosition,
-                            vel,
-                            false,
-                            15,
-                            0.8f + Main.rand.NextFloat(0.3f),
-                            Color.Lerp(Color.White, Color.Cyan, 0.5f),
-                            true,
-                            false,
-                            true
-                        );
-                        GeneralParticleHandler.SpawnParticle(orb);
+                        if (shotsThisPhase == 0)
+                        {
+                            // 初始化本轮射击
+                            attackPhase++;
+                            if (attackPhase <= 5)
+                            {
+                                shotsThisPhase = Main.rand.Next(10, 16); // 10~15发
+                                shotsFired = 0;
+                            }
+                            else
+                            {
+                                // 五轮打完 → 进入特殊攻击阶段（暂时留空）
+                                // ===== 当五轮结束，进入特殊攻击（只在此刻生成一次超级激光） =====
+                                specialAttack = true;
+
+                                // 生成超级激光（只生成一次）
+                                // 把生成位置放在枪口 headPosition，上方发射方向以当前朝向为准
+                                int laserProj = Projectile.NewProjectile(
+                                    Projectile.GetSource_FromThis(),
+                                    headPosition, // 激光出生点：弹幕顶端（你已经算好了 headPosition）
+                                    Projectile.velocity.SafeNormalize(Vector2.UnitY), // 方向（单位向量）——激光类会根据 owner 同步方向
+                                    ModContent.ProjectileType<TEM00LeftSuperLazer>(),
+                                    Projectile.damage, // 可以按需调整伤害
+                                    0f,
+                                    Projectile.owner
+                                );
+
+                                // 绑定父弹幕索引：把 ai[0] 设为当前父弹幕索引（this.whoAmI）
+                                if (laserProj >= 0 && laserProj < Main.maxProjectiles)
+                                {
+                                    Main.projectile[laserProj].ai[0] = Projectile.whoAmI; // 告诉激光它的“父弹幕”是谁
+                                    Main.projectile[laserProj].netUpdate = true; // 多人时同步
+                                                                                 // 可选：立即把激光的朝向和速度与父弹幕匹配（便于首帧视觉一致）
+                                    Main.projectile[laserProj].rotation = Projectile.rotation - MathHelper.PiOver4;
+                                    Main.projectile[laserProj].velocity = (Main.projectile[laserProj].rotation).ToRotationVector2();
+                                }
+                            }
+                        }
+
+                        if (shotsThisPhase > 0)
+                        {
+                            if (fireCooldown > 0)
+                                fireCooldown--;
+                            else
+                            {
+                                // 发射一发激光
+                                headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 48f;
+
+                                // 基础方向：正前方
+                                Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                                // 在 ±10° (即 20°范围内) 随机偏移
+                                dir = dir.RotatedByRandom(MathHelper.ToRadians(10f));
+
+                                Projectile.NewProjectile(
+                                    Projectile.GetSource_FromThis(),
+                                    headPosition,
+                                    dir,
+                                    ModContent.ProjectileType<TEM00LeftLazer>(),
+                                    Projectile.damage,
+                                    0f,
+                                    Projectile.owner
+                                );
+
+                                SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
+
+                                shotsFired++;
+                                fireCooldown = 6; // 单发之间的间隔（你可以调大或调小）
+
+                                if (shotsFired >= shotsThisPhase)
+                                {
+                                    // 本轮结束 → 设置间隔时间
+                                    shotsThisPhase = 0;
+                                    phaseCooldown = 30; // 两轮之间的间隔（可以调整）
+                                }
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    // ====== 特殊攻击阶段（留空） ======
+                }
+
 
             }
 

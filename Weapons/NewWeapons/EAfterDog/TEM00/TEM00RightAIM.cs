@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
+using Terraria.Utilities;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
@@ -127,26 +128,90 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         public override void OnKill(int timeLeft)
         {
+            // 仅由拥有者实例化，避免多人下重复生成
+            if (Main.myPlayer != Projectile.owner)
+                return;
+
             Player owner = Main.player[Projectile.owner];
             Vector2 center = Projectile.Center;
 
-            int beamCount = 24; // 激光数量
-            float radius = 600f; // 激光出生半径
-            float baseRotation = Main.rand.NextFloat(MathHelper.TwoPi); // 起始角度随机，避免每次死板
+            // ===== 可调基础参数（保持矩阵秩序）=====
+            int beamCount = 8;                            // 激光条数（固定 8 条）
+            float baseSpawnHeight = 600f;                 // 基准生成高度（在 center 上方）
+            float baseSpreadWidth = 700f;                 // 基准横向总宽度
+            float baseAngleSpreadDeg = 30f;               // 基准扇形角度总范围（±15°）
+
+            // ===== 受控随机：每次死亡都稍有不同 =====
+            // 用一个“轻量随机”做整体抖动（不需要 localAI / 字段）
+            UnifiedRandom rng = new UnifiedRandom(
+                (int)(Projectile.identity * 73856093 ^ (int)Main.GameUpdateCount)
+            );
+
+            // 整体参数抖动（±）
+            float spawnHeight = baseSpawnHeight + rng.NextFloat(-90f, 90f);                // 生成高度  ±90
+            float spreadWidth = baseSpreadWidth + rng.NextFloat(-140f, 140f);              // 横向宽度  ±140
+            float baseAngleDeg = rng.NextFloat(-12f, 12f);                                  // 整体基准倾角 ±12°
+            float angleSpreadDeg = baseAngleSpreadDeg + rng.NextFloat(-6f, 6f);             // 扇形范围  ±6°
+
+            // 在几种“有秩序”的构图模式里随机取 1 种
+            // 0: 平行扇形（基础款），1: 剪切斜列，2: 微波纹倾角，3: 轻度会聚/发散
+            int motif = rng.Next(0, 4);
+
+            // 简易 Halton 序列函数：形成“蓝噪声感”的位置抖动（比完全随机更均匀）
+            float Halton(int index, int b)
+            {
+                float f = 1f, r = 0f;
+                while (index > 0)
+                {
+                    f /= b;
+                    r += f * (index % b);
+                    index /= b;
+                }
+                return r;
+            }
 
             for (int i = 0; i < beamCount; i++)
             {
-                // 每条激光的角度
-                float angle = baseRotation + MathHelper.TwoPi * i / beamCount;
+                // 归一化位置 u ∈ [0,1]
+                float u = i / (float)(beamCount - 1);
 
-                // 出生点（圆周上）
-                Vector2 spawnPos = center + angle.ToRotationVector2() * radius;
+                // 横向位置：线性排布 + 低幅“蓝噪声”抖动
+                float xBase = MathHelper.Lerp(-spreadWidth / 2f, spreadWidth / 2f, u);
+                float xJitter = (Halton(i + 17, 2) - 0.5f) * 28f + rng.NextFloat(-6f, 6f); // 蓝噪声 + 少量白噪
+                float yJitter = (Halton(i + 29, 3) - 0.5f) * 22f;                          // 纵向微抖，避免死板
 
-                // 方向指向中心，带一点随机偏移（±2°）
-                float offset = MathHelper.ToRadians(Main.rand.NextFloat(-2f, 2f));
-                Vector2 dir = (center - spawnPos).SafeNormalize(Vector2.UnitY).RotatedBy(offset);
+                Vector2 spawnPos = center + new Vector2(xBase + xJitter, -(spawnHeight + yJitter));
 
-                // 生成激光（用 TEM00LeftLazer）
+                // 基础向下方向
+                float angleDeg = MathHelper.Lerp(-angleSpreadDeg / 2f, angleSpreadDeg / 2f, u);
+                angleDeg += baseAngleDeg;
+
+                // 根据“构图模式”做有秩序的变化
+                switch (motif)
+                {
+                    case 1:
+                        // 剪切：两端角度偏移更大，中间更小（线性 -> 更利落）
+                        angleDeg += (u - 0.5f) * rng.NextFloat(6f, 12f);
+                        break;
+                    case 2:
+                        // 微波纹：在平行的基础上叠一丝正弦起伏
+                        angleDeg += (float)Math.Sin(u * MathHelper.TwoPi) * rng.NextFloat(3f, 7f);
+                        break;
+                    case 3:
+                        // 轻度会聚/发散：整体向某个倾向稍微靠拢或展开
+                        angleDeg += MathHelper.Lerp(-6f, 6f, (float)rng.NextDouble());
+                        break;
+                    default:
+                        // 0: 基础平行扇形（不额外处理）
+                        break;
+                }
+
+                // 再加一点点每条束自身的小抖动（±1.5°），保留“活性”但不破坏矩阵秩序
+                angleDeg += rng.NextFloat(-1.5f, 1.5f);
+
+                // 方向向量
+                Vector2 dir = Vector2.UnitY.RotatedBy(MathHelper.ToRadians(angleDeg));
+
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     spawnPos,
@@ -158,8 +223,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 );
             }
 
-            // === 绚烂特效 ===
-            for (int i = 0; i < 40; i++)
+            // === 绚烂特效：保留但也稍许随机 ===
+            int dustCount = 32 + rng.Next(12); // 32~44
+            for (int i = 0; i < dustCount; i++)
             {
                 Vector2 dustVel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust d = Dust.NewDustPerfect(center, DustID.Electric, dustVel);
@@ -168,9 +234,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 d.color = Color.Lerp(Color.White, Color.Cyan, 0.6f);
             }
 
-            SoundEngine.PlaySound(SoundID.Item122, center); // 激光能量爆裂音效
+            SoundEngine.PlaySound(SoundID.Item122, center);
         }
-
 
 
 

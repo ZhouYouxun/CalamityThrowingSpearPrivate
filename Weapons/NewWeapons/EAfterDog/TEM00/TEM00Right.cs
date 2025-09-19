@@ -71,6 +71,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         private int maxLaserShots;   // 最大可发射的激光数量
         private int laserShotsLeft;  // 剩余激光数量
         private bool kamikazeMode;   // 是否进入撞击模式
+
+        // ======== 射击频率控制 ========
+        private int startFireCd;     // 初始冷却（帧）
+        private int endFireCd;       // 最终冷却（帧）
+
         public override void OnSpawn(IEntitySource source)
         {
             // ========== 初始化AI参数 ==========
@@ -96,15 +101,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             inited = false;
 
             // ========== 初始化激光计数器 ==========
-            maxLaserShots = 30;
+            maxLaserShots = 12;
             laserShotsLeft = maxLaserShots;
             kamikazeMode = false;
+
+            // ========== 初始化射击频率 ==========
+            startFireCd = 20; // 从20帧起步
+            endFireCd = 4;    // 最快降到4帧
         }
 
 
         public override void AI()
         {
-            // =====================【飞行逻辑：激光战舰AI】=====================
+            // =====================【飞行逻辑：激光战舰AI（圆滑·灵动·椭圆）】=====================
             Player owner = Main.player[Projectile.owner];
             if (!owner.active || owner.dead)
             {
@@ -112,23 +121,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 return;
             }
 
-            // 持续保活；本体不造成接触伤害，避免误伤/卡位
+            // 保活与碰撞设定（发射期不接触伤害，撞击期的friendly在下方状态机中切换）
             Projectile.timeLeft = 2;
             Projectile.tileCollide = false;
             Projectile.friendly = false;
 
-            // 初始化：随机确定一个顺/逆时针旋向（稳定飞行气质）
+            // 初始化：记录顺/逆时针旋向（用 ai[1] 持久化）
             if (!inited)
             {
                 inited = true;
-                // 用 ai[1] 记录旋向（±1），避免用 localAI（遵循你的规则）
                 if (Projectile.ai[1] == 0f)
                     Projectile.ai[1] = Main.rand.NextBool() ? 1f : -1f;
                 orbitAngle = Main.rand.NextFloat(MathHelper.TwoPi);
             }
             int orbitDir = Projectile.ai[1] > 0 ? 1 : -1;
 
-            // 目标获取/校验
+            // ---------- 目标获取 / 校验 ----------
             NPC target = null;
             if (targetId >= 0 && targetId < Main.maxNPCs)
             {
@@ -136,7 +144,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 if (cand.active && !cand.friendly && cand.CanBeChasedBy(this))
                     target = cand;
             }
-            // 定期重寻
             if (retargetTimer-- <= 0)
             {
                 retargetTimer = 15;
@@ -157,30 +164,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 target = (found >= 0) ? Main.npc[found] : null;
             }
 
-            // 轨道中心与参数：无敌人绕玩家，有敌人绕敌人
-            Vector2 pivot = (target == null) ? owner.Center : target.Center;
-            float desiredRadius = (target == null) ? orbitRadiusIdle : orbitRadiusCombat;
+            // ---------- 椭圆轨道参数（半径/角速度动态波动 + 椭圆缓慢自转） ----------
+            float t = Main.GlobalTimeWrappedHourly;
+            bool inCombat = target != null;
 
-            // 呼吸半径（更优雅）：随时间轻微起伏
-            float breath = (float)Math.Sin(Main.GlobalTimeWrappedHourly * (target == null ? 2.0f : 2.8f) + Projectile.whoAmI) * 6f;
-            float actualRadius = desiredRadius + breath;
+            // 基础半径（平均值）
+            float baseR = inCombat ? orbitRadiusCombat : orbitRadiusIdle;
+            if (inCombat)
+                baseR *= 1.5f; // 你的原始逻辑：战斗时半径整体扩大
 
-            // 角速度（战斗态更快）
-            float omega = (target == null ? orbitSpeedIdle : orbitSpeedCombat) * orbitDir;
-            orbitAngle += omega;
+            // 取一个 0~1 的周期因子（随时间变化）
+            float osc = (float)(Math.Sin(t * 2.1f + Projectile.whoAmI * 0.37f) * 0.5 + 0.5f);
 
-            // 理想轨道位置
-            Vector2 desiredPos = pivot + orbitAngle.ToRotationVector2() * actualRadius;
+            // 半径范围：最小 baseR，最大 5 × baseR
+            float minR = baseR;
+            float maxR = baseR * 5f;
+            float currentR = MathHelper.Lerp(minR, maxR, osc);
 
-            // 用“期望速度 + 惯性插值”让飞行丝滑（避免瞬间折线）
+            // 椭圆长短轴（可以保持一点比例差异）
+            float rx = currentR * 1.0f; // 横向半轴
+            float ry = currentR * 1.2f; // 纵向半轴（稍长一点）
+
+            // 椭圆自身还做一个缓慢的整体旋转（非固定朝向的椭圆，显得更“活”）
+            float ellipseRot = (inCombat ? 0.6f : 0.3f) * (float)Math.Sin(t * (inCombat ? 0.7f : 0.45f) + Projectile.whoAmI * 0.15f);
+
+            // 角速度：在原有基础上叠加噪声；半径更大时角速度略增（“大的时候更快一点”）
+            float omegaBase = inCombat ? orbitSpeedCombat : orbitSpeedIdle;
+            float omegaNoise = 0.9f + 0.25f * (float)Math.Sin(t * 1.1f + Projectile.whoAmI * 0.3f); // 0.65~1.15倍左右
+                                                                                                    // 用当前椭圆“平均半径”驱动角速度微提升
+            float avgR = (rx + ry) * 0.5f;
+            float boost = MathHelper.Lerp(0.95f, 1.25f, Utils.GetLerpValue(baseR, baseR * (inCombat ? 1.5f : 1.25f), avgR, true));
+            float omega = omegaBase * omegaNoise * boost;
+
+            // 相位推进（顺/逆时针）
+            orbitAngle += omega * orbitDir;
+
+            // 轨道中心
+            Vector2 pivot = inCombat ? target.Center : owner.Center;
+
+            // 计算椭圆上的期望位置（先做长短轴分离，再整体旋转椭圆）
+            Vector2 ellipse = new Vector2((float)Math.Cos(orbitAngle) * rx, (float)Math.Sin(orbitAngle) * ry).RotatedBy(ellipseRot);
+            Vector2 desiredPos = pivot + ellipse;
+
+            // ---------- 速度规划：最大速度也做轻微波动，惯性插值确保丝滑 ----------
+            float dynamicMaxSpeed = maxSpeed * (inCombat ? 1.25f : 1.00f) * (1f + 0.12f * (float)Math.Sin(t * 1.85f + Projectile.whoAmI));
             Vector2 toGoal = desiredPos - Projectile.Center;
-            float speed = MathHelper.Clamp(toGoal.Length(), 0f, maxSpeed);
+            float speed = Math.Min(dynamicMaxSpeed, toGoal.Length());
             Vector2 desiredVel = (speed <= 0.001f) ? Vector2.Zero : toGoal.SafeNormalize(Vector2.UnitY) * speed;
+
+            // 惯性插值（越大越平滑）
             Projectile.velocity = (Projectile.velocity * (inertia - 1f) + desiredVel) / inertia;
 
-            // 姿态：沿速度切线轻轻“机翼倾斜”，既不过度也不钝
+            // 姿态：沿速度方向微倾，保持“机翼”既不呆板也不过度摇摆
             if (Projectile.velocity.LengthSquared() > 0.01f)
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+
+
+
+
 
 
 
@@ -193,6 +235,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                     // 发射激光
                     Vector2 aimPoint = target.Center + target.velocity * leadTime;
                     Vector2 dir = (aimPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
+
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
                         Projectile.Center,
@@ -202,12 +245,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                         0f,
                         Projectile.owner
                     );
-                    Projectile.timeLeft = 80;
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
 
                     laserShotsLeft--; // 消耗一次
-                    shootTimer = Main.rand.Next(fireCdMin, fireCdMax);
+
+                    // 只有还剩下激光时，才重置寿命
+                    if (laserShotsLeft > 0)
+                        Projectile.timeLeft = 80;
+
+                    // 动态计算冷却：随发射次数逐渐减少
+                    float progress = 1f - (laserShotsLeft / (float)maxLaserShots);
+                    int cd = (int)MathHelper.Lerp(startFireCd, endFireCd, progress);
+                    shootTimer = cd;
 
                     // 激光发射期间：本体不造成伤害
                     Projectile.friendly = false;
@@ -221,8 +271,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 }
             }
 
+
+
+
+
+
             if (kamikazeMode)
             {
+                Projectile.friendly = true;
                 // 找到最近敌人（重新锁定）
                 NPC targetNpc = null;
                 float minDist = searchRange;
@@ -337,45 +393,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 只在第一次命中时触发
-            if (!Projectile.localAI[0].Equals(1f))
+            Player owner = Main.player[Projectile.owner];
+
+            if (kamikazeMode)
             {
-                // 关闭后续伤害
-                Projectile.friendly = false;
+                // 自杀冲锋命中 → 造成一次伤害并立刻消亡
+                Projectile.Kill();
+                return;
+            }
 
-                // 标记已命中过
-                Projectile.localAI[0] = 1f;
 
-                // 随机决定转向方向（-1 = 左转，+1 = 右转）
-                Projectile.ai[0] = Main.rand.NextBool() ? -1f : 1f;
 
-                // ====== 召唤 3 条激光 ======
-                Player owner = Main.player[Projectile.owner];
-                Vector2 center = Projectile.Center;
+        }
 
-                //// 中心激光：正对自身 → 命中点回收
-                //Vector2 dirMain = -Projectile.velocity.SafeNormalize(Vector2.UnitY);
-                //SpawnMathLaser(center, dirMain, owner);
 
-                //// 左右两条激光：±45° 对称
-                //Vector2 dirLeft = dirMain.RotatedBy(MathHelper.ToRadians(45));
-                //Vector2 dirRight = dirMain.RotatedBy(MathHelper.ToRadians(-45));
-                //SpawnMathLaser(center, dirLeft, owner);
-                //SpawnMathLaser(center, dirRight, owner);
 
-                // 音效 / 特效
-                SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
-                for (int i = 0; i < 12; i++)
+
+
+
+        public override void OnKill(int timeLeft)
+        {
+            Player owner = Main.player[Projectile.owner];
+
+            // 播放音效
+            SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
+
+            // 找到最近目标
+            NPC target = null;
+            float minDist = 1200f; // 可调的范围
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC n = Main.npc[i];
+                if (!n.active || n.friendly || !n.CanBeChasedBy(this)) continue;
+                float d = Vector2.Distance(n.Center, Projectile.Center);
+                if (d < minDist)
                 {
-                    Dust d = Dust.NewDustPerfect(center, DustID.Electric,
-                        Main.rand.NextVector2Circular(4f, 4f));
-                    d.noGravity = true;
-                    d.scale = 1.2f;
-                    d.color = Color.Lerp(Color.White, Color.Cyan, 0.6f);
+                    minDist = d;
+                    target = n;
                 }
+            }
 
-
-                // ====== 在敌人身上生成 TEM00RightAIM ======
+            // 如果找到敌人 → 生成 TEM00RightAIM
+            if (target != null)
+            {
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     target.Center,
@@ -388,31 +448,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             }
         }
 
-        ////生成数学感激光（浅蓝→白）
-        //private void SpawnMathLaser(Vector2 start, Vector2 direction, Player owner)
-        //{
-        //    int damage = (int)(Projectile.damage * 0.8f); // 略低伤害
-        //    float kb = 2f;
-        //    Projectile.NewProjectile(
-        //        Projectile.GetSource_FromThis(),
-        //        start,
-        //        direction,
-        //        ModContent.ProjectileType<TEM00LeftLazer>(), // 直接调用之前的激光弹幕
-        //        damage,
-        //        kb,
-        //        owner.whoAmI
-        //    );
-        //}
-
-
-
-
-
-
-        public override void OnKill(int timeLeft)
-        {
-            // 弹幕死亡（时间到或碰撞）时执行，可用于生成碎裂粒子、播放破碎音效
-        }
 
 
     }
