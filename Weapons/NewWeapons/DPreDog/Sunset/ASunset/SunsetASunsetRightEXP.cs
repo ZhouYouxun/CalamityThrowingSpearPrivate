@@ -100,7 +100,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 50;
+            Projectile.timeLeft = 150;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 1;
         }
