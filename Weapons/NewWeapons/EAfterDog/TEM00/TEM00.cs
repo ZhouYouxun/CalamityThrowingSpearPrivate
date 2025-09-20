@@ -46,7 +46,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 500; // 右键伤害
+                Item.damage = 400; // 右键伤害
                 Item.useTime = 10;
                 Item.useAnimation = 45;
                 Item.useLimitPerAnimation = 2;

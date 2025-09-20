@@ -140,7 +140,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     headPosition, // 激光出生点：弹幕顶端（你已经算好了 headPosition）
                                     Projectile.velocity.SafeNormalize(Vector2.UnitY), // 方向（单位向量）——激光类会根据 owner 同步方向
                                     ModContent.ProjectileType<TEM00LeftSuperLazer>(),
-                                    Projectile.damage, // 可以按需调整伤害
+                                    (int)(Projectile.damage * 5), // 可以按需调整伤害
                                     0f,
                                     Projectile.owner
                                 );
@@ -177,7 +177,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     headPosition,
                                     dir,
                                     ModContent.ProjectileType<TEM00LeftLazer>(),
-                                    Projectile.damage,
+                                    (int)(Projectile.damage * 0.5),
                                     0f,
                                     Projectile.owner
                                 );
@@ -251,7 +251,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                     spawnPos,
                     dir,
                     ModContent.ProjectileType<TEM00LeftLazer>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 5),
                     0f,
                     Projectile.owner
                 );
