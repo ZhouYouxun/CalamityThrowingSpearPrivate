@@ -1402,4 +1402,6 @@ TheSpecialText: {
 Tiles: {
 	SunsetSEEDTile1.MapEntry: Sunset S E E D Tile1
 	SunsetSEEDTile2.MapEntry: Sunset S E E D Tile2
+	SunsetSEEDTile3.MapEntry: Sunset S E E D Tile3
+	SunsetSEEDTile4.MapEntry: Sunset S E E D Tile4
 }

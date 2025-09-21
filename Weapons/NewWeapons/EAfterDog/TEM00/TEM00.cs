@@ -16,6 +16,7 @@ using CalamityMod.Items.Materials;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using static Terraria.ModLoader.ModContent;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod;
 
 
 
@@ -105,7 +106,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<TheBroken>(1);
+            recipe.AddIngredient<NuclearFuelRod>(1);
             recipe.AddIngredient<ShadowspecBar>(5);
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();
