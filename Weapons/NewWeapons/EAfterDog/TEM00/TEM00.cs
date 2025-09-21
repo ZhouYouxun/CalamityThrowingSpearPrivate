@@ -9,6 +9,15 @@ using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
+using CalamityMod.Items;
+using CalamityMod.Rarities;
+using CalamityMod;
+using CalamityMod.Items.Materials;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.TheBroken;
+using CalamityMod.Tiles.Furniture.CraftingStations;
+using static Terraria.ModLoader.ModContent;
+
+
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
@@ -30,8 +39,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
             Item.shoot = ModContent.ProjectileType<TEM00Left>(); // 调用专用【蓄力型弹幕】
             Item.shootSpeed = 6f; // 初始速度，真实速度由弹幕控制
-            Item.rare = ItemRarityID.LightRed;
-            Item.value = Item.buyPrice(0, 5, 0, 0);
+
+            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
+            Item.rare = ModContent.RarityType<HotPink>();
+            Item.Calamity().devItem = true;
 
             Item.useStyle = ItemUseStyleID.Shoot; // 以投掷方式显示持枪动作[这很重要，否则手会一直挥!]
             Item.autoReuse = true; // 这很重要，否则他会直接飞出去
@@ -46,7 +57,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 400; // 右键伤害
+                Item.damage = 2500; // 右键伤害
                 Item.useTime = 10;
                 Item.useAnimation = 45;
                 Item.useLimitPerAnimation = 2;
@@ -56,12 +67,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             }
             else // 左键
             {
-                Item.damage = 666;
-                Item.useTime = 60;
-                Item.useAnimation = 60;
+                Item.damage = 6666;
+                Item.useTime = Item.useAnimation = 60;
                 Item.shootSpeed = 15f;
                 Item.shoot = ModContent.ProjectileType<TEM00Left>(); // 左键发射 TEM00Left
-                //Item.UseSound = SoundID.Item92;
+                Item.UseSound = null;
             }
             return base.CanUseItem(player);
         }
@@ -92,7 +102,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         }
 
 
-
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient<TheBroken>(1);
+            recipe.AddIngredient<ShadowspecBar>(5);
+            recipe.AddTile(TileType<DraedonsForge>());
+            recipe.Register();
+        }
 
 
 

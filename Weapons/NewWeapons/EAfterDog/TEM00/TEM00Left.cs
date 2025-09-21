@@ -82,6 +82,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
         private int fireCooldown = 0;   // 单发冷却
         private int phaseCooldown = 0;  // 轮与轮之间的间隔
         private bool specialAttack = false; // 是否进入特殊攻击阶段
+        
+        // 记录最后生成的超级激光弹幕ID；-1 表示未生成/已失效
+        private int superLaserId = -1;
+        // 扇形喷发的节流计时（例如每帧都喷，或每2帧喷一次）
+        private int backBurstTicker = 0;
 
         private void DoBehavior_Aim() // 瞄准阶段
         {
@@ -154,6 +159,124 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     Main.projectile[laserProj].rotation = Projectile.rotation - MathHelper.PiOver4;
                                     Main.projectile[laserProj].velocity = (Main.projectile[laserProj].rotation).ToRotationVector2();
                                 }
+
+                                superLaserId = laserProj;
+
+                                // 屏幕震动
+                                float shakePower = 95f;
+                                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                                Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                                    Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
+
+                                // === 超级魔法阵·一次性后扇形喷发（只在本地拥有者触发，避免多人重复）===
+                                if (Main.myPlayer == Projectile.owner)
+                                {
+                                    // 枪口与方向（与你上方一致）
+                                    Vector2 muzzle = headPosition;
+                                    Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                                    Vector2 back = -forward;
+
+                                    // 只在后方 180°：以 back 为轴，±90° 的扇形
+                                    float coneHalf = MathHelper.PiOver2; // 90°
+
+                                    // 调色板（科技蓝家族）
+                                    Color[] techBlue =
+                                    {
+                                        new Color( 80, 200, 255),
+                                        new Color(120, 220, 255),
+                                        Color.Cyan,
+                                        new Color(180, 220, 255),
+                                        Color.WhiteSmoke
+                                    };
+
+                                    // ========== “1.5×宏伟度”的一次性强喷（数量、速度全面抬升） ==========
+                                    // SquishyLight（EXO高亮喷焰）：粗壮主束感
+                                    int exoCount = 32 + Main.rand.Next(10); // 32~41（持续喷发版的 ~1.5×）
+                                                                            // Spark（线性火花）：锐利刀锋
+                                    int sparkCount = 56 + Main.rand.Next(16); // 56~71
+                                                                              // GlowOrb（柔性辉光）：对数螺旋点缀两臂，提供数学骨架
+                                    int spiralArms = 2;
+                                    int orbPerArm = 18 + Main.rand.Next(6);  // 18~23
+
+                                    // 速度全面提升到“持续背喷”的 ≥1.5×
+                                    // （持续背喷示例：EXO 14~26、Spark 18~34、Orb 10~18）
+                                    Func<float, float, float> R = (a, b) => Main.rand.NextFloat(a, b);
+                                    // 1) EXO：强亮扇形主喷
+                                    for (int i = 0; i < exoCount; i++)
+                                    {
+                                        // 为了“半规则”的美感：分层+分段取角，既均匀又有随机
+                                        float u = (i + Main.rand.NextFloat()) / exoCount;            // 0~1
+                                        float ang = MathHelper.Lerp(-coneHalf, coneHalf, u);         // 均匀覆盖 180°
+                                        Vector2 dir = back.RotatedBy(ang + Main.rand.NextFloat(-0.08f, 0.08f));
+
+                                        var exo = new SquishyLightParticle(
+                                            muzzle,
+                                            dir * R(21f, 39f),               // ★ 比持续背喷快 ~1.5×
+                                            R(0.30f, 0.46f),                 // 体积略大
+                                            techBlue[Main.rand.Next(techBlue.Length)],
+                                            Main.rand.Next(18, 28),          // 寿命中等
+                                            opacity: 1f,
+                                            squishStrenght: 1f,
+                                            maxSquish: R(2.6f, 3.6f),
+                                            hueShift: 0f
+                                        );
+                                        GeneralParticleHandler.SpawnParticle(exo);
+                                    }
+
+                                    // 2) Spark：刀锋形火花（极快、偏直线）
+                                    for (int i = 0; i < sparkCount; i++)
+                                    {
+                                        float u = (i + 0.5f * (i % 2)) / sparkCount;                 // 轻微锯齿排列
+                                        float ang = MathHelper.Lerp(-coneHalf, coneHalf, u);
+                                        Vector2 baseDir = back.RotatedBy(ang);
+                                        Vector2 jitter = baseDir.RotatedBy(Main.rand.NextFloat(-0.17f, 0.17f)); // 细小抖动
+
+                                        var sp = new SparkParticle(
+                                            muzzle,
+                                            jitter * R(27f, 51f),            // ★ 速度更快
+                                            false,
+                                            Main.rand.Next(16, 26),
+                                            R(0.9f, 1.5f),
+                                            Color.Lerp(techBlue[Main.rand.Next(techBlue.Length)], Color.White, 0.35f)
+                                        );
+                                        GeneralParticleHandler.SpawnParticle(sp);
+                                    }
+
+                                    // 3) GlowOrb：两臂对数螺旋（数学美学骨架）
+                                    // r = r0 * e^(k * t), theta 从 0 -> ±90°，两臂对称
+                                    float r0 = 14f;
+                                    float k = 0.035f; // 增长系数（更优雅，别太大）
+                                    for (int arm = 0; arm < spiralArms; arm++)
+                                    {
+                                        float sign = (arm == 0) ? 1f : -1f;
+                                        for (int j = 0; j < orbPerArm; j++)
+                                        {
+                                            float t = j / (float)(orbPerArm - 1);
+                                            float theta = sign * MathHelper.Lerp(0f, coneHalf, t) + Main.rand.NextFloat(-0.05f, 0.05f);
+                                            float r = r0 * (float)Math.Exp(k * t * 90f); // 半径缓慢外扩
+                                            Vector2 dir = back.RotatedBy(theta);
+                                            Vector2 pos = muzzle + dir * r;
+
+                                            var orb = new GlowOrbParticle(
+                                                pos,
+                                                dir * R(15f, 27f),           // ★ 速度抬高到 ≥1.5×
+                                                false,
+                                                Main.rand.Next(10, 16),
+                                                R(0.9f, 1.5f),
+                                                techBlue[(arm + j) % techBlue.Length],
+                                                true, false, true
+                                            );
+                                            GeneralParticleHandler.SpawnParticle(orb);
+                                        }
+                                    }
+
+                                    // （可选）给一次性爆发一个更厚重的音色
+                                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item74, muzzle);
+                                }
+
+
+
                             }
                         }
 
@@ -182,6 +305,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     Projectile.owner
                                 );
 
+
+                                // 屏幕震动
+                                float shakePower = 5f;
+                                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                                Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                                    Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
                                 SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
 
                                 shotsFired++;
@@ -199,8 +329,104 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 }
                 else
                 {
-                    // ====== 特殊攻击阶段（留空） ======
+                    // === 超级激光持续期间，从枪口向左后/右后两个扇形喷发高速粒子 ===
+
+
+                    //SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SSL/拉链闪电") with { Volume = 0.95f, Pitch = -0.2f }, Projectile.Center);
+
+                    // ① 确认超级激光仍然存活（存在且类型匹配），否则不喷发
+                    bool laserAlive = superLaserId >= 0 && superLaserId < Main.maxProjectiles
+                                      && Main.projectile[superLaserId].active
+                                      && Main.projectile[superLaserId].type == ModContent.ProjectileType<TEM00LeftSuperLazer>();
+                    if (!laserAlive)
+                        return;
+
+                    // ② 计算枪口位置（与你上方一致）
+                    headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (16f * 3f);
+                    //fixedRotation = Projectile.rotation;
+                    //headPosition = Projectile.Center + new Vector2(16f * 3f, 0f).RotatedBy(fixedRotation);
+
+                    // ③ 基方向：前=dir，后= -dir；左后/右后锥基向量（±45°）
+                    Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+                    Vector2 back = -dir;
+                    Vector2 leftBackBase = back.RotatedBy(MathHelper.PiOver4);   // 后方 + 左 45°
+                    Vector2 rightBackBase = back.RotatedBy(-MathHelper.PiOver4);   // 后方 + 右 45°
+                    float coneHalf = MathHelper.ToRadians(24f); // 扇形半角（可调：20°~30°）
+
+                    // ④ 颜色池（科技蓝家族）
+                    Color[] techBlue =
+                    {
+        new Color( 80, 200, 255),
+        new Color(120, 220, 255),
+        Color.Cyan,
+        new Color(180, 220, 255),
+        Color.WhiteSmoke
+    };
+
+                    // ⑤ 节流（例如每帧都喷；若太炸可改为 %2==0）
+                    backBurstTicker++;
+
+                    // 单帧内：每个扇形各喷一组（“疯狂版”数量；若担心性能可把 *Count 降低）
+                    void BurstCone(Vector2 baseDir)
+                    {
+                        // a) EXO（SquishyLightParticle）：强亮、速度极快
+                        int exoCount = 4 + Main.rand.Next(3); // 4~6
+                        for (int i = 0; i < exoCount; i++)
+                        {
+                            Vector2 v = baseDir.RotatedByRandom(coneHalf) * Main.rand.NextFloat(14f, 26f); // 非常快
+                            var exo = new SquishyLightParticle(
+                                headPosition,
+                                v,
+                                Main.rand.NextFloat(0.28f, 0.42f),
+                                techBlue[Main.rand.Next(techBlue.Length)],
+                                Main.rand.Next(18, 26),
+                                opacity: 1f,
+                                squishStrenght: 1f,
+                                maxSquish: Main.rand.NextFloat(2.4f, 3.4f),
+                                hueShift: 0f
+                            );
+                            GeneralParticleHandler.SpawnParticle(exo);
+                        }
+
+                        // b) SparkParticle：线性火花，刀锋感强
+                        int sparkCount = 8 + Main.rand.Next(6); // 8~13
+                        for (int i = 0; i < sparkCount; i++)
+                        {
+                            Vector2 v = baseDir.RotatedByRandom(coneHalf) * Main.rand.NextFloat(18f, 34f);
+                            var sp = new SparkParticle(
+                                headPosition,
+                                v,
+                                false,
+                                Main.rand.Next(14, 22),
+                                Main.rand.NextFloat(0.7f, 1.2f),
+                                Color.Lerp(techBlue[Main.rand.Next(techBlue.Length)], Color.White, 0.35f)
+                            );
+                            GeneralParticleHandler.SpawnParticle(sp);
+                        }
+
+                        // c) GlowOrb：柔性辉光，补充层次（数量略少）
+                        int orbCount = 4 + Main.rand.Next(3); // 4~6
+                        for (int i = 0; i < orbCount; i++)
+                        {
+                            Vector2 v = baseDir.RotatedByRandom(coneHalf) * Main.rand.NextFloat(10f, 18f);
+                            var orb = new GlowOrbParticle(
+                                headPosition + v.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(6f, 18f),
+                                v * Main.rand.NextFloat(0.85f, 1.15f),
+                                false,
+                                Main.rand.Next(8, 14),
+                                Main.rand.NextFloat(0.9f, 1.5f),
+                                techBlue[Main.rand.Next(techBlue.Length)],
+                                true, false, true
+                            );
+                            GeneralParticleHandler.SpawnParticle(orb);
+                        }
+                    }
+
+                    // 左后扇形 + 右后扇形
+                    BurstCone(leftBackBase);
+                    BurstCone(rightBackBase);
                 }
+
 
 
             }

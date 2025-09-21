@@ -18,6 +18,7 @@ using Terraria;
 using CalamityMod.Particles;
 using Terraria.DataStructures;
 using CalamityMod.Buffs.DamageOverTime;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 {
@@ -127,6 +128,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
         {
             // 仍可保留你的Debuff
             target.AddBuff(ModContent.BuffType<MiracleBlight>(), 300); // 超位崩解
+            SoundEngine.PlaySound(SoundID.Item132 with { Volume = 0.8f, Pitch = -0.0f }, Projectile.Center);
 
             //// 8帧节流，避免localNPCHitCooldown=1导致每帧都生成海量粒子
             //if (impactVfxCooldown > 0)
@@ -204,6 +206,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
         public override void ExtraBehavior()
         {
             //if (impactVfxCooldown > 0) impactVfxCooldown--; // 递减命中爆破节流
+
 
             // ===== 科技蓝主光照 =====
             Lighting.AddLight(Projectile.Center, 0.10f, 0.28f, 0.55f); // 柔和科技蓝环境光
@@ -329,7 +332,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
                 baseDrawPoints[i] = Vector2.Lerp(Projectile.Center, laserEnd, i / (float)(baseDrawPoints.Length - 1f));
 
             GameShaders.Misc["CalamityMod:ArtemisLaser"].UseColor(new Color(90, 200, 255));
-            GameShaders.Misc["CalamityMod:ArtemisLaser"].UseImage1("Images/Extra_189");
+            GameShaders.Misc["CalamityMod:ArtemisLaser"].UseImage1("Images/Extra_191"); // 横向的黑色背景纹理
             GameShaders.Misc["CalamityMod:ArtemisLaser"].UseImage2("Images/Misc/Perlin");
 
             PrimitiveRenderer.RenderTrail(baseDrawPoints, new(LaserWidthFunction, LaserColorFunction, shader: GameShaders.Misc["CalamityMod:ArtemisLaser"]), 64);

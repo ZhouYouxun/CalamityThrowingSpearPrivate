@@ -109,7 +109,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             startFireCd = 20; // 从20帧起步
             endFireCd = 4;    // 最快降到4帧
         }
-
+        // ======== 无敌人自杀计时 ========
+        private int noTargetTimer = 0; // 连续无敌人帧数
+        // ======== 狂野冲刺计时 ========
+        private int dashTimer = 0;
 
         public override void AI()
         {
@@ -246,6 +249,66 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                         Projectile.owner
                     );
 
+                    // ===== 在这里加入“反方向特效喷发” =====
+                    Vector2 backDir = -dir; // 反方向
+                    Color[] techBlue =
+                    {
+    new Color(80, 200, 255),
+    new Color(120, 220, 255),
+    Color.Cyan,
+    new Color(180, 220, 255),
+    Color.WhiteSmoke
+};
+
+                    // SquishyLight：亮度核心
+                    for (int i = 0; i < 6; i++)
+                    {
+                        var exo = new SquishyLightParticle(
+                            Projectile.Center,
+                            backDir.RotatedByRandom(0.3f) * Main.rand.NextFloat(12f, 20f),
+                            Main.rand.NextFloat(0.25f, 0.4f),
+                            techBlue[Main.rand.Next(techBlue.Length)],
+                            Main.rand.Next(14, 22),
+                            opacity: 1f,
+                            squishStrenght: 1f,
+                            maxSquish: Main.rand.NextFloat(2.4f, 3.4f),
+                            hueShift: 0f
+                        );
+                        GeneralParticleHandler.SpawnParticle(exo);
+                    }
+
+                    // Spark：锐利喷射
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var sp = new SparkParticle(
+                            Projectile.Center,
+                            backDir.RotatedByRandom(0.45f) * Main.rand.NextFloat(16f, 28f),
+                            false,
+                            Main.rand.Next(12, 18),
+                            Main.rand.NextFloat(0.8f, 1.4f),
+                            Color.Lerp(techBlue[Main.rand.Next(techBlue.Length)], Color.White, 0.4f)
+                        );
+                        GeneralParticleHandler.SpawnParticle(sp);
+                    }
+
+                    // GlowOrb：柔和点缀
+                    for (int i = 0; i < 5; i++)
+                    {
+                        var orb = new GlowOrbParticle(
+                            Projectile.Center,
+                            backDir.RotatedByRandom(0.5f) * Main.rand.NextFloat(8f, 14f),
+                            false,
+                            Main.rand.Next(6, 10),
+                            Main.rand.NextFloat(0.9f, 1.3f),
+                            techBlue[Main.rand.Next(techBlue.Length)],
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+
+
+
+
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
 
                     laserShotsLeft--; // 消耗一次
@@ -302,9 +365,44 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 }
             }
 
+            if (target == null)
+            {
+                noTargetTimer++;
 
+                if (noTargetTimer >= 240) // 进入狂野冲刺模式
+                {
+                    // === 狂野前冲模式 ===
+                    if (Projectile.velocity.LengthSquared() < 0.01f)
+                    {
+                        // 如果初速太小，就用当前朝向给个初速度
+                        Projectile.velocity = Projectile.rotation.ToRotationVector2() * 8f;
+                    }
 
+                    // 每帧速度乘以 1.1，快速加速
+                    Projectile.velocity *= 1.1f;
 
+                    // 确保碰撞有效
+                    Projectile.tileCollide = true;
+
+                    // ====== 冲刺计时器 ======
+                    dashTimer++;
+                    if (dashTimer >= 180) // 冲刺超过 180 帧（3 秒）就自毁
+                    {
+                        Projectile.Kill();
+                        return;
+                    }
+
+                    return; // 不再执行后续盘旋逻辑
+                }
+
+                return; // 还没到进入冲刺的条件
+            }
+            else
+            {
+                // 一旦有敌人，重置两个计时器
+                noTargetTimer = 0;
+                dashTimer = 0;
+            }
 
 
 
@@ -446,6 +544,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                     owner.whoAmI
                 );
             }
+
+
+
+
         }
 
 

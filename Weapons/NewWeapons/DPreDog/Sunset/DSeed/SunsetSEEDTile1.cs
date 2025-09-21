@@ -1,4 +1,6 @@
 ﻿using System;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -149,10 +151,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
 
         public override void Update()
         {
-            // ——计天数：在“白天且时间刚刚归零（黎明）”的时刻 +1——
             if (Main.dayTime)
             {
-                // 白天开始时 Main.time 会重置为 0
                 if (!_countedToday && Main.time <= 1.0)
                 {
                     _daysPassed++;
@@ -161,23 +161,37 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             }
             else
             {
-                // 夜晚：等待下一次黎明
                 _countedToday = false;
             }
 
-            // ——满足条件则尝试长成——
-            if (_daysPassed >= DaysToMature)
-            {
-                TryMature();
-            }
-
-            // ⚡ 调试用：每过 60 tick（=1秒）就成熟
-            //if (Main.GameUpdateCount % 60 == 0)
-            //{
-            //    TryMature();
-            //}
-
+            // ——分阶段成长——
+            if (_daysPassed == 15)
+                TryGrow(ModContent.TileType<SunsetSEEDTile2>());
+            else if (_daysPassed == 30)
+                TryGrow(ModContent.TileType<SunsetSEEDTile3>());
+            else if (_daysPassed == 60)
+                TryGrow(ModContent.TileType<SunsetSEEDTile4>());
         }
+
+        private void TryGrow(int tileType)
+        {
+            int i = Position.X;
+            int j = Position.Y;
+
+            if (!HasSpaceFor3x3(i, j))
+                return;
+
+            // 移除旧Tile
+            WorldGen.KillTile(i, j, noItem: true, effectOnly: false);
+
+            // 放置新Tile
+            bool placed = WorldGen.PlaceObject(i, j, tileType);
+            if (placed && Main.netMode == NetmodeID.Server)
+            {
+                NetMessage.SendObjectPlacement(-1, i, j, tileType, 0, 0, -1, -1);
+            }
+        }
+
 
         // 尝试把 1×1 幼苗替换为 3×3 成熟植株
         private void TryMature()
@@ -234,5 +248,105 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
 
 
 
+    }
+}
+
+
+
+// 阶段2
+public class SunsetSEEDTile2 : ModTile
+{
+    public override void SetStaticDefaults()
+    {
+        Main.tileFrameImportant[Type] = true;
+        Main.tileNoAttach[Type] = true;
+        Main.tileLavaDeath[Type] = true;
+
+        TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+        TileObjectData.newTile.Width = 3;
+        TileObjectData.newTile.Height = 6;
+        TileObjectData.newTile.Origin = new Point16(1, 2);
+        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+        TileObjectData.newTile.AnchorBottom = new AnchorData(
+            AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
+
+        TileObjectData.addTile(Type);
+
+        AddMapEntry(new Color(200, 230, 130), CreateMapEntryName());
+        DustType = DustID.Grass;
+    }
+
+    public override void KillMultiTile(int i, int j, int frameX, int frameY)
+    {
+        // 不掉落，只播 Dust
+        for (int k = 0; k < 5; k++)
+            Dust.NewDust(new Vector2(i * 16, j * 16), 48, 48, DustID.Grass);
+    }
+}
+
+// 阶段3
+public class SunsetSEEDTile3 : ModTile
+{
+    public override void SetStaticDefaults()
+    {
+        Main.tileFrameImportant[Type] = true;
+        Main.tileNoAttach[Type] = true;
+        Main.tileLavaDeath[Type] = true;
+
+        TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+        TileObjectData.newTile.Width = 3;
+        TileObjectData.newTile.Height = 6;
+        TileObjectData.newTile.Origin = new Point16(1, 2);
+        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+        TileObjectData.newTile.AnchorBottom = new AnchorData(
+            AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
+
+        TileObjectData.addTile(Type);
+
+        AddMapEntry(new Color(230, 240, 130), CreateMapEntryName());
+        DustType = DustID.Grass;
+    }
+
+    public override void KillMultiTile(int i, int j, int frameX, int frameY)
+    {
+        // 不掉落，只播 Dust
+        for (int k = 0; k < 5; k++)
+            Dust.NewDust(new Vector2(i * 16, j * 16), 48, 48, DustID.Grass);
+    }
+}
+
+
+// 阶段4（最终成熟）
+public class SunsetSEEDTile4 : ModTile
+{
+    public override void SetStaticDefaults()
+    {
+        Main.tileFrameImportant[Type] = true;
+        Main.tileNoAttach[Type] = true;
+        Main.tileLavaDeath[Type] = true;
+
+        TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+        TileObjectData.newTile.Width = 3;
+        TileObjectData.newTile.Height = 6;
+        TileObjectData.newTile.Origin = new Point16(1, 2);
+        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+        TileObjectData.newTile.AnchorBottom = new AnchorData(
+            AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
+
+        TileObjectData.addTile(Type);
+
+        AddMapEntry(new Color(255, 230, 130), CreateMapEntryName());
+        DustType = DustID.Grass;
+    }
+
+    public override void KillMultiTile(int i, int j, int frameX, int frameY)
+    {
+        // 最终阶段才掉落奖励
+        var source = new EntitySource_TileBreak(i, j);
+        Rectangle rect = new Rectangle(i * 16, j * 16, 16 * 3, 16 * 3);
+
+        // TODO: 替换成你真正要掉落的物品
+        Item.NewItem(source, rect, ModContent.ItemType<Sunset>(), 1);
+        Item.NewItem(source, rect, ModContent.ItemType<SunsetSEED>(), 1);
     }
 }

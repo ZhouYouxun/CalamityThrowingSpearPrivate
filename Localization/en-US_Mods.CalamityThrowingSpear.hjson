@@ -1100,7 +1100,6 @@ NewWeapons: {
 				which can be prematurely detonated by the long needle.  
 				Holding left-click charges up the long needle for more damage;  
 				successful hits briefly enhance mobility.  
-				Causes temporal dissonance the first time it's used.  
 				[c/e1ffff:"The Queen of Snow and Sea mistook you for her beloved."]  
 				'''
 		}
@@ -1111,7 +1110,7 @@ NewWeapons: {
 				'''
 				Left-click channels energy into a serialized array of laser bursts, firing in five volleys before releasing the ultimate beam.
 				Right-click summons an orbital laser warship that traces elliptical paths around foes, raining down beams before ending in a self-destructive charge.
-				Every trajectory of this weapon follows the elegant order of mathematics.
+				[c/00fff0:""]
 				'''
 		}
 	}
