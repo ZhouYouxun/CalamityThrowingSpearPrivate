@@ -267,7 +267,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 default: // 银白 + 金色
                     core = new Color(230, 230, 240); // 银白
                     edge = new Color(255, 210, 80);  // 金色
-                    accent = new Color(180, 220, 255); // 点缀：冰蓝
+                    accent = new Color(183, 173, 224); // 点缀：浅紫藤
                     break;
             }
 
