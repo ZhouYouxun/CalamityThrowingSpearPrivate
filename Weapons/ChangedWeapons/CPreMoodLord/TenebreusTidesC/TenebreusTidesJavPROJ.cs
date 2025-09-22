@@ -192,7 +192,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/深渊潮涌音效") with { Volume = 0.5f, Pitch = 0.0f }, Projectile.Center);
 
                 // 屏幕震动
-                float shakePower = 2f;
+                float shakePower = 25f;
                 float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
                 Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 

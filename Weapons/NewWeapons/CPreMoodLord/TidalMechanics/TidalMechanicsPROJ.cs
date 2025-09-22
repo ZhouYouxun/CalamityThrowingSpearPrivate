@@ -285,10 +285,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
 
         public override void OnKill(int timeLeft)
         {
-            // 屏幕震动效果
-            float shakePower = 5f; // 设置震动强度
-            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+            //// 屏幕震动效果
+            //float shakePower = 5f; // 设置震动强度
+            //float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            //Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
+
+            // 屏幕震动效果（左右晃）
+            float shakePower = 55f;
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+            ScreenShakingSystem.HorizontalShakePower = Math.Max(ScreenShakingSystem.HorizontalShakePower, shakePower * distanceFactor);
+
+
+
+
 
             // 释放公转型弹幕
             SpawnTyphoon();

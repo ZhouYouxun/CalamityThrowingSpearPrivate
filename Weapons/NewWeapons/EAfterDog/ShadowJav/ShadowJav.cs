@@ -109,7 +109,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.ShadowJav
     ? "CalamityThrowingSpear/Sound/Windows/WindowsBackground"
     : "CalamityThrowingSpear/Sound/Windows/WindowsForeground";
 
-            SoundEngine.PlaySound(new SoundStyle(soundPath)
+            SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/Windows/WindowsBackground")
             {
                 Volume = 1.0f,
                 Pitch = 0f

@@ -698,7 +698,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
             // 生成爆炸弹幕
-            Projectile.NewProjectile(
+            int totalCrit = (int)Math.Round(Main.player[Projectile.owner].GetTotalCritChance(Projectile.DamageType));
+
+            int exp = Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 explosionPosition,
                 Vector2.Zero,
@@ -707,6 +709,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 Projectile.knockBack,
                 Projectile.owner
             );
+            if (exp.WithinBounds(Main.maxProjectiles))
+                Main.projectile[exp].CritChance = totalCrit; // ✅ 让爆炸也能暴击
+
 
             // 生成太阳爆炸特效
             for (int i = 0; i < 12; i++) // 太阳的 12 条光线

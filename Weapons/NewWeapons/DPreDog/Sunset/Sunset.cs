@@ -207,11 +207,26 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
                 int damage = (int)player.GetTotalDamage<MeleeDamageClass>().ApplyTo(Item.damage);
                 float kb = player.GetTotalKnockback<MeleeDamageClass>().ApplyTo(Item.knockBack);
-                Projectile.NewProjectile(Item.GetSource_FromThis(), player.Center, Vector2.Zero, projType, damage, kb, player.whoAmI);
+
+                // 🟢 生成右键主弹幕，并传递暴击率
+                int projIndex = Projectile.NewProjectile(
+                    Item.GetSource_FromThis(),
+                    player.Center,
+                    Vector2.Zero,
+                    projType,
+                    damage,
+                    kb,
+                    player.whoAmI
+                );
+                if (projIndex.WithinBounds(Main.maxProjectiles))
+                {
+                    Main.projectile[projIndex].CritChance = Item.crit; // ✅ 让主弹幕继承武器暴击率
+                }
 
                 // 设置右键冷却时间
                 rightClickCooldown = 40;
             }
+
 
 
 

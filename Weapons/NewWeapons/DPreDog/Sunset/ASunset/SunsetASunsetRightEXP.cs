@@ -10,6 +10,7 @@ using Terraria.GameContent.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Particles;
+using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 {
@@ -88,6 +89,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             }
 
             return false;
+        }
+        public override void OnSpawn(IEntitySource source)
+        {
+            base.OnSpawn(source);
+            Player owner = Main.player[Projectile.owner];
+            int totalCrit = (int)Math.Round(owner.GetTotalCritChance(Projectile.DamageType));
+            Projectile.CritChance = totalCrit; // ✅ 自己取总暴击率
         }
 
 

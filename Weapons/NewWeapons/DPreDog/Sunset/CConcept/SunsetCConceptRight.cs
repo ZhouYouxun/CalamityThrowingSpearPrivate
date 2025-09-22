@@ -123,6 +123,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private bool waitingRoundGap = false;
 
 
+        private float? cachedAngle = null; // 保存随机角度
+        private bool useOpposite = false; // 是否用对立角度
+
+
         private void DoBehavior_Aim()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -156,9 +160,27 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     {
                         frameTimer = 0;
 
-                        // 计算角度
-                        float angle = MathHelper.ToRadians(360f / shotsPerRound * shotIndex);
+
+
+                        // 计算角度：奇数次随机，偶数次对立
+                        float angle;
+                        if (!useOpposite)
+                        {
+                            // 随机一个角度
+                            cachedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                            angle = cachedAngle.Value;
+                        }
+                        else
+                        {
+                            // 对立面
+                            angle = cachedAngle.Value + MathHelper.Pi;
+                        }
+
+                        // 下次切换模式
+                        useOpposite = !useOpposite;
+
                         Vector2 spawnOffset = angle.ToRotationVector2() * ringRadius;
+
 
                         // 寻找目标
                         NPC target = FindClosestTarget();
@@ -172,6 +194,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                         Vector2 velocity = shootDir * 20f;
 
                         // === 1) 小弹幕 ===
+                        int totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+
                         int proj = Projectile.NewProjectile(
                             Projectile.GetSource_FromThis(),
                             spawnPos,
@@ -181,8 +205,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             Projectile.knockBack,
                             Projectile.owner
                         );
-                        if (proj.WithinBounds(Main.maxProjectiles) && Main.projectile[proj].active)
+                        if (proj.WithinBounds(Main.maxProjectiles))
                         {
+                            Main.projectile[proj].CritChance = totalCrit; // ✅ 继承玩家总暴击率
                             Projectile small = Main.projectile[proj];
                             small.penetrate = 1;
                             small.tileCollide = true;
@@ -197,6 +222,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             Vector2 bigSpawnPos = target.Center + new Vector2(0, -30 * 16);
                             Vector2 bigVelocity = Vector2.UnitY * 30f;
 
+                            // === 2) 大弹幕 ===
+                            totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+
                             int bigProj = Projectile.NewProjectile(
                                 Projectile.GetSource_FromThis(),
                                 bigSpawnPos,
@@ -206,9 +234,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                 Projectile.knockBack,
                                 Projectile.owner
                             );
-
-                            if (bigProj.WithinBounds(Main.maxProjectiles) && Main.projectile[bigProj].active)
+                            if (bigProj.WithinBounds(Main.maxProjectiles))
                             {
+                                Main.projectile[bigProj].CritChance = totalCrit; // ✅ 继承玩家总暴击率
                                 Projectile big = Main.projectile[bigProj];
                                 big.penetrate = 6;
                                 big.tileCollide = false;

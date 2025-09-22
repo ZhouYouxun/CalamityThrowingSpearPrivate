@@ -12,10 +12,15 @@ using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using CalamityMod.Physics;
+using CalamityMod.Graphics.Primitives;
+using Terraria.Graphics.Shaders;
+using CalamityMod.Physics; // ← 来自 Calamity 的 Rope 系统
+using CalamityMod.Graphics.Primitives; // ← 用于渲染 trail
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
-    internal class TEM00Left : ModProjectile, ILocalizedModType
+    internal class TEM00Left : ModProjectile, ILocalizedModType, IPixelatedPrimitiveRenderer
     {
         public new string LocalizationCategory => "Projectiles.NewWeapons.EAfterDog";
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/TEM00/TEM00";
@@ -25,37 +30,194 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
+        // ===== 描边控制 =====
+        private float outlineFlash = 0f;  // 单次激光的白色描边闪烁强度
+        private bool rainbowOutline = false; // 是否进入彩虹常驻描边模式
+
+
+        // 这一段是跟飘带相关【顶端继承IPixelatedPrimitiveRenderer】：==================================================================================================================================
+        // ========== 新增字段 ==========
+        private RopeHandle? leftRibbon;   // 左边飘带
+        private RopeHandle? rightRibbon;  // 右边飘带
+        private ref float Time => ref Projectile.ai[1]; // 用来作为波动的时间基准（不要复用 ai[0]，避免和你的状态机冲突）
+
+        // 飘带长度（和 Sylvestaff 一样）
+        private static float RibbonLength => 70f;
+
+        // 飘带挂点：在武器顶端（随便定义一个合适的位置）
+        private Vector2 RibbonAttachPoint => Projectile.Center + Projectile.velocity * Projectile.scale * Projectile.width * 0.34f;
+
+
+        // 规定在哪个图层绘制飘带（前后都绘制）
+        public PixelationPrimitiveLayer LayerToRenderTo =>
+            PixelationPrimitiveLayer.BeforeProjectiles | PixelationPrimitiveLayer.AfterPlayers;
+
+        // 真正的飘带绘制放这里，而不是 PreDraw
+        public void RenderPixelatedPrimitives(SpriteBatch spriteBatch, PixelationPrimitiveLayer layer)
+        {
+            bool backLayer = layer == PixelationPrimitiveLayer.BeforeProjectiles;
+
+            // 开启这两句话就能启用了，现在暂时将机关闭------------------------------------------------------------------------------------------------------
+            //RenderRibbon(leftRibbon, -1, backLayer);
+            //RenderRibbon(rightRibbon, 1, backLayer);
+        }
+
+
+        // ai函数的加上这些:
+        /*
+                     // 初始化飘带（第一次进入时）
+            if (leftRibbon is null && rightRibbon is null)
+                InitializeRibbons();
+
+            // 更新飘带逻辑
+            UpdateRibbon(leftRibbon, Projectile.velocity.RotatedBy(-MathHelper.PiOver2));
+            UpdateRibbon(rightRibbon, Projectile.velocity.RotatedBy(MathHelper.PiOver2));
+         */
+
+
+
+        // 初始化飘带
+        private void InitializeRibbons()
+        {
+            int ribbonSegmentCount = 12; // 段数
+            float distancePerSegment = RibbonLength / ribbonSegmentCount;
+
+            RopeSettings ribbonSettings = new RopeSettings()
+            {
+                StartIsFixed = true,         // 起点固定在武器上
+                Mass = 0.72f,                // 段的质量
+                RespondToEntityMovement = true,
+                RespondToWind = true
+            };
+
+            leftRibbon = ModContent.GetInstance<RopeManagerSystem>()
+                .RequestNew(RibbonAttachPoint, Projectile.Center, ribbonSegmentCount, distancePerSegment, Vector2.Zero, ribbonSettings, 25);
+            rightRibbon = ModContent.GetInstance<RopeManagerSystem>()
+                .RequestNew(RibbonAttachPoint, Projectile.Center, ribbonSegmentCount, distancePerSegment, Vector2.Zero, ribbonSettings, 25);
+        }
+
+        // 更新单条飘带的受力（保持向后拖拽）
+        private void UpdateRibbon(RopeHandle? ribbon, Vector2 gravityDirection)
+        {
+            if (ribbon is not RopeHandle rope)
+                return;
+
+            rope.Start = RibbonAttachPoint;
+            rope.Gravity = gravityDirection * 0.15f - Projectile.velocity * 0.4f;
+        }
+
+
+        private void RenderRibbon(RopeHandle? ribbon, int direction, bool backLayer)
+        {
+            if (ribbon is not RopeHandle rope)
+                return;
+
+            Vector2 forwardDirection = Projectile.velocity;
+            Vector2 sideDirection = forwardDirection.RotatedBy(MathHelper.PiOver2 * direction);
+            Vector2 attachmentPoint = RibbonAttachPoint;
+
+            Vector2[] ribbonPositions = [.. rope.Positions];
+            int positionCount = ribbonPositions.Length;
+
+            for (int i = 0; i < ribbonPositions.Length; i++)
+            {
+                float completionRatio = i / (float)positionCount;
+                float wave = MathF.Cos(MathHelper.Pi * completionRatio * 1.5f - MathHelper.TwoPi * Time / 97f) * completionRatio;
+
+                Vector2 backwardsOffset = forwardDirection * i * -RibbonLength / positionCount;
+                Vector2 sideWavyOffset = sideDirection * wave * RibbonLength * 0.5f;
+                Vector2 rigidPosition = attachmentPoint + backwardsOffset + sideWavyOffset;
+
+                ribbonPositions[i] = Vector2.Lerp(ribbonPositions[i], rigidPosition, 0.76f);
+            }
+
+            // 用 Calamity 的 shader
+            MiscShaderData ribbonShader = GameShaders.Misc["CalamityMod:SylvestaffRibbon"];
+            ribbonShader.UseShaderSpecificData(new Vector4(0f, 0f, sideDirection.X, sideDirection.Y));
+            ribbonShader.UseSaturation(backLayer ? -1f : 1f);
+
+            PrimitiveSettings primitiveSettings = new PrimitiveSettings(
+                RibbonWidthFunction,
+                RibbonColorFunction,
+                pixelate: true,
+                shader: ribbonShader
+            );
+
+            PrimitiveRenderer.RenderTrail(ribbonPositions, primitiveSettings, 33);
+        }
+
+
+        // 飘带宽度
+        private float RibbonWidthFunction(float completionRatio) =>
+            Projectile.scale * Utils.GetLerpValue(0f, 0.2f, completionRatio, true) * 3.6f;
+
+        // 飘带颜色（取光照）
+        private Color RibbonColorFunction(float completionRatio)
+        {
+            Color light = Lighting.GetColor(RibbonAttachPoint.ToTileCoordinates());
+            return Projectile.GetAlpha(light);
+        }
+
+        // 结束飘带相关的：==================================================================================================================================
+
+
+
+
+
+
+
+
+
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 拖影
-            //CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-
-            // ===== 自己绘制本体，带翻转 =====
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 origin = tex.Size() / 2f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            // 判断朝向
             bool facingLeft = Projectile.velocity.X < 0;
             SpriteEffects effects = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-            // 如果翻转了，就在原始角度上加 90°
             float drawRotation = Projectile.rotation + (facingLeft ? MathHelper.PiOver2 : 0f);
 
-            Main.EntitySpriteDraw(
-                tex,
-                Projectile.Center - Main.screenPosition,
-                null,
-                lightColor,
-                drawRotation,
-                origin,
-                Projectile.scale,
-                effects,
-                0
-            );
+            // ====== 发光描边 ======
+            float chargeOffset = 6f;
+            int segments = 16;
 
-            return false; // 阻止默认绘制
+            for (int i = 0; i < segments; i++)
+            {
+                Vector2 offset = (MathHelper.TwoPi * i / segments).ToRotationVector2() * chargeOffset;
+
+                Color edgeColor;
+                if (rainbowOutline) // 彩虹模式（柔和渐变）
+                {
+                    float hue = (Main.GlobalTimeWrappedHourly * 0.5f + i / (float)segments) % 1f;
+                    edgeColor = Main.hslToRgb(hue, 0.8f, 0.6f) * 0.7f;
+                }
+                else // 白色闪烁模式
+                {
+                    edgeColor = Color.White * outlineFlash;
+                }
+                edgeColor.A = 0;
+
+                Main.spriteBatch.Draw(tex, drawPos + offset, null, edgeColor, drawRotation, origin, Projectile.scale, effects, 0f);
+            }
+
+            // ====== 本体 ======
+            Main.EntitySpriteDraw(tex, drawPos, null, Projectile.GetAlpha(lightColor), drawRotation, origin, Projectile.scale, effects, 0);
+
+            return false;
         }
+
+
+
+    //    public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
+    //List<int> behindNPCs, List<int> behindProjectiles,
+    //List<int> overPlayers, List<int> overWiresUI)
+    //    {
+    //        // 碎片始终算作“上层”，压在魔法阵之上
+    //        overPlayers.Add(index);
+    //    }
+
 
         public override void SetDefaults()
         {
@@ -86,6 +248,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         public override void AI()
         {
+            // 初始化飘带（第一次进入时）
+            if (leftRibbon is null && rightRibbon is null)
+                InitializeRibbons();
+
+            // 更新飘带逻辑
+            UpdateRibbon(leftRibbon, Projectile.velocity.RotatedBy(-MathHelper.PiOver2));
+            UpdateRibbon(rightRibbon, Projectile.velocity.RotatedBy(MathHelper.PiOver2));
+
+
             switch (CurrentState)
             {
                 case BehaviorState.Aim:
@@ -96,6 +267,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                     break;
             }
         }
+
+
+
+
+
+
         private int chargeTimer = 0; // 在类里新建字段
         private int chargeCount = 0; // 已经触发几次（最多 8）
 
@@ -174,6 +351,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     0f,
                                     Projectile.owner
                                 );
+
+                                // 控制彩虹描边
+                                rainbowOutline = true;
 
                                 // 绑定父弹幕索引：把 ai[0] 设为当前父弹幕索引（this.whoAmI）
                                 if (laserProj >= 0 && laserProj < Main.maxProjectiles)
@@ -330,6 +510,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                                     Projectile.owner
                                 );
 
+                                // 瞬间开启白色描边
+                                outlineFlash = 1f;
 
                                 // 屏幕震动
                                 float shakePower = 5f;
@@ -457,11 +639,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             }
 
 
+            // 快速衰减白色描边
+            if (outlineFlash > 0f)
+                outlineFlash *= 0.9f; // 每帧衰减，逐渐消失
+
+
             // 松手后进入 Dash
             if (!Owner.channel)
             {
                 Projectile.netUpdate = true;
-                Projectile.timeLeft = 300;
+                Projectile.timeLeft = 80;
                 Projectile.penetrate = -1; // 可调穿透次数
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/新机炮") with { Volume = 0.95f, Pitch = -0.2f }, Projectile.Center);
 
@@ -491,13 +678,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             Projectile.tileCollide = true;
 
             // 设置冲刺速度
-            float initialSpeed = 35f;
+            float initialSpeed = 55f;
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * initialSpeed;
 
             // 每帧计数
             dashFrameCounter++;
 
-            if (dashFrameCounter % 3 == 0 && Main.myPlayer == Projectile.owner)
+            if (dashFrameCounter % 2 == 0 && Main.myPlayer == Projectile.owner)
             {
                 // ====== 1. 在自己正下方随机位置生成一发激光 ======
                 float xOffset = Main.rand.NextFloat(-120f, 120f); // 左右随机
@@ -557,7 +744,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         public override void OnKill(int timeLeft)
         {
-
+            leftRibbon?.Dispose();
+            rightRibbon?.Dispose();
         }
 
 

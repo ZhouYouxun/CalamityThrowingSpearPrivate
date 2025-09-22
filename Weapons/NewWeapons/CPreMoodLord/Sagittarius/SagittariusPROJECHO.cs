@@ -197,7 +197,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             if (isAttached)
             {
                 //SoundEngine.PlaySound(SoundID.Item108, Projectile.Center);
-                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮-开火"));
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮开火"));
 
                 // 根据是否启用 Main.zenithWorld 决定召唤数量
                 int splitCount = Main.zenithWorld ? 10 : 3;

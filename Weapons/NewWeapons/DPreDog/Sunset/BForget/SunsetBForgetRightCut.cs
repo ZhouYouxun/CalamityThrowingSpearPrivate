@@ -171,6 +171,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             );
             // 生成收缩冲击波粒子
             GeneralParticleHandler.SpawnParticle(shrinkingpulse);
+
+            // ✅ 保险：让二次弹幕在生成帧“自取一次”玩家当下总暴击
+            Player owner = Main.player[Projectile.owner];
+            int totalCrit = (int)Math.Round(owner.GetTotalCritChance(Projectile.DamageType));
+            Projectile.CritChance = totalCrit;
         }
         private int flightTimer = 0;
 

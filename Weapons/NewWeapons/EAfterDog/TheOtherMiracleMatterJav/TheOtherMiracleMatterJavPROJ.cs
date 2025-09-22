@@ -190,6 +190,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
                 if (stageTimer >= 30)
                 {
                     returning = true;
+                    stage = 1; // 切换到过渡
                     stageTimer = 0;
 
                     {
@@ -276,10 +277,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
 
                 }
             }
+            // 1️⃣ 过渡阶段（平滑减速+加旋转）
+            else if (stage == 1)
+            {
+                stageTimer++;
+                float t = stageTimer / 20f; // 过渡时长20帧
+                t = MathHelper.Clamp(t, 0f, 1f);
+
+                // 速度由直飞 → 0
+                Projectile.velocity *= 0.92f; // 每帧衰减
+                                              // 或者用插值：
+                                              // Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Zero, t * 0.1f);
+
+                // 旋转速度逐渐上升
+                Projectile.rotation += MathHelper.ToRadians(2f * t * 10f);
+
+                if (t >= 1f)
+                {
+                    stage = 2; // 真正进入回收
+                    stageTimer = 0;
+                    returning = true;
+                }
+            }
             // =======================
             // 1️⃣ 回收阶段
             // =======================
-            else
+            else if (stage == 2)
             {
                 stageTimer++;
 
@@ -349,8 +372,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
                 if (Projectile.penetrate != -1)
                     Projectile.penetrate = -1;
 
-                // 让它体积变大一点
-                Projectile.width = Projectile.height = 180;
+                {
+                    // 让他不瞬间移动产生突兀的感觉
+                    // 记录旧中心
+                    Vector2 oldCenter = Projectile.Center;
+
+                    // 修改碰撞箱大小
+                    Projectile.width = Projectile.height = 180;
+
+                    // 把新碰撞箱的中心对齐回旧中心
+                    Projectile.Center = oldCenter;
+                }
+
 
 
                 Vector2 toPlayer = (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.Zero);

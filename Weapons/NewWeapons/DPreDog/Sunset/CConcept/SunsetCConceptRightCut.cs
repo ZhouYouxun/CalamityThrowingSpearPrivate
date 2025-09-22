@@ -61,7 +61,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 15
             );
             GeneralParticleHandler.SpawnParticle(blastRing);
+
+            Player owner = Main.player[Projectile.owner];
+            int totalCrit = (int)Math.Round(owner.GetTotalCritChance(Projectile.DamageType));
+            Projectile.CritChance = totalCrit;
         }
+
+
+
         private int lifeTimer = 0; // 存活帧数计时器
         private bool flightInited = false; // 是否已初始化飞行方向
         private Vector2 launchDir;         // 出生时的“前进方向”，只记录一次
@@ -331,7 +338,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         {
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/焦土开枪")
     with
-            { Volume = 1.0f, Pitch = 0.0f }, Projectile.Center);
+            { Volume = 0.3f, Pitch = 0.0f }, Projectile.Center);
 
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetCConceptPBuff>(), 300); // 5 秒
 

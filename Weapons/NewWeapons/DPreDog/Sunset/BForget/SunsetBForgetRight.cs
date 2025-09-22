@@ -177,9 +177,34 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                     Vector2 velocity1 = (target.Center - spawnPos1).SafeNormalize(Vector2.Zero) * 20f;
                     Vector2 velocity2 = (target.Center - spawnPos2).SafeNormalize(Vector2.Zero) * 20f;
 
-                    // 发射弹幕
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos1, velocity1, ModContent.ProjectileType<SunsetBForgetRightCut>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos2, velocity2, ModContent.ProjectileType<SunsetBForgetRightCut>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    // 计算玩家当下此伤害类别的“总暴击率”（包含饰品、Buff、Calamity 全局加成等）
+                    int totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+
+                    int proj1 = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        spawnPos1,
+                        velocity1,
+                        ModContent.ProjectileType<SunsetBForgetRightCut>(),
+                        Projectile.damage / 2,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+                    if (proj1.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[proj1].CritChance = totalCrit; // ✅ 直接写总暴击
+
+                    int proj2 = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        spawnPos2,
+                        velocity2,
+                        ModContent.ProjectileType<SunsetBForgetRightCut>(),
+                        Projectile.damage / 2,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+                    if (proj2.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[proj2].CritChance = totalCrit; // ✅ 同上
+
+
 
                     // 播放音效
                     SoundEngine.PlaySound(SoundID.Item103, Projectile.position);
