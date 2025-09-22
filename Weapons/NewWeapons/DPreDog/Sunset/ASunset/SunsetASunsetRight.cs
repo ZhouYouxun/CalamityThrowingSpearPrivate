@@ -703,7 +703,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 explosionPosition,
                 Vector2.Zero,
                 ModContent.ProjectileType<SunsetASunsetRightEXP>(),
-                damageDone,
+                (int)(Projectile.damage * 1.4),
                 Projectile.knockBack,
                 Projectile.owner
             );

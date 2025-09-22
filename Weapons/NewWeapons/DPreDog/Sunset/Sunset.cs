@@ -125,7 +125,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
         }
         private int rightClickCooldown = 0; // 右键冷却计时器
         private int currentMode = 0; // 当前形态 (0 = A, 1 = B, 2 = C)
-        private static readonly string[] modeNames = { "A模式", "B模式", "C模式" };
+        private static readonly string[] modeNames = { "恒星运动", "别忘了草", "思维构筑" };
         public override void SetDefaults()
         {
             Item.width = 44;

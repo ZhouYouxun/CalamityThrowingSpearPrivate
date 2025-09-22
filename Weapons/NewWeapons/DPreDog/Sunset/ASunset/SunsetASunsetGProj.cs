@@ -27,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             // 如果存在 Debuff，则降低敌人弹幕速度
             if (hasDebuffedNPC && projectile.hostile)
             {
-                projectile.velocity *= 0.95f; // 敌人弹幕速度减少 5%
+                projectile.velocity *= 0.98f; // 敌人弹幕速度减少 5%
             }
         }
     }

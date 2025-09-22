@@ -20,7 +20,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         public override void Update(NPC npc, ref int buffIndex)
         {
             // 减速效果
-            npc.velocity *= 0.85f; // 移动速度减少 15%
+            npc.velocity *= 0.95f; // 移动速度减少 5%
         }
     }
 }

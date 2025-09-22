@@ -229,7 +229,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 explosionPosition,
                 Vector2.Zero,
                 ModContent.ProjectileType<FuckYou>(),
-                Projectile.damage,
+                (int)(Projectile.damage * 1.5f),
                 Projectile.knockBack,
                 Projectile.owner
             );
