@@ -326,7 +326,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             // （可选）音效 + 轻微屏幕震动
             // SoundEngine.PlaySound(SoundID.Item74, target.Center);
-            float shake = 16f;
+            float shake = 96f;
             float kLerp = Utils.GetLerpValue(1000f, 0f, Vector2.Distance(target.Center, Main.LocalPlayer.Center), true);
             Main.LocalPlayer.Calamity().GeneralScreenShakePower =
                 Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shake * kLerp);

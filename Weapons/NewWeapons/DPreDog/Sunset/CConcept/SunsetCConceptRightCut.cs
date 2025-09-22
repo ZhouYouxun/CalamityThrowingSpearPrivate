@@ -342,58 +342,168 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetCConceptPBuff>(), 300); // 5 秒
 
-            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            //Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-            // 1️⃣ 尖刺型白色粒子（锐利冲击感）
-            for (int i = 0; i < 12; i++)
-            {
-                Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(45f)) * Main.rand.NextFloat(2f, 6f);
-                PointParticle spark = new PointParticle(
-                    Projectile.Center,
-                    velocity,
-                    false,
-                    15,
-                    1.1f,
-                    Color.White
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
+            //// 1️⃣ 尖刺型白色粒子（锐利冲击感）
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(45f)) * Main.rand.NextFloat(2f, 6f);
+            //    PointParticle spark = new PointParticle(
+            //        Projectile.Center,
+            //        velocity,
+            //        false,
+            //        15,
+            //        1.1f,
+            //        Color.White
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(spark);
+            //}
 
-            // 2️⃣ 水雾型粒子（能量雾气，暗一些，弥补层次）
-            for (int i = 0; i < 8; i++)
-            {
-                Vector2 dir = forward.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(1.5f, 3.5f);
-                Color c = Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat());
-                WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                    Projectile.Center,
-                    dir,
-                    false,
-                    Main.rand.Next(18, 26),
-                    0.9f + Main.rand.NextFloat(0.3f),
-                    c * 0.9f
-                );
-                GeneralParticleHandler.SpawnParticle(mist);
-            }
+            //// 2️⃣ 水雾型粒子（能量雾气，暗一些，弥补层次）
+            //for (int i = 0; i < 8; i++)
+            //{
+            //    Vector2 dir = forward.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(1.5f, 3.5f);
+            //    Color c = Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat());
+            //    WaterFlavoredParticle mist = new WaterFlavoredParticle(
+            //        Projectile.Center,
+            //        dir,
+            //        false,
+            //        Main.rand.Next(18, 26),
+            //        0.9f + Main.rand.NextFloat(0.3f),
+            //        c * 0.9f
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(mist);
+            //}
 
-            // 3️⃣ 细长线性粒子（稀疏，科技丝线）
-            for (int i = 0; i < 4; i++)
-            {
-                AltSparkParticle sparkLine = new AltSparkParticle(
-                    Projectile.Center - Projectile.velocity * Main.rand.NextFloat(1f, 2f), // 稍微后置
-                    forward * 0.2f,   // 微速向前
-                    false,
-                    12, // 寿命稍长
-                    1.2f,
-                    Color.Cyan * 0.35f
-                );
-                GeneralParticleHandler.SpawnParticle(sparkLine);
-            }
+            //// 3️⃣ 细长线性粒子（稀疏，科技丝线）
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    AltSparkParticle sparkLine = new AltSparkParticle(
+            //        Projectile.Center - Projectile.velocity * Main.rand.NextFloat(1f, 2f), // 稍微后置
+            //        forward * 0.2f,   // 微速向前
+            //        false,
+            //        12, // 寿命稍长
+            //        1.2f,
+            //        Color.Cyan * 0.35f
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(sparkLine);
+            //}
 
             // 生成魔法阵
             CreateMagicCircle(target.Center);
 
             // 播放独特击中音效
             //SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
+
+
+            {
+
+                // 基础参数
+                Color[] palette = {
+        new Color( 80, 200, 255),
+        new Color(120, 220, 255),
+        Color.Cyan,
+        new Color(180, 220, 255),
+        Color.WhiteSmoke
+    };
+
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                Vector2 center = Projectile.Center;
+
+                // ====== 1) 向前散射闪电丝 ======
+                int rayCount = 6;    // 前方闪电条数
+                int raySegments = 16;   // 每条分段
+                float rayLength = 144f * Projectile.scale; // 总长度 ≈ 大弹幕电磁球半径的一半
+                float step = rayLength / raySegments;
+                float jitter = 6f * Projectile.scale;
+                float curviness = 0.35f;
+                int sparksPerSeg = 2;
+                int orbsPerSeg = 1;
+
+                Vector2 NoisyDir(Vector2 baseDir, float strength)
+                {
+                    float a = Main.rand.NextFloat(-strength, strength);
+                    return baseDir.RotatedBy(a).SafeNormalize(baseDir);
+                }
+
+                for (int r = 0; r < rayCount; r++)
+                {
+                    Vector2 dir = forward.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-40f, 40f)));
+                    Vector2 p = center;
+                    Vector2 curDir = dir;
+
+                    for (int s = 0; s < raySegments; s++)
+                    {
+                        curDir = Vector2.Lerp(curDir, NoisyDir(curDir, curviness), 0.9f).SafeNormalize(curDir);
+                        Vector2 jitterVec = Main.rand.NextVector2Circular(jitter, jitter);
+                        p += curDir * step + jitterVec;
+
+                        for (int i = 0; i < sparksPerSeg; i++)
+                        {
+                            var sp = new SparkParticle(
+                                p,
+                                curDir * Main.rand.NextFloat(2.5f, 6.0f),
+                                false,
+                                Main.rand.Next(16, 22),
+                                Main.rand.NextFloat(0.8f, 1.2f) * Projectile.scale,
+                                Color.Lerp(palette[Main.rand.Next(palette.Length)], Color.White, 0.4f)
+                            );
+                            GeneralParticleHandler.SpawnParticle(sp);
+                        }
+                        for (int i = 0; i < orbsPerSeg; i++)
+                        {
+                            var orb = new GlowOrbParticle(
+                                p,
+                                NoisyDir(curDir, 0.5f) * Main.rand.NextFloat(0.2f, 1.0f),
+                                false,
+                                Main.rand.Next(10, 14),
+                                Main.rand.NextFloat(0.7f, 1.0f) * Projectile.scale,
+                                palette[Main.rand.Next(palette.Length)],
+                                true, false, true
+                            );
+                            GeneralParticleHandler.SpawnParticle(orb);
+                        }
+                    }
+                }
+
+                // ====== 2) 前方半圆“魔法阵” ======
+                int circlePoints = 36;
+                float radius = 64f * Projectile.scale;
+                float jitterR = 6f * Projectile.scale;
+
+                for (int i = 0; i < circlePoints; i++)
+                {
+                    float ang = MathHelper.Pi * i / (circlePoints - 1); // 半圆 [−90°~+90°]
+                    Vector2 dir = forward.RotatedBy(ang - MathHelper.PiOver2);
+                    float r = radius + Main.rand.NextFloat(-jitterR, jitterR);
+
+                    Vector2 pos = center + dir * r;
+
+                    var orb = new GlowOrbParticle(
+                        pos,
+                        dir.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f, 1.0f),
+                        false,
+                        Main.rand.Next(12, 18),
+                        Main.rand.NextFloat(0.9f, 1.2f) * Projectile.scale,
+                        palette[(i + Main.rand.Next(2)) % palette.Length],
+                        true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+
+                    if (i % 6 == 0)
+                    {
+                        var sp = new SparkParticle(
+                            pos,
+                            dir * Main.rand.NextFloat(1.5f, 3.0f),
+                            false,
+                            Main.rand.Next(12, 18),
+                            0.9f * Projectile.scale,
+                            Color.Lerp(palette[i % palette.Length], Color.White, 0.5f)
+                        );
+                        GeneralParticleHandler.SpawnParticle(sp);
+                    }
+                }
+            }
         }
 
 
