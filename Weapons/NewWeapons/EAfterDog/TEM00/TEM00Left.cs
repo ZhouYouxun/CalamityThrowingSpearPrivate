@@ -11,6 +11,7 @@ using Terraria.ID;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
@@ -27,11 +28,35 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 绘制控制函数，可用于绘制自定义贴图、添加发光效果、叠加特效等
-            // 若不需要可返回 true 使用默认绘制【很不推荐】
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-            return false;
+            // 拖影
+            //CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+
+            // ===== 自己绘制本体，带翻转 =====
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Vector2 origin = tex.Size() / 2f;
+
+            // 判断朝向
+            bool facingLeft = Projectile.velocity.X < 0;
+            SpriteEffects effects = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            // 如果翻转了，就在原始角度上加 90°
+            float drawRotation = Projectile.rotation + (facingLeft ? MathHelper.PiOver2 : 0f);
+
+            Main.EntitySpriteDraw(
+                tex,
+                Projectile.Center - Main.screenPosition,
+                null,
+                lightColor,
+                drawRotation,
+                origin,
+                Projectile.scale,
+                effects,
+                0
+            );
+
+            return false; // 阻止默认绘制
         }
+
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 16;
@@ -438,6 +463,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 300;
                 Projectile.penetrate = -1; // 可调穿透次数
+                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/新机炮") with { Volume = 0.95f, Pitch = -0.2f }, Projectile.Center);
+
+
+                {
+                    // 屏幕震动
+                    float shakePower = 95f;
+                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
+                    Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                        Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+                }
 
                 CurrentState = BehaviorState.Dash;
             }
