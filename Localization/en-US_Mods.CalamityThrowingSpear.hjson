@@ -53,6 +53,7 @@ Projectiles: {
 			EndlessDevourJavBlackHole2.DisplayName: Endless Devour Jav Black Hole2
 			NuclearFuelRodLightCircle.DisplayName: Nuclear Fuel Rod Light Circle
 			SunsetCConceptRightCutBig.DisplayName: Sunset C Concept Right Cut Big
+			SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
 		}
 
 		BPrePlantera: {
@@ -287,6 +288,8 @@ Projectiles: {
 	SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
 	SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
 	SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
+	SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
+	SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
 }
 
 ChangedWeapons: {

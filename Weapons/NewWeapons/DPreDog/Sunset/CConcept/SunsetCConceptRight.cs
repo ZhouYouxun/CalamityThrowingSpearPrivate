@@ -147,10 +147,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             {
                 // ====== 自定义环形射击逻辑 ======
-                const float ringRadius = 20f * 16f;  // 小弹幕出生圆环的半径
-                const int shotsPerRound = 30;        // 每一轮 30 发小弹幕
-                const int frameBetweenShots = 15;     // 小弹幕之间的间隔
-                const int frameBetweenRounds = 20;   // 每轮之间的停顿时间，略微增加
+                const float baseRingRadius = 20f * 16f;  // 小弹幕出生圆环的基础半径
+                const int shotsPerRound = 30;            // 每一轮 30 发小弹幕
+                const int frameBetweenShots = 15;        // 小弹幕之间的间隔
+                const int frameBetweenRounds = 20;       // 每轮之间的停顿时间
 
                 frameTimer++;
 
@@ -160,27 +160,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     {
                         frameTimer = 0;
 
+                        // 角度完全随机
+                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
 
+                        // 半径在 ±35% 浮动
+                        float radius = baseRingRadius * Main.rand.NextFloat(0.65f, 1.35f);
 
-                        // 计算角度：奇数次随机，偶数次对立
-                        float angle;
-                        if (!useOpposite)
-                        {
-                            // 随机一个角度
-                            cachedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-                            angle = cachedAngle.Value;
-                        }
-                        else
-                        {
-                            // 对立面
-                            angle = cachedAngle.Value + MathHelper.Pi;
-                        }
-
-                        // 下次切换模式
-                        useOpposite = !useOpposite;
-
-                        Vector2 spawnOffset = angle.ToRotationVector2() * ringRadius;
-
+                        Vector2 spawnOffset = angle.ToRotationVector2() * radius;
 
                         // 寻找目标
                         NPC target = FindClosestTarget();
@@ -207,22 +193,58 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                         );
                         if (proj.WithinBounds(Main.maxProjectiles))
                         {
-                            Main.projectile[proj].CritChance = totalCrit; // ✅ 继承玩家总暴击率
+                            Main.projectile[proj].CritChance = totalCrit; // ✅ 继承暴击率
                             Projectile small = Main.projectile[proj];
                             small.penetrate = 1;
                             small.tileCollide = true;
                             small.usesLocalNPCImmunity = true;
                             small.localNPCHitCooldown = 10;
                             small.netUpdate = true;
+                            small.scale = 1.5f;
                         }
 
-                        // === 2) 大弹幕：仅在本轮第一个小弹幕时生成（但跳过第一轮） ===
+
+                        // === 1.5) 新的 Magic 弹幕逻辑 ===
+                        // 在每轮小弹幕循环的中间 50% 时生成
+                        if (shotIndex == shotsPerRound / 2 && target != null)
+                        {
+                            Vector2 magicSpawnPos = target.Center + new Vector2(0, -30 * 16);
+                            Vector2 magicVelocity = Vector2.UnitY * 30f;
+
+                            totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+
+                            int magicProj = Projectile.NewProjectile(
+                                Projectile.GetSource_FromThis(),
+                                magicSpawnPos,
+                                magicVelocity,
+                                ModContent.ProjectileType<SunsetCConceptRightMagic>(), // 新的 Magic 弹幕
+                                Projectile.damage * 8,  // 你可以调伤害倍率，比如 8 倍
+                                Projectile.knockBack,
+                                Projectile.owner
+                            );
+                            if (magicProj.WithinBounds(Main.maxProjectiles))
+                            {
+                                Main.projectile[magicProj].CritChance = totalCrit;
+                                Projectile magic = Main.projectile[magicProj];
+                                magic.penetrate = 3;
+                                magic.tileCollide = false;
+                                magic.usesLocalNPCImmunity = true;
+                                magic.localNPCHitCooldown = 1;
+                                magic.netUpdate = true;
+                                magic.scale *= 2.2f; // 大小可以自己改
+                            }
+
+                            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 2.5f }, Projectile.Center);
+                        }
+
+
+
+                        // === 2) 大弹幕逻辑保留 ===
                         if (shotIndex == 0 && target != null && roundIndex > 0)
                         {
                             Vector2 bigSpawnPos = target.Center + new Vector2(0, -30 * 16);
                             Vector2 bigVelocity = Vector2.UnitY * 30f;
 
-                            // === 2) 大弹幕 ===
                             totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
 
                             int bigProj = Projectile.NewProjectile(
@@ -236,7 +258,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             );
                             if (bigProj.WithinBounds(Main.maxProjectiles))
                             {
-                                Main.projectile[bigProj].CritChance = totalCrit; // ✅ 继承玩家总暴击率
+                                Main.projectile[bigProj].CritChance = totalCrit;
                                 Projectile big = Main.projectile[bigProj];
                                 big.penetrate = 6;
                                 big.tileCollide = false;
@@ -246,7 +268,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                 big.scale *= 3f;
                             }
 
-                            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 3.2f, Pitch = -0.0f }, Projectile.Center);
+                            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 3.2f }, Projectile.Center);
 
                             // 屏幕震动
                             float shakePower = 45f;
@@ -254,7 +276,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             Main.LocalPlayer.Calamity().GeneralScreenShakePower =
                                 Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
                         }
-
 
                         // 推进索引
                         shotIndex++;
@@ -275,6 +296,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                         waitingRoundGap = false;
                     }
                 }
+
+
             }
 
 

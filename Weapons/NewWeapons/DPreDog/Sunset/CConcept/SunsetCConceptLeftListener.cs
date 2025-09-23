@@ -360,191 +360,191 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
 
-            // =============== A. 向日葵分布（黄金角） ===============
-            // 思路：每 2 帧喷出 6 个点，角度按黄金角累进，半径用速度推进；每粒子有极小角漂移形成“微乱”。
-            if (insertTick % 2 == 0)
-            {
-                const int sunflowerCount = 6;
-                float goldenAngle = MathHelper.ToRadians(137.50776f);
-                // 小技巧：φ ≈ 137.5°；(1+√5)/2 的倒数变体，避免硬编码
-                // 也可直接用：float goldenAngle = MathHelper.ToRadians(137.50776f);
+            //// =============== A. 向日葵分布（黄金角） ===============
+            //// 思路：每 2 帧喷出 6 个点，角度按黄金角累进，半径用速度推进；每粒子有极小角漂移形成“微乱”。
+            //if (insertTick % 2 == 0)
+            //{
+            //    const int sunflowerCount = 6;
+            //    float goldenAngle = MathHelper.ToRadians(137.50776f);
+            //    // 小技巧：φ ≈ 137.5°；(1+√5)/2 的倒数变体，避免硬编码
+            //    // 也可直接用：float goldenAngle = MathHelper.ToRadians(137.50776f);
 
-                for (int i = 0; i < sunflowerCount; i++)
-                {
-                    // 基角：黄金角推进 + 全局相位（让整体缓慢旋转）
-                    float baseAngle = (i * goldenAngle) + insertPhase * 0.6f;
-                    // 初速度（外喷 + 继承少量武器速度，避免玩家动得快时“脱节”）
-                    float speed = Main.rand.NextFloat(8f, 12f);
-                    Vector2 initVel = baseAngle.ToRotationVector2() * speed + Projectile.velocity * 0.25f;
+            //    for (int i = 0; i < sunflowerCount; i++)
+            //    {
+            //        // 基角：黄金角推进 + 全局相位（让整体缓慢旋转）
+            //        float baseAngle = (i * goldenAngle) + insertPhase * 0.6f;
+            //        // 初速度（外喷 + 继承少量武器速度，避免玩家动得快时“脱节”）
+            //        float speed = Main.rand.NextFloat(8f, 12f);
+            //        Vector2 initVel = baseAngle.ToRotationVector2() * speed + Projectile.velocity * 0.25f;
 
-                    SparkParticle sp = new SparkParticle(
-                        headPos,
-                        Vector2.Zero,   // 我们接管运动
-                        false,
-                        32,             // 寿命短一点更干净
-                        1.05f,
-                        techMetal[Main.rand.Next(techMetal.Length)]
-                    );
-                    GeneralParticleHandler.SpawnParticle(sp);
+            //        SparkParticle sp = new SparkParticle(
+            //            headPos,
+            //            Vector2.Zero,   // 我们接管运动
+            //            false,
+            //            32,             // 寿命短一点更干净
+            //            1.05f,
+            //            techMetal[Main.rand.Next(techMetal.Length)]
+            //        );
+            //        GeneralParticleHandler.SpawnParticle(sp);
 
-                    // 极小角漂移（“无序”的来源之一）
-                    float drift = Main.rand.NextFloat(-0.007f, 0.007f);
-                    insertSunflower.Add((sp, baseAngle, speed, drift));
-                }
-            }
+            //        // 极小角漂移（“无序”的来源之一）
+            //        float drift = Main.rand.NextFloat(-0.007f, 0.007f);
+            //        insertSunflower.Add((sp, baseAngle, speed, drift));
+            //    }
+            //}
 
-            // =============== B. 玫瑰线脉冲（6瓣） ===============
-            // 思路：6根 Squishy 光束，方向按 θ_k = θ0 + k*2π/6；速度/拉伸随 cos(3θ0) 微起伏，轻微右拐+阻尼。
-            if (insertTick % 4 == 0)
-            {
-                int petals = 6;
-                float theta0 = insertPhase;             // 主相位
-                for (int k = 0; k < petals; k++)
-                {
-                    float theta = theta0 + MathHelper.TwoPi * k / petals;
-                    float pulse = 1f + 0.22f * (float)Math.Cos(3f * theta0 + k * 0.7f); // 玫瑰线 3 倍频造成的“张合”
-                    Vector2 v = theta.ToRotationVector2() * (6.5f * pulse) + Projectile.velocity * 0.15f;
+            //// =============== B. 玫瑰线脉冲（6瓣） ===============
+            //// 思路：6根 Squishy 光束，方向按 θ_k = θ0 + k*2π/6；速度/拉伸随 cos(3θ0) 微起伏，轻微右拐+阻尼。
+            //if (insertTick % 4 == 0)
+            //{
+            //    int petals = 6;
+            //    float theta0 = insertPhase;             // 主相位
+            //    for (int k = 0; k < petals; k++)
+            //    {
+            //        float theta = theta0 + MathHelper.TwoPi * k / petals;
+            //        float pulse = 1f + 0.22f * (float)Math.Cos(3f * theta0 + k * 0.7f); // 玫瑰线 3 倍频造成的“张合”
+            //        Vector2 v = theta.ToRotationVector2() * (6.5f * pulse) + Projectile.velocity * 0.15f;
 
-                    SquishyLightParticle exo = new SquishyLightParticle(
-                        headPos,
-                        Vector2.Zero,     // 接管运动
-                        0.42f * pulse,    // 缩放随脉冲
-                        coreWhite,        // 中核偏白，洁净
-                        26,               // 稍短
-                        opacity: 1f,
-                        squishStrenght: 1.15f + 0.15f * pulse,
-                        maxSquish: 3.4f
-                    );
-                    GeneralParticleHandler.SpawnParticle(exo);
+            //        SquishyLightParticle exo = new SquishyLightParticle(
+            //            headPos,
+            //            Vector2.Zero,     // 接管运动
+            //            0.42f * pulse,    // 缩放随脉冲
+            //            coreWhite,        // 中核偏白，洁净
+            //            26,               // 稍短
+            //            opacity: 1f,
+            //            squishStrenght: 1.15f + 0.15f * pulse,
+            //            maxSquish: 3.4f
+            //        );
+            //        GeneralParticleHandler.SpawnParticle(exo);
 
-                    // turn：每帧右拐角速度；damp：速度衰减
-                    insertSquish.Add((exo, v, MathHelper.ToRadians(0.8f), 0.955f));
-                }
-            }
+            //        // turn：每帧右拐角速度；damp：速度衰减
+            //        insertSquish.Add((exo, v, MathHelper.ToRadians(0.8f), 0.955f));
+            //    }
+            //}
 
-            // =============== C. Lissajous 轨道（2:3） ===============
-            // 思路：3 个 GlowOrb 在枪尖周围做 Lissajous，半径做“呼吸”，作为背景秩序支撑。
-            if (insertOrbs.Count < 3 && insertTick % 10 == 0)
-            {
-                float Ax = 28f, Ay = 20f;                     // 初始轨道半径
-                float w1 = 2.0f, w2 = 3.0f;                   // 频比 2:3
-                GlowOrbParticle orb = new GlowOrbParticle(
-                    headPos,
-                    Vector2.Zero,
-                    false,
-                    40,
-                    1.15f,
-                    techMetal[Main.rand.Next(techMetal.Length)],
-                    true, false, true
-                );
-                GeneralParticleHandler.SpawnParticle(orb);
-                insertOrbs.Add((orb, Main.GlobalTimeWrappedHourly, Ax, Ay, w1, w2));
-            }
+            //// =============== C. Lissajous 轨道（2:3） ===============
+            //// 思路：3 个 GlowOrb 在枪尖周围做 Lissajous，半径做“呼吸”，作为背景秩序支撑。
+            //if (insertOrbs.Count < 3 && insertTick % 10 == 0)
+            //{
+            //    float Ax = 28f, Ay = 20f;                     // 初始轨道半径
+            //    float w1 = 2.0f, w2 = 3.0f;                   // 频比 2:3
+            //    GlowOrbParticle orb = new GlowOrbParticle(
+            //        headPos,
+            //        Vector2.Zero,
+            //        false,
+            //        40,
+            //        1.15f,
+            //        techMetal[Main.rand.Next(techMetal.Length)],
+            //        true, false, true
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(orb);
+            //    insertOrbs.Add((orb, Main.GlobalTimeWrappedHourly, Ax, Ay, w1, w2));
+            //}
 
-            // ================== 统一更新：A/B/C 三类 ==================
+            //// ================== 统一更新：A/B/C 三类 ==================
 
-            // A) 向日葵线性粒子：速度衰减 + 微角漂移 + 方向重算 + 朝向对齐
-            for (int i = insertSunflower.Count - 1; i >= 0; i--)
-            {
-                var t = insertSunflower[i];
-                SparkParticle p = t.p;
-                if (p.Time >= p.Lifetime)
-                {
-                    insertSunflower.RemoveAt(i);
-                    continue;
-                }
+            //// A) 向日葵线性粒子：速度衰减 + 微角漂移 + 方向重算 + 朝向对齐
+            //for (int i = insertSunflower.Count - 1; i >= 0; i--)
+            //{
+            //    var t = insertSunflower[i];
+            //    SparkParticle p = t.p;
+            //    if (p.Time >= p.Lifetime)
+            //    {
+            //        insertSunflower.RemoveAt(i);
+            //        continue;
+            //    }
 
-                // 衰减 + 轻微角漂移
-                t.speed *= 0.93f;
-                t.angle += t.drift;
+            //    // 衰减 + 轻微角漂移
+            //    t.speed *= 0.93f;
+            //    t.angle += t.drift;
 
-                // 重新计算速度（外扩 + 少量继承武器速度，避免“掉帧感”）
-                Vector2 newVel = t.angle.ToRotationVector2() * t.speed + Projectile.velocity * 0.12f;
+            //    // 重新计算速度（外扩 + 少量继承武器速度，避免“掉帧感”）
+            //    Vector2 newVel = t.angle.ToRotationVector2() * t.speed + Projectile.velocity * 0.12f;
 
-                // ✅ 把速度交给粒子系统（内部会据此更新位置/朝向）
-                p.Velocity = newVel;
+            //    // ✅ 把速度交给粒子系统（内部会据此更新位置/朝向）
+            //    p.Velocity = newVel;
 
-                // （可选）立刻同步朝向；若贴图需要，可加或减 PiOver2 做修正
-                if (newVel.LengthSquared() > 0.0001f)
-                    p.Rotation = newVel.ToRotation(); // + MathHelper.PiOver2;
+            //    // （可选）立刻同步朝向；若贴图需要，可加或减 PiOver2 做修正
+            //    if (newVel.LengthSquared() > 0.0001f)
+            //        p.Rotation = newVel.ToRotation(); // + MathHelper.PiOver2;
 
-                // ❌ 不要再手动位移，否则会“走两次”
-                // p.Position += newVel;
+            //    // ❌ 不要再手动位移，否则会“走两次”
+            //    // p.Position += newVel;
 
-                insertSunflower[i] = t;
-            }
+            //    insertSunflower[i] = t;
+            //}
 
 
-            // B) 玫瑰线光束：每帧右拐 + 阻尼 + 速度决定拉伸感
-            for (int i = insertSquish.Count - 1; i >= 0; i--)
-            {
-                var t = insertSquish[i];
-                SquishyLightParticle p = t.p;
-                if (p.Time >= p.Lifetime)
-                {
-                    insertSquish.RemoveAt(i);
-                    continue;
-                }
+            //// B) 玫瑰线光束：每帧右拐 + 阻尼 + 速度决定拉伸感
+            //for (int i = insertSquish.Count - 1; i >= 0; i--)
+            //{
+            //    var t = insertSquish[i];
+            //    SquishyLightParticle p = t.p;
+            //    if (p.Time >= p.Lifetime)
+            //    {
+            //        insertSquish.RemoveAt(i);
+            //        continue;
+            //    }
 
-                // 右拐 & 衰减
-                t.vel = t.vel.RotatedBy(t.turn);
-                t.vel *= t.damp;
+            //    // 右拐 & 衰减
+            //    t.vel = t.vel.RotatedBy(t.turn);
+            //    t.vel *= t.damp;
 
-                p.Position += t.vel;
+            //    p.Position += t.vel;
 
-                // 根据速度大小微调缩放 / 拉伸（速度越大越“尖锐”）
-                float vmag = t.vel.Length();
-                p.Scale = MathHelper.Lerp(p.Scale, 0.36f + 0.06f * vmag, 0.35f);
-                // （Squishy 内部已有拉伸表现，这里轻调即可）
+            //    // 根据速度大小微调缩放 / 拉伸（速度越大越“尖锐”）
+            //    float vmag = t.vel.Length();
+            //    p.Scale = MathHelper.Lerp(p.Scale, 0.36f + 0.06f * vmag, 0.35f);
+            //    // （Squishy 内部已有拉伸表现，这里轻调即可）
 
-                insertSquish[i] = t;
-            }
+            //    insertSquish[i] = t;
+            //}
 
-            // C) Lissajous 轨道：以当前枪头为中心做 2:3 轨迹，半径“呼吸式”起伏
-            for (int i = insertOrbs.Count - 1; i >= 0; i--)
-            {
-                var t = insertOrbs[i];
-                GlowOrbParticle p = t.p;
-                if (p.Time >= p.Lifetime)
-                {
-                    insertOrbs.RemoveAt(i);
-                    continue;
-                }
+            //// C) Lissajous 轨道：以当前枪头为中心做 2:3 轨迹，半径“呼吸式”起伏
+            //for (int i = insertOrbs.Count - 1; i >= 0; i--)
+            //{
+            //    var t = insertOrbs[i];
+            //    GlowOrbParticle p = t.p;
+            //    if (p.Time >= p.Lifetime)
+            //    {
+            //        insertOrbs.RemoveAt(i);
+            //        continue;
+            //    }
 
-                float tt = (Main.GlobalTimeWrappedHourly - t.t0);
-                // 呼吸：半径缓慢涨落（0.85~1.15）
-                float breath = 1f + 0.15f * (float)Math.Sin(tt * 1.2f);
-                float Ax = t.Ax * breath;
-                float Ay = t.Ay * breath;
+            //    float tt = (Main.GlobalTimeWrappedHourly - t.t0);
+            //    // 呼吸：半径缓慢涨落（0.85~1.15）
+            //    float breath = 1f + 0.15f * (float)Math.Sin(tt * 1.2f);
+            //    float Ax = t.Ax * breath;
+            //    float Ay = t.Ay * breath;
 
-                // Lissajous 参数方程
-                float x = Ax * (float)Math.Sin(t.w1 * tt + 0.3f);
-                float y = Ay * (float)Math.Cos(t.w2 * tt);
+            //    // Lissajous 参数方程
+            //    float x = Ax * (float)Math.Sin(t.w1 * tt + 0.3f);
+            //    float y = Ay * (float)Math.Cos(t.w2 * tt);
 
-                // 轨道中心跟随当前枪头
-                p.Position = headPos + new Vector2(x, y);
-            }
+            //    // 轨道中心跟随当前枪头
+            //    p.Position = headPos + new Vector2(x, y);
+            //}
 
-            // （可选极简点睛：每 18 帧来一个轻微脉冲环，避免画面“死寂”）
-            if (insertTick % 18 == 0)
-            {
-                int pulseCount = 10;
-                float r0 = 18f;
-                for (int i = 0; i < pulseCount; i++)
-                {
-                    float ang = MathHelper.TwoPi * i / pulseCount + insertPhase;
-                    Vector2 v = ang.ToRotationVector2() * 4.2f;
-                    var pulse = new SparkParticle(
-                        headPos + ang.ToRotationVector2() * r0,
-                        v,
-                        false,
-                        24,
-                        0.95f,
-                        Color.WhiteSmoke
-                    );
-                    GeneralParticleHandler.SpawnParticle(pulse);
-                }
-            }
+            //// （可选极简点睛：每 18 帧来一个轻微脉冲环，避免画面“死寂”）
+            //if (insertTick % 18 == 0)
+            //{
+            //    int pulseCount = 10;
+            //    float r0 = 18f;
+            //    for (int i = 0; i < pulseCount; i++)
+            //    {
+            //        float ang = MathHelper.TwoPi * i / pulseCount + insertPhase;
+            //        Vector2 v = ang.ToRotationVector2() * 4.2f;
+            //        var pulse = new SparkParticle(
+            //            headPos + ang.ToRotationVector2() * r0,
+            //            v,
+            //            false,
+            //            24,
+            //            0.95f,
+            //            Color.WhiteSmoke
+            //        );
+            //        GeneralParticleHandler.SpawnParticle(pulse);
+            //    }
+            //}
         }
 
 
@@ -575,6 +575,35 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 target.whoAmI);
 
             subordinateProjectiles.Add(damageProj);
+
+
+            {
+                // **生成枪口魔法阵（SunsetCConceptLeftMagic2）**
+                Vector2 gunHeadPosition = Owner.Center + InitialDirection.ToRotationVector2() * 80f;
+
+                // 检查是否已经存在
+                foreach (Projectile proj in Main.projectile)
+                {
+                    if (proj.active && proj.type == ModContent.ProjectileType<SunsetCConceptLeftMagic2>() && proj.owner == Projectile.owner)
+                    {
+                        return; // 已存在就不生成
+                    }
+                }
+
+                int vizProj = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    gunHeadPosition,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<SunsetCConceptLeftMagic2>(),
+                    0, 0f, Projectile.owner,
+                    Projectile.whoAmI // 把本体的 ID 传给 ai[0]
+                );
+
+                subordinateProjectiles.Add(vizProj);
+            }
+
+
+
         }
 
         private NPC FindClosestTarget()

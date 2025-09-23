@@ -186,11 +186,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     float globalScale = Projectile.scale * 1.6f * 0.8f;
 
                     Color[] techBlue = {
-                        new Color( 80, 200, 255),
-                        new Color(120, 220, 255),
-                        Color.Cyan,
-                        new Color(180, 220, 255),
-                        Color.WhiteSmoke
+    Color.White,
+    new Color(255, 215, 0),        // 金
+    new Color(183, 173, 224),      // 浅紫
                     };
 
                     // ---------- 固定朝向：上/下/切向 ----------
@@ -338,14 +336,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                 // ============================ 🔧 可调参数（半径拉大版） ============================
                 // 调色板
+                //Color[] palette =
+                //{
+                //    new Color( 80, 200, 255),
+                //    new Color(120, 220, 255),
+                //    Color.Cyan,
+                //    new Color(180, 220, 255),
+                //    Color.WhiteSmoke
+                //};
+                // 新改的
                 Color[] palette =
                 {
-    new Color( 80, 200, 255),
-    new Color(120, 220, 255),
-    Color.Cyan,
-    new Color(180, 220, 255),
-    Color.WhiteSmoke
+    Color.White,
+    new Color(255, 215, 0),        // 金
+new Color(120, 90, 160)   // 深紫
 };
+
 
                 // 电磁球外圈（半径 ×3，但光珠大小不变）
                 float ballRadius = 288f * Projectile.scale;   // 半径放大 (原96 → 288)
@@ -547,7 +553,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                     if (i % 9 == 0)
                     {
-                        var sp = new SparkParticle(
+                        var sp = new SparkParticle( 
                             edge,
                             NoisyDir(ang.ToRotationVector2(), 0.5f) * Main.rand.NextFloat(1.5f, 3.5f),
                             false,

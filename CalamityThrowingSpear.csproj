@@ -153,6 +153,7 @@
 	  <None Remove="Weapons\NewWeapons\DPreDog\StarsofDestiny\XiaoZhiTiaoSoD.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftListener.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftMagic.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftMagic2.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftMagicInner.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftNoDamage.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftNoDamage0.png" />
@@ -167,6 +168,7 @@
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptLeftNoDamage9.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptPBuff.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptRightCutBig.png" />
+	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\CConcept\SunsetCConceptRightMagic.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\DSeed\SunsetSEEDTile1.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\DSeed\SunsetSEEDTile2.png" />
 	  <None Remove="Weapons\NewWeapons\DPreDog\Sunset\Sunset2.png" />
