@@ -565,15 +565,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             }
 
-
-
-
-
-
-
-
-
-
+            // ---------- 5) 你的“魔法阵”骨架（保留调用） ----------
+            CreateMagicCircle(target.Center);
 
             // 这段暂时弃用
             //        {
