@@ -163,150 +163,152 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
 
+            {
 
-            
+                // === 飞行科技蓝特效（垂直上喷版，整体缩小20%）===
+                // ---------- 🔧 可调参数 ----------
+                int exoPerTick = 4;      // 每帧 EXO 强光数量
+                int orbPerTick = 10;     // 每帧 辉光球数量
+                int sparkPerTick = 5;    // 每帧 线性火花数量
+                int squarePerTick = 2;   // 每帧 方形碎片数量
+                int dustPerTick = 4;     // 每帧 Dust 点缀
 
-                {
-                    // === 飞行科技蓝特效（垂直上喷版，整体缩小20%）===
-                    // ---------- 🔧 可调参数 ----------
-                    int exoPerTick = 4;      // 每帧 EXO 强光数量
-                    int orbPerTick = 10;     // 每帧 辉光球数量
-                    int sparkPerTick = 5;   // 每帧 线性火花数量
-                    int squarePerTick = 2;   // 每帧 方形碎片数量
-                    int dustPerTick = 4;    // 每帧 Dust 点缀
+                float coneHalfAngle = MathHelper.ToRadians(35f); // 正上方喷射扇形半角
+                float trailSpan = 56f;     // 丝带中心线长度
+                float lissaA = 3f;         // Lissajous 参数 a
+                float lissaB = 4f;         // Lissajous 参数 b
+                float lissaAxAmp = 16f;    // Lissajous X 振幅
+                float lissaAyAmp = 10f;    // Lissajous Y 振幅
 
-                    float coneHalfAngle = MathHelper.ToRadians(35f); // 正上方喷射扇形半角
-                    float trailSpan = 56f;     // 丝带中心线长度
-                    float lissaA = 3f;         // Lissajous 参数 a
-                    float lissaB = 4f;         // Lissajous 参数 b
-                    float lissaAxAmp = 16f;    // Lissajous X 振幅
-                    float lissaAyAmp = 10f;    // Lissajous Y 振幅
+                // ↓ 全局缩放 0.8 (比原先小20%)
+                float globalScale = Projectile.scale * 1.6f * 0.8f;
 
-                    // ↓ 全局缩放 0.8 (比原先小20%)
-                    float globalScale = Projectile.scale * 1.6f * 0.8f;
-
-                    Color[] techBlue = {
+                // 调色盘：统一管理
+                Color[] techBlue = {
     Color.White,
     new Color(255, 215, 0),        // 金
     new Color(183, 173, 224),      // 浅紫
-                    };
+};
 
-                    // ---------- 固定朝向：上/下/切向 ----------
-                    Vector2 up = -Vector2.UnitY;
-                    Vector2 down = Vector2.UnitY;
-                    Vector2 tan = Vector2.UnitX; // 左右方向
+                // ---------- 固定朝向：上/下/切向 ----------
+                Vector2 up = -Vector2.UnitY;
+                Vector2 down = Vector2.UnitY;
+                Vector2 tan = Vector2.UnitX; // 左右方向
 
-                    // ---------- 工具：取“正上方扇形”随机方向与出生点 ----------
-                    Vector2 RandConeDir() => up.RotatedBy(Main.rand.NextFloat(-coneHalfAngle, coneHalfAngle));
-                    Vector2 RandConePos()
-                    {
-                        float radial = Main.rand.NextFloat(12f, 42f) * globalScale;
-                        return Projectile.Center + RandConeDir() * radial + tan * Main.rand.NextFloat(-8f, 8f) * globalScale;
-                    }
-
-                    // ---------- A) Lissajous 丝带辉光 ----------
-                    for (int i = 0; i < orbPerTick; i++)
-                    {
-                        float t = ((Main.GameUpdateCount + i * 9) % 120) / 120f;
-                        Vector2 centerLine = Projectile.Center + up * (trailSpan * (0.4f + 0.6f * (float)Math.Sin(MathHelper.TwoPi * t)));
-
-                        Vector2 lissaLocal = new Vector2(
-                            lissaAxAmp * (float)Math.Sin(lissaA * MathHelper.TwoPi * t),
-                            lissaAyAmp * (float)Math.Sin(lissaB * MathHelper.TwoPi * t)
-                        ) * globalScale;
-
-                        Vector2 lissaWorld = up * lissaLocal.Y + tan * lissaLocal.X;
-
-                        var orb = new GlowOrbParticle(
-                            centerLine + lissaWorld,
-                            up.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.4f, 2.0f),
-                            false,
-                            Main.rand.Next(14, 20),
-                            Main.rand.NextFloat(0.9f, 1.4f) * globalScale,
-                            techBlue[Main.rand.Next(techBlue.Length)],
-                            true, false, true
-                        );
-                        GeneralParticleHandler.SpawnParticle(orb);
-                    }
-
-                    // ---------- B) EXO 扇形喷焰 ----------
-                    for (int i = 0; i < exoPerTick; i++)
-                    {
-                        Vector2 pos = RandConePos();
-                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(1.2f, 5.6f);
-                        var exo = new SquishyLightParticle(
-                            pos, vel,
-                            Main.rand.NextFloat(0.28f, 0.40f) * globalScale,
-                            techBlue[Main.rand.Next(techBlue.Length)],
-                            Main.rand.Next(22, 30),
-                            opacity: 1f,
-                            squishStrenght: 1f,
-                            maxSquish: Main.rand.NextFloat(2.2f, 3.2f) * globalScale,
-                            hueShift: 0f
-                        );
-                        GeneralParticleHandler.SpawnParticle(exo);
-                    }
-
-                    // ---------- C) 线性火花 ----------
-                    for (int i = 0; i < sparkPerTick; i++)
-                    {
-                        Vector2 pos = RandConePos();
-                        Vector2 vel = RandConeDir() * Main.rand.NextFloat(2.5f, 6.5f);
-                        var sp = new SparkParticle(
-                            pos, vel,
-                            false,
-                            Main.rand.Next(24, 36),
-                            Main.rand.NextFloat(0.5f, 0.9f) * globalScale,
-                            Color.Lerp(new Color(120, 220, 255), Color.White, 0.6f)
-                        );
-                        GeneralParticleHandler.SpawnParticle(sp);
-                    }
-
-                    // ---------- D) 方形碎片 ----------
-                    for (int i = 0; i < squarePerTick; i++)
-                    {
-                        Vector2 pos = RandConePos();
-                        Vector2 vel = (RandConeDir() + tan * Main.rand.NextFloat(-0.45f, 0.45f)).SafeNormalize(up) * Main.rand.NextFloat(1.5f, 4.0f);
-                        var sq = new SquareParticle(
-                            pos, vel,
-                            false,
-                            Main.rand.Next(20, 30),
-                            Main.rand.NextFloat(1.3f, 2.1f) * globalScale,
-                            techBlue[Main.rand.Next(techBlue.Length)]
-                        );
-                        GeneralParticleHandler.SpawnParticle(sq);
-                    }
-
-                    // ---------- E) Dust 对数螺旋 ----------
-                    for (int i = 0; i < dustPerTick; i++)
-                    {
-                        float t = Main.rand.NextFloat();
-                        float theta = (t * 6.283185f) * (Main.rand.NextBool() ? 1f : -1f);
-                        float r = 10f * (float)Math.Exp(0.6f * t) * globalScale;
-                        Vector2 pos = Projectile.Center + up * r + tan * (float)Math.Sin(theta) * 4f * globalScale;
-                        var d = Dust.NewDustPerfect(
-                            pos,
-                            Main.rand.NextBool() ? DustID.Electric : DustID.UltraBrightTorch,
-                            up.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.6f, 2.4f),
-                            150,
-                            techBlue[Main.rand.Next(techBlue.Length)],
-                            Main.rand.NextFloat(0.9f, 1.3f) * globalScale
-                        );
-                        d.noGravity = true;
-                        d.fadeIn = Main.rand.NextFloat(0.6f, 1.0f);
-                        d.scale *= 0.4f; // 把 Dust 的寿命和体积同时缩短到原来的 40%（=减少60%）
+                // ---------- 工具：取“正上方扇形”随机方向与出生点 ----------
+                Vector2 RandConeDir() => up.RotatedBy(Main.rand.NextFloat(-coneHalfAngle, coneHalfAngle));
+                Vector2 RandConePos()
+                {
+                    float radial = Main.rand.NextFloat(12f, 42f) * globalScale;
+                    return Projectile.Center + RandConeDir() * radial + tan * Main.rand.NextFloat(-8f, 8f) * globalScale;
                 }
+
+                // ---------- A) Lissajous 丝带辉光 ----------
+                for (int i = 0; i < orbPerTick; i++)
+                {
+                    float t = ((Main.GameUpdateCount + i * 9) % 120) / 120f;
+                    Vector2 centerLine = Projectile.Center + up * (trailSpan * (0.4f + 0.6f * (float)Math.Sin(MathHelper.TwoPi * t)));
+
+                    Vector2 lissaLocal = new Vector2(
+                        lissaAxAmp * (float)Math.Sin(lissaA * MathHelper.TwoPi * t),
+                        lissaAyAmp * (float)Math.Sin(lissaB * MathHelper.TwoPi * t)
+                    ) * globalScale;
+
+                    Vector2 lissaWorld = up * lissaLocal.Y + tan * lissaLocal.X;
+
+                    var orb = new GlowOrbParticle(
+                        centerLine + lissaWorld,
+                        up.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.4f, 2.0f),
+                        false,
+                        Main.rand.Next(14, 20),
+                        Main.rand.NextFloat(0.9f, 1.4f) * globalScale,
+                        techBlue[Main.rand.Next(techBlue.Length)],
+                        true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+
+                // ---------- B) EXO 扇形喷焰 ----------
+                for (int i = 0; i < exoPerTick; i++)
+                {
+                    Vector2 pos = RandConePos();
+                    Vector2 vel = RandConeDir() * Main.rand.NextFloat(1.2f, 5.6f);
+                    var exo = new SquishyLightParticle(
+                        pos, vel,
+                        Main.rand.NextFloat(0.28f, 0.40f) * globalScale,
+                        techBlue[Main.rand.Next(techBlue.Length)],
+                        Main.rand.Next(22, 30),
+                        opacity: 1f,
+                        squishStrenght: 1f,
+                        maxSquish: Main.rand.NextFloat(2.2f, 3.2f) * globalScale,
+                        hueShift: 0f
+                    );
+                    GeneralParticleHandler.SpawnParticle(exo);
+                }
+
+                // ---------- C) 线性火花 ----------
+                for (int i = 0; i < sparkPerTick; i++)
+                {
+                    Vector2 pos = RandConePos();
+                    Vector2 vel = RandConeDir() * Main.rand.NextFloat(2.5f, 6.5f);
+                    var sp = new SparkParticle(
+                        pos, vel,
+                        false,
+                        Main.rand.Next(24, 36),
+                        Main.rand.NextFloat(0.5f, 0.9f) * globalScale,
+                        techBlue[Main.rand.Next(techBlue.Length)] // ✅ 改成调色盘，不再 Lerp 白色
+                    );
+                    GeneralParticleHandler.SpawnParticle(sp);
+                }
+
+                // ---------- D) 方形碎片 ----------
+                for (int i = 0; i < squarePerTick; i++)
+                {
+                    Vector2 pos = RandConePos();
+                    Vector2 vel = (RandConeDir() + tan * Main.rand.NextFloat(-0.45f, 0.45f)).SafeNormalize(up) * Main.rand.NextFloat(1.5f, 4.0f);
+                    var sq = new SquareParticle(
+                        pos, vel,
+                        false,
+                        Main.rand.Next(20, 30),
+                        Main.rand.NextFloat(1.3f, 2.1f) * globalScale,
+                        techBlue[Main.rand.Next(techBlue.Length)]
+                    );
+                    GeneralParticleHandler.SpawnParticle(sq);
+                }
+
+                // ---------- E) Dust 对数螺旋 ----------
+                for (int i = 0; i < dustPerTick; i++)
+                {
+                    float t = Main.rand.NextFloat();
+                    float theta = (t * 6.283185f) * (Main.rand.NextBool() ? 1f : -1f);
+                    float r = 10f * (float)Math.Exp(0.6f * t) * globalScale;
+                    Vector2 pos = Projectile.Center + up * r + tan * (float)Math.Sin(theta) * 4f * globalScale;
+                    var d = Dust.NewDustPerfect(
+                        pos,
+                        Main.rand.NextBool() ? DustID.Electric : DustID.UltraBrightTorch,
+                        up.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.6f, 2.4f),
+                        150,
+                        techBlue[Main.rand.Next(techBlue.Length)],
+                        Main.rand.NextFloat(0.9f, 1.3f) * globalScale
+                    );
+                    d.noGravity = true;
+                    d.fadeIn = Main.rand.NextFloat(0.6f, 1.0f);
+                    d.scale *= 0.4f; // 把 Dust 的寿命和体积同时缩短到原来的 40%（=减少60%）
+                }
+
+
+
             }
 
 
-            
+
 
 
 
 
         }
 
-
+            
 
         public override void OnKill(int timeLeft)
         {
@@ -333,73 +335,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             {
 
-
-                // ============================ 🔧 可调参数（半径拉大版） ============================
-                // 调色板
-                //Color[] palette =
-                //{
-                //    new Color( 80, 200, 255),
-                //    new Color(120, 220, 255),
-                //    Color.Cyan,
-                //    new Color(180, 220, 255),
-                //    Color.WhiteSmoke
-                //};
-                // 新改的
+                // ============================ 🔧 可调参数 ============================
                 Color[] palette =
                 {
-    Color.White,
-    new Color(255, 215, 0),        // 金
-new Color(120, 90, 160)   // 深紫
-};
+            Color.White,
+            new Color(255, 215, 0),        // 金
+            new Color(120, 90, 160)        // 深紫
+        };
 
-
-                // 电磁球外圈（半径 ×3，但光珠大小不变）
-                float ballRadius = 288f * Projectile.scale;   // 半径放大 (原96 → 288)
-                int ballPoints = 120;                      // 外圈点数增加，保持流畅
-                float ballJitter = 20f * Projectile.scale;  // 抖动幅度稍增
-                float ballOrbScale = 1.05f * Projectile.scale; // 光珠大小保持原值
+                float ballRadius = 288f * Projectile.scale;
+                int ballPoints = 120;
+                float ballJitter = 20f * Projectile.scale;
+                float ballOrbScale = 1.05f * Projectile.scale;
                 int ballOrbLifeMin = 12, ballOrbLifeMax = 18;
 
-                // 闪电丝（长度增加，粒子大小不变）
-                int rayCount = 12;                       // 主条数增加
-                int raySegments = 36;                       // 段数更多，延伸更远
-                float rayStep = 14f * Projectile.scale;   // 每段长度保持原值
-                float rayJitter = 8f * Projectile.scale;   // 抖动保持原值
+                int rayCount = 12;
+                int raySegments = 36;
+                float rayStep = 14f * Projectile.scale;
+                float rayJitter = 8f * Projectile.scale;
                 float rayCurviness = 0.38f;
                 int sparksPerSeg = 2;
                 int orbsPerSeg = 1;
                 float rayWidthFactor = 1.10f * Projectile.scale;
-                float rayStopRatioMin = 0.95f, rayStopRatioMax = 1.05f; // 基本跑到最外圈
+                float rayStopRatioMin = 0.95f, rayStopRatioMax = 1.05f;
 
-                // 分叉
                 float branchChance = 0.35f;
-                int branchSegments = 8;                        // 分叉更长
+                int branchSegments = 8;
                 float branchSpread = 0.75f;
                 float branchStepMul = 0.72f;
 
-                // 中心能量核
                 int nucleusCount = 4;
                 float nucleusScale = 0.70f * Projectile.scale;
                 int nucleusLifeMin = 16, nucleusLifeMax = 22;
 
-                // 爆点
                 float burstChance = 0.2f;
                 float burstScaleMul = 1.0f * Projectile.scale;
                 int burstSparks = 4;
                 int burstOrbs = 2;
-                // ============================================================================
+                // ====================================================================
 
-
-                // ====== 基础上下文 ======
                 Vector2 c = target.Center;
                 Vector2 fwd = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
-                // 小工具
                 Vector2 NoisyDir(Vector2 baseDir, float strength)
                 {
                     float a = Main.rand.NextFloat(-strength, strength);
                     return baseDir.RotatedBy(a).SafeNormalize(baseDir);
                 }
+
                 void BurstAt(Vector2 pos, float scaleMul)
                 {
                     for (int i = 0; i < burstSparks; i++)
@@ -410,7 +393,7 @@ new Color(120, 90, 160)   // 深紫
                             false,
                             Main.rand.Next(14, 20),
                             Main.rand.NextFloat(0.8f, 1.3f) * scaleMul,
-                            Color.Lerp(palette[Main.rand.Next(palette.Length)], Color.White, 0.45f)
+                            palette[Main.rand.Next(palette.Length)]
                         );
                         GeneralParticleHandler.SpawnParticle(sp);
                     }
@@ -471,7 +454,7 @@ new Color(120, 90, 160)   // 深紫
                                 false,
                                 Main.rand.Next(18, 26),
                                 Main.rand.NextFloat(0.85f, 1.35f) * rayWidthFactor,
-                                Color.Lerp(palette[Main.rand.Next(palette.Length)], Color.White, 0.40f)
+                                palette[Main.rand.Next(palette.Length)]
                             );
                             GeneralParticleHandler.SpawnParticle(sp);
                         }
@@ -507,7 +490,7 @@ new Color(120, 90, 160)   // 深紫
                                     false,
                                     Main.rand.Next(12, 18),
                                     Main.rand.NextFloat(0.75f, 1.15f) * rayWidthFactor * 0.95f,
-                                    Color.Lerp(palette[Main.rand.Next(palette.Length)], Color.White, 0.35f)
+                                    palette[Main.rand.Next(palette.Length)]
                                 );
                                 GeneralParticleHandler.SpawnParticle(sp2);
 
@@ -553,23 +536,29 @@ new Color(120, 90, 160)   // 深紫
 
                     if (i % 9 == 0)
                     {
-                        var sp = new SparkParticle( 
+                        var sp = new SparkParticle(
                             edge,
                             NoisyDir(ang.ToRotationVector2(), 0.5f) * Main.rand.NextFloat(1.5f, 3.5f),
                             false,
                             Main.rand.Next(14, 18),
                             0.9f * ballOrbScale,
-                            Color.Lerp(palette[(i / 2) % palette.Length], Color.White, 0.5f)
+                            palette[(i / 2) % palette.Length]
                         );
                         GeneralParticleHandler.SpawnParticle(sp);
                     }
                 }
 
 
-
-
-
             }
+
+
+
+
+
+
+
+
+
 
             // ---------- 5) 你的“魔法阵”骨架（保留调用） ----------
             CreateMagicCircle(target.Center);
@@ -769,182 +758,203 @@ new Color(120, 90, 160)   // 深紫
 
 
 
-
-
-
-
+        // 仅 GlowOrb 版本：严格贴近参考图，并确保所有内线连接到外圈
+        // 仅 GlowOrb 版本：外层改成 9角星芒爆炸（GlowOrb），原来的双外环注释掉
         private void CreateMagicCircle(Vector2 center)
         {
-            // === 缩放系数：跟随弹幕 scale ===
-            float scaleMult = Projectile.scale;
+            float s = Projectile.scale * 2.5f;
 
-            // ================== 可调参数（所有关键参数都乘以 scaleMult） ==================
-            int ringLayers = 3;     // 同心环层数
-            int ringPoints = 48;    // 每圈点数
-            float baseRadius = 50f * scaleMult;   // 第一圈半径
-            float ringGap = 12f * scaleMult;   // 圈间距
-            float spinSign = Main.rand.NextBool() ? 1f : -1f; // 随机顺/逆时针
-
-            int spokes = 12;     // 放射辐条数量
-            int spokeSteps = 22;     // 每条辐条段数
-            float stepLen = 6f * scaleMult;    // 辐条步进距离
-            float curvePerStep = 0.10f; // 弯曲幅度（保持不变，视觉上随半径也会放大）
-
-            int tickCount = 24;    // 刻度短弧数量
-            int tickSegs = 6;     // 每个短弧的点数
-
-            // 科技蓝调色板
-            Color[] techBlue =
+            Color[] pal =
             {
-        new Color( 80, 200, 255),
-        new Color(120, 220, 255),
-        Color.Cyan,
-        new Color(180, 220, 255),
-        Color.WhiteSmoke
+        new Color(120, 90, 160),   // 深紫
+        new Color(155, 120, 200),  // 次亮
+        new Color(183, 173, 224)   // 高光
     };
 
-            // ================== 特效寿命倍率（数值越大 → 存活越短） ==================
-            float dustLifeMult = 3f; // 寿命
+            float R_outer_in = (50f + 2f * 12f) * s;
+            float R_outer_out = R_outer_in + 8f * s;
+            float R_spokeEnd = R_outer_in - 0.5f * s;
+            float R_mid = R_outer_in - 18f * s;
+            float R_tick = R_mid - 18f * s;
+            float R_coreA = R_tick * 0.40f;
+            float R_coreB = R_coreA * 0.55f;
 
-            // ================== 1) 同心环 ==================
-            for (int l = 0; l < ringLayers; l++)
+            float EPS_HIT = 1.25f * s;
+
+            void PutOrb(Vector2 p, float scale, Color c, int lifeMin = 12, int lifeMax = 18)
             {
-                float r = baseRadius + l * ringGap;
-
-                for (int i = 0; i < ringPoints; i++)
-                {
-                    float ang = MathHelper.TwoPi * i / ringPoints;
-                    Vector2 dir = ang.ToRotationVector2();
-                    Vector2 pos = center + dir * r;
-
-                    int dustType = (i % 2 == 0) ? DustID.Electric : DustID.GemDiamond;
-                    Color c = techBlue[(i + l) % techBlue.Length];
-
-                    Dust d = Dust.NewDustPerfect(
-                        pos,
-                        dustType,
-                        Vector2.Zero,
-                        (int)(150 * dustLifeMult), // 寿命缩短
-                        c,
-                        (1.2f - l * 0.1f) * scaleMult
-                    );
-                    d.noGravity = true;
-
-                    Vector2 tan = dir.RotatedBy(spinSign * MathHelper.PiOver2);
-                    d.velocity = tan * Main.rand.NextFloat(0.6f, 1.2f) * scaleMult
-                               + dir * Main.rand.NextFloat(0.2f, 0.6f) * scaleMult;
-                    d.fadeIn = 0.8f;
-                }
-            }
-
-            // ================== 2) 放射辐条 ==================
-            for (int s = 0; s < spokes; s++)
-            {
-                float ang0 = MathHelper.TwoPi * s / spokes + Main.rand.NextFloat(-0.05f, 0.05f);
-                float curve = Main.rand.NextBool() ? curvePerStep : -curvePerStep;
-                float ang = ang0;
-
-                for (int j = 0; j < spokeSteps; j++)
-                {
-                    ang += curve;
-                    Vector2 dir = ang.ToRotationVector2();
-                    Vector2 pos = center + dir * (baseRadius + j * stepLen);
-
-                    int type = (j % 2 == 0) ? DustID.BlueTorch : DustID.GemDiamond;
-                    float scale = MathHelper.Lerp(0.9f, 1.6f, j / (float)spokeSteps) * scaleMult;
-                    Color c = techBlue[(s + j) % techBlue.Length];
-
-                    Dust d = Dust.NewDustPerfect(
-                        pos,
-                        type,
-                        Vector2.Zero,
-                        (int)(120 * dustLifeMult), // 寿命缩短
-                        c,
-                        scale
-                    );
-                    d.noGravity = true;
-
-                    Vector2 tan = dir.RotatedBy(spinSign * MathHelper.PiOver2);
-                    float t = j / (float)spokeSteps;
-                    d.velocity = dir * MathHelper.Lerp(1.2f, 2.4f, t) * scaleMult
-                               + tan * (0.4f + 0.8f * t) * scaleMult;
-
-                    if (j > spokeSteps - 5)
-                        d.scale *= 0.6f;
-                }
-            }
-
-            // ================== 3) 刻度短弧 ==================
-            for (int k = 0; k < tickCount; k++)
-            {
-                float ang = MathHelper.TwoPi * k / tickCount + Main.rand.NextFloat(-0.02f, 0.02f);
-                float arcR = baseRadius + ringGap * 0.5f;
-                Vector2 dir0 = ang.ToRotationVector2();
-
-                for (int t = 0; t < tickSegs; t++)
-                {
-                    float a = ang + (t - tickSegs / 2f) * 0.02f * spinSign;
-                    Vector2 dir = a.ToRotationVector2();
-                    Vector2 pos = center + dir * (arcR + t * scaleMult);
-
-                    Dust d = Dust.NewDustPerfect(
-                        pos,
-                        DustID.UltraBrightTorch,
-                        Vector2.Zero,
-                        (int)(160 * dustLifeMult), // 寿命缩短
-                        techBlue[(k + t) % techBlue.Length],
-                        0.9f * scaleMult
-                    );
-                    d.noGravity = true;
-                    d.velocity = dir * 0.8f * scaleMult
-                               + dir.RotatedBy(spinSign * MathHelper.PiOver2) * 0.6f * scaleMult;
-                }
-            }
-
-            // ================== 4) 粒子点缀 ==================
-            for (int i = 0; i < 4; i++)
-            {
-                float a = Main.rand.NextFloat(MathHelper.TwoPi);
-                float rad = baseRadius + Main.rand.NextFloat(0f, ringLayers * ringGap);
-                Vector2 pos = center + a.ToRotationVector2() * rad;
-                Color c = techBlue[Main.rand.Next(techBlue.Length)];
-
-                GlowOrbParticle orb = new GlowOrbParticle(
-                    pos,
-                    Vector2.Zero,
-                    false,
-                    Main.rand.Next(8, 14),
-                    Main.rand.NextFloat(0.7f, 1.0f) * scaleMult,
-                    c,
-                    true,
-                    false,
-                    true
-                );
+                var orb = new GlowOrbParticle(p, Vector2.Zero, false,
+                    Main.rand.Next(lifeMin, lifeMax),
+                    scale,
+                    c, true, false, true);
                 GeneralParticleHandler.SpawnParticle(orb);
             }
 
-            for (int i = 0; i < 3; i++)
+            void LineOrbs(Vector2 a, Vector2 b, float step, float scaleMin, float scaleMax, Color c)
             {
-                float a = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 dir = a.ToRotationVector2();
-                Vector2 pos = center + dir * (baseRadius + ringGap * 0.8f);
-                Color c = techBlue[Main.rand.Next(techBlue.Length)];
-
-                SquareParticle sq = new SquareParticle(
-                    pos,
-                    dir * Main.rand.NextFloat(0.8f, 1.6f) * scaleMult,
-                    false,
-                    24,
-                    (1.2f + Main.rand.NextFloat(0.6f)) * scaleMult,
-                    c
-                );
-                GeneralParticleHandler.SpawnParticle(sq);
+                Vector2 d = b - a;
+                float len = d.Length();
+                if (len <= 0.5f) return;
+                Vector2 dir = d / len;
+                for (float t = 0; t <= len; t += step)
+                    PutOrb(a + dir * t, Main.rand.NextFloat(scaleMin, scaleMax), c);
             }
+
+            void RingOrbs(Vector2 c, float r, int points, float scMin, float scMax, Color col)
+            {
+                for (int i = 0; i < points; i++)
+                {
+                    float ang = MathHelper.TwoPi * i / points;
+                    PutOrb(c + ang.ToRotationVector2() * r, Main.rand.NextFloat(scMin, scMax), col);
+                }
+            }
+
+            void DashedArc(Vector2 c, float r, float ang0, float sweep, int dashCount, float fillRatio,
+                           float step, float scMin, float scMax, Color col)
+            {
+                for (int d = 0; d < dashCount; d++)
+                {
+                    float a0 = ang0 + sweep * (d / (float)dashCount);
+                    float a1 = ang0 + sweep * ((d + 1) / (float)dashCount);
+                    float take = MathHelper.Lerp(a0, a1, fillRatio);
+
+                    int n = Math.Max(2, (int)((take - a0) * r / step));
+                    Vector2 pPrev = c + a0.ToRotationVector2() * r;
+                    for (int i = 1; i <= n; i++)
+                    {
+                        float a = MathHelper.Lerp(a0, take, i / (float)n);
+                        Vector2 p = c + a.ToRotationVector2() * r;
+                        LineOrbs(pPrev, p, step, scMin, scMax, col);
+                        pPrev = p;
+                    }
+                }
+            }
+
+            void ZigZagToRing(float ang, float rStart, float rEnd, float amp, float segLen, Color col)
+            {
+                Vector2 n = ang.ToRotationVector2();
+                Vector2 t = n.RotatedBy(MathHelper.PiOver2);
+                float L = Math.Max(0f, rEnd - rStart);
+                int segs = Math.Max(1, (int)(L / segLen));
+                Vector2 prev = center + n * rStart + t * (amp);
+                int side = -1;
+
+                for (int i = 1; i <= segs; i++)
+                {
+                    float r = rStart + segLen * i;
+                    if (i == segs) r = rEnd + EPS_HIT;
+
+                    Vector2 cur = center + n * r + t * (amp * side);
+                    LineOrbs(prev, cur, 4.0f * Projectile.scale, 0.90f * Projectile.scale, 1.20f * Projectile.scale, col);
+                    prev = cur;
+                    side *= -1;
+                }
+            }
+
+            // ===== 外层：9角星芒爆炸（GlowOrb）=====
+            int starPoints = 9;
+            int pointsPerEdge = 50;
+            float innerR = R_outer_in * 0.55f; // 内圈半径
+            float outerR = R_outer_in * 1.05f; // 外圈半径
+
+
+            for (int sp = 0; sp < starPoints; sp++)
+            {
+                float ang0 = MathHelper.TwoPi * sp / starPoints;
+                float ang1 = MathHelper.TwoPi * (sp + 1) / starPoints;
+
+                Vector2 inner0 = center + ang0.ToRotationVector2() * innerR;
+                Vector2 outerMid = center + ((ang0 + ang1) / 2f).ToRotationVector2() * outerR;
+                Vector2 inner1 = center + ang1.ToRotationVector2() * innerR;
+
+                Vector2[] verts = { inner0, outerMid, inner1 };
+
+                for (int v = 0; v < 2; v++)
+                {
+                    Vector2 a = verts[v];
+                    Vector2 b = verts[v + 1];
+                    for (int i = 0; i <= pointsPerEdge; i++)
+                    {
+                        float t = i / (float)pointsPerEdge;
+                        Vector2 pos = Vector2.Lerp(a, b, t);
+                        var orb = new GlowOrbParticle(
+                            pos,
+                            Vector2.Zero,
+                            false,
+                            Main.rand.Next(14, 20),
+                            Main.rand.NextFloat(0.9f, 1.3f) * Projectile.scale,
+                            pal[Main.rand.Next(pal.Length)],
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+                }
+            }
+
+
+            int outerPts = Math.Max(220, (int)(MathHelper.TwoPi * R_outer_out / (4.0f * Projectile.scale)));
+            RingOrbs(center, R_outer_out, outerPts, 0.90f * Projectile.scale, 1.15f * Projectile.scale, pal[0]);
+            RingOrbs(center, R_outer_in, outerPts, 0.85f * Projectile.scale, 1.10f * Projectile.scale, pal[1]);
+
+            // ===== 内部结构保持不变 =====
+
+            // 主辐条
+            float[] spokeDeg =
+            {
+        -92f, -58f, -22f, 12f, 48f, 86f, 132f, 182f, 220f, 258f, 302f, 338f
+    };
+            foreach (float deg in spokeDeg)
+            {
+                float ang = MathHelper.ToRadians(deg);
+                Vector2 a = center + ang.ToRotationVector2() * (R_coreB * 1.1f);
+                Vector2 b = center + ang.ToRotationVector2() * (R_spokeEnd + EPS_HIT);
+                LineOrbs(a, b, 4.2f * Projectile.scale, 0.95f * Projectile.scale, 1.25f * Projectile.scale, pal[0]);
+            }
+
+            // 扇区折线
+            (float ang, float r0Mul, float r1Mul, float ampMul, float segMul)[] zigs =
+            {
+        (MathHelper.ToRadians(-30f), 0.55f, 0.98f, 0.10f, 0.18f),
+        (MathHelper.ToRadians( 28f), 0.52f, 0.98f, 0.12f, 0.17f),
+        (MathHelper.ToRadians( 58f), 0.55f, 0.98f, 0.10f, 0.18f),
+        (MathHelper.ToRadians(210f), 0.55f, 0.98f, 0.10f, 0.18f),
+        (MathHelper.ToRadians(255f), 0.55f, 0.98f, 0.10f, 0.18f),
+        (MathHelper.ToRadians(302f), 0.52f, 0.98f, 0.12f, 0.17f),
+    };
+            foreach (var z in zigs)
+            {
+                float r0 = MathHelper.Lerp(R_coreB * 1.1f, R_mid, z.r0Mul);
+                float r1 = MathHelper.Lerp(R_mid, R_spokeEnd, z.r1Mul);
+                float amp = (R_outer_in - R_mid) * z.ampMul;
+                float seg = (R_spokeEnd - R_coreB) * z.segMul;
+                ZigZagToRing(z.ang, r0, r1, amp, seg, pal[1]);
+            }
+
+            // 内侧短划
+            int tickCount = 24;
+            for (int i = 0; i < tickCount; i++)
+            {
+                float ang = MathHelper.TwoPi * i / tickCount + Main.rand.NextFloat(-0.03f, 0.03f);
+                Vector2 n = ang.ToRotationVector2();
+                Vector2 t = n.RotatedBy(MathHelper.PiOver2);
+                bool radial = (i % 3 != 0);
+                float len = radial ? (8f * s) : (10f * s);
+                Vector2 a = center + n * (R_tick - (radial ? len * 0.4f : len * 0.5f));
+                Vector2 b = radial ? (a + n * len) : (a + t * len);
+
+                LineOrbs(a, b, 3.6f * Projectile.scale, 0.85f * Projectile.scale, 1.05f * Projectile.scale, pal[(i & 1) == 0 ? 0 : 1]);
+            }
+
+            // 内圈虚线
+            DashedArc(center, R_coreA, -MathHelper.PiOver2, MathHelper.TwoPi, 10, 0.35f,
+                      4.6f * Projectile.scale, 0.80f * Projectile.scale, 1.05f * Projectile.scale, pal[2]);
+
+            // 中心小圆 + 核心点
+            int corePts = Math.Max(40, (int)(MathHelper.TwoPi * R_coreB / (3.6f * Projectile.scale)));
+            RingOrbs(center, R_coreB, corePts, 0.85f * Projectile.scale, 1.10f * Projectile.scale, pal[0]);
+
+            PutOrb(center, 1.35f * Projectile.scale, pal[1], 14, 20);
         }
-
-
-
-
 
 
 

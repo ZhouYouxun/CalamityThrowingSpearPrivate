@@ -290,6 +290,7 @@ Projectiles: {
 	// SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
 	// SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
 	// SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
+	// SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
 }
 
 ChangedWeapons: {
@@ -1105,6 +1106,7 @@ NewWeapons: {
 				'''
 				左键将能量汇聚为序列化的激光阵列，连续五轮扫射后释放终极主束；
 				右键召唤环绕的激光枪，在敌群间描绘椭圆轨迹并倾泻光束，最终以自毁冲锋收尾。
+				注：首次使用需要激活
 				[c/00fff0:“我一眼望到了尽头”]
 				'''
 		}

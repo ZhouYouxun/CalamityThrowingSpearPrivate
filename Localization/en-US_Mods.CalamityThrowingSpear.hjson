@@ -290,6 +290,7 @@ Projectiles: {
 	SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
 	SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
 	SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
+	SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
 }
 
 ChangedWeapons: {

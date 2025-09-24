@@ -14,6 +14,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using Terraria.DataStructures;
 using static CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget.SunsetBForgetLeft;
 using Terraria.GameContent.Drawing;
+using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 {
@@ -211,42 +212,51 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                 }
             }
 
+
+
+
+
             // 计算枪头位置
-            Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
+            Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 4f;
 
-            // 在枪头处生成 TerraBlade 特效
-            if (Main.rand.NextBool(1)) // 减低频率，避免过密
-            {
-                Vector2 randomOffset = Main.rand.NextVector2Circular(12f, 12f); // 随机小偏移
-                Vector2 spawnPos = gunHeadPosition + randomOffset;
 
-                ParticleOrchestrator.RequestParticleSpawn(
-                    clientOnly: false,
-                    ParticleOrchestraType.TerraBlade,
-                    new ParticleOrchestraSettings
-                    {
-                        PositionInWorld = spawnPos
-                    },
-                    Projectile.owner
-                );
-            }
+            Vector2 gunHead = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitX) * 80f;
+            CTSLightingBoltsSystem.Spawn_BlueGoldFloaters(gunHead, 1f);
+
 
             {
-                // 在枪头处生成粒子
-                bool useYellow = Main.rand.NextBool(); // 随机选择黄色或蓝色阵营
-                int dustType = useYellow ? Main.rand.Next(SunsetBForgetParticleManager.YellowDusts)
-                                         : Main.rand.Next(SunsetBForgetParticleManager.BlueDusts);
+                // 🎇 在枪头处生成 EXO 之光（亮蓝 / 亮黄交替）
+                Color[] palette = { new Color(80, 200, 255), new Color(255, 240, 100) }; // 亮蓝 + 亮黄
+                Color exoColor = palette[Main.rand.Next(palette.Length)];
 
-                Dust dust = Dust.NewDustPerfect(
-                    gunHeadPosition + Main.rand.NextVector2Circular(16f, 16f), // 以枪头为中心的半径 16 圆圈
-                    dustType,
-                    -Vector2.UnitY * Main.rand.NextFloat(2f, 5f), // 让粒子向上喷射
-                    100,
-                    Color.White,
-                    Main.rand.NextFloat(1f, 1.8f)
+                var exo = new SquishyLightParticle(
+                    gunHeadPosition + Main.rand.NextVector2Circular(8f, 8f), // 在枪头附近随机生成
+                    -Vector2.UnitY.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.3f, 1.2f),
+                    Main.rand.NextFloat(0.22f, 0.30f), // 大小略小一点
+                    exoColor,
+                    Main.rand.Next(18, 28),            // 生命周期
+                    opacity: 1f,
+                    squishStrenght: 1f,
+                    maxSquish: Main.rand.NextFloat(2.0f, 2.8f),
+                    hueShift: 0f
                 );
-                dust.noGravity = true;
+                GeneralParticleHandler.SpawnParticle(exo);
+
+                // 🔮 在枪头处生成辉光球（原地短暂魔法阵点缀）
+                Color orbColor = palette[Main.rand.Next(palette.Length)];
+                var orb = new GlowOrbParticle(
+                    gunHeadPosition + Main.rand.NextVector2Circular(10f, 10f),
+                    Vector2.Zero,
+                    false,
+                    Main.rand.Next(5, 9),              // 短寿命
+                    Main.rand.NextFloat(0.7f, 1.1f),
+                    orbColor,
+                    true, false, true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
             }
+
+
 
 
 

@@ -24,7 +24,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 screamTex = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/ScreamyFace", AssetRequestMode.AsyncLoad);
             }
         }
-
+        
         public override void SetDefaults()
         {
             Projectile.width = 200;   // 原320 → 减少约40%
@@ -287,7 +287,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             // 改为紫色与金色渐变
             Color edgeColor = Color.Black * Projectile.Opacity;
-            Color shieldColor = Color.Lerp(Color.Purple, Color.Gold, 0.5f) * Projectile.Opacity;
+            Color shieldColor = Color.Lerp(new Color(120, 90, 160), new Color(255, 215, 0), 0.5f) * Projectile.Opacity;
             shieldEffect.Parameters["shieldColor"].SetValue(shieldColor.ToVector3());
             shieldEffect.Parameters["shieldEdgeColor"].SetValue(edgeColor.ToVector3());
 
@@ -301,23 +301,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Main.GameViewMatrix.TransformationMatrix);
 
             // === 外圈漩涡 + 中心光斑 ===
-            Texture2D vortexTexture = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/SoulVortex").Value;
+            Texture2D[] vortexTextures = new Texture2D[]
+            {
+        //ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SunsetChange").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_01").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_02").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_03").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_04").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/magic_05").Value
+            };
             Texture2D centerTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/LargeBloom").Value;
 
             for (int i = 0; i < 10; i++)
             {
                 float angle = MathHelper.TwoPi * i / 3f + Main.GlobalTimeWrappedHourly * MathHelper.TwoPi;
-                Color outerColor = Color.Lerp(Color.Purple, Color.Gold, i * 0.15f);
-                Color drawColor = Color.Lerp(outerColor, Color.Black, i * 0.2f) * 0.5f;
+                // 金色与紫色的交替渐变
+                Color outerColor = (i % 2 == 0) ? new Color(255, 215, 0) : new Color(120, 90, 160);
+                Color drawColor = Color.Lerp(outerColor, Color.Black, i * 0.15f) * 0.6f;
                 drawColor.A = 0;
 
                 Vector2 drawPosition = Projectile.Center - Main.screenPosition;
                 drawPosition += (angle + Main.GlobalTimeWrappedHourly * i / 16f).ToRotationVector2() * 6f;
 
-                Main.EntitySpriteDraw(vortexTexture, drawPosition, null, drawColor * Projectile.Opacity,
-                    -angle + MathHelper.PiOver2, vortexTexture.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+                foreach (var texLayer in vortexTextures)
+                {
+                    Main.EntitySpriteDraw(texLayer, drawPosition, null, drawColor * Projectile.Opacity,
+                        -angle + MathHelper.PiOver2, texLayer.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+                }
             }
 
+            // 中心光斑保留
             Main.EntitySpriteDraw(centerTexture, Projectile.Center - Main.screenPosition, null,
                 Color.Black * Projectile.Opacity, Projectile.rotation,
                 centerTexture.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);

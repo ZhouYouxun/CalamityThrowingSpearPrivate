@@ -243,6 +243,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
 
+            // === 确保 2号魔法阵存在并绑定自己 ===
+            if (Projectile.localAI[0] == 0) // 避免重复生成
+            {
+                int magic = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<SunsetASunsetRightEXPMagic2>(),
+                    0, 0f, Projectile.owner,
+                    Projectile.whoAmI // 把自己ID传进去，供绑定用
+                );
+                if (magic.WithinBounds(Main.maxProjectiles))
+                    Projectile.localAI[0] = magic + 1; // 存储ID+1，避免默认0
+            }
 
 
 
@@ -403,6 +417,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 float initialSpeed = 35f; // 设定初始速度值，可根据需求替换具体值
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
+
+            // === 删除绑定的2号魔法阵 ===
+            if (Projectile.localAI[0] > 0)
+            {
+                int magicID = (int)Projectile.localAI[0] - 1;
+                if (magicID.WithinBounds(Main.maxProjectiles))
+                {
+                    Main.projectile[magicID].Kill();
+                }
+                Projectile.localAI[0] = 0;
+            }
+
 
             // 飞行期间粒子特效：狂野放射
             //if (Main.rand.NextFloat() < 0.8f) // 提高整体出现概率

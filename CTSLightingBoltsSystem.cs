@@ -1468,6 +1468,56 @@ namespace CalamityThrowingSpear
         }
 
 
+        // ✦ 蓝金能量光点：持续往上漂浮
+        public static void Spawn_BlueGoldFloaters(Vector2 center, float intensity = 1f)
+        {
+            // 颜色：亮蓝 & 亮金
+            Color[] palette = new Color[]
+            {
+        new Color(80, 200, 255),   // 亮蓝
+        new Color(255, 215, 0)     // 金色
+            };
+
+            // 每帧大约 1~2 个光点（根据 intensity 调整）
+            int spawnCount = Main.rand.NextFloat() < 0.5f * intensity ? 1 : 0;
+            for (int i = 0; i < spawnCount; i++)
+            {
+                PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
+
+                // 基础颜色：蓝金交替
+                p.ColorTint = palette[Main.rand.Next(palette.Length)];
+
+                // 出生位置：中心附近随机
+                p.LocalPosition = center + Main.rand.NextVector2Circular(8f, 8f);
+
+                // 初速度：主要往上 + 少量水平扰动
+                p.Velocity = new Vector2(
+                    Main.rand.NextFloat(-0.3f, 0.3f),
+                    Main.rand.NextFloat(-1.6f, -0.8f)   // 向上漂浮
+                );
+
+                // 缩放：稍微闪亮
+                p.Scale = new Vector2(
+                    Main.rand.NextFloat(1.3f, 1.7f),
+                    Main.rand.NextFloat(0.7f, 1.0f)
+                );
+
+                // 生命周期：30~45 帧
+                p.TimeToLive = Main.rand.Next(30, 46);
+                p.FadeInNormalizedTime = 0.05f;
+                p.FadeOutNormalizedTime = 0.9f;
+                p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
+                p.FadeOutStart = (int)(p.TimeToLive * 0.7f);
+                p.FadeOutEnd = p.TimeToLive;
+
+                // 加法混合，让它更亮
+                p.AdditiveAmount = 0.55f;
+
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+        }
+
+
         // 上面这些是CTS的
         // ---------------------------------------------分界线---------------------------------------------
         // 下面这些是CX除了CTS部分的

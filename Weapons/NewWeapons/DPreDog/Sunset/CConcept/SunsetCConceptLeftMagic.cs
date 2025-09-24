@@ -287,12 +287,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             // ✅ 用 AI 中累积的 RotationAngle 作为全局相位（不要用 Projectile.rotation）
             float rot = RotationAngle;
 
-            // ========== 颜色（科技蓝为主，辅以白与少量金/紫点缀） ==========
-            Color mainBlue = Color.Cyan * globalAlpha;
-            Color glowBlue = new Color(120, 220, 255) * globalAlpha;
-            Color whiteSoft = Color.WhiteSmoke * globalAlpha;
-            Color accentGold = Color.Gold * (globalAlpha * 0.5f);
-            Color accentPurple = new Color(150, 100, 200) * (globalAlpha * 0.4f);
+            // ========== 颜色（金色 + 紫色） ==========
+            Color mainGold = new Color(255, 215, 0) * globalAlpha;      // 金色主色
+            Color accentGold = new Color(255, 215, 0) * (globalAlpha * 0.8f); // 金色副色（弱一些）
+            Color mainPurple = new Color(120, 90, 160) * globalAlpha;     // 紫色主色
+            Color accentPurple = new Color(120, 90, 160) * (globalAlpha * 0.8f); // 紫色副色（弱一些）
 
             // ========== 读取贴图 ==========
             Texture2D texConceptA = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/ConceptA").Value;
@@ -313,25 +312,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Texture2D texInner = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftMagicInner").Value;
 
             // ========== 绘制：Concept 大底图层（系列内部互相反转） ==========
-            Main.EntitySpriteDraw(texConceptA, drawPos, null, mainBlue, rot * conceptASpin, texConceptA.Size() / 2f, conceptScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(texConceptB, drawPos, null, glowBlue, rot * conceptBSpin, texConceptB.Size() / 2f, conceptScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(texConceptC, drawPos, null, whiteSoft, rot * conceptCSpin, texConceptC.Size() / 2f, conceptScale, SpriteEffects.None, 0);
+            // 将原来的 mainBlue/glowBlue/whiteSoft 替换为金紫配色
+            Main.EntitySpriteDraw(texConceptA, drawPos, null, mainGold, rot * conceptASpin, texConceptA.Size() / 2f, conceptScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texConceptB, drawPos, null, mainPurple, rot * conceptBSpin, texConceptB.Size() / 2f, conceptScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texConceptC, drawPos, null, accentGold, rot * conceptCSpin, texConceptC.Size() / 2f, conceptScale, SpriteEffects.None, 0);
 
             // ========== 绘制：周边 Twirl 花瓣环（整体反向旋转） ==========
+            // 这里用奇偶交替金/紫（i%2）
             for (int i = 0; i < 6; i++)
             {
                 float baseAngle = MathHelper.TwoPi * i / 6f + rot * twirlSpin; // ✅ 用 rot
                 Vector2 pos = drawPos + baseAngle.ToRotationVector2() * twirlRadius;
 
                 Texture2D twirlTex = (i % 3 == 0) ? texTwirl1 : (i % 3 == 1) ? texTwirl2 : texTwirl3;
-                Color twirlColor = (i % 2 == 0) ? mainBlue : accentPurple;
+                Color twirlColor = (i % 2 == 0) ? mainGold : mainPurple; // 改为金/紫交替
 
                 // 贴图本身也按其朝向轻微旋转，增强“花瓣展开感”
                 Main.EntitySpriteDraw(twirlTex, pos, null, twirlColor, baseAngle, twirlTex.Size() / 2f, twirlScale, SpriteEffects.None, 0);
             }
 
             // ========== 绘制：中层 Magic 能量核（互相反转） ==========
-            Main.EntitySpriteDraw(texMagic1, drawPos, null, glowBlue, rot * magic1Spin, texMagic1.Size() / 2f, magic1Scale, SpriteEffects.None, 0);
+            // 将 glowBlue -> mainPurple, accentGold 保持为金色（用于点缀）
+            Main.EntitySpriteDraw(texMagic1, drawPos, null, mainPurple, rot * magic1Spin, texMagic1.Size() / 2f, magic1Scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(texMagic2, drawPos, null, accentGold, rot * magic2Spin, texMagic2.Size() / 2f, magic2Scale, SpriteEffects.None, 0);
 
             // ========== 绘制：星点环（固定数量，沿环缓慢公转，不再每帧随机角度） ==========
@@ -341,7 +343,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Vector2 sp = drawPos + a.ToRotationVector2() * starRingRadius;
 
                 Texture2D starTex = (i % 2 == 0) ? texStar7 : texStar8;
-                Color starColor = (i % 3 == 0) ? whiteSoft : glowBlue;
+                // 星点颜色采用金/紫交替，偶数用金色，奇数用紫色（你可以根据需要改成别的条件）
+                Color starColor = (i % 2 == 0) ? mainGold : mainPurple;
 
                 // 小幅脉动（缩放轻微抖动），避免呆板
                 float pulse = 0.92f + 0.08f * (float)Math.Sin(rot * 2f + i * 1.3f);
@@ -349,8 +352,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
 
             // ========== 原有外圈/内圈（互相反转） ==========
-            Main.EntitySpriteDraw(texOuter, drawPos, null, glowBlue, rot * outerSpin, texOuter.Size() / 2f, outerScale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(texInner, drawPos, null, whiteSoft, rot * innerSpin, texInner.Size() / 2f, innerScale, SpriteEffects.None, 0);
+            // 把 glowBlue/whiteSoft 替换成金/紫
+            Main.EntitySpriteDraw(texOuter, drawPos, null, mainGold, rot * outerSpin, texOuter.Size() / 2f, outerScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texInner, drawPos, null, mainPurple, rot * innerSpin, texInner.Size() / 2f, innerScale, SpriteEffects.None, 0);
+
 
             return false;
         }

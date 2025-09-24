@@ -26,7 +26,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 130;
+            Projectile.timeLeft = 180;
         }
 
         public override void AI()
@@ -125,8 +125,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         public override bool PreDraw(ref Color lightColor)
         {
             // ===== 可调参数（函数内部顶端） =====
-            float conceptScale = 0.25f;   // ConceptA/B/C 缩放倍率
-            float extraScale = 0.75f;   // magic_01/02, star_07/08 缩放倍率
+            float conceptScale = 0.45f;   // ConceptA/B/C 缩放倍率
+            float extraScale = 1.25f;   // magic_01/02, star_07/08 缩放倍率
             float rotationMult = 3.5f;    // 全部旋转速度倍率
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -144,8 +144,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Texture2D texStar8 = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_08").Value;
 
             float directionRotation = Projectile.velocity.ToRotation();
-            Color startingColor = Color.Red;
-            Color endingColor = Color.Blue;
+            Color startingColor = new Color(255, 215, 0);   // 金色
+            Color endingColor = new Color(120, 90, 160);  // 紫色
 
             // ========== shader 重启函数 ==========
             void restartShader(Texture2D texture, float opacity, float circularRotation, BlendState blendMode)
