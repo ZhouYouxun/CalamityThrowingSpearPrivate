@@ -70,7 +70,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private int lifeTimer = 0; // 存活帧数计时器
         private NPC lockedTarget;
         private bool initialized = false;
-        private const int hoverOffsetY = 20 * 16; // 悬空高度
+        private const int hoverOffsetY = 35 * 16; // 悬空高度
         private const int smashFrame = 150;       // X 帧后下砸
 
         /// <summary>

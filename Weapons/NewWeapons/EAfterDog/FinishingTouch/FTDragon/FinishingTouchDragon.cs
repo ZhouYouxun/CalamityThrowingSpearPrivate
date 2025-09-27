@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CalamityMod;
+using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -367,7 +368,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/380mmExploded") with { Volume = 1.2f, Pitch = 0.0f }, Projectile.Center);
 
+
+
+
+
+                // 大型混合命中特效
+                SpawnGrandHitFX_OrangeNova(Projectile.Center, Projectile.velocity);
+
                 {
+
                     // ======================== 无序部分 1：极限狂野扩散烟雾 ========================
                     for (int i = 0; i < Main.rand.Next(80, 101); i++)
                     {
@@ -525,6 +534,369 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch.FTDr
 
 
         }
+
+        private void SpawnGrandHitFX_OrangeNova(Vector2 center, Vector2 baseVelocity)
+        {
+            // =============================== 可调参数（全部集中在此） ===============================
+            // —— 覆盖规模（像素）：外圈半径建议 ≥ 20*16=320px；火焰主题更偏“厚重涌动”的体量感
+            float tile = 16f;
+            float radiusInner = 10f * tile;    // ≈160px，内核（烈焰内核/熔岩核）
+            float radiusMiddle = 16f * tile;    // ≈256px，中圈（火舌/焰浪织构）
+            float radiusOuter = 20f * tile;    // ≈320px，外圈（冲击/灰烬回流）
+            float radiusOvershoot = 22.5f * tile;  // ≈360px，最外缘抖动/定形
+
+            // —— 颜色主题：橙红 → 金黄 → 炽白核心（与龙息火焰一致）
+            Color colCore = new Color(255, 96, 48);     // 炽热橙红（主体）
+            Color colHot = new Color(255, 140, 64);    // 火舌橙
+            Color colGlow = new Color(255, 210, 90);    // 金黄高光
+            Color colBloom = new Color(255, 180, 50);    // 柔光打底（中心）
+
+            // —— 中心 GenericBloom（“火核”打底）
+            float bloomScaleCore = 2.8f;
+            int bloomLifeCore = 54;
+
+            // —— GlowOrb：星芒/多边形/环线（短生命，但高密度“连点成线成纹理”）
+            int orbRays = 72;    // 放射光束数量（更饱满）
+            int orbLife = 10;    // 瞬闪
+            float orbScaleCenter = 1.35f; // 中心点大小
+            float orbScaleEnd = 0.85f; // 射线端点大小
+            int polySides = 11;    // 不规则正多边形（奇数边更“生物感”）
+            float polyRadius = radiusMiddle * 0.9f;
+
+            // —— Dust“焰浪阶梯环”（全部无重力，安全数值 ID）
+            int dustFireA = 6;     // Torch 系（橙）
+            int dustFireB = 35;    // 火花
+            int dustAsh = 31;    // 灰烬（淡/冷灰衬底）
+            int ringLayers = 5;     // 环数
+            int ringPoints = 96;    // 每环点数
+            float ringStart = radiusInner * 0.55f;
+            float ringStep = (radiusMiddle - ringStart) / Math.Max(1, ringLayers - 1);
+            float ringJitter = 3.2f;  // 每点随机漂移
+
+            // —— SparkParticle：火舌波浪（分层涌动，角度扰动让火舌“呼吸”）
+            int sparkLayers = 5;
+            int sparkPerLayer = 76;
+            float sparkBaseSpeed = 9.6f;   // 火舌外冲速度
+            float sparkSpeedStep = 2.4f;   // 层间叠加
+            float sparkBaseScale = 1.2f;   // 代表长度/亮度
+            float sparkScaleStep = 0.28f;
+            float sparkWaveAmp = 0.95f;  // 角度摆动幅度（弧度）
+            float sparkWaveFreq = 2.7f;   // 波动频率
+            int sparkLife = 62;
+            float sparkStartRing = radiusInner * 0.38f; // 起点分布在内核边缘
+
+            // —— 火焰“旋臂”补强：对数螺旋 + 线性连珠（GlowOrb 作为明亮火种）
+            int spiralArms = 2;      // 双臂（左/右）
+            int spiralPoints = 52;     // 每臂点数
+            float spiralK = 0.22f;  // 对数螺旋增长系数
+            int spiralOrbLife = 12;
+            float spiralOrbScale = 1.05f;
+
+            // —— 放射“燃烧丝”补强（更像火舌分叉，而非电丝）
+            int flameRayCount = 18;
+            int flameRaySegments = 38;
+            float flameStep = 10.5f;
+            float flameJitter = 5.5f;
+            float flameCurviness = 0.28f;  // 弯曲度更柔（像火焰）
+            int flameSparksPerSeg = 2;
+            int flameOrbsPerSeg = 1;
+
+            // —— 震动反馈
+            float shakePower = 16f;
+
+            // —— 追加特效 · 你点名的两类 —— //
+            // 12. 熔岩 Metaball：必须集中在半径 4×16 的圆内
+            float lavaCoreRadius = 4f * tile;     // 仅在这个半径内生成
+            int lavaBallCount = 10;            // 生成数量
+            float lavaBallSizeMin = 60f;           // 粒子大小（半径）
+            float lavaBallSizeMax = 100f;
+
+            // 8. 圆形冲击波（收缩环）：可在命中点附近偏移，营造龙息冲击波
+            int pulseCount = 3;             // 同时生成几道收缩环
+            float pulseOffsetMin = 18f;           // 相对命中点的随机偏移（像喷吐偏心）
+            float pulseOffsetMax = 60f;
+            Color pulseColor = new Color(255, 120, 60); // 橙红冲击波
+            Vector2 pulseShape = new Vector2(1f, 1f);     // 圆形
+            float pulseScaleStart = 7.5f;          // 初始缩放
+            float pulseScaleEnd = 0.18f;         // 收缩到极小
+            float pulseSpread = 3.5f;          // 扩散范围
+            int pulseLife = 12;            // 粒子寿命
+                                           // ======================================================================
+
+            // =============================== 工具 ===============================
+            Vector2 DirOrUp(Vector2 v) => v.LengthSquared() > 0.01f ? v.SafeNormalize(Vector2.UnitY) : Vector2.UnitY;
+
+            Vector2 SoftNoiseDir(Vector2 baseDir, float strength)
+            {
+                float a = Main.rand.NextFloat(-strength, strength);
+                return baseDir.RotatedBy(a).SafeNormalize(baseDir);
+            }
+
+            void LineOrbs(Vector2 a, Vector2 b, float step, float scMin, float scMax, Color col, int lifeMin = 10, int lifeMax = 16)
+            {
+                Vector2 d = b - a;
+                float len = d.Length();
+                if (len <= 0.5f) return;
+                Vector2 dir = d / len;
+                for (float t = 0; t <= len; t += step)
+                {
+                    var orb = new GlowOrbParticle(
+                        a + dir * t,
+                        Vector2.Zero,
+                        false,
+                        Main.rand.Next(lifeMin, lifeMax),
+                        Main.rand.NextFloat(scMin, scMax),
+                        col, true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+            }
+
+            void RingOrbs(Vector2 c, float r, int points, float scMin, float scMax, Color col, int lifeMin = 10, int lifeMax = 16)
+            {
+                for (int i = 0; i < points; i++)
+                {
+                    float ang = MathHelper.TwoPi * i / points;
+                    var orb = new GlowOrbParticle(
+                        c + ang.ToRotationVector2() * r,
+                        Vector2.Zero,
+                        false,
+                        Main.rand.Next(lifeMin, lifeMax),
+                        Main.rand.NextFloat(scMin, scMax),
+                        col, true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+            }
+            // ===================================================================
+
+            // ======================= 1) 中心火核：Bloom（打底） =======================
+            {
+                var bloom = new GenericBloom(center, Vector2.Zero, colBloom, bloomScaleCore, bloomLifeCore);
+                GeneralParticleHandler.SpawnParticle(bloom);
+            }
+
+            // ======================= 2) GlowOrb：火焰星芒 + “生物感”多边形骨架 =======================
+            // 星芒（中心+超外圈端点）：撑满体量
+            for (int k = 0; k < orbRays; k++)
+            {
+                float ang = MathHelper.TwoPi * (k / (float)orbRays);
+                Vector2 end = center + ang.ToRotationVector2() * radiusOvershoot;
+
+                var o0 = new GlowOrbParticle(center, Vector2.Zero, false, orbLife, orbScaleCenter, colGlow, true, false, true);
+                var o1 = new GlowOrbParticle(end, Vector2.Zero, false, orbLife, orbScaleEnd, colGlow, true, false, true);
+                GeneralParticleHandler.SpawnParticle(o0);
+                GeneralParticleHandler.SpawnParticle(o1);
+            }
+            // “不规则”正多边形点阵（奇数边：更像生物火焰的张力）
+            for (int i = 0; i < polySides; i++)
+            {
+                float t = i / (float)polySides;
+                float ang = MathHelper.TwoPi * t;
+                Vector2 p = center + ang.ToRotationVector2() * polyRadius;
+                var orb = new GlowOrbParticle(p, Vector2.Zero, false, orbLife, 1.05f, colHot, true, false, true);
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
+            // 多边形边线（连珠成线）
+            for (int i = 0; i < polySides; i++)
+            {
+                float a0 = MathHelper.TwoPi * i / polySides;
+                float a1 = MathHelper.TwoPi * (i + 1) / polySides;
+                Vector2 p0 = center + a0.ToRotationVector2() * polyRadius;
+                Vector2 p1 = center + a1.ToRotationVector2() * polyRadius;
+                LineOrbs(p0, p1, 6.0f, 0.9f, 1.2f, colHot);
+            }
+
+            // ======================= 3) Dust：焰浪阶梯环 + 灰烬点缀 =======================
+            for (int layer = 0; layer < ringLayers; layer++)
+            {
+                float r = ringStart + ringStep * layer;
+                for (int i = 0; i < ringPoints; i++)
+                {
+                    float t = i / (float)ringPoints;
+                    float ang = MathHelper.TwoPi * t;
+                    Vector2 pos = center + ang.ToRotationVector2() * r + Main.rand.NextVector2Circular(ringJitter, ringJitter);
+
+                    // 主环（橙红）
+                    Dust d1 = Dust.NewDustPerfect(pos, dustFireA, Vector2.Zero);
+                    d1.noGravity = true;
+                    d1.scale = 1.25f + 0.12f * layer;
+
+                    // 高光（金黄）
+                    if ((i + layer) % 4 == 0)
+                    {
+                        Dust d2 = Dust.NewDustPerfect(pos, dustFireB, Vector2.Zero);
+                        d2.noGravity = true;
+                        d2.scale = 0.95f + 0.1f * layer;
+                        d2.fadeIn = 1.2f;
+                    }
+
+                    // 少量灰烬（冷色灰，让暖色火焰更“热”）
+                    if ((i + layer) % 9 == 0)
+                    {
+                        Dust ash = Dust.NewDustPerfect(pos, dustAsh, Main.rand.NextVector2Circular(0.6f, 0.6f));
+                        ash.noGravity = true;
+                        ash.scale = 0.9f;
+                    }
+                }
+            }
+
+            // ======================= 4) Spark：火舌波浪（分层呼吸） =======================
+            Vector2 baseDir = DirOrUp(baseVelocity);
+            for (int layer = 0; layer < sparkLayers; layer++)
+            {
+                float layerSpeed = sparkBaseSpeed + sparkSpeedStep * layer;
+                float layerScale = sparkBaseScale + sparkScaleStep * layer;
+                Color layerColor = Color.Lerp(colCore, colGlow, layer / Math.Max(1f, (float)(sparkLayers - 1)));
+
+                for (int i = 0; i < sparkPerLayer; i++)
+                {
+                    float t = i / Math.Max(1f, sparkPerLayer - 1f);
+                    float phase = (layer * 0.8f + t * sparkWaveFreq) * MathHelper.TwoPi;
+                    float offset = (float)Math.Sin(phase) * sparkWaveAmp;
+
+                    float startRing = sparkStartRing + layer * 7f + Main.rand.NextFloat(-5f, 5f);
+                    Vector2 start = center + (t * MathHelper.TwoPi).ToRotationVector2() * startRing;
+
+                    Vector2 v = baseDir.RotatedBy(offset) * layerSpeed;
+
+                    Particle sp = new SparkParticle(
+                        start,
+                        v,
+                        false,
+                        sparkLife,
+                        layerScale,
+                        layerColor
+                    );
+                    GeneralParticleHandler.SpawnParticle(sp);
+                }
+            }
+
+            // ======================= 5) 火焰“旋臂”补强（对数螺旋） =======================
+            for (int arm = 0; arm < spiralArms; arm++)
+            {
+                float sign = (arm == 0) ? 1f : -1f;
+                Vector2 prev = center;
+                for (int k = 0; k < spiralPoints; k++)
+                {
+                    float t = k / (float)Math.Max(1, spiralPoints - 1);
+                    float theta = sign * (t * MathHelper.TwoPi * 1.45f);     // ~1.45 圈
+                    float r = 12f * (float)Math.Exp(spiralK * (t * 8f)); // 指数拉伸
+                    Vector2 pos = center + new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta)) * r;
+
+                    var orb = new GlowOrbParticle(
+                        pos,
+                        SoftNoiseDir((pos - center), 0.3f) * Main.rand.NextFloat(0.4f, 1.4f),
+                        false,
+                        spiralOrbLife,
+                        spiralOrbScale * Main.rand.NextFloat(0.92f, 1.15f),
+                        Color.Lerp(colHot, colGlow, 0.45f),
+                        true, false, true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
+
+                    // 连线成“火舌丝带”
+                    if (k > 0)
+                        LineOrbs(prev, pos, 7.0f, 0.88f, 1.10f, Color.Lerp(colCore, colGlow, 0.35f), 8, 12);
+
+                    prev = pos;
+                }
+            }
+
+            // ======================= 6) 放射“燃烧丝”补强（柔弯火舌） =======================
+            for (int r = 0; r < flameRayCount; r++)
+            {
+                float ang = MathHelper.TwoPi * (r / (float)flameRayCount) + Main.rand.NextFloat(-0.14f, 0.14f);
+                Vector2 dir = ang.ToRotationVector2();
+                Vector2 p = center;
+                Vector2 cur = dir;
+
+                float stopR = radiusOuter + Main.rand.NextFloat(-10f, 14f);
+
+                for (int s = 0; s < flameRaySegments; s++)
+                {
+                    cur = Vector2.Lerp(cur, SoftNoiseDir(cur, flameCurviness), 0.9f).SafeNormalize(cur);
+                    Vector2 jitter = Main.rand.NextVector2Circular(flameJitter, flameJitter);
+                    p += cur * flameStep + jitter;
+
+                    if (Vector2.Distance(center, p) > stopR) break;
+
+                    // 火花
+                    for (int i = 0; i < flameSparksPerSeg; i++)
+                    {
+                        var sp = new SparkParticle(
+                            p,
+                            cur * Main.rand.NextFloat(2.8f, 6.2f),
+                            false,
+                            Main.rand.Next(18, 26),
+                            Main.rand.NextFloat(0.95f, 1.45f),
+                            Color.Lerp(colCore, colGlow, Main.rand.NextFloat(0.25f, 0.85f))
+                        );
+                        GeneralParticleHandler.SpawnParticle(sp);
+                    }
+                    // 光珠
+                    for (int i = 0; i < flameOrbsPerSeg; i++)
+                    {
+                        var orb = new GlowOrbParticle(
+                            p,
+                            SoftNoiseDir(cur, 0.35f) * Main.rand.NextFloat(0.15f, 0.9f),
+                            false,
+                            Main.rand.Next(12, 18),
+                            Main.rand.NextFloat(0.9f, 1.25f),
+                            Color.Lerp(colHot, colGlow, Main.rand.NextFloat(0.3f, 0.9f)),
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+                }
+            }
+
+            // ======================= 7) 外环“定形” + 灰烬收束 =======================
+            RingOrbs(center, radiusOuter, 160, 0.95f, 1.15f, colGlow, 12, 18);
+            RingOrbs(center, radiusOvershoot, 190, 0.92f, 1.08f, Color.Lerp(colHot, colGlow, 0.6f), 10, 16);
+
+            // ======================= 8) 追加：熔岩 Metaball（只在核心 4×16 半径内） =======================
+            for (int i = 0; i < lavaBallCount; i++)
+            {
+                Vector2 pos = center + Main.rand.NextVector2Circular(lavaCoreRadius, lavaCoreRadius);
+                float size = Main.rand.NextFloat(lavaBallSizeMin, lavaBallSizeMax);
+                // 仅生成在核心：RancorLavaMetaball（橙红熔岩滞留）
+                RancorLavaMetaball.SpawnParticle(pos, size);
+            }
+
+            // ======================= 9) 追加：圆形收缩冲击波（可偏移） =======================
+            for (int i = 0; i < pulseCount; i++)
+            {
+                Vector2 offset = Main.rand.NextVector2Circular(pulseOffsetMax, pulseOffsetMax);
+                if (offset.Length() < pulseOffsetMin) offset = offset.SafeNormalize(Vector2.UnitX) * pulseOffsetMin;
+                Vector2 at = center + offset;
+
+                Particle shrinking = new DirectionalPulseRing(
+                    at,
+                    Vector2.Zero,
+                    pulseColor,         // 橙红
+                    pulseShape,         // 圆形
+                    Main.rand.NextFloat(pulseScaleStart * 0.9f, pulseScaleStart * 1.1f),
+                    pulseScaleEnd,
+                    pulseSpread,
+                    pulseLife
+                );
+                GeneralParticleHandler.SpawnParticle(shrinking);
+            }
+
+            // ======================= 10) 屏幕震动（距离衰减） =======================
+            float kLerp = Utils.GetLerpValue(1000f, 0f, Vector2.Distance(center, Main.LocalPlayer.Center), true);
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * kLerp);
+        }
+
+
+
+
+
+
+
+
 
         private const float SegmentSpacing = 70f;         // 身体 & 尾部使用
         private const float HeadToBodySpacing = 152f;     // 头部与身体的专用间距

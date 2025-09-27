@@ -85,7 +85,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             if (target != null)
             {
                 // 敌人头顶点（这里的 -100f 可以改成和 bigcut 一样的偏移量）
-                Vector2 anchor = target.Center + new Vector2(0f, -20*16f);
+                Vector2 anchor = target.Center + new Vector2(0f, -35 * 16f);
 
                 // 半径：决定绕多大圈旋转
                 float radius = 80f;
