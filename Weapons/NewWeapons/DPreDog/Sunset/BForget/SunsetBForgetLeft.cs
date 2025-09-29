@@ -111,13 +111,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
+        private bool killedByRightCheck = false;
 
         public override void OnSpawn(IEntitySource source)
         {
+            bool hasRight = Main.projectile.Any(p =>
+                p.active &&
+                p.owner == Projectile.owner &&
+                p.type == ModContent.ProjectileType<SunsetBForgetRight>()
+            );
+
+            if (hasRight)
+            {
+                killedByRightCheck = true; // 标记：是因为检测到 Right 而消失
+                Projectile.Kill();
+                return;
+            }
+
             Projectile.velocity *= 1.5f;
         }
-
-
 
 
         public override void AI()
@@ -300,6 +312,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
         public override void OnKill(int timeLeft)
         {
+
+            if (killedByRightCheck)
+            {
+                // 如果是检测到 Right 弹幕后自杀，不执行任何额外逻辑
+                return;
+            }
 
             Vector2 spawnPosition = Projectile.Center;
 

@@ -1036,6 +1036,146 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     }
                     // === 爆炸特效 第6部分 结束（巨大的厚重菱形扩散） ===
 
+
+                    // === 爆炸特效 第7部分 开始（螺旋风暴） ===
+                    {
+                        Vector2 C = Projectile.Center;
+                        float t = (float)Main.GameUpdateCount * 0.08f; // 时间相位
+
+                        // 黄金角（约 137.5°）
+                        float golden = MathHelper.ToRadians(137.50776f);
+
+                        // 螺旋层数（内外双螺旋）
+                        int spiralLayers = 2;
+                        int seedsPerLayer = 60; // 每层种子数
+
+                        for (int layer = 0; layer < spiralLayers; layer++)
+                        {
+                            float baseSpeed = (layer == 0) ? 4.5f : 7.5f; // 内圈慢，外圈快
+                            float radiusFactor = (layer == 0) ? 0.5f : 1.2f; // 内圈半径更小
+
+                            for (int k = 0; k < seedsPerLayer; k++)
+                            {
+                                float theta = k * golden + t * (0.8f + 0.3f * layer); // 黄金角推进 + 时间相位
+                                float r = radiusFactor * (10f + k * 1.5f);            // 半径随种子编号增加
+                                Vector2 dir = theta.ToRotationVector2();
+                                Vector2 pos = C + dir * r;
+
+                                // 基础速度 = 径向 + 切向扭曲
+                                Vector2 vel = dir * (baseSpeed + 0.05f * r)
+                                              + dir.RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(t + k * 0.3f) * 2.5f;
+
+                                // === 1) SparkParticle：细线条螺旋 ===
+                                SparkParticle spark = new SparkParticle(
+                                    pos,
+                                    vel,
+                                    false,
+                                    Main.rand.Next(22, 36),
+                                    Main.rand.NextFloat(0.9f, 1.4f),
+                                    Color.Lerp(Color.Orange, Color.Gold, (float)Math.Sin(t + k))
+                                );
+                                GeneralParticleHandler.SpawnParticle(spark);
+
+                                // === 2) GlowOrbParticle：能量珠子 ===
+                                if (k % 4 == 0)
+                                {
+                                    GlowOrbParticle orb = new GlowOrbParticle(
+                                        pos,
+                                        vel * 0.4f,
+                                        false,
+                                        Main.rand.Next(18, 28),
+                                        Main.rand.NextFloat(0.8f, 1.4f),
+                                        Color.Lerp(Color.OrangeRed, Color.Goldenrod, 0.7f + 0.3f * (float)Math.Cos(t + k)),
+                                        true, false, true
+                                    );
+                                    GeneralParticleHandler.SpawnParticle(orb);
+                                }
+
+                                // === 3) GenericSparkle：星爆点阵 ===
+                                if (k % 5 == 0)
+                                {
+                                    GenericSparkle sp = new GenericSparkle(
+                                        pos,
+                                        vel * 0.6f,
+                                        Color.OrangeRed,
+                                        Color.Yellow,
+                                        1.6f,
+                                        Main.rand.Next(20, 32),
+                                        Main.rand.NextFloat(-0.02f, 0.02f),
+                                        1.4f
+                                    );
+                                    GeneralParticleHandler.SpawnParticle(sp);
+                                }
+
+                                // === 4) SquishyLightParticle：极亮能量丝 ===
+                                if (Main.rand.NextBool(12))
+                                {
+                                    SquishyLightParticle exo = new(
+                                        pos,
+                                        vel * 0.5f,
+                                        0.28f + Main.rand.NextFloat(0.15f),
+                                        Color.Lerp(Color.Orange, Color.Gold, Main.rand.NextFloat()),
+                                        25,
+                                        opacity: 1f,
+                                        squishStrenght: 1.2f,
+                                        maxSquish: 3.5f
+                                    );
+                                    GeneralParticleHandler.SpawnParticle(exo);
+                                }
+
+                                // === 5) HeavySmokeParticle：厚重黑烟（低频） ===
+                                if (Main.rand.NextBool(20))
+                                {
+                                    HeavySmokeParticle smoke = new HeavySmokeParticle(
+                                        pos,
+                                        vel * 0.3f,
+                                        Color.Lerp(Color.Black, Color.DarkOrange, 0.3f),
+                                        Main.rand.Next(24, 36),
+                                        Main.rand.NextFloat(1.0f, 1.5f),
+                                        0.9f,
+                                        Main.rand.NextFloat(-0.2f, 0.2f),
+                                        true
+                                    );
+                                    GeneralParticleHandler.SpawnParticle(smoke);
+                                }
+                            }
+                        }
+
+                        // === 外层涡流环（加深风暴感） ===
+                        int outerPoints = 24;
+                        float outerRadius = 180f;
+                        for (int i = 0; i < outerPoints; i++)
+                        {
+                            float ang = MathHelper.TwoPi * i / outerPoints + t;
+                            Vector2 dir = ang.ToRotationVector2();
+                            Vector2 pos = C + dir * outerRadius;
+
+                            // 星爆脉冲
+                            GenericSparkle sp = new GenericSparkle(
+                                pos,
+                                dir * Main.rand.NextFloat(5f, 9f),
+                                Color.OrangeRed,
+                                Color.Gold,
+                                2.0f,
+                                26,
+                                Main.rand.NextFloat(-0.02f, 0.02f),
+                                1.8f
+                            );
+                            GeneralParticleHandler.SpawnParticle(sp);
+                        }
+                    }
+                    // === 爆炸特效 第7部分 结束（螺旋风暴） ===
+
+
+
+
+
+
+
+
+
+
+
                 }
 
             }

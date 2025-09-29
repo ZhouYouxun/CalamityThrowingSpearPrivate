@@ -35,12 +35,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.localNPCHitCooldown = 4; // 受击无敌帧
             Projectile.timeLeft = 36000;
         }
+        private int initTimeLeft;
 
         public override void OnSpawn(IEntitySource source)
         {
             base.OnSpawn(source);
+            initTimeLeft = Projectile.timeLeft; // 记录出生时的最大寿命
+
         }
-        
+
         // 分批生成控制
         private const int SatellitesTotal = 10;   // 卫星总数
         private const int SpawnInterval = 5;     // 每隔5帧生成1个
@@ -86,7 +89,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
 
 
+            {
+                // === 淡入淡出效果 ===
+                int fadeInTime = 90;   // 淡入时间（帧）
+                int fadeOutTime = 40;  // 淡出时间（帧）
 
+                // 淡入：前 fadeInTime 帧从 0 → 1
+                float fadeInFactor = Utils.GetLerpValue(0f, fadeInTime, 36000 - Projectile.timeLeft, true);
+                Projectile.Opacity = MathHelper.Clamp(fadeInFactor, 0f, 1f);
+
+                // 淡出：最后 fadeOutTime 帧逐渐变透明
+                if (Projectile.timeLeft < fadeOutTime)
+                {
+                    float fadeOutFactor = Projectile.timeLeft / (float)fadeOutTime;
+                    Projectile.Opacity *= fadeOutFactor;
+                }
+            }
 
             NPC target = Main.npc[TargetNPCIndex];
 
@@ -101,72 +119,77 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             RotationAngle += OuterRotationSpeed;
 
             // **防止过早消失**
-            Projectile.timeLeft = 6000;
+            //Projectile.timeLeft = 6000;
+
+
+
+
+
 
             {
                 // ======================= 下面是“科技蓝系”三类特效 =======================
                 vfxTick++;
-                vfxPhase += 0.25f; // 双螺旋的相位推进（越大越快）
+                vfxPhase += 0.25f;
 
                 Vector2 center = Projectile.Center;
 
-                // ---------------- ① ConstellationRingVFX（科技蓝）一直执行 ----------------
-                // 从出生到消亡都持续；频率稍微节流以控量（每6帧一次）
-                if ((vfxTick % 1) == 0)
+                // --- 新增淡入系数 ---
+                int fadeInTime = 60;
+                // 已经过了多少帧
+                int elapsed = initTimeLeft - Projectile.timeLeft;
+                float fxFactor = Utils.GetLerpValue(0f, fadeInTime, elapsed, true);
+
+                // ---------------- ① ConstellationRingVFX ----------------
+                if (Main.rand.NextFloat() < 0.2f * fxFactor) // 频率受 fxFactor 控制
                 {
-                    // 主色：科技蓝（调亮度系数更“电感”）
                     Color techBlue = TechBluePalette[Main.rand.Next(0, 4)] * 0.9f;
 
                     ConstellationRingVFX constellationRing = new ConstellationRingVFX(
-                        center,                                     // 圆心 = 魔法阵中心
-                        techBlue,                                   // 科技蓝
-                        Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi), // 初始旋转
-                        1.7f,                                       // 缩放（你指定的1.7）
-                        new Vector2(1f, 1f),                        // 椭圆比
-                        0.9f,                                       // 透明度
-                        5,                                          // 星点数量
-                        1.5f,                                       // 星点缩放
-                        0.06f,                                      // 自转速度
-                        false                                       // 是否重要
+                        center,
+                        techBlue,
+                        Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),
+                        1.7f,
+                        new Vector2(1f, 1f),
+                        0.9f * fxFactor, // 透明度也受控制
+                        5,
+                        1.5f,
+                        0.06f,
+                        false
                     );
                     GeneralParticleHandler.SpawnParticle(constellationRing);
                 }
 
-                // ---------------- ② CrackParticle：半径≈3×16的环上向外“随机大量”喷发 ----------------
-                // 以魔法阵原点为圆心，半径48的环上随机挑若干点，向外随机速度喷出
-                int crackPerFrame = Main.rand.Next(3, 6); // 每帧3~5个，量感“足”但不爆
+                // ---------------- ② CrackParticle ----------------
+                int crackPerFrame = (int)(fxFactor * Main.rand.Next(3, 6)); // 数量随 fxFactor 增加
                 for (int n = 0; n < crackPerFrame; n++)
                 {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 dir = ang.ToRotationVector2();      // 径向方向（向外）
-                    Vector2 pos = center + dir * (3f * 16f);    // 半径≈48
+                    Vector2 dir = ang.ToRotationVector2();
+                    Vector2 pos = center + dir * (3f * 16f);
                     float spd = Main.rand.NextFloat(2.8f, 5.6f);
 
-                    // 科技蓝主色 + 少量白做高光
                     Color c = TechBluePalette[Main.rand.Next(TechBluePalette.Length)];
 
                     CrackParticle crack = new CrackParticle(
-                        pos,                                      // 起点：圆环上
-                        dir * spd,                                // 径向外喷
-                        c,                                        // 科技蓝/白
+                        pos,
+                        dir * spd,
+                        c,
                         new Vector2(1f + Main.rand.NextFloat(-0.15f, 0.25f),
-                                    1f + Main.rand.NextFloat(-0.15f, 0.25f)), // 轻微拉伸
-                        Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),   // 初始旋转
-                        Main.rand.NextFloat(0.10f, 0.20f),        // 初始缩放
-                        Main.rand.NextFloat(0.3f, 0.5f),          // 最终缩放
-                        Main.rand.Next(13, 26)                    // 寿命：帧
+                                    1f + Main.rand.NextFloat(-0.15f, 0.25f)),
+                        Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),
+                        Main.rand.NextFloat(0.10f, 0.20f),
+                        Main.rand.NextFloat(0.3f, 0.5f),
+                        Main.rand.Next(13, 26)
                     );
                     GeneralParticleHandler.SpawnParticle(crack);
                 }
 
-                // ---------------- ③ AltSparkParticle：双螺旋围绕自身高速旋转 ----------------
-                // 思路：我们不修改已生成粒子轨迹，而是“按相位”在两条相反臂位上持续生成短寿命粒子；
-                // 看起来就是两条高速旋转的双螺旋“光线”。
-                // 半径、寿命与速度都偏小，保证是“细线条”质感。
+                // ---------------- ③ AltSparkParticle 双螺旋 ----------------
+                if (Main.rand.NextFloat() < 0.8f * fxFactor) // 前期几乎不会出现，后面正常
                 {
-                    float rHelix = 28f;                                     // 双螺旋半径（可按观感微调）
+                    float rHelix = 28f;
                     float a1 = vfxPhase;
-                    float a2 = vfxPhase + MathHelper.Pi;                    // 另一臂相差180°
+                    float a2 = vfxPhase + MathHelper.Pi;
 
                     Vector2 n1 = a1.ToRotationVector2();
                     Vector2 n2 = a2.ToRotationVector2();
@@ -174,17 +197,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     Vector2 p1 = center + n1 * rHelix;
                     Vector2 p2 = center + n2 * rHelix;
 
-                    // 切向极小速度（形成短弧），让“旋转感”更明显
                     Vector2 tang1 = n1.RotatedBy(MathHelper.PiOver2) * 0.6f;
                     Vector2 tang2 = n2.RotatedBy(MathHelper.PiOver2) * 0.6f;
 
-                    Color helixColor1 = (TechBluePalette[Main.rand.Next(0, 4)] * 0.135f); // 淡青蓝
-                    Color helixColor2 = (TechBluePalette[Main.rand.Next(0, 4)] * 0.135f); // 淡青蓝
+                    Color helixColor1 = TechBluePalette[Main.rand.Next(0, 4)] * 0.135f;
+                    Color helixColor2 = TechBluePalette[Main.rand.Next(0, 4)] * 0.135f;
 
                     AltSparkParticle spark1 = new AltSparkParticle(
                         p1, tang1, false,
-                        10,                                           // 8~10帧：短寿命细线
-                        Main.rand.NextFloat(1.1f, 1.35f),             // 轻微缩放差异
+                        10,
+                        Main.rand.NextFloat(1.1f, 1.35f),
                         helixColor1
                     );
                     GeneralParticleHandler.SpawnParticle(spark1);
@@ -198,7 +220,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     GeneralParticleHandler.SpawnParticle(spark2);
                 }
             }
-
 
 
 
@@ -253,45 +274,60 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             // ========== 可调参数（全部集中在这里，按需改） ==========
-            float globalAlpha = 0.5f;   // 全局半透明强度
+            float baseAlpha = 0.5f;   // 基础透明度
 
             // —— Concept 系列（大底图层）——
-            float conceptScale = 0.30f; // 三张统一缩放到 30%
-            float conceptASpin = 0.50f; // 旋转速度倍率（相对于 RotationAngle）
-            float conceptBSpin = -0.70f; // 反转
+            float conceptScale = 0.30f;
+            float conceptASpin = 0.50f;
+            float conceptBSpin = -0.70f;
             float conceptCSpin = 0.90f;
 
-            // —— Twirl 花瓣环 ——（每张贴图代表 60°花瓣，整体位置随相位旋转）
+            // —— Twirl 花瓣环 ——
             float twirlScale = 0.90f;
-            float twirlRadius = 90f;    // 花瓣圆环半径
-            float twirlSpin = -0.30f; // 反转
+            float twirlRadius = 90f;
+            float twirlSpin = -0.30f;
 
-            // —— Magic 中层能量 ——（两张相互反转）
+            // —— Magic 中层能量 ——
             float magic1Scale = 0.80f;
             float magic2Scale = 0.70f;
             float magic1Spin = 1.50f;
-            float magic2Spin = -1.80f; // 反转
+            float magic2Spin = -1.80f;
 
-            // —— 星点环（改为固定N个，沿环慢速公转，不再每帧随机角度）——
-            int starCount = 8;     // 星点数量
+            // —— 星点环 ——
+            int starCount = 8;
             float starScale = 0.80f;
-            float starRingRadius = 100f;  // 星点环半径
-            float starSpin = 0.60f; // 星点随相位转动的倍率（越大越快）
+            float starRingRadius = 100f;
+            float starSpin = 0.60f;
 
-            // —— 原有外圈/内圈 ——（相互反转）
+            // —— 原有外圈/内圈 ——
             float outerScale = 1.00f;
             float innerScale = 0.90f;
             float outerSpin = 1.00f;
-            float innerSpin = -1.20f; // 反转
+            float innerSpin = -1.20f;
 
-            // ✅ 用 AI 中累积的 RotationAngle 作为全局相位（不要用 Projectile.rotation）
+            // ✅ 用 AI 中累积的 RotationAngle 作为全局相位
             float rot = RotationAngle;
 
+            // ========== 淡入淡出控制 ==========
+            int fadeInTime = 90;
+            int fadeOutTime = 40;
+
+            // 已经过了多少帧（需要在 OnSpawn 里保存 initTimeLeft）
+            int elapsed = initTimeLeft - Projectile.timeLeft;
+
+            float fadeInFactor = Utils.GetLerpValue(0f, fadeInTime, elapsed, true);
+            float fadeOutFactor = Projectile.timeLeft > fadeOutTime
+                ? 1f
+                : (Projectile.timeLeft / (float)fadeOutTime);
+
+            float fadeFactor = fadeInFactor * fadeOutFactor;
+            float globalAlpha = baseAlpha * fadeFactor;
+
             // ========== 颜色（金色 + 紫色） ==========
-            Color mainGold = new Color(255, 215, 0) * globalAlpha;      // 金色主色
-            Color accentGold = new Color(255, 215, 0) * (globalAlpha * 0.8f); // 金色副色（弱一些）
-            Color mainPurple = new Color(120, 90, 160) * globalAlpha;     // 紫色主色
-            Color accentPurple = new Color(120, 90, 160) * (globalAlpha * 0.8f); // 紫色副色（弱一些）
+            Color mainGold = new Color(255, 215, 0) * globalAlpha;
+            Color accentGold = new Color(255, 215, 0) * (globalAlpha * 0.8f);
+            Color mainPurple = new Color(120, 90, 160) * globalAlpha;
+            Color accentPurple = new Color(120, 90, 160) * (globalAlpha * 0.8f);
 
             // ========== 读取贴图 ==========
             Texture2D texConceptA = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/ConceptA").Value;
@@ -311,54 +347,47 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Texture2D texOuter = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             Texture2D texInner = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftMagicInner").Value;
 
-            // ========== 绘制：Concept 大底图层（系列内部互相反转） ==========
-            // 将原来的 mainBlue/glowBlue/whiteSoft 替换为金紫配色
+            // ========== 绘制：Concept 大底图层 ==========
             Main.EntitySpriteDraw(texConceptA, drawPos, null, mainGold, rot * conceptASpin, texConceptA.Size() / 2f, conceptScale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(texConceptB, drawPos, null, mainPurple, rot * conceptBSpin, texConceptB.Size() / 2f, conceptScale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(texConceptC, drawPos, null, accentGold, rot * conceptCSpin, texConceptC.Size() / 2f, conceptScale, SpriteEffects.None, 0);
 
-            // ========== 绘制：周边 Twirl 花瓣环（整体反向旋转） ==========
-            // 这里用奇偶交替金/紫（i%2）
+            // ========== 绘制：Twirl 花瓣环 ==========
             for (int i = 0; i < 6; i++)
             {
-                float baseAngle = MathHelper.TwoPi * i / 6f + rot * twirlSpin; // ✅ 用 rot
+                float baseAngle = MathHelper.TwoPi * i / 6f + rot * twirlSpin;
                 Vector2 pos = drawPos + baseAngle.ToRotationVector2() * twirlRadius;
 
                 Texture2D twirlTex = (i % 3 == 0) ? texTwirl1 : (i % 3 == 1) ? texTwirl2 : texTwirl3;
-                Color twirlColor = (i % 2 == 0) ? mainGold : mainPurple; // 改为金/紫交替
+                Color twirlColor = (i % 2 == 0) ? mainGold : mainPurple;
 
-                // 贴图本身也按其朝向轻微旋转，增强“花瓣展开感”
                 Main.EntitySpriteDraw(twirlTex, pos, null, twirlColor, baseAngle, twirlTex.Size() / 2f, twirlScale, SpriteEffects.None, 0);
             }
 
-            // ========== 绘制：中层 Magic 能量核（互相反转） ==========
-            // 将 glowBlue -> mainPurple, accentGold 保持为金色（用于点缀）
+            // ========== 绘制：Magic 能量核 ==========
             Main.EntitySpriteDraw(texMagic1, drawPos, null, mainPurple, rot * magic1Spin, texMagic1.Size() / 2f, magic1Scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(texMagic2, drawPos, null, accentGold, rot * magic2Spin, texMagic2.Size() / 2f, magic2Scale, SpriteEffects.None, 0);
 
-            // ========== 绘制：星点环（固定数量，沿环缓慢公转，不再每帧随机角度） ==========
+            // ========== 绘制：星点环 ==========
             for (int i = 0; i < starCount; i++)
             {
-                float a = MathHelper.TwoPi * i / starCount + rot * starSpin; // ✅ 随 rot 平稳转动
+                float a = MathHelper.TwoPi * i / starCount + rot * starSpin;
                 Vector2 sp = drawPos + a.ToRotationVector2() * starRingRadius;
 
                 Texture2D starTex = (i % 2 == 0) ? texStar7 : texStar8;
-                // 星点颜色采用金/紫交替，偶数用金色，奇数用紫色（你可以根据需要改成别的条件）
                 Color starColor = (i % 2 == 0) ? mainGold : mainPurple;
 
-                // 小幅脉动（缩放轻微抖动），避免呆板
                 float pulse = 0.92f + 0.08f * (float)Math.Sin(rot * 2f + i * 1.3f);
                 Main.EntitySpriteDraw(starTex, sp, null, starColor, a, starTex.Size() / 2f, starScale * pulse, SpriteEffects.None, 0);
             }
 
-            // ========== 原有外圈/内圈（互相反转） ==========
-            // 把 glowBlue/whiteSoft 替换成金/紫
+            // ========== 绘制：外圈/内圈 ==========
             Main.EntitySpriteDraw(texOuter, drawPos, null, mainGold, rot * outerSpin, texOuter.Size() / 2f, outerScale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(texInner, drawPos, null, mainPurple, rot * innerSpin, texInner.Size() / 2f, innerScale, SpriteEffects.None, 0);
 
-
             return false;
         }
+
 
 
 

@@ -529,9 +529,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     {
                         Item.UseSound = SoundID.Item2;
 
-                        Item.useTime = 20;
-                        Item.useAnimation = 20;
-
+                        Item.useTime = 9;              // 每发间隔
+                        Item.useAnimation = 90;        // 总动画
+                        Item.useLimitPerAnimation = 3; // 一次动画内打 X 发
                         Item.autoReuse = true;
 
                         Item.shoot = ModContent.ProjectileType<SunsetBForgetLeft>();
@@ -647,43 +647,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     }
                 }
             }
-
             // === A模式：四连发 ===
             if (currentMode == 0)
             {
                 return true; // ✅ 返回 true，让默认逻辑生效
             }
 
-            // B 模式：植物孢子散射
-            if (currentMode == 1) 
+            // B 模式：不在这里处理，交给 ModifyShootStats
+            if (currentMode == 1)
             {
-                int numberProjectiles = Main.rand.Next(4, 7); // 4~6 发
-                for (int i = 0; i < numberProjectiles; i++)
-                {
-                    // 在 ±15° 内随机偏转
-                    float rotation = MathHelper.ToRadians(Main.rand.Next(-15, 16));
-                    Vector2 perturbedSpeed = velocity.RotatedBy(rotation);
-
-                    // 给速度一个 0.8x ~ 1.2x 的随机缩放
-                    perturbedSpeed *= Main.rand.NextFloat(0.8f, 1.2f);
-
-                    // 生成弹幕
-                    int proj = Projectile.NewProjectile(
-                        source,
-                        position,
-                        perturbedSpeed,
-                        type,
-                        damage,
-                        knockback,
-                        player.whoAmI
-                    );
-
-                    // 随机缩放大小（写进 ai[0] 或 localAI 传递给弹幕去应用）
-                    Main.projectile[proj].scale *= Main.rand.NextFloat(0.85f, 1.15f);
-                }
-
-                return false; // 阻止原逻辑（不走二连发）
+                return false; // 阻止默认逻辑
             }
+
 
 
             // === 其他情况（容错处理）===
@@ -708,10 +683,54 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 // 稍微往后移，让子弹有生成感
                 position -= 3f * velocity;
             }
+
+
+            if (currentMode == 1) // B模式：玩家身后扇形平行发射（宏伟版）
+            {
+                int pairs = 3; // 保持 3 对
+                float baseRadius = 120f; // 基础扇形半径，比原来大很多
+                float spread = MathHelper.ToRadians(140f); // 扇形范围夸张，加大到接近半圆
+
+                for (int i = 0; i < pairs; i++)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        // 在大扇形范围内随机角度，不再是死板均匀分布
+                        float angle = Main.rand.NextFloat(-spread / 2f, spread / 2f);
+
+                        Vector2 dir = velocity.SafeNormalize(Vector2.UnitX);
+
+                        // 半径带有一定随机扰动，让位置不规则
+                        float radius = baseRadius * Main.rand.NextFloat(0.8f, 1.2f);
+                        Vector2 behind = -dir.RotatedBy(angle) * radius;
+
+                        Vector2 spawnPos = player.Center + behind;
+
+                        // 平行发射，但速度大小也允许轻微浮动
+                        Vector2 shotVel = dir * velocity.Length() * Main.rand.NextFloat(0.9f, 1.1f);
+
+                        Projectile.NewProjectile(
+                            player.GetSource_ItemUse(Item),
+                            spawnPos,
+                            shotVel,
+                            type,
+                            damage,
+                            knockback,
+                            player.whoAmI
+                        );
+                    }
+                }
+            }
+
+
+
+
+
+
         }
 
 
-   
+
 
 
 
