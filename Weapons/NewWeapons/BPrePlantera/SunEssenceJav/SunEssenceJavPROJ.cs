@@ -368,18 +368,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
             }
             else
             {
-                int featherCount = 3;
+                int featherCount = 5; // 羽毛数量，可调
+                float spacing = 8f * 16f; // 羽毛之间的间距（像素），这里是 8 格
+
+                // 统一下落角度（可能是垂直，也可能统一倾斜一点点）
+                float baseAngle = Main.rand.NextFloat(-0.15f, 0.15f); // -8.6° ~ +8.6°
+                Vector2 baseDir = Vector2.UnitY.RotatedBy(baseAngle).SafeNormalize(Vector2.UnitY);
+
+                // 计算中点对齐到玩家
+                float centerIndex = (featherCount - 1) / 2f;
                 for (int i = 0; i < featherCount; i++)
                 {
-                    // 生成点：在正上方 50×16 的高度，带椭圆随机扰动
-                    Vector2 offset = Main.rand.NextVector2Circular(15f * 16f, 8f * 16f);
-                    Vector2 featherSpawnPosition = Projectile.Center + new Vector2(0, -50f * 16f) + offset;
+                    // 横向偏移：和整体方向垂直
+                    Vector2 perp = baseDir.RotatedBy(MathHelper.PiOver2);
+                    float offsetAmount = (i - centerIndex) * spacing;
 
-                    // 初速度：整体朝下，附带小角度扰动
-                    float angleOffset = Main.rand.NextFloat(-0.25f, 0.25f); // ±15°
-                    Vector2 featherVelocity = Vector2.UnitY.RotatedBy(angleOffset) * 30f;
+                    Vector2 featherSpawnPosition = Projectile.Center + new Vector2(0, -50f * 16f) + perp * offsetAmount;
 
-                    // 生成羽毛
+                    // 保证中间那一发会瞄准玩家（对齐玩家位置）
+                    if (i == (int)Math.Round(centerIndex))
+                    {
+                        Vector2 aimDir = (Projectile.Center - featherSpawnPosition).SafeNormalize(Vector2.UnitY);
+                        baseDir = aimDir; // 矫正方向
+                    }
+
+                    Vector2 featherVelocity = baseDir * 30f;
+
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
                         featherSpawnPosition,
@@ -390,8 +404,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                         Projectile.owner
                     );
                 }
-
             }
+
 
 
 

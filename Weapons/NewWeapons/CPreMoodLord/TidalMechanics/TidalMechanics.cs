@@ -41,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             Item.rare = ModContent.RarityType<HotPink>();
             Item.Calamity().devItem = true;
             Item.shoot = ModContent.ProjectileType<TidalMechanicsPROJ>(); // 使用新的弹幕
-            Item.shootSpeed = 25f; // 更改使用时的武器弹幕飞行速度
+            Item.shootSpeed = 38f; // 更改使用时的武器弹幕飞行速度
         }
         public override bool AltFunctionUse(Player player) => true; // 启用右键功能
 

@@ -557,7 +557,7 @@ namespace CalamityThrowingSpear
                     40                          // int lifetime，粒子存活时间（帧数）
                 );
                 GeneralParticleHandler.SpawnParticle(genericBloom);
-
+                
 
                 // 【BloomParticle】绽放粒子
                 // 【与超级光晕类似，但光晕较窄，用于柔和脉冲扩散效果】

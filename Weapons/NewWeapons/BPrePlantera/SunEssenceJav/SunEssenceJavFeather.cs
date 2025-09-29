@@ -103,11 +103,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
         private const int orbitTimeMax = 120; // 转两圈，约120帧
         private const float orbitRadius = 96f; // 公转半径
         private const float orbitAngularSpeed = MathHelper.TwoPi / 60f; // 每60帧一圈
+
+
+
         public override void AI()
         {
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-
-
 
             Player player = Main.player[Projectile.owner];
 
@@ -116,155 +117,75 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
             switch ((int)state)
             {
-                case 0: // 🚀 阶段 1：直线飞行
+                case 0: // 🌀 阶段 0：出生后先轻微弯曲飞行
                     timer++;
-                    if (timer > flyDuration) // ✅ 使用随机值替代固定 20
+                    if (timer == 1)
+                    {
+                        // 找最近敌人
+                        NPC fakeTarget = Projectile.Center.ClosestNPCAt(900f);
+                        Vector2 dir = fakeTarget != null
+                            ? (fakeTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY)
+                            : Vector2.UnitX;
+
+                        // 故意往反方向 ±40° 偏移（柔和一点，不突兀）
+                        float curveDir = Main.rand.NextBool() ? 1f : -1f;
+                        float curveAngle = dir.ToRotation() + curveDir * MathHelper.ToRadians(40f);
+                        Projectile.velocity = curveAngle.ToRotationVector2() * 6f;
+                    }
+                    else
+                    {
+                        // 限制每帧最大转动角度
+                        float currentRot = Projectile.velocity.ToRotation();
+                        float targetRot = Projectile.velocity.ToRotation(); // 维持当前飞行方向
+                        float newRot = currentRot.AngleTowards(targetRot, 0.01f);
+
+                        Projectile.velocity = newRot.ToRotationVector2() * Projectile.velocity.Length();
+                    }
+
+                    if (timer > 95f) // 弯曲约 X 帧后进入追踪
                     {
                         state = 1f;
                         timer = 0f;
-                        Projectile.velocity = Vector2.Zero;
                     }
+
+                    // rotation 始终绑定速度方向
                     Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 * 2;
                     break;
 
-                case 1: // 🛑 阶段 2：停滞悬停
+                case 1: // 🎯 阶段 1：有限角速度追踪
                     timer++;
-
-                    // 目标角度：默认还是“朝右”
-                    float targetRot = 0f; // MathHelper.ToRadians(0)，即水平朝右
-                                          // 或者你也可以让它以某个固定速度转动：
-                                          // targetRot = Projectile.rotation + 0.05f; // 每帧缓慢旋转
-
-                    // 旋转惯性：逐渐靠近目标角度
-                    Projectile.rotation = Projectile.rotation.AngleLerp(targetRot, 0.05f);
-
-                    // 位置不动
-                    Projectile.velocity = Vector2.Zero;
-
-                    if (timer > 55f)
+                    NPC target = Projectile.Center.ClosestNPCAt(900f);
+                    if (target != null && target.active && !target.friendly && !target.dontTakeDamage)
                     {
-                        state = 2f;
-                        timer = 0f;
-                    }
-                    break;
+                        float maxTurnSpeed = MathHelper.ToRadians(4f); // 每帧最多转 4°
+                        Vector2 desiredDir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                        float desiredRot = desiredDir.ToRotation();
+                        float newRot = Projectile.velocity.ToRotation().AngleTowards(desiredRot, maxTurnSpeed);
 
-                case 2: // 🌀 阶段 3：缓慢转向 -> 修改为固定角度
-                    timer++;
-
-                    // 第一次进入该阶段时，记录当前角度
-                    if (timer == 1)
-                    {
-                        lockedRotation = Projectile.rotation;
-                    }
-
-                    // 强制保持这个固定角度
-                    Projectile.rotation = lockedRotation;
-
-                    NPC targetNPC = Projectile.Center.ClosestNPCAt(900f);
-                    if (targetNPC != null && targetNPC.active && !targetNPC.friendly && !targetNPC.dontTakeDamage)
-                    {
-                        if (timer > 20f)
-                        {
-                            state = 3f;
-                            timer = 0f;
-                            Projectile.velocity = Vector2.Zero; // 冲刺前保持停顿
-                        }
+                        // 保持流畅的速度，不要过高
+                        Projectile.velocity = newRot.ToRotationVector2() * 10f;
+                        Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 * 2;
                     }
                     else
                     {
                         Projectile.Kill();
                     }
                     break;
-
-                case 3: // 💥 阶段 4：弹性冲刺
-                    timer++;
-                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4;
-                    float t = MathHelper.Clamp(timer / 20f, 0f, 1f);
-                    float dashSpeed = EaseInOutElastic(t) * 24f;
-
-                    NPC dashTarget = Projectile.Center.ClosestNPCAt(900f);
-                    if (dashTarget != null && dashTarget.active && !dashTarget.friendly && !dashTarget.dontTakeDamage)
-                    {
-                        Vector2 dashDir = (dashTarget.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                        Projectile.velocity = dashDir * dashSpeed;
-                    }
-                    else
-                    {
-                        Projectile.velocity = Vector2.Zero;
-                    }
-
-                    if (timer > 20f)
-                    {
-                        //Projectile.Kill(); // 冲刺完毕直接消失
-                    }
-                    break;
             }
 
-
-
-
-            //Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 * 2;
-
-            //{
-            //    // ① 找到最近的 SunEssenceJavPROJ 作为父弹幕
-            //    if (parentProj == null || !parentProj.active || parentProj.type != ModContent.ProjectileType<SunEssenceJavPROJ>())
-            //    {
-            //        parentProj = FindClosestParent();
-            //    }
-
-            //    if (parentProj != null && parentProj.active)
-            //    {
-            //        if (orbitTimer < orbitTimeMax)
-            //        {
-            //            orbitTimer++;
-
-            //            float angle = orbitTimer * orbitAngularSpeed;
-
-            //            // 半径小范围波动（避免跑太远）
-            //            float dynamicRadius = orbitRadius * (1f + 0.15f * (float)Math.Sin(orbitTimer * 0.1f + Projectile.identity));
-
-            //            // 计算目标点
-            //            Vector2 orbitPos = parentProj.Center + angle.ToRotationVector2() * dynamicRadius;
-
-            //            // 加快跟随，避免“掉队”
-            //            Projectile.Center = Vector2.Lerp(Projectile.Center, orbitPos, 0.25f);
-
-            //            // 保持朝向中心
-            //            Projectile.rotation = (parentProj.Center - Projectile.Center).ToRotation();
-            //        }
-            //        else
-            //        {
-            //            // === ③ 追踪逻辑 ===
-            //            NPC? target = FindParentClosestNPC(parentProj);
-            //            if (target != null)
-            //            {
-            //                Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-            //                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * 16f, 0.1f);
-            //                Projectile.rotation = Projectile.velocity.ToRotation();
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // 没有找到父弹幕 → 自行消失
-            //        Projectile.Kill();
-            //    }
-            //}
-
-
-            // 💡 一定保留视觉效果
+            // 💡 始终保留视觉效果
             Lighting.AddLight(Projectile.Center, 0.2f, 0.9f, 0.3f); // 绿色光
 
-            // 若仍在飞行状态（未碰地形），保留所有特效
-            if (Projectile.tileCollide && (int)Projectile.ai[0] != 1)
+            // 飞行中的特效（不再因为状态而屏蔽）
+            if (Projectile.tileCollide)
             {
                 // === 🚩 1️⃣ 高密度 Dust 蓝绿色流动 ===
                 int dustCount = 2;
                 for (int i = 0; i < dustCount; i++)
                 {
-                    float spread = MathHelper.ToRadians(45f);
+                    float spread = MathHelper.ToRadians(30f); // 扩散角度减小一点，更收敛
                     float angle = Main.rand.NextFloat(-spread, spread);
-                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(4f, 10f);
+                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(3f, 7f); // 速度减弱
                     int type = Main.rand.NextFloat() < 0.7f ? DustID.BlueTorch : DustID.GreenTorch;
 
                     Dust d = Dust.NewDustDirect(
@@ -274,70 +195,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
                         velocity.X,
                         velocity.Y,
                         0,
-                        default, // 使用默认色以匹配 Dust 自身蓝绿
-                        Main.rand.NextFloat(1.2f, 2.5f)
+                        default,
+                        Main.rand.NextFloat(1.0f, 2.0f)
                     );
                     d.noGravity = true;
                 }
 
                 // === 🚩 2️⃣ DirectionalPulseRing 蓝绿色脉冲波 ===
-                if (Main.GameUpdateCount % 3 == 0)
+                if (Main.GameUpdateCount % 4 == 0) // 稍微降低频率
                 {
-                    int pulseLayers = 1;
-                    for (int i = 0; i < pulseLayers; i++)
-                    {
-                        Particle pulse = new DirectionalPulseRing(
-                            Projectile.Center + forward * (10f + i * 6f),
-                            forward * (2f + i * 0.8f),
-                            Color.Lerp(Color.DeepSkyBlue, Color.Cyan, i / (float)pulseLayers),
-                            new Vector2(0.8f, 1.8f + i * 0.3f),
-                            Projectile.rotation + MathHelper.PiOver4 + MathHelper.PiOver4,
-                            0.15f + i * 0.03f,
-                            0.025f,
-                            8
-                        );
-                        GeneralParticleHandler.SpawnParticle(pulse);
-                    }
+                    Particle pulse = new DirectionalPulseRing(
+                        Projectile.Center + forward * 8f,
+                        forward * 1.5f,
+                        Color.Lerp(Color.DeepSkyBlue, Color.Cyan, 0.5f),
+                        new Vector2(0.7f, 1.5f),
+                        Projectile.rotation,
+                        0.12f,
+                        0.02f,
+                        8
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
                 }
 
-                // === 🚩 3️⃣ SparkParticle（偏外侧，随机发散）===
-                if (Main.rand.NextBool(6))
+                // === 🚩 3️⃣ SparkParticle（外侧随机发散）===
+                if (Main.rand.NextBool(8)) // 概率调低
                 {
-                    Vector2 offset = Main.rand.NextVector2Circular(10f, 10f); // ⬅️ 比原来更远
-                    Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(4f, 10f); // 速度范围拉大
+                    Vector2 offset = Main.rand.NextVector2Circular(8f, 8f);
+                    Vector2 velocity = forward.RotatedByRandom(MathHelper.ToRadians(12f)) * Main.rand.NextFloat(3f, 6f);
 
                     Particle spark = new SparkParticle(
                         Projectile.Center + offset,
                         velocity,
                         false,
                         10,
-                        Main.rand.NextFloat(0.8f, 1.0f),
+                        Main.rand.NextFloat(0.7f, 0.9f),
                         Color.Lerp(Color.Aqua, Color.Cyan, Main.rand.NextFloat(0.3f, 0.7f))
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
 
-                // === 🚩 4️⃣ AltSparkParticle（更靠近，集中）===
-                if (Main.rand.NextBool(5))
+                // === 🚩 4️⃣ AltSparkParticle（贴近轨迹，柔和光点）===
+                if (Main.rand.NextBool(6))
                 {
-                    Vector2 offset = Main.rand.NextVector2Circular(2f, 2f); // ⬅️ 比原来更小，贴近轨迹
-                    Vector2 velocity = forward * 0.02f + Main.rand.NextVector2Circular(0.1f, 0.1f); // 更低速、轻扰动
+                    Vector2 offset = Main.rand.NextVector2Circular(1.5f, 1.5f);
+                    Vector2 velocity = forward * 0.02f + Main.rand.NextVector2Circular(0.08f, 0.08f);
 
                     AltSparkParticle altSpark = new AltSparkParticle(
                         Projectile.Center + offset,
                         velocity,
                         false,
-                        16,
-                        1.2f,
+                        14,
+                        1.0f,
                         Color.Cyan * 0.25f
                     );
                     GeneralParticleHandler.SpawnParticle(altSpark);
                 }
-
             }
-
-
         }
+
+
 
         // 工具函数：找到最近的 SunEssenceJavPROJ
         private Projectile? FindClosestParent()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,11 +40,47 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.Opacity = 0f;   // 从透明开始淡入
         }
 
+
+
+        // —— 相对坐标适配需要的列表（每种粒子：引用 + 方向 + 半径 + 径向步长） ——
+        // Spark
+        private readonly List<SparkParticle> ownedSparks = new();
+        private readonly List<Vector2> sparkDirs = new();
+        private readonly List<float> sparkDists = new();
+        private readonly List<float> sparkSteps = new();
+
+        // SquishyLight
+        private readonly List<CalamityMod.Particles.SquishyLightParticle> ownedSquishies = new();
+        private readonly List<Vector2> squishyDirs = new();
+        private readonly List<float> squishyDists = new();
+        private readonly List<float> squishySteps = new();
+
+        // GlowOrb
+        private readonly List<GlowOrbParticle> ownedOrbs = new();
+        private readonly List<Vector2> orbDirs = new();
+        private readonly List<float> orbDists = new();
+        private readonly List<float> orbSteps = new();
+
+        // WaterFlavored（雾）
+        private readonly List<CalamityMod.Particles.WaterFlavoredParticle> ownedMists = new();
+        private readonly List<Vector2> mistDirs = new();
+        private readonly List<float> mistDists = new();
+        private readonly List<float> mistSteps = new();
+
+        // GenericSparkle
+        private readonly List<GenericSparkle> ownedSparkles = new();
+        private readonly List<Vector2> sparkleDirs = new();
+        private readonly List<float> sparkleDists = new();
+        private readonly List<float> sparkleSteps = new();
+
+        // 其它你已有的计时器
+        // int lifeTimer;  //（保持你现有的）
+
         public override void AI()
         {
             lifeTimer++;
 
-            // === 淡入淡出 ===
+            // === 淡入淡出（原样保留） ===
             int fadeInTime = 30;
             int fadeOutTime = 30;
             if (lifeTimer <= fadeInTime)
@@ -53,16 +90,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             else
                 Projectile.Opacity = 1f;
 
-            // 基础缩放 0.6f（整体削减40%），在 ±10% 范围内浮动
-            float pulsate = 1f + 0.1f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2f);
+            // 基础缩放 0.6f（原样保留）
+            float pulsate = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f);
             Projectile.scale = 0.6f * pulsate;
 
-            // === 缓慢旋转 ===
+            // === 缓慢旋转（原样保留） ===
             Projectile.rotation += 0.03f;
 
-
-
-            // === 父弹幕锚定（保持在枪口位置） ===
+            // === 父弹幕锚定（原样保留） ===
             int parentID = (int)Projectile.ai[0];
             if (parentID >= 0 && Main.projectile[parentID].active &&
                 Main.projectile[parentID].type == ModContent.ProjectileType<SunsetCConceptLeftListener>())
@@ -73,199 +108,306 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                 Vector2 gunHeadPosition = owner.Center + parentProj.InitialDirection.ToRotationVector2() * 80f;
                 Projectile.Center = gunHeadPosition;
-                Projectile.timeLeft = 60; 
+                Projectile.timeLeft = 60;
             }
             else
             {
                 Projectile.Kill();
+                return;
             }
 
-
-
+            // ===================== 粒子效果·黄金能量几何扩散（你的原块 — 完整保留） =====================
             {
+                // —— 时间与中心 ——（原样）
+                float t = (float)Main.GameUpdateCount * (1f / 60f);
+                Vector2 C = Projectile.Center;
 
-
-                // ===================== 粒子效果·黄金能量几何扩散（替换本块） =====================
+                // —— 金黄系调色板（原样）
+                Color[] golds = {
+            Color.Gold,
+            new Color(218,165,32),          // Goldenrod
+            new Color(255,238,170),         // Pale gold
+            new Color(255,250,205)          // LemonChiffon
+        };
+                Color GoldBlend(float phase)
                 {
-                    // —— 时间与中心 ——
-                    float t = (float)Main.GameUpdateCount * (1f / 60f); // 连续时间（秒）
-                    Vector2 C = Projectile.Center;
+                    float x = MathHelper.Clamp(phase - (float)Math.Floor(phase), 0f, 1f);
+                    int i0 = (int)(x * (golds.Length));
+                    int i1 = (i0 + 1) % golds.Length;
+                    float a = x * golds.Length - i0;
+                    return Color.Lerp(golds[i0], golds[i1], a);
+                }
 
-                    // —— 金黄系调色板（3~4色）——
-                    // 纯金 / 深金 / 淡金 / 柠檬淡黄（加法混合时层次清晰）
-                    Color[] golds = {
-        Color.Gold,
-        new Color(218,165,32),          // Goldenrod
-        new Color(255,238,170),         // Pale gold
-        new Color(255,250,205)          // LemonChiffon
-    };
+                // =============== A) 黄金角 Phyllotaxis（SparkParticle）【保留释放】+ 适配登记 ===============
+                if ((lifeTimer % 2) == 0)
+                {
+                    int seeds = 10;
+                    float golden = MathHelper.ToRadians(137.50776f);
+                    float swirl = 0.8f + 0.4f * (float)Math.Sin(t * 1.7f);
+                    float baseSpeed = 6.0f;
 
-                    // 小工具：按权重在金色之间做插值（让色彩在动）
-                    Color GoldBlend(float phase)
+                    for (int i = 0; i < seeds; i++)
                     {
-                        float x = MathHelper.Clamp(phase - (float)System.Math.Floor(phase), 0f, 1f);
-                        int i0 = (int)(x * (golds.Length));
-                        int i1 = (i0 + 1) % golds.Length;
-                        float a = x * golds.Length - i0;
-                        return Color.Lerp(golds[i0], golds[i1], a);
-                    }
+                        float k = i + (lifeTimer * 0.25f);
+                        float theta = k * golden + t * 1.2f;
+                        float r = 6f + 0.9f * k;
+                        Vector2 dir = theta.ToRotationVector2();
 
-                    // =============== A) 黄金角 Phyllotaxis 爆发（SparkParticle） ===============
-                    // 复杂度升级：每 2 帧打一小束，沿 φ=137.50776° 的种子序列，叠加轻微对数螺线切向速度
-                    if ((lifeTimer % 2) == 0)
-                    {
-                        int seeds = 10;                                      // 每束点数（控制强度）
-                        float golden = MathHelper.ToRadians(137.50776f);     // 黄金角
-                        float swirl = 0.8f + 0.4f * (float)System.Math.Sin(t * 1.7f); // 切向“旋味”
-                        float baseSpeed = 6.0f;
+                        Vector2 spawnPos = C + dir * (r * 0.22f);
+                        Vector2 vel = dir * (baseSpeed + 0.03f * r)
+                                      + dir.RotatedBy(MathHelper.PiOver2) * (swirl * 0.6f);
 
-                        for (int i = 0; i < seeds; i++)
-                        {
-                            float k = i + (lifeTimer * 0.25f);               // 种子序位 + 时间滚动
-                            float theta = k * golden + t * 1.2f;             // 旋转推进
-                                                                             // 对数螺线：r = a * e^{bθ} 的离散近似（这里用线性近似避免过度发散）
-                            float r = 6f + 0.9f * k;                          // 生成环半径（像“花盘”渐外）
-                            Vector2 dir = theta.ToRotationVector2();
+                        Color c = GoldBlend((k * 0.25f) + t * 0.35f);
 
-                            Vector2 spawnPos = C + dir * (r * 0.22f);         // 在核心附近生成
-                            Vector2 vel = dir * (baseSpeed + 0.03f * r)       // 径向向外
-                                          + dir.RotatedBy(MathHelper.PiOver2) * (swirl * 0.6f); // 加一点切向
+                        //var spark = new SparkParticle(
+                        //    spawnPos,
+                        //    vel,            // 🔒 保留原始速度（不改）
+                        //    false,
+                        //    34,
+                        //    0.95f,
+                        //    c * Projectile.Opacity
+                        //);
+                        //CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(spark);
 
-                            Color c = GoldBlend((k * 0.25f) + t * 0.35f);
-
-                            var spark = new SparkParticle(
-                                spawnPos,
-                                vel,
-                                false,
-                                34,                         // 寿命短促但连续喷发
-                                0.95f,                      // 稍细的线性火花
-                                c * Projectile.Opacity
-                            );
-                            CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(spark);
-                        }
-                    }
-
-                    // =============== B) 对数螺线“光丝”脉冲（SquishyLightParticle） ===============
-                    // 6 条光丝以 60° 分布，速度含“径向 + 微右拐阻尼”，形成层层外舒的金丝
-                    if ((lifeTimer % 3) == 0)
-                    {
-                        int beams = 6;
-                        float baseA = t * 0.8f; // 主相位
-                        for (int j = 0; j < beams; j++)
-                        {
-                            float ang = baseA + MathHelper.TwoPi * j / beams;
-                            float pulse = 1f + 0.18f * (float)System.Math.Sin(3f * baseA + j * 0.7f);
-                            Vector2 v = ang.ToRotationVector2() * (6.3f * pulse);
-
-                            var squishy = new CalamityMod.Particles.SquishyLightParticle(
-                                C,
-                                Vector2.Zero,                  // 我们用位置推进
-                                0.40f * pulse,                 // 缩放随脉冲
-                                GoldBlend(j * 0.17f + t * 0.15f),
-                                28,                            // 中等寿命
-                                opacity: Projectile.Opacity,
-                                squishStrenght: 1.1f + 0.2f * pulse,
-                                maxSquish: 3.2f
-                            );
-                            CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(squishy);
-
-                            // 初速度：右拐 + 阻尼（通过后续每帧内部逻辑表现，这里先给初速）
-                            squishy.Velocity = v.RotatedBy(MathHelper.ToRadians(2.0f)) * 0.98f;
-                        }
-                    }
-
-                    // =============== C) 内摆线（Hypotrochoid）星轨点阵（GlowOrbParticle） ===============
-                    // 参数方程：
-                    // x = (R - r) cosθ + d cos((R - r)/r * θ)
-                    // y = (R - r) sinθ - d sin((R - r)/r * θ)
-                    // 我们只用它来指定“发射方向”，粒子依旧从中心外喷
-                    if ((lifeTimer % 4) == 0)
-                    {
-                        float R = 12f, r = 5f, d = 16f; // 星形参数可调
-                        int stars = 12;
-                        float omega = 1.4f;             // 旋速
-                        for (int s = 0; s < stars; s++)
-                        {
-                            float theta = (s / (float)stars) * MathHelper.TwoPi + t * omega;
-                            float k = (R - r) / r;
-
-                            // 取轨迹的法线方向作为“喷射角”
-                            Vector2 p = new Vector2(
-                                (R - r) * (float)System.Math.Cos(theta) + d * (float)System.Math.Cos(k * theta),
-                                (R - r) * (float)System.Math.Sin(theta) - d * (float)System.Math.Sin(k * theta)
-                            );
-                            Vector2 dir = p.SafeNormalize(Vector2.UnitX);
-
-                            var orb = new CalamityMod.Particles.GlowOrbParticle(
-                                C,
-                                dir * 5.2f + Main.rand.NextVector2CircularEdge(0.6f, 0.6f), // 径向 + 少量扰动
-                                false,
-                                18,                             // 短促高亮
-                                0.8f,
-                                GoldBlend(s * 0.08f + t * 0.22f) * Projectile.Opacity,
-                                true, false, true
-                            );
-                            CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
-                        }
-                    }
-
-                    // =============== D) 金雾“呼吸环”（WaterFlavoredParticle） ===============
-                    // 每 6 帧生成一圈柔雾，半径做正弦呼吸式脉动，速度极低形成氤氲
-                    if ((lifeTimer % 6) == 0)
-                    {
-                        int ringCount = 14;
-                        float breath = 1f + 0.12f * (float)System.Math.Sin(t * 1.25f);
-                        float r0 = 10f * breath;
-
-                        for (int i = 0; i < ringCount; i++)
-                        {
-                            float ang = MathHelper.TwoPi * i / ringCount + t * 0.3f;
-                            Vector2 dir = ang.ToRotationVector2();
-                            var mist = new CalamityMod.Particles.WaterFlavoredParticle(
-                                C + dir * (r0 * 0.15f),            // 靠近中心一点生成
-                                dir * 1.2f,                        // 慢速外扩
-                                false,
-                                Main.rand.Next(18, 26),
-                                0.85f + Main.rand.NextFloat(0.25f),
-                                GoldBlend(i * 0.11f + t * 0.1f) * 0.85f
-                            );
-                            CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(mist);
-                        }
-                    }
-
-                    // =============== E) “击打脉冲”星芒（GenericSparkle） ===============
-                    // 每 18 帧触发一次轻打击（像音乐节拍），从圆周若干点向外喷星芒
-                    if ((lifeTimer % 18) == 0)
-                    {
-                        int spokes = 8;
-                        for (int i = 0; i < spokes; i++)
-                        {
-                            float ang = MathHelper.TwoPi * i / spokes + t * 0.5f;
-                            Vector2 v = ang.ToRotationVector2() * 7.5f;
-
-                            var sp = new CalamityMod.Particles.GenericSparkle(
-                                C,
-                                v,
-                                GoldBlend(i * 0.13f + t * 0.3f),         // 主色
-                                Color.White,                              // 辉光
-                                2.1f,                                     // 尺寸
-                                22,                                       // 寿命
-                                Main.rand.NextFloat(-0.02f, 0.02f),       // 自转
-                                1.65f                                     // 光晕扩散
-                            );
-                            CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(sp);
-                        }
+                        //// —— 相对坐标适配登记 ——（基于“生成方向”与“当前半径”）
+                        //ownedSparks.Add(spark);
+                        //sparkDirs.Add(dir);                                // 单位方向（生成时）
+                        //sparkDists.Add((spawnPos - C).Length());           // 初始半径 = 与中心距离
+                        //                                                   // 径向步长 ≈ vel 在 dir 上的投影；最小步长兜底，防止 0
+                        //float step = Vector2.Dot(vel, dir);
+                        //sparkSteps.Add(Math.Max(Math.Abs(step), 0.8f));
                     }
                 }
-                // ===================== 粒子效果·黄金能量几何扩散（替换本块） =====================
 
+                // =============== B) 对数螺线“光丝”（SquishyLightParticle）【保留】+ 适配登记 ===============
+                if ((lifeTimer % 3) == 0)
+                {
+                    int beams = 6;
+                    float baseA = t * 0.8f;
+                    for (int j = 0; j < beams; j++)
+                    {
+                        float ang = baseA + MathHelper.TwoPi * j / beams;
+                        float pulse = 1f + 0.18f * (float)Math.Sin(3f * baseA + j * 0.7f);
+                        Vector2 v = ang.ToRotationVector2() * (6.3f * pulse);
 
+                        var squishy = new CalamityMod.Particles.SquishyLightParticle(
+                            C,
+                            Vector2.Zero,  // 保留：由内部逻辑挤压
+                            0.40f * pulse,
+                            GoldBlend(j * 0.17f + t * 0.15f),
+                            28,
+                            opacity: Projectile.Opacity,
+                            squishStrenght: 1.1f + 0.2f * pulse,
+                            maxSquish: 3.2f
+                        );
+                        CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(squishy);
+                        squishy.Velocity = v.RotatedBy(MathHelper.ToRadians(2.0f)) * 0.98f; // 原样
 
+                        // —— 适配登记 ——（方向取 ang）
+                        ownedSquishies.Add(squishy);
+                        Vector2 dir = ang.ToRotationVector2();
+                        squishyDirs.Add(dir);
+                        squishyDists.Add(0f);                             // 从中心起步
+                        float step = Vector2.Dot(squishy.Velocity, dir);
+                        squishySteps.Add(Math.Max(Math.Abs(step), 0.9f));
+                    }
+                }
+
+                // =============== C) 内摆线星轨（GlowOrbParticle）【保留】+ 适配登记 ===============
+                if ((lifeTimer % 4) == 0)
+                {
+                    float R = 12f, r = 5f, d = 16f;
+                    int stars = 12;
+                    float omega = 1.4f;
+                    for (int s = 0; s < stars; s++)
+                    {
+                        float theta = (s / (float)stars) * MathHelper.TwoPi + t * omega;
+                        float k = (R - r) / r;
+
+                        Vector2 p = new Vector2(
+                            (R - r) * (float)Math.Cos(theta) + d * (float)Math.Cos(k * theta),
+                            (R - r) * (float)Math.Sin(theta) - d * (float)Math.Sin(k * theta)
+                        );
+                        Vector2 dir = p.SafeNormalize(Vector2.UnitX);
+
+                        Vector2 jitter = Main.rand.NextVector2CircularEdge(0.6f, 0.6f);
+                        Vector2 vel = dir * 5.2f + jitter;
+
+                        var orb = new GlowOrbParticle(
+                            C,
+                            vel,                  // 原样
+                            false,
+                            18,
+                            0.8f,
+                            GoldBlend(s * 0.08f + t * 0.22f) * Projectile.Opacity,
+                            true, false, true
+                        );
+                        CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
+
+                        // —— 适配登记 ——
+                        ownedOrbs.Add(orb);
+                        orbDirs.Add(dir);
+                        orbDists.Add(0f);
+                        float step = Vector2.Dot(vel, dir);
+                        orbSteps.Add(Math.Max(Math.Abs(step), 0.8f));
+                    }
+                }
+
+                // =============== D) 金雾“呼吸环”（WaterFlavoredParticle）【保留】+ 适配登记 ===============
+                if ((lifeTimer % 6) == 0)
+                {
+                    int ringCount = 14;
+                    float breath = 1f + 0.12f * (float)Math.Sin(t * 1.25f);
+                    float r0 = 10f * breath;
+
+                    for (int i = 0; i < ringCount; i++)
+                    {
+                        float ang = MathHelper.TwoPi * i / ringCount + t * 0.3f;
+                        Vector2 dir = ang.ToRotationVector2();
+                        Vector2 spawn = C + dir * (r0 * 0.15f);
+                        Vector2 vel = dir * 1.2f;
+
+                        var mist = new CalamityMod.Particles.WaterFlavoredParticle(
+                            spawn,
+                            vel, // 原样
+                            false,
+                            Main.rand.Next(18, 26),
+                            0.85f + Main.rand.NextFloat(0.25f),
+                            GoldBlend(i * 0.11f + t * 0.1f) * 0.85f
+                        );
+                        CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(mist);
+
+                        // —— 适配登记 ——
+                        ownedMists.Add(mist);
+                        mistDirs.Add(dir);
+                        mistDists.Add((spawn - C).Length()); // 初始就有半径
+                        float step = Vector2.Dot(vel, dir);
+                        mistSteps.Add(Math.Max(Math.Abs(step), 0.6f));
+                    }
+                }
+
+                // =============== E) “击打脉冲”星芒（GenericSparkle）【保留】+ 适配登记 ===============
+                if ((lifeTimer % 18) == 0)
+                {
+                    int spokes = 8;
+                    for (int i = 0; i < spokes; i++)
+                    {
+                        float ang = MathHelper.TwoPi * i / spokes + t * 0.5f;
+                        Vector2 v = ang.ToRotationVector2() * 7.5f;
+
+                        var sp = new GenericSparkle(
+                            C,
+                            v,  // 原样
+                            GoldBlend(i * 0.13f + t * 0.3f),
+                            Color.White,
+                            2.1f,
+                            22,
+                            Main.rand.NextFloat(-0.02f, 0.02f),
+                            1.65f
+                        );
+                        CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(sp);
+
+                        // —— 适配登记 ——
+                        ownedSparkles.Add(sp);
+                        Vector2 dir = ang.ToRotationVector2();
+                        sparkleDirs.Add(dir);
+                        sparkleDists.Add(0f);
+                        float step = Vector2.Dot(v, dir);
+                        sparkleSteps.Add(Math.Max(Math.Abs(step), 0.9f));
+                    }
+                }
+            }
+            // ===================== 粒子效果·黄金能量几何扩散（你的原块 — 完整保留） =====================
+
+            // ===================== 相对坐标更新（核心适配：始终以本体为原点推进） =====================
+            // Spark
+            for (int i = ownedSparks.Count - 1; i >= 0; i--)
+            {
+                var p = ownedSparks[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedSparks.RemoveAt(i);
+                    sparkDirs.RemoveAt(i);
+                    sparkDists.RemoveAt(i);
+                    sparkSteps.RemoveAt(i);
+                    continue;
+                }
+                sparkDists[i] += sparkSteps[i];
+                p.Position = Projectile.Center + sparkDirs[i] * sparkDists[i];
+                p.Velocity = Vector2.Zero; // 避免世界速度叠加
             }
 
+            // SquishyLight
+            for (int i = ownedSquishies.Count - 1; i >= 0; i--)
+            {
+                var p = ownedSquishies[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedSquishies.RemoveAt(i);
+                    squishyDirs.RemoveAt(i);
+                    squishyDists.RemoveAt(i);
+                    squishySteps.RemoveAt(i);
+                    continue;
+                }
+                squishyDists[i] += squishySteps[i];
+                p.Position = Projectile.Center + squishyDirs[i] * squishyDists[i];
+                p.Velocity = Vector2.Zero;
+            }
 
+            // GlowOrb
+            for (int i = ownedOrbs.Count - 1; i >= 0; i--)
+            {
+                var p = ownedOrbs[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedOrbs.RemoveAt(i);
+                    orbDirs.RemoveAt(i);
+                    orbDists.RemoveAt(i);
+                    orbSteps.RemoveAt(i);
+                    continue;
+                }
+                orbDists[i] += orbSteps[i];
+                p.Position = Projectile.Center + orbDirs[i] * orbDists[i];
+                p.Velocity = Vector2.Zero;
+            }
 
+            // WaterFlavored
+            for (int i = ownedMists.Count - 1; i >= 0; i--)
+            {
+                var p = ownedMists[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedMists.RemoveAt(i);
+                    mistDirs.RemoveAt(i);
+                    mistDists.RemoveAt(i);
+                    mistSteps.RemoveAt(i);
+                    continue;
+                }
+                mistDists[i] += mistSteps[i];
+                p.Position = Projectile.Center + mistDirs[i] * mistDists[i];
+                p.Velocity = Vector2.Zero;
+            }
+
+            // GenericSparkle
+            for (int i = ownedSparkles.Count - 1; i >= 0; i--)
+            {
+                var p = ownedSparkles[i];
+                if (p.Time >= p.Lifetime)
+                {
+                    ownedSparkles.RemoveAt(i);
+                    sparkleDirs.RemoveAt(i);
+                    sparkleDists.RemoveAt(i);
+                    sparkleSteps.RemoveAt(i);
+                    continue;
+                }
+                sparkleDists[i] += sparkleSteps[i];
+                p.Position = Projectile.Center + sparkleDirs[i] * sparkleDists[i];
+                p.Velocity = Vector2.Zero;
+            }
+            // ===================== 相对坐标更新 =====================
         }
+
+
 
         public override bool PreDraw(ref Color lightColor)
         {

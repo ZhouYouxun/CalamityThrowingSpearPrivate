@@ -140,7 +140,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                     center,
                     velocity,
                     false,
-                    Main.rand.Next(25, 40),
+                    Main.rand.Next(15, 20),
                     Main.rand.NextFloat(1.2f, 1.8f),
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.2f, 0.6f)) * 0.85f
                 );
@@ -183,7 +183,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
             GeneralParticleHandler.SpawnParticle(pulse);
 
             // === 4️⃣ 红色血雾 HeavySmokeParticle ===
-            int smokeCount = 12;
+            int smokeCount = 25;
             for (int i = 0; i < smokeCount; i++)
             {
                 Vector2 velocity = Main.rand.NextVector2Circular(2.5f, 2.5f);
@@ -472,7 +472,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                     center,
                     velocity,
                     false,
-                    Main.rand.Next(40, 60), // 生命周期拉长，延续残影感
+                    Main.rand.Next(15, 20),
                     Main.rand.NextFloat(1.8f, 2.8f), // 大型可见
                     Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat(0.2f, 0.6f)) * 0.9f
                 );
@@ -490,7 +490,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
                     center,
                     velocity,
                     false,
-                    Main.rand.Next(20, 35),
+                    Main.rand.Next(15, 20),
                     Main.rand.NextFloat(0.6f, 1.0f),
                     Color.Red * 0.7f
                 );

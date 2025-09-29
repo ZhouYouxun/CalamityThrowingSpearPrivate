@@ -115,37 +115,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Color.Black.ToVector3() * 0.55f);
 
-            // 每隔 20 帧生成一次粒子
-            particleTimer++;
-            if (particleTimer >= 20)
-            {
-                particleTimer = 0; // 重置计时器
-
-                // 随机在后方左右各 10 度生成粒子
-                float angleOffset = Main.rand.NextFloat(-MathHelper.ToRadians(10), MathHelper.ToRadians(10));
-                Vector2 particleVelocity = Projectile.velocity.RotatedBy(MathHelper.Pi + angleOffset) * 0.5f; // 反向且速度减小
-
-                // 随机颜色为深灰色或黑色
-                Color particleColor = Main.rand.NextBool() ? Color.DarkGray : Color.Black;
-
-                // 随机缩放
-                float randomScale = Main.rand.NextFloat(0.5f, 1.0f);
-
-                // 创建并生成粒子
-                Particle bolt = new CrackParticle(
-                    Projectile.Center,
-                    particleVelocity,
-                    particleColor * 0.65f,
-                    Vector2.One * randomScale,
-                    0,
-                    0,
-                    randomScale,
-                    11
-                );
-                GeneralParticleHandler.SpawnParticle(bolt);
-            }
-
-
+        
 
             // 计时器增加
             Projectile.ai[0]++;

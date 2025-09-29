@@ -84,44 +84,62 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             {
                 // MiracleMatterJav 高科技飞行有序特效
 
-                float time = Main.GameUpdateCount * 0.1f;
-                float radius = 12f;
-                int points = 5; // 五点环形
+                // === 实验室终极兵器能量飞行特效 ===
+                float t = Main.GameUpdateCount * 0.04f; // 时间因子
+                float radius = 20f;
 
-                for (int i = 0; i < points; i++)
+                // 颜色渐变（随时间变化，紫→蓝→青→白）
+                Color coreColor = Color.Lerp(Color.Purple, Color.White, (float)(0.5f + 0.5f * Math.Sin(t * 0.6f)));
+
+                // 1️⃣ 中心能量脉冲（核心辉光）
+                if (Main.rand.NextBool(5)) // 降低频率，避免杂乱
                 {
-                    float angle = time + MathHelper.TwoPi / points * i;
-                    Vector2 offset = angle.ToRotationVector2() * radius * Main.rand.NextFloat(0.9f, 1.1f);
-                    Dust dust = Dust.NewDustPerfect(
-                        Projectile.Center + offset,
-                        DustID.Electric,
-                        -Projectile.velocity * 0.05f,
-                        150,
-                        Color.Cyan,
-                        Main.rand.NextFloat(0.6f, 1.0f)
+                    GlowOrbParticle coreOrb = new GlowOrbParticle(
+                        Projectile.Center,
+                        Vector2.Zero,
+                        false,
+                        14,
+                        1.2f,
+                        coreColor,
+                        true,
+                        false,
+                        true
                     );
-                    dust.noGravity = true;
+                    GeneralParticleHandler.SpawnParticle(coreOrb);
                 }
 
-                // 外层更大半径三点柔和环
-                if (Main.GameUpdateCount % 5 == 0)
+                // 2️⃣ 三个 Lissajous 曲线轨道能量球
+                for (int i = 0; i < 3; i++)
                 {
-                    float outerRadius = 24f;
-                    int outerPoints = 3;
-                    for (int i = 0; i < outerPoints; i++)
+                    // Lissajous 曲线：x = sin(a*t + φ)，y = sin(b*t)
+                    float a = 2f, b = 3f; // 频率比例（科学感轨迹）
+                    float phase = MathHelper.TwoPi / 3f * i; // 相位差
+
+                    Vector2 offset = new Vector2(
+                        (float)Math.Sin(a * t + phase),
+                        (float)Math.Sin(b * t)
+                    ) * radius;
+
+                    // 每个轨道一个不同能量色
+                    Color orbColor = i switch
                     {
-                        float angle = -time * 0.8f + MathHelper.TwoPi / outerPoints * i;
-                        Vector2 offset = angle.ToRotationVector2() * outerRadius;
-                        Dust dust = Dust.NewDustPerfect(
-                            Projectile.Center + offset,
-                            DustID.BlueCrystalShard,
-                            Vector2.Zero,
-                            100,
-                            Color.LightBlue,
-                            Main.rand.NextFloat(0.8f, 1.2f)
-                        );
-                        dust.noGravity = true;
-                    }
+                        0 => Color.MediumPurple,
+                        1 => Color.Cyan,
+                        _ => Color.LightBlue
+                    };
+
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        Projectile.Center + offset,
+                        Vector2.Zero,
+                        false,
+                        12,
+                        0.9f,
+                        orbColor,
+                        true,
+                        false,
+                        true
+                    );
+                    GeneralParticleHandler.SpawnParticle(orb);
                 }
 
                 // 在飞行期间稳定维持有序科技感螺旋光点

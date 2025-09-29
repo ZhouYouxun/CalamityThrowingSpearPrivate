@@ -120,7 +120,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
                 Projectile.tileCollide = false;
 
                 // 减速阶段
-                Projectile.velocity *= 0.98f;
+                Projectile.velocity *= 0.99f;
                 Projectile.ai[0]++;
             }
             else if (!preparedStrike)
