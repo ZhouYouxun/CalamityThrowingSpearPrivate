@@ -676,7 +676,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             "七情难掩，六欲难消，何谓之神",
             "吾主公短命无妨",
             "都是你的错！",
-            "啊……西八……"
+            "啊……西八……",
+            "汝等看好了！"
                 };
                 string selectedPhrase = phrases[Main.rand.Next(phrases.Length)]; // 随机选择一句
 
@@ -715,6 +716,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     else if (selectedPhrase == "啊……西八……")
                     {
                         SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Xiba") with { Volume = 2.5f }, Player.Center);
+                    }
+                    else if (selectedPhrase == "汝等看好了！")
+                    {
+                        SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/kanhaole") with { Volume = 2.5f }, Player.Center);
                     }
                 }
 

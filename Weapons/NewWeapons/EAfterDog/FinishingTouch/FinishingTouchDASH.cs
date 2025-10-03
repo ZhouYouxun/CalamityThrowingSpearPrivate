@@ -263,15 +263,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                     string[] phrases = new string[]
                     {
         //"FINISH TIME!!!",
-        "画龙点睛！",
+        "为生命，画上句点！"
                     };
 
                     // 对应的音效路径数组
                     string[] soundPaths = new string[]
                     {
         //"CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/FinishTIME",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/RayquazaRoar",
-        
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/RestInLife"
+
                     };
 
                     // 随机选择文本和对应的音效

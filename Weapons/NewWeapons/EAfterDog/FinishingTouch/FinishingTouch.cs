@@ -67,7 +67,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             Item.crit = 25;
         }
         private int attackCounter = 0; // 攻击计数
-        private int baseDamage = 500;  // 原始伤害
+        private int baseDamage = 600;  // 原始伤害
 
 
         public override bool AltFunctionUse(Player player) => true;
@@ -263,7 +263,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "虎啸逍遥镇千里，江东碧眼犹梦惊！",
         "求田问舍非良策，功业何须与命偕",
         "宁可战死失社稷，绝不拱手让江山",
-        "汝等看好了！",
         "秉赤面，观春秋，虓菟踏纛，汗青著峥嵘",
         "着青袍，饮温酒，五关已过，来将且通名",
         "青龙啸肃月，长刀裂空，威降一十九将",
@@ -293,8 +292,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "扫腿直拳十字锁，裸绞肘击断头台",
         "呐！",
         "biu！",
-        "听不懂韩语，反正我觉得这句可爱就加了",
-        "就是现在！骷髅头！蜘蛛头！"
+        "要用爱！",
+        "就是现在！骷髅头！蜘蛛头！",
+        "冲锋！"
 
                     };
 
@@ -320,7 +320,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/huxiaoxiaoyao",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/qiutianwenshe",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/zhanjue",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/kanhaole",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/hanqingzhuzhengrong",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/laijiangqietongming",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/weixiangyishijiujiang",
@@ -351,7 +350,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don Ne",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don biu",
         "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Don xiangcao",
-        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu"
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Ryoshu",
+        "CalamityThrowingSpear/Weapons/NewWeapons/EAfterDog/FinishingTouch/TheSound/Gamend"
+
                 };
 
                     // 随机选择文本和对应的音效
