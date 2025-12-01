@@ -278,43 +278,230 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
             Vector2 gunHead = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitX) * 80f;
 
-            CTSLightingBoltsSystem.Spawn_BlueGoldFloaters(gunHead, 1f);
+            //CTSLightingBoltsSystem.Spawn_BlueGoldFloaters(gunHead, 1f);
 
 
             {
-                // 🎇 在枪头处生成 EXO 之光（亮蓝 / 亮黄交替）
-                Color[] palette = { new Color(80, 200, 255), new Color(255, 240, 100) }; // 亮蓝 + 亮黄
-                Color exoColor = palette[Main.rand.Next(palette.Length)];
+                // 计算枪头位置（朝向 + 固定距离）
+                Vector2 gunDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                gunHeadPosition = Projectile.Center + gunDir * 16f * 4f;
 
-                var exo = new SquishyLightParticle(
-                    gunHeadPosition + Main.rand.NextVector2Circular(8f, 8f), // 在枪头附近随机生成
-                    -Vector2.UnitY.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.3f, 1.2f),
-                    Main.rand.NextFloat(0.22f, 0.30f), // 大小略小一点
-                    exoColor,
-                    Main.rand.Next(18, 28),            // 生命周期
-                    opacity: 1f,
-                    squishStrenght: 1f,
-                    maxSquish: Main.rand.NextFloat(2.0f, 2.8f),
-                    hueShift: 0f
-                );
-                GeneralParticleHandler.SpawnParticle(exo);
+                // ===============================
+                // 枪口复合特效（黄 + 绿主题）
+                // ===============================
+                Color mainYellow = new Color(255, 235, 80);
+                Color mainGreen = new Color(120, 255, 140);
+                float t = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+                Color mixedColor = Color.Lerp(mainYellow, mainGreen, t);
 
-                // 🔮 在枪头处生成辉光球（原地短暂魔法阵点缀）
-                Color orbColor = palette[Main.rand.Next(palette.Length)];
-                var orb = new GlowOrbParticle(
-                    gunHeadPosition + Main.rand.NextVector2Circular(10f, 10f),
-                    Vector2.Zero,
-                    false,
-                    Main.rand.Next(5, 9),              // 短寿命
-                    Main.rand.NextFloat(0.7f, 1.1f),
-                    orbColor,
-                    true, false, true
-                );
-                GeneralParticleHandler.SpawnParticle(orb);
+
+                // 1）椭圆冲击波（DirectionalPulseRing）
+                if (Main.rand.NextBool(1))
+                {
+                    var pulse = new DirectionalPulseRing(
+                        gunHeadPosition,
+                        gunDir * 4f,
+                        mixedColor,
+                        new Vector2(0.7f, 1.6f),
+                        Projectile.rotation - MathHelper.PiOver4,
+                        0.12f,
+                        0.04f,
+                        20
+                    );
+                    GeneralParticleHandler.SpawnParticle(pulse);
+                    ownedPulses.Add(pulse);
+                }
+
+
+                // 2）SquishyLight EXO 光点
+                if (Main.rand.NextBool(2))
+                {
+                    Color exoColor = Main.rand.NextBool() ? mainYellow : mainGreen;
+                    var exo = new SquishyLightParticle(
+                        gunHeadPosition + Main.rand.NextVector2Circular(6f, 6f),
+                        (-Vector2.UnitY * 0.6f + gunDir * 0.4f).RotatedByRandom(0.4f) * Main.rand.NextFloat(0.4f, 1.4f),
+                        Main.rand.NextFloat(0.20f, 0.30f),
+                        exoColor,
+                        Main.rand.Next(20, 30),
+                        opacity: 1f,
+                        squishStrenght: 1f,
+                        maxSquish: Main.rand.NextFloat(2.0f, 3.0f),
+                        hueShift: 0f
+                    );
+                    GeneralParticleHandler.SpawnParticle(exo);
+                    ownedExos.Add(exo);
+                }
+
+
+                // 3）GlowOrb 魔法阵小光球
+                if (Main.rand.NextBool(2))
+                {
+                    int orbCount = 4;
+                    float orbRadius = 10f;
+                    for (int i = 0; i < orbCount; i++)
+                    {
+                        float ang = Main.GlobalTimeWrappedHourly * 2.2f + MathHelper.TwoPi * i / orbCount;
+                        Vector2 orbOffset = ang.ToRotationVector2() * orbRadius;
+
+                        Color orbColor = Color.Lerp(mainGreen, mainYellow, (float)i / orbCount);
+                        var orb = new GlowOrbParticle(
+                            gunHeadPosition + orbOffset,
+                            Vector2.Zero,
+                            false,
+                            Main.rand.Next(6, 10),
+                            Main.rand.NextFloat(0.7f, 1.0f),
+                            orbColor,
+                            true,
+                            false,
+                            true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                        ownedOrbs.Add(orb);
+                    }
+                }
+
+
+                // 4）SparkParticle 火花
+                if (Main.rand.NextBool(1))
+                {
+                    float sparkPhase = Main.GlobalTimeWrappedHourly * 1.7f + Projectile.whoAmI * 0.23f;
+                    float sparkAngleOffset = Main.rand.NextFloat(-0.35f, 0.35f)
+                                             + 0.12f * (float)Math.Sin(sparkPhase);
+
+                    float speedLerp = (float)Math.Sin(Main.rand.NextFloat() * MathHelper.Pi);
+                    float speed = MathHelper.Lerp(7.5f, 13.5f, speedLerp);
+
+                    Vector2 vel = gunDir.RotatedBy(sparkAngleOffset) * speed;
+
+                    var spark = new SparkParticle(
+                        gunHeadPosition + Main.rand.NextVector2Circular(8f, 8f),
+                        vel,
+                        false,
+                        Main.rand.Next(18, 26),
+                        Main.rand.NextFloat(0.9f, 1.2f),
+                        mixedColor
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                    ownedSparks.Add(spark);
+                }
+
+
+                // 5）PointParticle 尖锐碎片
+                if (Main.rand.NextBool(2))
+                {
+                    float baseAngle = MathHelper.TwoPi / 10f * Main.rand.Next(10);
+                    float localT = Main.rand.NextFloat();
+                    float angle = baseAngle + (localT - 0.5f) * 0.7f;
+
+                    float speedFactor = (float)Math.Sin(localT * MathHelper.Pi) * 0.5f + 0.5f;
+                    float speed = MathHelper.Lerp(8f, 16f, speedFactor);
+
+                    Vector2 vel = gunDir.RotatedBy(angle * 0.08f) * speed;
+
+                    var point = new PointParticle(
+                        gunHeadPosition,
+                        vel,
+                        false,
+                        Main.rand.Next(12, 18),
+                        1.1f + Main.rand.NextFloat(0.3f),
+                        Main.rand.NextBool() ? mainYellow : mainGreen
+                    );
+                    GeneralParticleHandler.SpawnParticle(point);
+                    ownedPoints.Add(point);
+                }
+
+
+                // 6）BloomRing
+                if (Main.GameUpdateCount % 2 == 0)
+                {
+                    var ring = new BloomRing(
+                        gunHeadPosition,
+                        Vector2.Zero,
+                        mixedColor * 0.9f,
+                        0.5f,
+                        35
+                    );
+                    GeneralParticleHandler.SpawnParticle(ring);
+                    ownedBloomRings.Add(ring);
+                }
+
+
+                // 7）GenericBloom
+                if (Main.GameUpdateCount % 30 == 0)
+                {
+                    var bloom = new GenericBloom(
+                        gunHeadPosition,
+                        Vector2.Zero,
+                        mixedColor,
+                        1.1f,
+                        30
+                    );
+                    GeneralParticleHandler.SpawnParticle(bloom);
+                    ownedGenericBlooms.Add(bloom);
+                }
+
+
+                // 8）SquareParticle
+                if (Main.rand.NextBool(4))
+                {
+                    Vector2 sqVel = gunDir.RotatedByRandom(0.7f) * Main.rand.NextFloat(2f, 5f);
+                    var square = new SquareParticle(
+                        gunHeadPosition,
+                        sqVel,
+                        false,
+                        30,
+                        1.4f + Main.rand.NextFloat(0.4f),
+                        mixedColor * 1.3f
+                    );
+                    GeneralParticleHandler.SpawnParticle(square);
+                    ownedSquares.Add(square);
+                }
             }
 
+            {
+                // ========== 相对跟随模块（所有粒子统一处理） ==========
+                if (!Main.dedServ)
+                {
+                    if (lastCenter == Vector2.Zero)
+                        lastCenter = Projectile.Center;
 
+                    Vector2 delta = Projectile.Center - lastCenter;
+                    lastCenter = Projectile.Center;
 
+                    // Pulse
+                    foreach (var p in ownedPulses)
+                        p.Position += delta;
+
+                    // EXO
+                    foreach (var p in ownedExos)
+                        p.Position += delta;
+
+                    // Orbs
+                    foreach (var p in ownedOrbs)
+                        p.Position += delta;
+
+                    // Sparks
+                    foreach (var p in ownedSparks)
+                        p.Position += delta;
+
+                    // Points
+                    foreach (var p in ownedPoints)
+                        p.Position += delta;
+
+                    // BloomRing
+                    foreach (var p in ownedBloomRings)
+                        p.Position += delta;
+
+                    // GenericBloom
+                    foreach (var p in ownedGenericBlooms)
+                        p.Position += delta;
+
+                    // Squares
+                    foreach (var p in ownedSquares)
+                        p.Position += delta;
+                }
+
+            }
 
 
             // 检测松手，直接删除自身
@@ -324,6 +511,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                 Projectile.Kill();
             }
         }
+        // === 枪头特效的粒子池（全部相对跟随用） ===
+        private List<DirectionalPulseRing> ownedPulses = new();
+        private List<SquishyLightParticle> ownedExos = new();
+        private List<GlowOrbParticle> ownedOrbs = new();
+        private List<SparkParticle> ownedSparks = new();
+        private List<PointParticle> ownedPoints = new();
+        private List<BloomRing> ownedBloomRings = new();
+        private List<GenericBloom> ownedGenericBlooms = new();
+        private List<SquareParticle> ownedSquares = new();
+
+        // 用于跟随的上一帧中心
+        private Vector2 lastCenter;
 
         private NPC FindClosestTarget()
         {

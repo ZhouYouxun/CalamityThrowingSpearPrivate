@@ -90,15 +90,32 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
         {
             Texture2D tex = GetTextureByMode();
 
-            // 原先 position 已经是基于 origin 的绘制点，所以不要再加 frame.Width/2
-            Vector2 slotCenter = position;
+            // 三种贴图不同的缩放倍率
+            float customScale = scale;
 
-            // 我们要修正 origin：用贴图自身中心替换默认 origin
-            Vector2 drawOrigin = tex.Size() * 0.5f;
+            if (currentMode == 0)       // 第一种贴图
+                customScale *= 0.30f;
+            else if (currentMode == 1)  // 第二种贴图
+                customScale *= 0.30f;
+            else if (currentMode == 2)  // 第三种贴图
+                customScale *= 0.30f;
 
-            spriteBatch.Draw(tex, slotCenter, null, drawColor, 0f, drawOrigin, scale, SpriteEffects.None, 0f);
-            return false;
+            // 手动绘制
+            spriteBatch.Draw(
+                tex,
+                position,
+                null,
+                drawColor,
+                0f,
+                tex.Size() * 0.5f,
+                customScale,
+                SpriteEffects.None,
+                0f
+            );
+
+            return false; // 阻止默认绘制
         }
+
 
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -706,7 +723,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 float heightAbove = 75 * 16f;
 
                 // 左右拓展范围（20 tiles = 20 * 16 = 320 px）
-                float horizontalRange = 20f * 16f;
+                float horizontalRange = 10f * 16f;
 
                 // 获取玩家头顶中心点（中间那一发）
                 Vector2 baseSpawn = new Vector2(player.Center.X, player.Center.Y - heightAbove);

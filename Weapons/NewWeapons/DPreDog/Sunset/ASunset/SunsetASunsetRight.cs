@@ -169,6 +169,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
         private int chargeTimer = 0;
         private bool hasReleasedPulse = false;
+        // === 粒子相对弹幕跟随系统 ===
+        private Vector2 lastCenter = Vector2.Zero;
+        private readonly List<Particle> relativeParticles = new();
+        // 前向喷射粒子：相对跟随用
+        private Vector2 forwardFXLastCenter = Vector2.Zero;
+        private readonly List<Particle> forwardFXParticles = new();
 
         private void DoBehavior_Aim()
         {
@@ -279,8 +285,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
                         Vector2 vel = forwardDir.RotatedBy(sparkAngleOffset) * speed;
 
+                        // 以弹幕“枪头”为局部坐标系中心
+                        Vector2 spawnPos = HeadPosition + Main.rand.NextVector2Circular(12f, 12f);
+
                         Particle spark = new SparkParticle(
-                            HeadPosition + Main.rand.NextVector2Circular(12f, 12f),
+                            spawnPos,
                             vel,
                             false,
                             Main.rand.Next(18, 26),
@@ -288,7 +297,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                             Color.Orange
                         );
                         GeneralParticleHandler.SpawnParticle(spark);
+
+                        // 👉 加入相对跟随列表
+                        forwardFXParticles.Add(spark);
                     }
+
 
                     // ========== PointParticle（尖锐能量碎片：速度×3 + 半规则扇形） ==========
                     if (Main.rand.NextBool(1))
@@ -304,8 +317,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
                         Vector2 vel = forwardDir.RotatedBy(angle * 0.08f) * speed;
 
+                        // 仍然以 HeadPosition 为局部中心
+                        Vector2 spawnPos = HeadPosition;
+
                         PointParticle point = new PointParticle(
-                            HeadPosition,
+                            spawnPos,
                             vel,
                             false,
                             Main.rand.Next(12, 18),
@@ -313,7 +329,36 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                             Main.rand.NextBool() ? Color.Yellow : Color.Orange
                         );
                         GeneralParticleHandler.SpawnParticle(point);
+
+                        // 👉 加入相对跟随列表
+                        forwardFXParticles.Add(point);
                     }
+
+
+                    // =======================
+                    // 前向喷射粒子：相对跟随修正
+                    // =======================
+                    if (forwardFXLastCenter == Vector2.Zero)
+                        forwardFXLastCenter = Projectile.Center;
+
+                    Vector2 forwardDelta = Projectile.Center - forwardFXLastCenter;
+                    forwardFXLastCenter = Projectile.Center;
+
+                    for (int i = forwardFXParticles.Count - 1; i >= 0; i--)
+                    {
+                        Particle p = forwardFXParticles[i];
+
+                        if (p.Time >= p.Lifetime)
+                        {
+                            forwardFXParticles.RemoveAt(i);
+                            continue;
+                        }
+
+                        // 不是完全跟随：只叠加部分弹幕位移（0.3f 可自行微调）
+                        p.Position += forwardDelta * 0.3f;
+                    }
+
+
 
                 }
 
@@ -431,7 +476,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                         float rr = MathF.Exp(0.9f * t) * (8f + 28f * ease);
                         Vector2 pos = head + new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * rr;
 
-                        int type = (k % 2 == 0) ? DustID.Firefly : DustID.YellowTorch;
+                        int type = (k % 2 == 0) ? DustID.Lava : DustID.YellowTorch;
                         Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.3f + 0.7f * t);
                         float sc = (0.8f + 0.9f * t) * (0.8f + 0.4f * ease);
 

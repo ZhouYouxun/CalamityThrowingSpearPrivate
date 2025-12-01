@@ -22,74 +22,176 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
         {
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            // 📏 全局缩放因子（整体缩小到原来的 X%）
+            // 📏 全局缩放因子（整体比例由 currentScale 控制）
             float globalScale = currentScale;
+            float time = Main.GlobalTimeWrappedHourly;
+            SpriteEffects fx = SpriteEffects.None;
 
-            // === 🌌 外围魔法圈（蓝色星空） ===
-            string[] outerRings = new[]
+            // ============================
+            // 1️⃣ Sun 核心噪声圆盘（主体太阳面）
+            // ============================
+            // 🔧 可调参数
+            float sunCoreBaseScale = 1.4f;   // 基础缩放
+            float sunCorePulseAmp = 0.10f;  // 脉动幅度
+            float sunCoreRotSpeed1 = 0.30f;  // 内层旋转速度
+            float sunCoreRotSpeed2 = -0.22f; // 外层反向旋转
+
+            string[] sunCoreTextures = new[]
             {
-                "CalamityThrowingSpear/Texture/KsTexture/magic_01",
-                "CalamityThrowingSpear/Texture/KsTexture/magic_02",
-                "CalamityThrowingSpear/Texture/KsTexture/magic_03"
-            };
+        "CalamityThrowingSpear/Texture/SuperTexturePack/Sun/sun_001",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/Sun/sun_002",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/Sun/sun_003",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/Sun/sun_004",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/Sun/sun_005",
+    };
 
-            for (int i = 0; i < outerRings.Length; i++)
+            for (int i = 0; i < sunCoreTextures.Length; i++)
             {
-                Texture2D tex = ModContent.Request<Texture2D>(outerRings[i]).Value;
+                Texture2D tex = ModContent.Request<Texture2D>(sunCoreTextures[i]).Value;
+                float pulse = 1f + sunCorePulseAmp * (float)Math.Sin(time * 3.2f + i * 1.3f);
+                float layerScale = sunCoreBaseScale * (1f + i * 0.07f) * pulse * globalScale;
+                float rot = time * (i % 2 == 0 ? sunCoreRotSpeed1 : sunCoreRotSpeed2);
 
-                float rotation = Main.GlobalTimeWrappedHourly * (0.4f + 0.1f * i);
-                float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + i);
-                float scale = 1.2f * pulse * globalScale;
-
-                Color ringColor = Color.Lerp(Color.Yellow, Color.Gold, 0.4f) * 0.5f;
-                ringColor.A = 0;
+                Color col = Color.Lerp(new Color(255, 220, 120), new Color(255, 140, 60), i / (float)(sunCoreTextures.Length - 1));
+                col.A = 0;
 
                 Main.EntitySpriteDraw(
                     tex,
                     drawPos,
                     null,
-                    ringColor,
-                    rotation,
+                    col,
+                    rot,
                     tex.Size() * 0.5f,
-                    scale,
-                    SpriteEffects.None,
+                    layerScale,
+                    fx,
                     0
                 );
             }
 
-            // === ⭐核心星星组（叠加+反转旋转+脉动） ===
-            string[] stars = new[]
+            // ============================
+            // 2️⃣ Flamelance 火舌（日珥）
+            // ============================
+            // 🔧 可调参数
+            float flameBaseScale = 1.8f;
+            float flamePulseAmp = 0.08f;
+            float flameRotSpeed = 0.55f;
+
+            string[] flameTextures = new[]
             {
-                "CalamityThrowingSpear/Texture/KsTexture/star_04",
-                "CalamityThrowingSpear/Texture/KsTexture/star_07",
-                "CalamityThrowingSpear/Texture/KsTexture/star_08"
-            };
+        "CalamityThrowingSpear/Texture/SuperTexturePack/flamelance_009",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/flamelance_010",
+        "CalamityThrowingSpear/Texture/SuperTexturePack/flamelance_011",
+    };
 
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < flameTextures.Length; i++)
             {
-                Texture2D tex = ModContent.Request<Texture2D>(stars[i]).Value;
+                Texture2D tex = ModContent.Request<Texture2D>(flameTextures[i]).Value;
+                float pulse = 1f + flamePulseAmp * (float)Math.Sin(time * 2.4f + i * 2.1f);
+                float layerScale = flameBaseScale * (1f + i * 0.12f) * pulse * globalScale;
+                float rot = time * flameRotSpeed * (i % 2 == 0 ? 1f : -1f);
 
-                float pulse = 0.85f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + i);
-                float rotation = Main.GlobalTimeWrappedHourly * (i % 2 == 0 ? 1f : -1f); // 交替方向
-
-                Color color = Color.Lerp(Color.Yellow, Color.Gold, 0.3f) * 0.7f;
-                color.A = 0;
+                Color col = Color.Lerp(new Color(255, 200, 80), new Color(255, 80, 40), 0.7f);
+                col *= 0.7f;
+                col.A = 0;
 
                 Main.EntitySpriteDraw(
                     tex,
                     drawPos,
                     null,
-                    color,
-                    rotation,
+                    col,
+                    rot,
                     tex.Size() * 0.5f,
-                    pulse * 0.5f * globalScale,
-                    SpriteEffects.None,
+                    layerScale,
+                    fx,
+                    0
+                );
+            }
+
+            // ============================
+            // 3️⃣ Light 柔光环（内核辐射）
+            // ============================
+            // 🔧 可调参数
+            float lightBaseScale = 1.1f;
+            float lightPulseAmp = 0.12f;
+            float lightRotSpeed = 0.18f;
+
+            string[] lightTextures = new[]
+            {
+        "CalamityThrowingSpear/Texture/KsTexture/light_01",
+        "CalamityThrowingSpear/Texture/KsTexture/light_02",
+        "CalamityThrowingSpear/Texture/KsTexture/light_03",
+    };
+
+            for (int i = 0; i < lightTextures.Length; i++)
+            {
+                Texture2D tex = ModContent.Request<Texture2D>(lightTextures[i]).Value;
+                float pulse = 1f + lightPulseAmp * (float)Math.Sin(time * 4.1f + i * 0.9f);
+                float layerScale = lightBaseScale * (1f + i * 0.15f) * pulse * globalScale;
+                float rot = time * lightRotSpeed * (i == 0 ? -1f : 1f);
+
+                Color col = Color.Lerp(new Color(255, 255, 200), new Color(255, 210, 100), 0.5f);
+                col *= 0.85f;
+                col.A = 0;
+
+                Main.EntitySpriteDraw(
+                    tex,
+                    drawPos,
+                    null,
+                    col,
+                    rot,
+                    tex.Size() * 0.5f,
+                    layerScale,
+                    fx,
+                    0
+                );
+            }
+
+            // ============================
+            // 4️⃣ Twirl 扭曲光纹（日冕气流）
+            // ============================
+            // 🔧 可调参数
+            float twirlBaseScale = 2.1f;
+            float twirlPulseAmp = 0.06f;
+            float twirlRotSpeed1 = 0.40f;
+            float twirlRotSpeed2 = -0.33f;
+
+            string[] twirlTextures = new[]
+            {
+        "CalamityThrowingSpear/Texture/KsTexture/twirl_01",
+        "CalamityThrowingSpear/Texture/KsTexture/twirl_02",
+        "CalamityThrowingSpear/Texture/KsTexture/twirl_03",
+    };
+
+            for (int i = 0; i < twirlTextures.Length; i++)
+            {
+                Texture2D tex = ModContent.Request<Texture2D>(twirlTextures[i]).Value;
+                float pulse = 1f + twirlPulseAmp * (float)Math.Sin(time * 1.7f + i * 1.1f);
+                float layerScale = twirlBaseScale * (1f + i * 0.18f) * pulse * globalScale;
+                float rot = time * (i % 2 == 0 ? twirlRotSpeed1 : twirlRotSpeed2);
+
+                Color col = Color.Lerp(new Color(255, 220, 140), new Color(255, 120, 50), i / (float)(twirlTextures.Length - 1));
+                col *= 0.75f;
+                col.A = 0;
+
+                Main.EntitySpriteDraw(
+                    tex,
+                    drawPos,
+                    null,
+                    col,
+                    rot,
+                    tex.Size() * 0.5f,
+                    layerScale,
+                    fx,
                     0
                 );
             }
 
             return false;
         }
+
+
+
+
         public override void OnSpawn(IEntitySource source)
         {
             base.OnSpawn(source);

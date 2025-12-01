@@ -172,7 +172,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             if (initialSpeed > 0f)
             {
                 // 每帧指数加速
-                Projectile.velocity *= 1.02f;
+                Projectile.velocity *= 1.04f;
 
                 // 若超过上限（150% 初速），强制 clamp
                 float maxSpeed = initialSpeed * 1.5f;

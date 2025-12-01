@@ -296,6 +296,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
         }
 
+        // 分身淡出状态控制
+        private float fadeOutProgress = 0f; // 0~1，淡出程度
+        private const float fadeSpeed = 0.02f; // 每帧透明度变化速度，可自行调节
+
+        private float orbitRadius = 30f;         // 原始公转半径（你现在默认是 30 左右）
+        private const float maxOrbitRadius = 150f * 16f; // 右键时的目标半径
+
 
 
 
@@ -326,67 +333,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             // 幻想 托泪逆梦
             // 机制 掩手狂目
 
-
+            // 【新增】公转计时（整体转动用）
+            Time++;
 
             // === 飞行期间特效 ===
             Vector2 headPosition = Projectile.Center + new Vector2(48f, 0f).RotatedBy(Projectile.rotation);
 
-
-
+            // 根据 ai[1] 选择对应主题色
             if (Projectile.ai[1] >= 0 && Projectile.ai[1] < colors.Length)
             {
                 ProjectileColor = colors[(int)Projectile.ai[1]];
                 Color fxColor = ProjectileColor;
 
-                // 调用统一函数
+                // 如果之后需要飞行特效，这里可以调用：
                 //SpawnFlightFX(headPosition, fxColor);
             }
 
-
-
-
+            // === 飞行 SquishyLight 绑定更新 ===
+            for (int i = flightExos.Count - 1; i >= 0; i--)
             {
-                // === 在 AI() 里更新（放在 EXO 更新循环后面） ===
-
-                // === 飞行 SquishyLight 绑定更新 ===
-                for (int i = flightExos.Count - 1; i >= 0; i--)
+                var p = flightExos[i];
+                if (p.Time >= p.Lifetime)
                 {
-                    var p = flightExos[i];
-                    if (p.Time >= p.Lifetime)
-                    {
-                        flightExos.RemoveAt(i);
-                        flightDirs.RemoveAt(i);
-                        flightDists.RemoveAt(i);
-                        flightSteps.RemoveAt(i);
-                        continue;
-                    }
-
-                    flightDists[i] += flightSteps[i];
-                    p.Position = Projectile.Center + flightDirs[i] * flightDists[i];
-                    p.Velocity = Vector2.Zero; // 避免继续叠加
+                    flightExos.RemoveAt(i);
+                    flightDirs.RemoveAt(i);
+                    flightDists.RemoveAt(i);
+                    flightSteps.RemoveAt(i);
+                    continue;
                 }
 
-                // === 飞行 GlowOrb 绑定更新 ===
-                for (int i = flightOrbs.Count - 1; i >= 0; i--)
-                {
-                    var p = flightOrbs[i];
-                    if (p.Time >= p.Lifetime)
-                    {
-                        flightOrbs.RemoveAt(i);
-                        orbDirs.RemoveAt(i);
-                        orbDists.RemoveAt(i);
-                        orbSteps.RemoveAt(i);
-                        continue;
-                    }
-
-                    orbDists[i] += orbSteps[i];
-                    p.Position = Projectile.Center + orbDirs[i] * orbDists[i];
-                    p.Velocity = Vector2.Zero;
-                }
+                flightDists[i] += flightSteps[i];
+                p.Position = Projectile.Center + flightDirs[i] * flightDists[i];
+                p.Velocity = Vector2.Zero; // 避免继续叠加
             }
-
-
-
 
             // === 飞行 GlowOrb 绑定更新 ===
             for (int i = flightOrbs.Count - 1; i >= 0; i--)
@@ -406,26 +385,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 p.Velocity = Vector2.Zero;
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-            // 🚩 每帧降低 alpha，直到 0 为止
+            // 🚩 每帧降低 alpha，直到 0 为止（淡入效果）
             if (Projectile.alpha > 0)
             {
-                Projectile.alpha -= 8; // 8 × 30 ≈ 240 -> 大约30帧完全淡入
+                Projectile.alpha -= 8; // 8 × 30 ≈ 240 -> 大约 30 帧完全淡入
                 if (Projectile.alpha < 0)
                     Projectile.alpha = 0;
             }
 
+            // 再次保证颜色与 ai[1] 同步（防止外部改动）
             if (Projectile.ai[1] >= 0 && Projectile.ai[1] < colors.Length)
                 ProjectileColor = colors[(int)Projectile.ai[1]];
 
@@ -434,7 +402,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             {
                 Player owner = Main.player[Projectile.owner];
 
-                // 查找魔法阵
+                // 查找魔法阵（LeftMagic）
                 int magicIndex = -1;
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
@@ -447,7 +415,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     }
                 }
 
-                // 进入捕捉状态
+                // 进入捕捉状态（仅在找到魔法阵时）
                 if (magicIndex != -1 && !catchingMagic)
                 {
                     catchingMagic = true;
@@ -455,67 +423,85 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     catchProgress = 0f;
                 }
 
+                // 还在玩家轨道上时：正常围绕玩家公转
                 if (!catchingMagic)
                 {
-                    float angle = HoverOffsetAngle;
-                    Vector2 offset = angle.ToRotationVector2() * 550f; // 这里的数字代表围绕玩家的时候半径
+                    float angle = HoverOffsetAngle; // 属性里已经包含 index 等分 + Time 自转
+
+                    // 围绕玩家的半径（这里先写死 550，需要你再调就改这里）
+                    // ===== 右键弹幕检测 =====
+                    bool rightExists = false;
+                    for (int i = 0; i < Main.maxProjectiles; i++)
+                    {
+                        if (Main.projectile[i].active &&
+                            Main.projectile[i].owner == Projectile.owner &&
+                            Main.projectile[i].type == ModContent.ProjectileType<SunsetCConceptRight>())
+                        {
+                            rightExists = true;
+                            break;
+                        }
+                    }
+
+                    // ===== 根据 rightExists 平滑切换半径 =====
+                    float targetRadius = rightExists ? (150f * 16f) : 550f;   // ★ 半径变化
+                    orbitRadius = MathHelper.Lerp(orbitRadius, targetRadius, 0.08f);
+
+                    // ===== 使用动态 orbitRadius 作为公转半径 =====
+                    Vector2 offset = angle.ToRotationVector2() * orbitRadius;
+
                     Projectile.Center = owner.Center + offset;
                     Projectile.rotation = Projectile.AngleFrom(owner.Center) + MathHelper.PiOver4;
                     Projectile.timeLeft = 60;
-                    Time++;
-                    return;
                 }
-            }
-
-            // === 模式 B：魔法阵捕捉/公转 ===
-            if (Projectile.ai[0] < 0 || !Main.projectile[(int)Projectile.ai[0]].active)
-            {
-                Projectile.Kill();
-                return;
-            }
-
-            Projectile parentMagic = Main.projectile[(int)Projectile.ai[0]];
-
-            float targetAngle = NoDamageIndex * AngleStepRadians + Time / 30f;
-            Vector2 targetPos = parentMagic.Center + targetAngle.ToRotationVector2() * OrbitRadius;
-
-            if (catchingMagic && catchProgress < 1f)
-            {
-                catchProgress += 0.02f;
-
-                Vector2 currentDir = Projectile.Center - parentMagic.Center;
-                Vector2 targetDir = targetPos - parentMagic.Center;
-
-                float currentAngle = currentDir.ToRotation();
-                float desiredAngle = targetDir.ToRotation();
-                float angleDiff = MathHelper.WrapAngle(desiredAngle - currentAngle);
-
-                float eased = catchProgress * catchProgress * (3f - 2f * catchProgress); // 同一个 eased
-                float maxStep = MathHelper.ToRadians(2f + 10f * eased);
-                float newAngle = MathHelper.Lerp(currentAngle, desiredAngle, eased);
-
-                float newRadius = MathHelper.Lerp(currentDir.Length(), OrbitRadius, eased);
-                Projectile.Center = parentMagic.Center + newAngle.ToRotationVector2() * newRadius;
             }
             else
             {
-                Projectile.Center = targetPos;
+                // === 模式 B：魔法阵捕捉/公转 ===
+                int parentIndex = (int)Projectile.ai[0];
+
+                // 只有当 ai[0] 指向有效魔法阵时才进入，否则自杀
+                if (parentIndex < 0 || parentIndex >= Main.maxProjectiles ||
+                    !Main.projectile[parentIndex].active ||
+                    Main.projectile[parentIndex].type != ModContent.ProjectileType<SunsetCConceptLeftMagic>())
+                {
+                    Projectile.Kill();
+                    return;
+                }
+
+                Projectile parentMagic = Main.projectile[parentIndex];
+
+                float targetAngle = HoverOffsetAngle;
+                Vector2 targetPos = parentMagic.Center + targetAngle.ToRotationVector2() * OrbitRadius;
+
+                if (catchingMagic && catchProgress < 1f)
+                {
+                    catchProgress += 0.02f;
+
+                    Vector2 currentDir = Projectile.Center - parentMagic.Center;
+                    Vector2 targetDir = targetPos - parentMagic.Center;
+
+                    float currentAngle = currentDir.ToRotation();
+                    float desiredAngle = targetDir.ToRotation();
+                    float angleDiff = MathHelper.WrapAngle(desiredAngle - currentAngle);
+
+                    float eased = catchProgress * catchProgress * (3f - 2f * catchProgress); // S 型缓动
+                    float maxStep = MathHelper.ToRadians(2f + 10f * eased);
+                    float newAngle = MathHelper.Lerp(currentAngle, desiredAngle, eased);
+
+                    float newRadius = MathHelper.Lerp(currentDir.Length(), OrbitRadius, eased);
+                    Projectile.Center = parentMagic.Center + newAngle.ToRotationVector2() * newRadius;
+                }
+                else
+                {
+                    Projectile.Center = targetPos;
+                }
+
+                Projectile.rotation = Projectile.AngleFrom(parentMagic.Center) + MathHelper.PiOver4 + MathHelper.Pi;
+                Projectile.timeLeft = 600;
+                Time++;
+                Projectile.netUpdate = true;
             }
-
-            Projectile.rotation = Projectile.AngleFrom(parentMagic.Center) + MathHelper.PiOver4 + MathHelper.Pi;
-            Projectile.timeLeft = 600;
-            Time++;
-            Projectile.netUpdate = true;
-
-
-
-
         }
-
-
-
-
-
 
 
 
@@ -546,11 +532,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             opacity *= Projectile.Opacity * 0.6f;
 
             // 用你的主题色作为基础颜色
-            Color start = ProjectileColor;
+            //Color start = ProjectileColor;
+            Color start = Color.LightGray;
             Color end = Color.White;
 
             float t = MathHelper.Clamp(completionRatio * 1.4f, 0f, 1f);
-            return Color.Lerp(start, end, t) * opacity;
+            return Color.Lerp(start, end, t) * opacity * (1f - fadeOutProgress);
         }
         public float TrailWidthFunction(float completionRatio)
         {
@@ -559,7 +546,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // === 1. 用你的 10 张贴图选择系统 ===
+            // === 1. 贴图选择 ===
             Texture2D texture;
             int index = NoDamageIndex % 10;
 
@@ -584,57 +571,65 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             else
                 texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/掩手狂目").Value;
 
-
-            // === 2. 读取 frame、origin，和灾厄结构一致 ===
             Rectangle frame = texture.Frame();
             Vector2 origin = frame.Size() * 0.5f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            Vector2 pos = Projectile.Center - Main.screenPosition;
 
-            // === 3. Draw Afterimage Trail（完全照搬结构）===
+
+            // ============================================================
+            // 🔥🔥🔥 关键 1：拖尾 Shader 透明度同步淡出
+            // ============================================================
+
+            float fade = 1f - fadeOutProgress;   // 核心透明度系数
+
             TrailDrawer ??= new();
 
             GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_201");
             GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_193");
 
-            // 你的颜色传入 Shader
             GameShaders.Misc["EmpressBlade"].UseShaderSpecificData(
                 new Vector4(
                     ProjectileColor.R / 255f,
                     ProjectileColor.G / 255f,
                     ProjectileColor.B / 255f,
-                    0.6f
+                    0.6f * fade   // ★★★ 拖尾整体透明度在这里乘 fade
                 )
             );
-
             GameShaders.Misc["EmpressBlade"].Apply(null);
 
             TrailDrawer.PrepareStrip(
                 Projectile.oldPos,
                 Projectile.oldRot,
-                TrailColorFunction,
+                (r) => TrailColorFunction(r) * fade,   // ★★★ 再乘一次保证颜色计算也淡出
                 TrailWidthFunction,
                 Projectile.Size * 0.5f - Main.screenPosition,
                 Projectile.oldPos.Length,
                 true
             );
-
             TrailDrawer.DrawTrail();
+
             Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 
 
-            // === 3.5 绘制主题色包边外发光（你原来的效果） ===
-            float glowStrength = 0.55f;       // 发光强度
-            float glowScale = Projectile.scale * 1.18f; // 外圈扩大
+            // ============================================================
+            // 🔥🔥🔥 关键 2：包边外发光 同步透明度淡出
+            // ============================================================
 
-            // 强度随透明度淡入
-            Color glowColor = ProjectileColor * (1f - Projectile.alpha / 255f) * glowStrength;
+            float glowStrength = 0.55f;
+            float glowScale = Projectile.scale * 1.18f;
+
+            Color glowColor =
+                ProjectileColor *
+                (1f - Projectile.alpha / 255f) *
+                glowStrength *
+                fade * fade;        // ★★★ 包边完全跟随 fadeOutProgress
 
             for (int i = 0; i < 4; i++)
             {
                 Vector2 offset = (MathHelper.PiOver2 * i).ToRotationVector2() * 3f;
                 Main.EntitySpriteDraw(
                     texture,
-                    drawPosition + offset,
+                    pos + offset,
                     frame,
                     glowColor,
                     Projectile.rotation,
@@ -646,12 +641,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
 
 
-            // === 4. 绘制本体（结构完全一样）===
+            // ============================================================
+            // 🔥🔥🔥 关键 3：本体贴图透明度同步淡出
+            // ============================================================
+
+            Color mainColor =
+                Projectile.GetAlpha(lightColor) *
+                fade;              // ★★★ 本体直接淡出
+
             Main.EntitySpriteDraw(
                 texture,
-                drawPosition,
+                pos,
                 frame,
-                Projectile.GetAlpha(lightColor),
+                mainColor,
                 Projectile.rotation,
                 origin,
                 Projectile.scale,
@@ -660,37 +662,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             );
 
 
-            //// === 5. 绘制刀尖闪光（也完全照搬）===
-            //Texture2D shineTex = ModContent.Request<Texture2D>("CalamityMod/Particles/HalfStar").Value;
-
-            //Vector2 shineScale = new Vector2(1.67f, 3f) * Projectile.scale;
-            //shineScale *= MathHelper.Lerp(
-            //    0.9f,
-            //    1.1f,
-            //    (float)Math.Cos(Main.GlobalTimeWrappedHourly * 7.4f + Projectile.identity) * 0.5f + 0.5f
-            //);
-
-            //Vector2 tipPos =
-            //    Projectile.Center +
-            //    (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() *
-            //    Projectile.width * Projectile.scale * 0.88f;
-
-            //Color tipColor = ProjectileColor * 0.9f;
-            //tipColor.A = 0;
-
-            //Main.EntitySpriteDraw(shineTex, tipPos - Main.screenPosition, null, tipColor,
-            //    0f, shineTex.Size() * 0.5f, shineScale * 0.6f, 0, 0);
-
-            //Main.EntitySpriteDraw(shineTex, tipPos - Main.screenPosition, null, tipColor,
-            //    MathHelper.PiOver2, shineTex.Size() * 0.5f, shineScale, 0, 0);
-
-
-            // === 6. 完整重置 Shader（结构一字不差）===
             GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_209");
             GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_210");
 
             return false;
         }
+
 
 
 

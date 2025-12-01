@@ -111,7 +111,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                             Projectile.Center,
                             Vector2.Zero,
                             ringColor,
-                            1.8f,
+                            1.0f,
                             45
                         );
                         GeneralParticleHandler.SpawnParticle(bloomRing);
