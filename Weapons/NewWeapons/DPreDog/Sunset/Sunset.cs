@@ -529,9 +529,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     {
                         Item.UseSound = SoundID.Item2;
 
-                        Item.useTime = 9;              // 每发间隔
+                        Item.useTime = 5;              // 每发间隔
                         Item.useAnimation = 90;        // 总动画
-                        Item.useLimitPerAnimation = 3; // 一次动画内打 X 发
+                        Item.useLimitPerAnimation = 10; // 一次动画内打 X 发
                         Item.autoReuse = true;
 
                         Item.shoot = ModContent.ProjectileType<SunsetBForgetLeft>();
@@ -672,59 +672,125 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
         {
             type = Item.shoot;
 
-            if (currentMode == 0) // A模式：单发 + 随机水平偏移
+            // 🚫 如果右键正在按住，不允许 A 模式生成三发
+            if (player.altFunctionUse == 2)
             {
-                // 找到水平向量（垂直于射击方向）
-                Vector2 offset = Vector2.Normalize(velocity.RotatedBy(MathHelper.PiOver2));
-
-                // 在 [-19, 19] 的范围内随机偏移
-                position += offset * Main.rand.NextFloat(-19f, 19f);
-
-                // 稍微往后移，让子弹有生成感
-                position -= 3f * velocity;
+                type = 0;
+                velocity = Vector2.Zero;
+                return;
             }
 
 
-            if (currentMode == 1) // B模式：玩家身后扇形平行发射（宏伟版）
+            //if (currentMode == 0) // A模式：单发 + 随机水平偏移
+            //{
+            //    // 找到水平向量（垂直于射击方向）
+            //    Vector2 offset = Vector2.Normalize(velocity.RotatedBy(MathHelper.PiOver2));
+
+            //    // 在 [-19, 19] 的范围内随机偏移
+            //    position += offset * Main.rand.NextFloat(-19f, 19f);
+
+            //    // 稍微往后移，让子弹有生成感
+            //    position -= 3f * velocity;
+            //}
+
+
+
+
+            if (currentMode == 0)
             {
-                int pairs = 3; // 保持 3 对
-                float baseRadius = 120f; // 基础扇形半径，比原来大很多
-                float spread = MathHelper.ToRadians(140f); // 扇形范围夸张，加大到接近半圆
+                // 不用默认发射点
+                // A 模式的三发弹幕我们自己生成，阻止默认的弹幕生成
+                position = player.Center; // 占位无意义（因为我们马上手动生成）
 
-                for (int i = 0; i < pairs; i++)
-                {
-                    for (int j = 0; j < 2; j++)
-                    {
-                        // 在大扇形范围内随机角度，不再是死板均匀分布
-                        float angle = Main.rand.NextFloat(-spread / 2f, spread / 2f);
+                // 玩家头顶高度（75 px 上方）
+                float heightAbove = 75 * 16f;
 
-                        Vector2 dir = velocity.SafeNormalize(Vector2.UnitX);
+                // 左右拓展范围（20 tiles = 20 * 16 = 320 px）
+                float horizontalRange = 20f * 16f;
 
-                        // 半径带有一定随机扰动，让位置不规则
-                        float radius = baseRadius * Main.rand.NextFloat(0.8f, 1.2f);
-                        Vector2 behind = -dir.RotatedBy(angle) * radius;
+                // 获取玩家头顶中心点（中间那一发）
+                Vector2 baseSpawn = new Vector2(player.Center.X, player.Center.Y - heightAbove);
 
-                        Vector2 spawnPos = player.Center + behind;
+                // 计算朝向鼠标的标准速度（中间那一发）
+                Vector2 dir = Vector2.Normalize(Main.MouseWorld - baseSpawn);
+                Vector2 trueVelocity = dir * velocity.Length() * 1.15f;
 
-                        // 平行发射，但速度大小也允许轻微浮动
-                        Vector2 shotVel = dir * velocity.Length() * Main.rand.NextFloat(0.9f, 1.1f);
+                // 生成三发：左 —— 中 —— 右
+                Vector2 leftSpawn = baseSpawn + new Vector2(-Main.rand.NextFloat(horizontalRange), 0);
+                Vector2 midSpawn = baseSpawn;
+                Vector2 rightSpawn = baseSpawn + new Vector2(+Main.rand.NextFloat(horizontalRange), 0);
 
-                        Projectile.NewProjectile(
-                            player.GetSource_ItemUse(Item),
-                            spawnPos,
-                            shotVel,
-                            type,
-                            damage,
-                            knockback,
-                            player.whoAmI
-                        );
-                    }
-                }
+                // 左发：平行，不修正方向（直接用中间方向）
+                Projectile.NewProjectile(
+                    player.GetSource_ItemUse(Item),
+                    leftSpawn,
+                    trueVelocity,
+                    type,
+                    damage,
+                    knockback,
+                    player.whoAmI
+                );
+
+                // 中发：真正砸向鼠标的那一发
+                Projectile.NewProjectile(
+                    player.GetSource_ItemUse(Item),
+                    midSpawn,
+                    trueVelocity,
+                    type,
+                    damage,
+                    knockback,
+                    player.whoAmI
+                );
+
+                // 右发：也平行
+                Projectile.NewProjectile(
+                    player.GetSource_ItemUse(Item),
+                    rightSpawn,
+                    trueVelocity,
+                    type,
+                    damage,
+                    knockback,
+                    player.whoAmI
+                );
+
+                // 禁止默认行为
+                type = 0;
+                velocity = Vector2.Zero;
             }
 
 
 
+            if (currentMode == 1) // B模式：玩家身后扇形平行发射（仅一发）
+            {
+                float baseRadius = 30f;
+                float spread = MathHelper.ToRadians(140f);
 
+                // 在扇形范围内生成随机角度
+                float angle = Main.rand.NextFloat(-spread / 2f, spread / 2f);
+
+                Vector2 dir = velocity.SafeNormalize(Vector2.UnitX);
+
+                // 半径带随机扰动
+                float radius = baseRadius * Main.rand.NextFloat(0.8f, 1.2f);
+
+                // 计算玩家身后的随机点
+                Vector2 behind = -dir.RotatedBy(angle) * radius;
+                Vector2 spawnPos = player.Center + behind;
+
+                // 发射方向保持正前方 + 轻微速度浮动
+                Vector2 shotVel = dir * velocity.Length() * Main.rand.NextFloat(0.9f, 1.1f);
+
+                // 只发射一个
+                Projectile.NewProjectile(
+                    player.GetSource_ItemUse(Item),
+                    spawnPos,
+                    shotVel,
+                    type,
+                    damage,
+                    knockback,
+                    player.whoAmI
+                );
+            }
 
 
         }

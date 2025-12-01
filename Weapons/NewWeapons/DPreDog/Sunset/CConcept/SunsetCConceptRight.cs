@@ -13,6 +13,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using Terraria.DataStructures;
 using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -24,12 +25,76 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
+        // ========= 能量条系统（蓄力 → 满格 → 释放大招）=========
+
+        // 当前蓄力值（0 ~ energyMax）
+        private float energyCharge = 0f;
+
+        // 每次发射一发小弹幕就增加多少能量
+        private const float energyGainPerShot = 1f;
+
+        // 满格阈值（例如发射 120 发小弹幕后触发）
+        private const float energyMax = 120f;
+
+        // 大招刚触发后锁定 10 帧，避免重复触发
+        private int energyReleaseLock = 0;
 
         public override bool PreDraw(ref Color lightColor)
         {
+            // 先画弹幕本体（你原来的效果保持不变）
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+
+            // ============ 开始绘制能量条 ============
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                var barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
+                var barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
+
+                // 玩家头顶 36 像素位置
+                Vector2 drawPos = Owner.Center - Main.screenPosition + new Vector2(0, -48);
+
+                // 能量比例（0~1）
+                float p = energyCharge / energyMax;
+                p = MathHelper.Clamp(p, 0f, 1f);
+
+                // 裁切前景条显示长度
+                Rectangle frame = new Rectangle(0, 0, (int)(barFG.Width * p), barFG.Height);
+
+                // 动态颜色：蓝 → 青 → 白
+                float hue = (Main.GlobalTimeWrappedHourly * 0.25f) % 1f;
+                Color barColor = Main.hslToRgb(hue, 1f, 0.75f);
+
+                // 后景
+                Main.spriteBatch.Draw(
+                    barBG,
+                    drawPos - barBG.Size() * 0.5f,
+                    null,
+                    barColor * 0.50f,
+                    0f,
+                    Vector2.Zero,
+                    1.0f,
+                    SpriteEffects.None,
+                    0f
+                );
+
+                // 前景
+                Main.spriteBatch.Draw(
+                    barFG,
+                    drawPos - barFG.Size() * 0.5f,
+                    frame,
+                    barColor,
+                    0f,
+                    Vector2.Zero,
+                    1.0f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
             return false;
         }
+
 
         public override void SetDefaults()
         {
@@ -99,11 +164,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
         }
 
-        private int shootTimer = 0; // 计时器
         private int holdTime = 0; // 握持时间（帧）
 
-        private int postBigShotCooldown = 0; // 大招释放后进入冷却的计时器
-                                             // === 右键瞄准阶段·科技蓝 VFX ===
         private int vfxTimer = 0;
         // 科技蓝主色 + 辅色
         private static readonly Color[] TechBluePalette = new Color[]
@@ -118,14 +180,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         // 在类的字段区定义（和 shootTimer / holdTime 一样）
         private int shotIndex = 0;
-        private int roundIndex = 0;
         private int frameTimer = 0;
-        private bool waitingRoundGap = false;
 
+        // 记录上一次魔法阵触发时间（用 holdTime 单位计）
+        private int lastMagicFireTime = 0;
 
-        private float? cachedAngle = null; // 保存随机角度
-        private bool useOpposite = false; // 是否用对立角度
-
+        // 魔法阵 → 大弹幕之间的 1.5 秒延迟计数器（90 帧）
+        private int magicDelayTimer = 0;
 
         private void DoBehavior_Aim()
         {
@@ -146,158 +207,186 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
             {
-                // ====== 自定义环形射击逻辑 ======
-                const float baseRingRadius = 20f * 16f;  // 小弹幕出生圆环的基础半径
-                const int shotsPerRound = 30;            // 每一轮 30 发小弹幕
-                const int frameBetweenShots = 15;        // 小弹幕之间的间隔
-                const int frameBetweenRounds = 20;       // 每轮之间的停顿时间
-
+                // ============================
+                //  小弹幕发射计时系统（新版）
+                // ============================
                 frameTimer++;
+                holdTime++;                     // 👉 用这个来判断60秒是否已到
+                Projectile.timeLeft = 300;      // 固定
 
-                if (!waitingRoundGap)
+                const float baseRingRadius = 70f * 16f;
+
+                // --------------------------------------
+                // 1) 小弹幕发射频率：从 18 帧 → 每发射 2 个 -1 帧 → 最快 5f
+                // --------------------------------------
+                int minInterval = 5;
+                int startInterval = 18;
+                int interval = Math.Max(minInterval, startInterval - (shotIndex / 2));
+
+                if (frameTimer >= interval)
                 {
-                    if (frameTimer >= frameBetweenShots)
+                    frameTimer = 0;
+
+                    // =======================
+                    // 生成小弹幕（原逻辑不变）
+                    // =======================
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float radius = baseRingRadius * Main.rand.NextFloat(0.65f, 1.35f);
+                    Vector2 spawnOffset = angle.ToRotationVector2() * radius;
+
+                    NPC target = FindClosestTarget();
+                    Vector2 ringCenter = (target != null) ? target.Center : Projectile.Center;
+
+                    Vector2 spawnPos = ringCenter + spawnOffset;
+
+                    Vector2 shootDir = (target != null) ?
+                        (target.Center - spawnPos).SafeNormalize(Vector2.UnitY) :
+                        (-spawnOffset).SafeNormalize(Vector2.UnitY);
+
+                    Vector2 velocity = shootDir * 40f;
+
+                    // 顺序循环发射：1 → 2 → 3 → 4
+                    int[] projTypes = new int[]
                     {
-                        frameTimer = 0;
+            ModContent.ProjectileType<SunsetCConceptRightCut1Time>(),
+            ModContent.ProjectileType<SunsetCConceptRightCut2Item>(),
+            ModContent.ProjectileType<SunsetCConceptRightCut3Space>(),
+            ModContent.ProjectileType<SunsetCConceptRightCut4Energy>()
+                    };
 
-                        // 角度完全随机
-                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    int pickType = projTypes[shotIndex % 4];
 
-                        // 半径在 ±35% 浮动
-                        float radius = baseRingRadius * Main.rand.NextFloat(0.65f, 1.35f);
+                    int totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
 
-                        Vector2 spawnOffset = angle.ToRotationVector2() * radius;
+                    int proj = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        spawnPos,
+                        velocity,
+                        pickType,
+                        Projectile.damage / 2,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
 
-                        // 寻找目标
-                        NPC target = FindClosestTarget();
-                        Vector2 ringCenter = (target != null) ? target.Center : Projectile.Center;
-                        Vector2 spawnPos = ringCenter + spawnOffset;
+                    if (proj.WithinBounds(Main.maxProjectiles))
+                    {
+                        Projectile small = Main.projectile[proj];
+                        small.CritChance = totalCrit;
+                        small.scale = 1.5f;
+                        small.penetrate = 1;
+                        small.tileCollide = true;
+                        small.usesLocalNPCImmunity = true;
+                        small.localNPCHitCooldown = 10;
+                        small.netUpdate = true;
+                    }
 
-                        Vector2 shootDir = (target != null) ?
-                            (target.Center - spawnPos).SafeNormalize(Vector2.UnitY) :
-                            (-spawnOffset).SafeNormalize(Vector2.UnitY);
+                    shotIndex++;
 
-                        Vector2 velocity = shootDir * 20f;
+                    {
+                        // ========= 能量条充能 =========
+                        if (energyCharge < energyMax)
+                            energyCharge += energyGainPerShot;
 
-                        // === 1) 小弹幕 ===
-                        int totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+                        // 确保不会超过上限
+                        energyCharge = MathHelper.Clamp(energyCharge, 0, energyMax);
 
-                        int proj = Projectile.NewProjectile(
-                            Projectile.GetSource_FromThis(),
-                            spawnPos,
-                            velocity,
-                            ModContent.ProjectileType<SunsetCConceptRightCut>(),
-                            Projectile.damage / 2,
-                            Projectile.knockBack,
-                            Projectile.owner
-                        );
-                        if (proj.WithinBounds(Main.maxProjectiles))
-                        {
-                            Main.projectile[proj].CritChance = totalCrit; // ✅ 继承暴击率
-                            Projectile small = Main.projectile[proj];
-                            small.penetrate = 1;
-                            small.tileCollide = true;
-                            small.usesLocalNPCImmunity = true;
-                            small.localNPCHitCooldown = 10;
-                            small.netUpdate = true;
-                            small.scale = 1.5f;
-                        }
+                    }
 
+                    // ============================================================
+                    // 2) 魔法阵 + 大弹幕：每 X0 秒触发一次
+                    // ============================================================
+                    // ==============================
+                    // 大招冷却（测试用 1000）
+                    // ==============================
+                    const int magicCooldown = 1000;
 
-                        // === 1.5) 新的 Magic 弹幕逻辑 ===
-                        // 在每轮小弹幕循环的中间 50% 时生成
-                        if (shotIndex == shotsPerRound / 2 && target != null)
-                        {
-                            Vector2 magicSpawnPos = target.Center + new Vector2(0, -30 * 16);
-                            Vector2 magicVelocity = Vector2.UnitY * 30f;
+                    // 每次触发记录上一次时间
+                    if (!Projectile.localAI[0].Equals(0f))
+                    {
+                        lastMagicFireTime = (int)Projectile.localAI[0];
+                    }
 
-                            totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+                    bool cooldownReached = holdTime - lastMagicFireTime >= magicCooldown;
 
-                            int magicProj = Projectile.NewProjectile(
-                                Projectile.GetSource_FromThis(),
-                                magicSpawnPos,
-                                magicVelocity,
-                                ModContent.ProjectileType<SunsetCConceptRightMagic>(), // 新的 Magic 弹幕
-                                Projectile.damage * 8,  // 你可以调伤害倍率，比如 8 倍
-                                Projectile.knockBack,
-                                Projectile.owner
-                            );
-                            if (magicProj.WithinBounds(Main.maxProjectiles))
-                            {
-                                Main.projectile[magicProj].CritChance = totalCrit;
-                                Projectile magic = Main.projectile[magicProj];
-                                magic.penetrate = 3;
-                                magic.tileCollide = false;
-                                magic.usesLocalNPCImmunity = true;
-                                magic.localNPCHitCooldown = 1;
-                                magic.netUpdate = true;
-                                magic.scale *= 2.2f; // 大小可以自己改
-                            }
+                    // 用来等待魔法阵 → 大弹幕的 1.5 秒延迟
+                    if (magicDelayTimer > 0)
+                    {
+                        magicDelayTimer--;
 
-                            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 2.5f }, Projectile.Center);
-                        }
-
-
-
-                        // === 2) 大弹幕逻辑保留 ===
-                        if (shotIndex == 0 && target != null && roundIndex > 0)
+                        // 倒数完毕 → 释放大弹幕
+                        if (magicDelayTimer == 0 && target != null)
                         {
                             Vector2 bigSpawnPos = target.Center + new Vector2(0, -30 * 16);
                             Vector2 bigVelocity = Vector2.UnitY * 30f;
 
-                            totalCrit = (int)Math.Round(Owner.GetTotalCritChance(Projectile.DamageType));
+                            int baseDmg = Projectile.damage;
 
-                            int bigProj = Projectile.NewProjectile(
+                            float bigCoreMult = 6.5f;
+                            float playerPower = Owner.GetDamage(DamageClass.Magic).Multiplicative * 1.0f;
+                            float critPower = (Owner.GetTotalCritChance(DamageClass.Magic) / 100f);
+
+                            int finalDamage = (int)(baseDmg * bigCoreMult * playerPower * (1f + critPower));
+                            if (finalDamage < baseDmg * 3)
+                                finalDamage = baseDmg * 3;
+
+                            int p = Projectile.NewProjectile(
                                 Projectile.GetSource_FromThis(),
                                 bigSpawnPos,
                                 bigVelocity,
                                 ModContent.ProjectileType<SunsetCConceptRightCutBig>(),
-                                Projectile.damage * 10,
-                                Projectile.knockBack,
+                                finalDamage,
+                                Projectile.knockBack * 2f,
                                 Projectile.owner
                             );
-                            if (bigProj.WithinBounds(Main.maxProjectiles))
+
+                            if (p.WithinBounds(Main.maxProjectiles))
                             {
-                                Main.projectile[bigProj].CritChance = totalCrit;
-                                Projectile big = Main.projectile[bigProj];
-                                big.penetrate = 6;
-                                big.tileCollide = false;
+                                Projectile big = Main.projectile[p];
+                                big.penetrate = 9;
                                 big.usesLocalNPCImmunity = true;
-                                big.localNPCHitCooldown = 1;
+                                big.localNPCHitCooldown = 15;
+                                big.extraUpdates = 1;
+                                big.scale = 2.7f;
                                 big.netUpdate = true;
-                                big.scale *= 3f;
                             }
 
-                            SoundEngine.PlaySound(SoundID.Item113 with { Volume = 3.2f }, Projectile.Center);
-
-                            // 屏幕震动
-                            float shakePower = 45f;
-                            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
-                            Main.LocalPlayer.Calamity().GeneralScreenShakePower =
-                                Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-                        }
-
-                        // 推进索引
-                        shotIndex++;
-                        if (shotIndex >= shotsPerRound)
-                        {
-                            shotIndex = 0;
-                            roundIndex++;
-                            waitingRoundGap = true;
-                            frameTimer = 0;
+                            // 重置充能
+                            energyCharge = 0f;
+                            energyReleaseLock = 10;
                         }
                     }
-                }
-                else
-                {
-                    if (frameTimer >= frameBetweenRounds)
+
+
+                    // ==============================
+                    // （A）魔法阵触发
+                    // ==============================
+                    if (target != null && cooldownReached)
                     {
-                        frameTimer = 0;
-                        waitingRoundGap = false;
+                        // 记录冷却触发点
+                        lastMagicFireTime = holdTime;
+                        Projectile.localAI[0] = lastMagicFireTime;
+
+                        // 1. 先出现魔法阵
+                        Vector2 magicSpawnPos = target.Center + new Vector2(0, -30 * 16);
+                        Vector2 magicVelocity = Vector2.UnitY * 30f;
+
+                        Projectile.NewProjectile(
+                            Projectile.GetSource_FromThis(),
+                            magicSpawnPos,
+                            magicVelocity,
+                            ModContent.ProjectileType<SunsetCConceptRightMagic>(),
+                            Projectile.damage * 8,
+                            Projectile.knockBack,
+                            Projectile.owner
+                        );
+
+                        // 2. 延迟 X 秒 = X0 帧
+                        magicDelayTimer = 30;
                     }
+
+
+
                 }
-
-
             }
 
 
@@ -308,7 +397,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             {
                 // ========= 枪口（枪头）空间点：指向速度方向 5 * 16 =========
-                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 5f;
+                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 15f;
 
                 // ========= 科技蓝 VFX（瞄准阶段常驻）=========
                 vfxTimer++;

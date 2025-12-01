@@ -9,6 +9,9 @@ using ReLogic.Content;
 using Terraria.Audio;
 using CalamityMod.Particles;
 using System.Collections.Generic;
+using CalamityMod;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -39,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private static readonly float AngleStepRadians = MathHelper.ToRadians(AngleStepDegrees);
 
 
-        private const float OrbitRadius = 290f;    // 魔法阵公转半径
+        private const float OrbitRadius = 490f;    // 魔法阵公转半径
 
         public Color ProjectileColor; // 颜色由 ai[1] 决定
 
@@ -132,63 +135,164 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         private void SpawnFlightFX(Vector2 pos, Color fxColor)
         {
-            // 建立局部坐标系
+            // ——局部坐标系：f 为前向，n 为法线——
             Vector2 f = Projectile.velocity.LengthSquared() > 1e-4f
                 ? Vector2.Normalize(Projectile.velocity)
                 : Vector2.UnitX.RotatedBy(Projectile.rotation);
             Vector2 n = new Vector2(-f.Y, f.X);
 
-            // === 改：让起点更中心（弹幕正前方 24px）
-            Vector2 basePos = Projectile.Center + f * 24f;
+            // 以弹幕中心为能量核心
+            Vector2 core = Projectile.Center;
 
-            // ① EXO之光 —— 交叉的“乂”字轨迹
-            for (int branch = -1; branch <= 1; branch += 2)
+            // =========================================================
+            // A) 向前爆炸式释放：同心层 + 黄金角扰动（视觉“爆点”）
+            // =========================================================
+            float cone = MathHelper.ToRadians(22f);          // 前向锥角
+            float golden = MathHelper.ToRadians(137.5f);     // 黄金角
+            int rings = 3;                                // 同心层数
+            for (int r = 0; r < rings; r++)
             {
-                Vector2 baseVel = f * Main.rand.NextFloat(0.8f, 1.2f) - Vector2.UnitY * Main.rand.NextFloat(0.4f, 0.7f);
-                Vector2 vel = baseVel.RotatedBy(branch * (MathHelper.Pi / 10f)); // 角度也收紧一些
+                // 每一层的粒子数按几何增长，形成“由内到外更密更强”的感觉
+                int points = 6 + r * 6;                      // 6, 12, 18
+                float radius = 10f + r * 8f;                 // 爆点半径层
+                for (int i = 0; i < points; i++)
+                {
+                    // 用黄金角驱动的正弦扇散：角度落在 [-cone, +cone]
+                    float a = (float)Math.Sin((i + r * 0.5f) * golden) * cone;
+                    Vector2 dir = f.RotatedBy(a);
 
-                SquishyLightParticle exoEnergy = new SquishyLightParticle(
-                    basePos + n * Main.rand.NextFloat(-0.5f, 0.5f), // 横向偏移收紧
-                    vel,
-                    Main.rand.NextFloat(0.26f, 0.3f),
-                    fxColor,
-                    Main.rand.Next(22, 30),
-                    opacity: 1f,
-                    squishStrenght: 1.05f,
-                    maxSquish: 3.0f,
-                    hueShift: 0f
-                );
-                GeneralParticleHandler.SpawnParticle(exoEnergy);
+                    // 出生位置做“壳层”抖动，让前爆呈现涟漪壳
+                    Vector2 spawn = core + dir * (radius + Main.rand.NextFloat(-2f, 2f));
 
-                flightExos.Add(exoEnergy);
-                Vector2 dir = vel.SafeNormalize(Vector2.UnitX);
-                flightDirs.Add(dir);
-                flightDists.Add((basePos - Projectile.Center).Length());
-                float step = Vector2.Dot(vel, dir);
-                flightSteps.Add(Math.Max(Math.Abs(step), 0.6f));
+                    // 速度带“能量外抛”，寿命随层加长，尺度递增
+                    float spd = Main.rand.NextFloat(4.2f + r * 0.6f, 7.2f + r * 1.2f);
+                    float scl = 0.26f + 0.04f * r + Main.rand.NextFloat(0.02f);
+                    int life = Main.rand.Next(18 + r * 3, 26 + r * 4);
+
+                    // ——高速能流（细长）——
+                    SquishyLightParticle streak = new SquishyLightParticle(
+                        spawn,
+                        dir * spd,
+                        scl,
+                        fxColor,
+                        life,
+                        opacity: 1f,
+                        squishStrenght: 1.14f,
+                        maxSquish: 3.25f,
+                        hueShift: 0f
+                    );
+                    GeneralParticleHandler.SpawnParticle(streak);
+
+                    // ——能量珠点：用少量 GlowOrb 做“离散高光”——
+                    if (Main.rand.NextBool(3))
+                    {
+                        GlowOrbParticle orb = new GlowOrbParticle(
+                            spawn + dir * Main.rand.NextFloat(4f, 10f),
+                            dir * Main.rand.NextFloat(1.2f, 2.2f),
+                            false,
+                            (int)(life * 0.85f),
+                            0.8f + 0.05f * r,
+                            Color.Lerp(fxColor, Color.White, 0.30f),
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+                }
             }
 
-            // ② GlowOrb —— 跟随乂形轨迹，集中到正前方
-            if (Main.rand.NextBool(2))
+            // 前爆冲击环（细长椭圆，强调“冲击”）
+            if (Main.GameUpdateCount % 2 == 0)
             {
-                Vector2 vel = f * Main.rand.NextFloat(0.6f, 1.0f) - Vector2.UnitY * 0.35f;
-                GlowOrbParticle orb = new GlowOrbParticle(
-                    basePos + n * Main.rand.NextFloat(-0.4f, 0.4f),
-                    vel,
-                    false,
-                    16,
-                    0.8f,
-                    Color.Lerp(fxColor, Color.White, 0.25f),
-                    true, false, true
+                Particle pulse = new DirectionalPulseRing(
+                    core + f * 8f,
+                    f * 0.8f,
+                    Color.Lerp(fxColor, Color.White, 0.3f),
+                    new Vector2(1.05f, 2.6f),
+                    Projectile.rotation,
+                    0.20f,
+                    0.035f,
+                    20
                 );
-                GeneralParticleHandler.SpawnParticle(orb);
+                GeneralParticleHandler.SpawnParticle(pulse);
+            }
 
-                flightOrbs.Add(orb);
-                Vector2 dir = vel.SafeNormalize(Vector2.UnitX);
-                orbDirs.Add(dir);
-                orbDists.Add((basePos - Projectile.Center).Length());
-                float step = Vector2.Dot(vel, dir);
-                orbSteps.Add(Math.Max(Math.Abs(step), 0.5f));
+            // 中心亮斑（瞬时强 Bloom，做“爆心闪击”）
+            if (Main.rand.NextBool(3))
+            {
+                StrongBloom flash = new StrongBloom(
+                    core,
+                    Vector2.Zero,
+                    Color.Lerp(fxColor, Color.White, 0.25f),
+                    1.6f,
+                    36
+                );
+                GeneralParticleHandler.SpawnParticle(flash);
+            }
+
+            // =========================================================
+            // B) 向后扇形两道弧线：对称曲线（近似对数螺线/渐开线的混合）
+            //    公式：r(t) = R * t^p,  θ(t) = θ0 + side * W * E(t)
+            //    其中 E(t)=t^2(3-2t)（平滑步进），side=±1（左右两翼）
+            // =========================================================
+            int segs = 22;                     // 每翼采样点数
+            float R = 68f;                    // 弧线半径尺度
+            float p = 0.80f;                  // 幂指数，决定“前密后疏”的曲率节奏
+            float W = MathHelper.ToRadians(75f); // 后扇展开半角
+            Vector2 back = -f;                      // 朝后方向
+
+            for (int side = -1; side <= 1; side += 2)
+            {
+                for (int j = 0; j <= segs; j++)
+                {
+                    float t = j / (float)segs;                    // 0→1
+                    float e = t * t * (3f - 2f * t);              // smoothstep
+                    float r = R * (float)Math.Pow(t, p);          // 半径随 t^p 增长
+                    float th = side * W * e;                       // 角度平滑展开
+
+                    // 当前点与切向
+                    Vector2 dir = back.RotatedBy(th);
+                    Vector2 posOnArc = core + dir * r;
+
+                    // 用相邻采样估计切线方向，求速度向量
+                    float t2 = Math.Min(1f, t + 1f / segs);
+                    float e2 = t2 * t2 * (3f - 2f * t2);
+                    float r2 = R * (float)Math.Pow(t2, p);
+                    float th2 = side * W * e2;
+                    Vector2 dir2 = back.RotatedBy(th2);
+                    Vector2 pos2 = core + dir2 * r2;
+
+                    Vector2 tan = (pos2 - posOnArc);
+                    if (tan.LengthSquared() < 1e-4f) tan = dir * 0.5f;
+
+                    // ——沿弧“能流条纹”——
+                    SquishyLightParticle arcLine = new SquishyLightParticle(
+                        posOnArc,
+                        tan.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.9f, 1.8f),
+                        0.24f + Main.rand.NextFloat(0.05f),
+                        Color.Lerp(fxColor, Color.White, 0.22f),
+                        Main.rand.Next(26, 34),
+                        opacity: 1f,
+                        squishStrenght: 1.10f,
+                        maxSquish: 3.0f,
+                        hueShift: 0f
+                    );
+                    GeneralParticleHandler.SpawnParticle(arcLine);
+
+                    // ——稀疏珠点：在弧线外侧轻微“漂移”，增加层次——
+                    if (j % 3 == 0 && Main.rand.NextBool(2))
+                    {
+                        GlowOrbParticle orb = new GlowOrbParticle(
+                            posOnArc + n * side * Main.rand.NextFloat(1.2f, 3.2f),
+                            tan.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.6f, 1.2f),
+                            false,
+                            14,
+                            0.74f,
+                            Color.Lerp(fxColor, Color.White, 0.18f),
+                            true, false, true
+                        );
+                        GeneralParticleHandler.SpawnParticle(orb);
+                    }
+                }
             }
         }
 
@@ -211,6 +315,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 new Color(220, 50, 50),  // 机制白红色（机制 → 白红色）
             };
 
+            // 异能 疯齿丑绅
+            // 基因 葬灵木渊
+            // 因果 四夜轮回
+            // 神秘 挖腹背鳍
+            // 科技 千萃碎年
+            // 幻术 抚脑幻听
+            // 封印 天之缚权
+            // 修真 白烛荡想
+            // 幻想 托泪逆梦
+            // 机制 掩手狂目
+
 
 
             // === 飞行期间特效 ===
@@ -224,7 +339,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Color fxColor = ProjectileColor;
 
                 // 调用统一函数
-                SpawnFlightFX(headPosition, fxColor);
+                //SpawnFlightFX(headPosition, fxColor);
             }
 
 
@@ -343,7 +458,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 if (!catchingMagic)
                 {
                     float angle = HoverOffsetAngle;
-                    Vector2 offset = angle.ToRotationVector2() * 150f; // 这里的数字代表围绕玩家的时候半径
+                    Vector2 offset = angle.ToRotationVector2() * 550f; // 这里的数字代表围绕玩家的时候半径
                     Projectile.Center = owner.Center + offset;
                     Projectile.rotation = Projectile.AngleFrom(owner.Center) + MathHelper.PiOver4;
                     Projectile.timeLeft = 60;
@@ -405,7 +520,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
 
-        //public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage0";
+        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/疯齿丑绅";
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
     List<int> behindNPCs, List<int> behindProjectiles,
@@ -415,55 +530,172 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             overPlayers.Add(index);
         }
 
+        // === Shader 拖尾需要的缓存 ===
+        private VertexStrip TrailDrawer;
+        private Vector2[] oldPosCache = new Vector2[45];
+        private float[] oldRotCache = new float[45];
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Type] = 45;
+        }
+        public Color TrailColorFunction(float completionRatio)
+        {
+            float opacity = (float)Math.Pow(Utils.GetLerpValue(1f, 0.45f, completionRatio, true), 4D);
+            opacity *= Projectile.Opacity * 0.6f;
+
+            // 用你的主题色作为基础颜色
+            Color start = ProjectileColor;
+            Color end = Color.White;
+
+            float t = MathHelper.Clamp(completionRatio * 1.4f, 0f, 1f);
+            return Color.Lerp(start, end, t) * opacity;
+        }
+        public float TrailWidthFunction(float completionRatio)
+        {
+            return Projectile.height * (1f - completionRatio) * 3.8f;
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
+            // === 1. 用你的 10 张贴图选择系统 ===
             Texture2D texture;
+            int index = NoDamageIndex % 10;
 
-            // **根据 NoDamageIndex 选择对应的贴图**
-            if (NoDamageIndex % 10 == 0)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage").Value;
-            else if (NoDamageIndex % 10 == 1)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage1").Value;
-            else if (NoDamageIndex % 10 == 2)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage2").Value;
-            else if (NoDamageIndex % 10 == 3)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage3").Value;
-            else if (NoDamageIndex % 10 == 4)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage4").Value;
-            else if (NoDamageIndex % 10 == 5)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage5").Value;
-            else if (NoDamageIndex % 10 == 6)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage6").Value;
-            else if (NoDamageIndex % 10 == 7)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage7").Value;
-            else if (NoDamageIndex % 10 == 8)
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage8").Value;
+            if (index == 0)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/疯齿丑绅").Value;
+            else if (index == 1)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/葬灵木渊").Value;
+            else if (index == 2)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/四夜轮回").Value;
+            else if (index == 3)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/挖腹背鳍").Value;
+            else if (index == 4)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/千萃碎年").Value;
+            else if (index == 5)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/抚脑幻听").Value;
+            else if (index == 6)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/天之缚权").Value;
+            else if (index == 7)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/白烛荡想").Value;
+            else if (index == 8)
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/托泪逆梦").Value;
             else
-                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/SunsetCConceptLeftNoDamage9").Value;
+                texture = ModContent.Request<Texture2D>("CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/CConcept/掩手狂目").Value;
 
-            Vector2 origin = texture.Size() * 0.5f;
+
+            // === 2. 读取 frame、origin，和灾厄结构一致 ===
+            Rectangle frame = texture.Frame();
+            Vector2 origin = frame.Size() * 0.5f;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            // **充能光晕效果**
-            float chargeOffset = 3f;
-            Color chargeColor = ProjectileColor * 0.8f; // 使用传递的颜色
-            chargeColor.A = 0;
+            // === 3. Draw Afterimage Trail（完全照搬结构）===
+            TrailDrawer ??= new();
 
-            float rotation = Projectile.rotation;
-            SpriteEffects direction = SpriteEffects.None;
+            GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_201");
+            GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_193");
 
-            // **绘制充能光晕**
-            for (int i = 0; i < 8; i++)
+            // 你的颜色传入 Shader
+            GameShaders.Misc["EmpressBlade"].UseShaderSpecificData(
+                new Vector4(
+                    ProjectileColor.R / 255f,
+                    ProjectileColor.G / 255f,
+                    ProjectileColor.B / 255f,
+                    0.6f
+                )
+            );
+
+            GameShaders.Misc["EmpressBlade"].Apply(null);
+
+            TrailDrawer.PrepareStrip(
+                Projectile.oldPos,
+                Projectile.oldRot,
+                TrailColorFunction,
+                TrailWidthFunction,
+                Projectile.Size * 0.5f - Main.screenPosition,
+                Projectile.oldPos.Length,
+                true
+            );
+
+            TrailDrawer.DrawTrail();
+            Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+
+
+            // === 3.5 绘制主题色包边外发光（你原来的效果） ===
+            float glowStrength = 0.55f;       // 发光强度
+            float glowScale = Projectile.scale * 1.18f; // 外圈扩大
+
+            // 强度随透明度淡入
+            Color glowColor = ProjectileColor * (1f - Projectile.alpha / 255f) * glowStrength;
+
+            for (int i = 0; i < 4; i++)
             {
-                Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * chargeOffset;
-                Main.EntitySpriteDraw(texture, drawPosition + drawOffset, null, chargeColor, rotation, origin, Projectile.scale, direction, 0f);
+                Vector2 offset = (MathHelper.PiOver2 * i).ToRotationVector2() * 3f;
+                Main.EntitySpriteDraw(
+                    texture,
+                    drawPosition + offset,
+                    frame,
+                    glowColor,
+                    Projectile.rotation,
+                    origin,
+                    glowScale,
+                    SpriteEffects.None,
+                    0
+                );
             }
 
-            // **绘制投射物本体**
-            Main.EntitySpriteDraw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rotation, origin, Projectile.scale, direction, 0f);
+
+            // === 4. 绘制本体（结构完全一样）===
+            Main.EntitySpriteDraw(
+                texture,
+                drawPosition,
+                frame,
+                Projectile.GetAlpha(lightColor),
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0
+            );
+
+
+            //// === 5. 绘制刀尖闪光（也完全照搬）===
+            //Texture2D shineTex = ModContent.Request<Texture2D>("CalamityMod/Particles/HalfStar").Value;
+
+            //Vector2 shineScale = new Vector2(1.67f, 3f) * Projectile.scale;
+            //shineScale *= MathHelper.Lerp(
+            //    0.9f,
+            //    1.1f,
+            //    (float)Math.Cos(Main.GlobalTimeWrappedHourly * 7.4f + Projectile.identity) * 0.5f + 0.5f
+            //);
+
+            //Vector2 tipPos =
+            //    Projectile.Center +
+            //    (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() *
+            //    Projectile.width * Projectile.scale * 0.88f;
+
+            //Color tipColor = ProjectileColor * 0.9f;
+            //tipColor.A = 0;
+
+            //Main.EntitySpriteDraw(shineTex, tipPos - Main.screenPosition, null, tipColor,
+            //    0f, shineTex.Size() * 0.5f, shineScale * 0.6f, 0, 0);
+
+            //Main.EntitySpriteDraw(shineTex, tipPos - Main.screenPosition, null, tipColor,
+            //    MathHelper.PiOver2, shineTex.Size() * 0.5f, shineScale, 0, 0);
+
+
+            // === 6. 完整重置 Shader（结构一字不差）===
+            GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_209");
+            GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_210");
 
             return false;
         }
+
+
+
+
+
     }
 }
 

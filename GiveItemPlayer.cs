@@ -45,8 +45,8 @@ namespace CalamityThrowingSpear
                 if (worldEnterMessageTimer == 0)
                 {
                     // 3秒后播放分两行的提示
-                    Main.NewText("这个模组已经正式完结，以后将不会再有更大的更新", Color.OrangeRed);
-                    Main.NewText("欢迎关注作者的下一个模组", Color.OrangeRed);
+                    //Main.NewText("这个模组已经正式完结，以后将不会再有更大的更新", Color.OrangeRed);
+                    //Main.NewText("欢迎关注作者的下一个模组", Color.OrangeRed);
                 }
             }
         }

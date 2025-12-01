@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,6 +41,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Projectile.Opacity = 0f;   // 从透明开始淡入
         }
 
+        private float metaballOrbitAngle; // 熔岩球绕弹幕旋转的相位
+        private int bloomTimer;           // BloomRing 计时器
+        private int sparkTimer;           // CritSpark 计时器
+        private readonly List<BloomRing> ownedBloomRings = new();
+        private readonly List<CritSpark> ownedCritSparks = new();
+
+        private Vector2 lastCenter;
+
+
         public override void AI()
         {
             lifeTimer++;
@@ -53,14 +64,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             else
                 Projectile.Opacity = 1f;
 
-            // 基础缩放 0.6f（整体削减40%），在 ±10% 范围内浮动
-            float pulsate = 1f + 0.1f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2f);
+            // 缩放轻微呼吸
+            float pulsate = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f);
             Projectile.scale = 0.6f * pulsate;
 
-            // === 缓慢旋转 ===
+            // 缓慢自转
             Projectile.rotation += 0.03f;
-
-
 
             int parentID = (int)Projectile.ai[0];
             if (parentID >= 0 && Main.projectile[parentID].active &&
@@ -69,22 +78,147 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 Projectile parent = Main.projectile[parentID];
                 Player owner = Main.player[parent.owner];
 
-                Vector2 gunHeadPosition = parent.Center + parent.velocity.SafeNormalize(Vector2.Zero) * 80f;
+                // 绑定在枪口
+                Vector2 gunHeadPosition = parent.Center + parent.velocity.SafeNormalize(Vector2.UnitX) * 80f;
                 Projectile.Center = gunHeadPosition;
                 Projectile.timeLeft = 60;
+
+                if (!Main.dedServ)
+                {
+                    //// ===========================
+                    //// 1）熔岩 Metaball：绕弹幕圆周旋转，每帧一个
+                    //// ===========================
+                    //metaballOrbitAngle += 0.18f;
+                    //float orbitRadius = 32f;
+                    //Vector2 orbitOffset = new Vector2(
+                    //    (float)Math.Cos(metaballOrbitAngle),
+                    //    (float)Math.Sin(metaballOrbitAngle)
+                    //) * orbitRadius;
+
+                    //RancorLavaMetaball.SpawnParticle(
+                    //    Projectile.Center + orbitOffset,
+                    //    Main.rand.NextFloat(60f, 100f)
+                    //);
+
+                    // ===========================
+                    // 2）BloomRing：原地光晕，每 3 帧一个（橙黄系）
+                    // ===========================
+                    bloomTimer++;
+                    if (bloomTimer % 3 == 0)
+                    {
+                        Color ringColor = Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat(0.2f, 0.9f));
+                        BloomRing bloomRing = new BloomRing(
+                            Projectile.Center,
+                            Vector2.Zero,
+                            ringColor,
+                            1.8f,
+                            45
+                        );
+                        GeneralParticleHandler.SpawnParticle(bloomRing);
+                        ownedBloomRings.Add(bloomRing);
+                    }
+                    // ===========================
+                    // 3）CritSpark：宏伟金色魔法阵辐射，每 5 帧一轮
+                    // ===========================
+                    sparkTimer++;
+                    if (sparkTimer % 5 == 0)
+                    {
+                        int sparkCount = 30; // 数量×5，密度大幅提升
+                        float baseAngle = Main.GlobalTimeWrappedHourly * 2.3f; // 整体相位旋转（稍快一点）
+
+                        for (int i = 0; i < sparkCount; i++)
+                        {
+                            float progress = i / (float)sparkCount; // 0~1，用于数学分布
+
+                            // 基础角度 + 叠加三叶玫瑰形扰动，形成花瓣状辐射
+                            float angle = baseAngle
+                                          + MathHelper.TwoPi * progress
+                                          + 0.5f * (float)Math.Sin(3f * baseAngle + progress * MathHelper.TwoPi);
+
+                            // 半径速度随 progress 非线性变化，让中段更强、两端略弱
+                            float radialSpeed = MathHelper.Lerp(4f, 8f,
+                                (float)Math.Sin(progress * MathHelper.Pi) * 0.5f + 0.5f);
+
+                            Vector2 dir = angle.ToRotationVector2();
+                            Vector2 sparkVelocity = dir * radialSpeed;
+
+                            // 金色系渐变：橙金 -> 亮金黄
+                            Color startColor = Color.Lerp(Color.Orange, Color.Gold,
+                                0.5f + 0.5f * (float)Math.Sin(baseAngle + progress * 6f));
+                            Color endColor = Color.Lerp(startColor, Color.Yellow, 0.6f);
+
+                            //CritSpark spark = new CritSpark(
+                            //    Projectile.Center,
+                            //    sparkVelocity + owner.velocity, // 仍略带玩家速度
+                            //    startColor,
+                            //    endColor,
+                            //    1.05f,  // 稍微放大一点
+                            //    18      // 略长一点寿命，配合宏伟感
+                            //);
+                            //GeneralParticleHandler.SpawnParticle(spark);
+                            //ownedCritSparks.Add(spark);
+                        }
+                    }
+
+                }
+
+                // ===========================
+                // 4）相对坐标跟随模块（放在 AI 最底部）
+                // ===========================
+                if (!Main.dedServ)
+                {
+                    // 计算本帧弹幕位移
+                    if (lastCenter == Vector2.Zero)
+                        lastCenter = Projectile.Center;
+
+                    Vector2 delta = Projectile.Center - lastCenter;
+                    lastCenter = Projectile.Center;
+
+                    // BloomRing 跟随弹幕移动
+                    for (int i = ownedBloomRings.Count - 1; i >= 0; i--)
+                    {
+                        BloomRing p = ownedBloomRings[i];
+
+                        if (p.Time >= p.Lifetime)
+                        {
+                            ownedBloomRings.RemoveAt(i);
+                            continue;
+                        }
+
+                        // 让粒子整体随着弹幕平移
+                        p.Position += delta;
+                    }
+
+                    // CritSpark 跟随弹幕移动
+                    for (int i = ownedCritSparks.Count - 1; i >= 0; i--)
+                    {
+                        CritSpark p = ownedCritSparks[i];
+
+                        if (p.Time >= p.Lifetime)
+                        {
+                            ownedCritSparks.RemoveAt(i);
+                            continue;
+                        }
+
+                        // 保留自身辐射运动 + 再叠加弹幕位移
+                        p.Position += delta;
+                    }
+                }
             }
             else
             {
                 Projectile.Kill();
             }
-
-
-
-
-          
-
-
         }
+
+
+
+
+
+
+
+
+
 
         public override bool PreDraw(ref Color lightColor)
         {

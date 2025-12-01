@@ -65,13 +65,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private float vfxPhase = 0f;    // 用于双螺旋的相位推进
 
         // 科技蓝主色调 + 辅助白色
-        private static readonly Color[] TechBluePalette = new Color[]
+        private static readonly Color[] GoldPurplePalette = new Color[]
         {
-    new Color( 80, 200, 255),  // Electric Blue
-    new Color(120, 220, 255),  // Light Tech Blue
-    new Color( 64, 180, 255),  // Deep Sky Blue
-    Color.Cyan,                // 青色
-    Color.WhiteSmoke           // 辅色（偏白）
+            new Color(255, 215,   0), // 主金色（金色本体）
+            new Color(255, 215,   0), // 辅助金色（亮度略低）
+            new Color(120,  90, 160), // 主紫色（偏暗紫）
+            new Color(120,  90, 160)  // 辅助紫色（亮度略低）
         };
 
         public override void AI()
@@ -142,7 +141,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 // ---------------- ① ConstellationRingVFX ----------------
                 if (Main.rand.NextFloat() < 0.2f * fxFactor) // 频率受 fxFactor 控制
                 {
-                    Color techBlue = TechBluePalette[Main.rand.Next(0, 4)] * 0.9f;
+                    Color techBlue = GoldPurplePalette[Main.rand.Next(0, 4)] * 0.9f;
 
                     ConstellationRingVFX constellationRing = new ConstellationRingVFX(
                         center,
@@ -168,7 +167,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     Vector2 pos = center + dir * (3f * 16f);
                     float spd = Main.rand.NextFloat(2.8f, 5.6f);
 
-                    Color c = TechBluePalette[Main.rand.Next(TechBluePalette.Length)];
+                    Color c = GoldPurplePalette[Main.rand.Next(GoldPurplePalette.Length)];
 
                     CrackParticle crack = new CrackParticle(
                         pos,
@@ -200,8 +199,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     Vector2 tang1 = n1.RotatedBy(MathHelper.PiOver2) * 0.6f;
                     Vector2 tang2 = n2.RotatedBy(MathHelper.PiOver2) * 0.6f;
 
-                    Color helixColor1 = TechBluePalette[Main.rand.Next(0, 4)] * 0.135f;
-                    Color helixColor2 = TechBluePalette[Main.rand.Next(0, 4)] * 0.135f;
+                    Color helixColor1 = GoldPurplePalette[Main.rand.Next(0, 4)] * 0.135f;
+                    Color helixColor2 = GoldPurplePalette[Main.rand.Next(0, 4)] * 0.135f;
 
                     AltSparkParticle spark1 = new AltSparkParticle(
                         p1, tang1, false,

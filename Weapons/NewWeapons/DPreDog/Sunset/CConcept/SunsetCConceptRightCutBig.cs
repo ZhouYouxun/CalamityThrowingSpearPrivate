@@ -97,7 +97,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
         public override void AI()
         {
-
+            //Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
 
             // 初始化：寻找最近敌人
             if (!initialized)
@@ -127,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Projectile.velocity = Vector2.Zero;
 
                 // 悬空时固定朝向正下方
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.PiOver4 + MathHelper.PiOver4;
+                Projectile.rotation = Projectile.velocity.ToRotation();
             }
             else if (lifeTimer == smashFrame)
             {
@@ -154,7 +154,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             else
             {
                 // 保持高速往下冲刺
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+                Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver4 - MathHelper.PiOver4;
             }
 
 
@@ -315,8 +315,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            base.ModifyHitNPC(target, ref modifiers);
+        }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
+
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/电弧发射器发射")
     with
             { Volume = 2.5f, Pitch = 0.0f }, Projectile.Center);
@@ -326,7 +331,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             // （可选）音效 + 轻微屏幕震动
             // SoundEngine.PlaySound(SoundID.Item74, target.Center);
-            float shake = 96f;
+            float shake = 326f;
             float kLerp = Utils.GetLerpValue(1000f, 0f, Vector2.Distance(target.Center, Main.LocalPlayer.Center), true);
             Main.LocalPlayer.Calamity().GeneralScreenShakePower =
                 Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shake * kLerp);

@@ -28,65 +28,95 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
         public override bool PreDraw(ref Color lightColor)
         {
             SpriteBatch spriteBatch = Main.spriteBatch;
+
             Texture2D texture = ModContent.Request<Texture2D>(
                 "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/BForget/SunsetBForgetLeft"
             ).Value;
 
-            // 1. 绘制拖尾（原逻辑保留）
-            for (int i = 0; i < Projectile.oldPos.Length; i++)
-            {
-                Color color = i % 2 == 0 ? Color.Yellow : Color.LightGreen;
-                color *= 0.6f;
-                color.A = 0;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
+            Vector2 origin = texture.Size() * 0.5f;
 
-                Vector2 drawPosition = Projectile.oldPos[i] + Projectile.Size * 0.5f
-                                       - Main.screenPosition
-                                       + new Vector2(0f, Projectile.gfxOffY);
-
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPosition,
-                    null,
-                    color,
-                    Projectile.rotation,
-                    texture.Size() * 0.5f,
-                    0.8f,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            // 2. 在武器头部绘制 Extra_89 脉动圆环
-            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[89].Value;
-
-            // 计算武器头部位置（基于朝向和贴图一半宽度）
-            Vector2 headOffset = Projectile.velocity.SafeNormalize(Vector2.UnitY)
-                                 * (texture.Width * 0.5f * 0.8f); // 0.8f = 上面拖尾缩放
-            Vector2 headPos = Projectile.Center + headOffset - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-
-            float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
-
+            // ================================
+            // 1. 主题色描边（干净、柔光）
+            // ================================
+            Color outlineColor = new Color(120, 220, 255) * 0.65f; // 淡蓝青，适合梦境风
             for (int i = 0; i < 4; i++)
             {
-                float angle = MathHelper.TwoPi * i / 4f + Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 0.6f;
-                Color ringColor = Color.AliceBlue * 1.3f; // 改成亮绿色
-                float scale = (0.25f + 0.05f * i) * pulse * 2.5f;
+                Vector2 off = (MathHelper.PiOver2 * i).ToRotationVector2() * 3f;
+                Main.EntitySpriteDraw(texture, drawPos + off, null, outlineColor, Projectile.rotation,
+                    origin, Projectile.scale, SpriteEffects.None, 0);
+            }
+
+            // ================================
+            // 2. 绘制本体（保持清晰）
+            // ================================
+            Main.EntitySpriteDraw(
+                texture,
+                drawPos,
+                null,
+                Projectile.GetAlpha(lightColor),
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0
+            );
+
+            // ================================
+            // 3. 椭圆 + 正弦抖动环绕光点
+            // ================================
+            //Texture2D glowTex = Terraria.GameContent.TextureAssets.Extra[98].Value;
+
+
+            float time = Main.GlobalTimeWrappedHourly * 2.4f;
+            float a = 18f;
+            float b = 10f;
+            int count = 6;
+            float wobbleAmp = 3.6f;
+            float wobbleSpeed = 3.2f;
+
+            for (int i = 0; i < count; i++)
+            {
+                float t = time + i * MathHelper.TwoPi / count;
+
+                // 椭圆轨道
+                Vector2 ellipsePos = new Vector2(
+                    (float)Math.Cos(t) * a,
+                    (float)Math.Sin(t) * b
+                );
+
+                // 正弦抖动
+                float wobble = (float)Math.Sin(t * wobbleSpeed) * wobbleAmp;
+                Vector2 wobbleOffset = new Vector2(
+                    (float)Math.Cos(t + MathHelper.PiOver2),
+                    (float)Math.Sin(t + MathHelper.PiOver2)
+                ) * wobble;
+
+                Vector2 finalPos = Projectile.Center + ellipsePos + wobbleOffset;
+                finalPos -= Main.screenPosition;
+
+                Color glowColor = new Color(150, 240, 255) * (0.8f * (1f - Projectile.alpha / 255f));
+                float scale = 1.0f + 0.15f * (float)Math.Sin(t * 1.7f + i);
 
                 Main.EntitySpriteDraw(
-                    ringTex,
-                    headPos,
+                    texture,            // ✔ 使用本体贴图
+                    finalPos,
                     null,
-                    ringColor,
-                    angle,
-                    ringTex.Size() * 0.5f,
+                    glowColor,
+                    Projectile.rotation,   // ⭐ 关键修改：朝向跟本体完全一致
+                    texture.Size() * 0.5f,
                     scale,
                     SpriteEffects.None,
                     0
                 );
             }
 
-            return false; // 告诉游戏我们自己画完了
+
+
+            // 我们处理了所有绘制
+            return false;
         }
+
 
 
         public static class SunsetBForgetParticleManager
@@ -98,11 +128,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 42;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 2;
             Projectile.timeLeft = 150;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
@@ -112,6 +142,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
         private bool killedByRightCheck = false;
+        private bool firstHitTriggered = false;
 
         public override void OnSpawn(IEntitySource source)
         {
@@ -136,6 +167,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
         {
             // ===== 统一朝向（保持你的原始逻辑）=====
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+
+            // ========== 击中第一次后的减速与透明化 ==========
+            if (firstHitTriggered)
+            {
+                // 强力减速
+                Projectile.velocity *= 0.94f;
+
+                // 逐渐变透明（0 为完全亮，255 完全透明）
+                Projectile.alpha += 12;
+                if (Projectile.alpha > 255)
+                    Projectile.alpha = 255;
+            }
+
 
             // ===== 先调用外包：蓝/紫孢子 + 正弦信号波纹（持续释放）=====
             CalamityThrowingSpear.CTSLightingBoltsSystem.Spawn_PlantTechSporeTrail(
@@ -312,6 +357,127 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
         public override void OnKill(int timeLeft)
         {
+            Vector2 center = Projectile.Center;
+
+            // ========== 1. 椭圆冲击波（主冲击波） ==========
+            {
+                float rot = Projectile.rotation;
+                Particle pulse = new DirectionalPulseRing(
+                    center,
+                    Projectile.velocity.SafeNormalize(Vector2.UnitX) * 2.1f,        // 有明显方向性的冲击
+                    new Color(100, 255, 200),                                     // 蓝绿梦境色
+                    new Vector2(1.2f, 3.2f),                                      // 椭圆比例（数学椭圆 a,b）
+                    rot - MathHelper.PiOver4,                                     // 椭圆朝向
+                    0.24f,                                                        // 初始 scale
+                    0.045f,                                                       // 最终 scale（外扩速度）
+                    28                                                            // lifetime
+                );
+                GeneralParticleHandler.SpawnParticle(pulse);
+            }
+
+            // ========== 2. 高能 EXO 光喷射（喷射特效） ==========  
+            int exoCount = 18; // 建议 6~10 个
+            for (int i = 0; i < exoCount; i++)
+            {
+                float angle = Projectile.rotation - MathHelper.PiOver4 + Main.rand.NextFloat(-0.7f, 0.7f); // ±40° 扩散
+                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3.4f, 6.2f);
+
+                SquishyLightParticle exo = new SquishyLightParticle(
+                    center,
+                    vel,
+                    0.33f,                                                         // scale（大且亮）
+                    Main.rand.NextBool() ? Color.Cyan : Color.White,              // 青蓝/白色交错（梦境能量）
+                    32,                                                           // lifetime
+                    opacity: 1f,
+                    squishStrenght: 1.2f,
+                    maxSquish: 3.2f,
+                    hueShift: Main.rand.NextFloat(-0.04f, 0.04f)                  // 微小色相漂移
+                );
+                GeneralParticleHandler.SpawnParticle(exo);
+            }
+
+            // ========== 3. 数学方块碎片（几何能量碎裂） ==========
+            int squareCount = 5;
+            for (int i = 0; i < squareCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / squareCount + Main.rand.NextFloat(-0.4f, 0.4f);
+                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(1.2f, 3f);
+
+                SquareParticle sq = new SquareParticle(
+                    center,
+                    vel,
+                    false,
+                    32 + Main.rand.Next(12),
+                    1.4f + Main.rand.NextFloat(0.6f),
+                    Color.Cyan * 1.3f
+                );
+                GeneralParticleHandler.SpawnParticle(sq);
+            }
+
+            // ====================================================================
+            // ========== 4. 数学魔法阵（GlowOrb ★ 玫瑰曲线 + 旋转相位） ==========
+            // ====================================================================
+            //
+            // 使用 6 个 GlowOrb 点：
+            //   - 构成正六边形
+            //   - 再叠加玫瑰曲线 r = sin(3θ)
+            //   - 叠加旋转相位 offset
+            //   - 形成完美青绿梦境法阵
+            //
+            // ====================================================================
+
+            int nodes = 6;
+            float baseR = 36f;                     // 六边形半径
+            float phase = Main.rand.NextFloat();   // 随机旋转相位（确保每次不同）
+            float roseAmp = 9f;                    // 玫瑰曲线振幅
+
+            for (int i = 0; i < nodes; i++)
+            {
+                float theta = MathHelper.TwoPi * i / nodes + phase;
+
+                // 六边形 + 玫瑰曲线（r = baseR + A*sin(3θ)）
+                float r = baseR + roseAmp * (float)Math.Sin(3f * theta);
+
+                Vector2 pos = center + theta.ToRotationVector2() * r;
+
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    pos,
+                    Vector2.Zero,
+                    false,
+                    7,                              // lifetime: 非常短暂，但亮
+                    0.9f,                            // scale
+                    new Color(120, 255, 235),        // 蓝绿梦境色
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
+
+            // ========== 结束 ==========
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            // 第一次命中后触发减速与消散
+            if (!firstHitTriggered)
+            {
+                firstHitTriggered = true;
+                Projectile.timeLeft = 20;
+            }
+
+            // 施加 Debuff 给敌人
+            target.AddBuff(ModContent.BuffType<SunsetBForgetEDebuff>(), 300); // 5 秒
+
+            // 施加 Buff 给玩家
+            Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetBForgetPBuff>(), 300); // 5 秒
+
+            DoSB();
+        }
+
+
+        private void DoSB()
+        {
 
             if (killedByRightCheck)
             {
@@ -411,24 +577,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             }
 
 
-
-
-
-
-
-
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        {
-          
 
-            // 施加 Debuff 给敌人
-            target.AddBuff(ModContent.BuffType<SunsetBForgetEDebuff>(), 300); // 5 秒
-
-            // 施加 Buff 给玩家
-            Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetBForgetPBuff>(), 300); // 5 秒
-        }
 
         // 生成绿色触手的方法
         private void SpawnGreenTentacle(Vector2 tentacleVelocity, int damage)

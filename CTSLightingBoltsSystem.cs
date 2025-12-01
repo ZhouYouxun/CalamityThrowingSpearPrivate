@@ -1468,50 +1468,70 @@ namespace CalamityThrowingSpear
         }
 
 
-        // ✦ 蓝金能量光点：持续往上漂浮
+        // ✦ 升级版：太阳耀斑螺旋光点喷射
         public static void Spawn_BlueGoldFloaters(Vector2 center, float intensity = 1f)
         {
-            // 颜色：亮蓝 & 亮金
+            // 颜色：亮蓝 & 亮金（交替、融合）
             Color[] palette = new Color[]
             {
         new Color(80, 200, 255),   // 亮蓝
-        new Color(255, 215, 0)     // 金色
+        new Color(255, 215, 0),    // 金
             };
 
-            // 每帧大约 1~2 个光点（根据 intensity 调整）
-            int spawnCount = Main.rand.NextFloat() < 0.5f * intensity ? 1 : 0;
-            for (int i = 0; i < spawnCount; i++)
+            // 生成数量：5~7 个
+            int count = Main.rand.Next(5, 7);
+
+            // 时间参数（数学结构核心）
+            float t = Main.GlobalTimeWrappedHourly;
+            float pulse = (float)Math.Sin(t * 3.4f) * 0.5f + 0.5f; // 节奏脉动 0~1
+
+            for (int i = 0; i < count; i++)
             {
                 PrettySparkleParticle p = _poolPrettySparkle.RequestParticle();
 
-                // 基础颜色：蓝金交替
+                // 随机颜色（蓝 / 金）
                 p.ColorTint = palette[Main.rand.Next(palette.Length)];
 
-                // 出生位置：中心附近随机
-                p.LocalPosition = center + Main.rand.NextVector2Circular(8f, 8f);
+                // === 数学结构：螺旋偏移 + 噪声抖动 ===
+                float angle = (float)(i * MathHelper.TwoPi / count)
+                              + (float)Math.Sin(t * 2.2f) * 0.4f;  // 随时间轻旋转
 
-                // 初速度：主要往上 + 少量水平扰动
-                p.Velocity = new Vector2(
-                    Main.rand.NextFloat(-0.3f, 0.3f),
-                    Main.rand.NextFloat(-1.6f, -0.8f)   // 向上漂浮
+                float radius = 6f + (float)Math.Sin(t * 5.1f + i) * 3f; // 半径抖动
+                Vector2 spiralOffset = angle.ToRotationVector2() * radius;
+
+                // 出生位置：中心 + 数学螺旋偏移 + 随机噪声
+                p.LocalPosition = center
+                                  + spiralOffset
+                                  + Main.rand.NextVector2Circular(4f, 4f);
+
+                // === 夸张速度：往上喷射 + 扰动 + 螺旋方向影响 ===
+                Vector2 baseVelocity = new Vector2(
+                    Main.rand.NextFloat(-1.5f, 1.5f),   // 左右扩散
+                    Main.rand.NextFloat(-4.0f, -2.0f)   // 强烈向上
                 );
 
-                // 缩放：稍微闪亮
+                // 螺旋方向给速度形态
+                Vector2 swirlDir = angle.ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f);
+
+                // 最终速度 = 主喷射 + 螺旋结构
+                p.Velocity = baseVelocity + swirlDir;
+
+                // === 缩放：脉动闪烁的星光 ===
                 p.Scale = new Vector2(
-                    Main.rand.NextFloat(1.3f, 1.7f),
-                    Main.rand.NextFloat(0.7f, 1.0f)
-                );
+                    Main.rand.NextFloat(1.6f, 2.4f),
+                    Main.rand.NextFloat(0.9f, 1.2f)
+                ) * (1.0f + pulse * 0.15f);
 
-                // 生命周期：30~45 帧
-                p.TimeToLive = Main.rand.Next(30, 46);
-                p.FadeInNormalizedTime = 0.05f;
-                p.FadeOutNormalizedTime = 0.9f;
+                // === 生命周期 ===
+                p.TimeToLive = Main.rand.Next(28, 46);
+                p.FadeInNormalizedTime = 0.08f;
+                p.FadeOutNormalizedTime = 0.88f;
                 p.FadeInEnd = (int)(p.TimeToLive * 0.25f);
-                p.FadeOutStart = (int)(p.TimeToLive * 0.7f);
+                p.FadeOutStart = (int)(p.TimeToLive * 0.65f);
                 p.FadeOutEnd = p.TimeToLive;
 
-                // 加法混合，让它更亮
-                p.AdditiveAmount = 0.55f;
+                // === 更亮、更尖锐的能量边缘 ===
+                p.AdditiveAmount = 0.65f;
 
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }

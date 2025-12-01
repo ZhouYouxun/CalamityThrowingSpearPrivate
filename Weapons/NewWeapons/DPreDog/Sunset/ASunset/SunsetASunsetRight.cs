@@ -14,7 +14,8 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using CalamityMod.Particles;
 using Terraria.Audio;
-using Terraria.Graphics.CameraModifiers; // PunchCameraModifier
+using Terraria.Graphics.CameraModifiers;
+using Microsoft.Xna.Framework.Graphics; // PunchCameraModifier
 
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
@@ -30,9 +31,66 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Texture2D tex = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+
+            // 计算蓄力比例：0 → 1
+            float chargeProgress = 0f;
+            if (CurrentState == BehaviorState.Aim)
+            {
+                chargeProgress = MathHelper.Clamp(chargeTimer / 300f, 0f, 1f);
+            }
+            else if (CurrentState == BehaviorState.Dash)
+            {
+                // 冲刺期间固定满值
+                chargeProgress = 1f;
+            }
+
+            // 🌟 描边宽度，从 0px → 6px
+            float outlineWidth = MathHelper.Lerp(0f, 6f, chargeProgress);
+
+            // 🌟 描边颜色，高亮黄（类似太阳/斩击风格）
+            Color outlineColor = Color.Lerp(Color.Gold, Color.Yellow, 0.5f) * chargeProgress;
+            outlineColor.A = 0;
+
+            // ===== 绘制描边（8 方向循环）=====
+            if (outlineWidth > 0f)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector2 offset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * outlineWidth;
+
+                    Main.spriteBatch.Draw(
+                        tex,
+                        drawPos + offset,
+                        null,
+                        outlineColor,
+                        Projectile.rotation,
+                        origin,
+                        Projectile.scale,
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+            }
+
+            // ===== 绘制本体 =====
+            Main.spriteBatch.Draw(
+                tex,
+                drawPos,
+                null,
+                Projectile.GetAlpha(lightColor),
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0f
+            );
+
             return false;
         }
+
 
         public override void SetDefaults()
         {
@@ -162,78 +220,116 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 }
 
 
-
-                // 枪头位置
-                Vector2 HeadPosition = Projectile.Center
-                    + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f
-                    + Main.rand.NextVector2Circular(5f, 5f);
-
-                // 正前方方向（归一化）
-                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-
-                // 随机 + 数学扰动角度（波动感）
-                float time = Main.GameUpdateCount * 0.15f;
-                float wave = (float)Math.Sin(time + Projectile.whoAmI * 0.5f) * 0.2f; // 统一波动
-                float randomOffset = Main.rand.NextFloat(-0.25f, 0.25f);              // 个体随机扰动
-                float angleOffset = wave + randomOffset;
-
-                // 最终朝向
-                Vector2 forwardDir = forward.RotatedBy(angleOffset);
-
-                // ========== Dust（前向能量雾） ==========
-                if (Main.rand.NextBool(2))
                 {
-                    Vector2 spawnOffset = Main.rand.NextVector2Circular(20f, 30f); // 在枪头附近范围生成
-                    Vector2 velocity = forwardDir * Main.rand.NextFloat(2f, 4f);   // 前向速度
 
-                    Dust d = Dust.NewDustPerfect(
-                        HeadPosition + spawnOffset,
-                        Main.rand.NextBool() ? DustID.YellowTorch : DustID.IchorTorch,
-                        velocity,
-                        150,
-                        Color.Gold,
-                        1.1f
-                    );
-                    d.noGravity = true;
-                    d.fadeIn = 0.8f;
-                    d.scale *= Main.rand.NextFloat(0.8f, 1.2f);
+                    // 枪头位置
+                    Vector2 HeadPosition = Projectile.Center
+                        + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f
+                        + Main.rand.NextVector2Circular(5f, 5f);
+
+                    // 正前方方向（归一化）
+                    Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+
+                    // 随机 + 数学扰动角度（波动感）
+                    float time = Main.GameUpdateCount * 0.15f;
+                    float wave = (float)Math.Sin(time + Projectile.whoAmI * 0.5f) * 0.2f; // 统一波动
+                    float randomOffset = Main.rand.NextFloat(-0.25f, 0.25f);              // 个体随机扰动
+                    float angleOffset = wave + randomOffset;
+
+                    // 最终朝向
+                    Vector2 forwardDir = forward.RotatedBy(angleOffset);
+
+                    // ========== Dust（前向能量雾：速度×3 + 环带数学结构） ==========
+                    if (Main.rand.NextBool(2))
+                    {
+                        // 在前方构造一条带有正弦起伏的“能量环带”
+                        float ringPhase = time * 0.9f;
+                        float ringAngle = Main.rand.NextFloat(-(MathHelper.Pi / 3f), (MathHelper.Pi / 3f));
+                        float ringRadius = 22f + 8f * (float)Math.Sin(ringPhase + ringAngle * 2f); // 半规则起伏半径
+
+                        Vector2 spawnOffset = forwardDir.RotatedBy(MathHelper.PiOver2 + ringAngle) * ringRadius;
+
+                        // 前向速度至少是原来的三倍（2~4 → 6~12），并叠加一层时间相位扰动
+                        Vector2 velocity = forwardDir.RotatedBy((float)Math.Sin(time * 1.3f) * 0.1f)
+                                           * Main.rand.NextFloat(6f, 12f);
+
+                        Dust d = Dust.NewDustPerfect(
+                            HeadPosition + spawnOffset,
+                            Main.rand.NextBool() ? DustID.YellowTorch : DustID.IchorTorch,
+                            velocity,
+                            150,
+                            Color.Gold,
+                            1.1f
+                        );
+                        d.noGravity = true;
+                        d.fadeIn = 0.8f;
+                        d.scale *= Main.rand.NextFloat(0.8f, 1.2f);
+                    }
+
+                    // ========== SparkParticle（前向拖尾：速度×3 + 正弦调制） ==========
+                    if (Main.rand.NextBool(1))
+                    {
+                        // 在 forwardDir 附近做更大的角度摆动，同时让速度随正弦变化
+                        float sparkPhase = time * 1.4f + Projectile.whoAmI * 0.3f;
+                        float sparkAngleOffset = Main.rand.NextFloat(-0.25f, 0.25f)
+                                                 + 0.12f * (float)Math.Sin(sparkPhase);
+
+                        float speedLerp = (float)Math.Sin(Main.rand.NextFloat() * MathHelper.Pi); // 0→1→0
+                        float speed = MathHelper.Lerp(7.5f, 13.5f, speedLerp); // 原 2.5~4.5 ×3
+
+                        Vector2 vel = forwardDir.RotatedBy(sparkAngleOffset) * speed;
+
+                        Particle spark = new SparkParticle(
+                            HeadPosition + Main.rand.NextVector2Circular(12f, 12f),
+                            vel,
+                            false,
+                            Main.rand.Next(18, 26),
+                            Main.rand.NextFloat(0.9f, 1.2f),
+                            Color.Orange
+                        );
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+
+                    // ========== PointParticle（尖锐能量碎片：速度×3 + 半规则扇形） ==========
+                    if (Main.rand.NextBool(1))
+                    {
+                        // 以12等分为基准，在前方构造一个“半规则扇形射线阵”
+                        float baseAngle = MathHelper.TwoPi / 12f * Main.rand.Next(12); // 12 等分
+                        float localT = Main.rand.NextFloat();                           // 0~1，用来做非线性分布
+                        float angle = baseAngle + (localT - 0.5f) * 0.6f;               // 每条射线有轻微扩散
+
+                        // 速度从 9~18（原 3~6 ×3），并用正弦做一层权重，让中段更强
+                        float speedFactor = (float)Math.Sin(localT * MathHelper.Pi) * 0.5f + 0.5f; // 0.5~1
+                        float speed = MathHelper.Lerp(9f, 18f, speedFactor);
+
+                        Vector2 vel = forwardDir.RotatedBy(angle * 0.08f) * speed;
+
+                        PointParticle point = new PointParticle(
+                            HeadPosition,
+                            vel,
+                            false,
+                            Main.rand.Next(12, 18),
+                            1.1f + Main.rand.NextFloat(0.3f),
+                            Main.rand.NextBool() ? Color.Yellow : Color.Orange
+                        );
+                        GeneralParticleHandler.SpawnParticle(point);
+                    }
+
                 }
 
-                // ========== SparkParticle（前向拖尾） ==========
-                if (Main.rand.NextBool(3))
-                {
-                    Vector2 vel = forwardDir.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f))
-                                  * Main.rand.NextFloat(2.5f, 4.5f);
 
-                    Particle spark = new SparkParticle(
-                        HeadPosition + Main.rand.NextVector2Circular(12f, 12f),
-                        vel,
-                        false,
-                        Main.rand.Next(18, 26),
-                        Main.rand.NextFloat(0.9f, 1.2f),
-                        Color.Orange
-                    );
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
 
-                // ========== PointParticle（尖锐能量碎片） ==========
-                if (Main.rand.NextBool(4))
-                {
-                    // 半规则：以12等分为基准，+ 随机扰动
-                    float baseAngle = MathHelper.TwoPi / 12 * Main.rand.Next(12);
-                    float angle = baseAngle + Main.rand.NextFloat(-0.2f, 0.2f);
-                    Vector2 vel = forwardDir.RotatedBy(angle * 0.05f) * Main.rand.NextFloat(3f, 6f);
 
-                    PointParticle point = new PointParticle(
-                        HeadPosition,
-                        vel,
-                        false,
-                        Main.rand.Next(12, 18),
-                        1.1f + Main.rand.NextFloat(0.3f),
-                        Main.rand.NextBool() ? Color.Yellow : Color.Orange
-                    );
-                    GeneralParticleHandler.SpawnParticle(point);
-                }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -311,7 +407,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                     Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
                     Vector2 tan = dir.RotatedBy(MathHelper.PiOver2);
 
-                    int dustType = (n % 2 == 0) ? DustID.Electric : DustID.UltraBrightTorch;
+                    int dustType = (n % 2 == 0) ? DustID.Lava : DustID.Lava;
                     Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.5f + 0.5f * ease);
 
                     Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.Zero, 150, c, 0.9f + 0.6f * ease);
@@ -335,7 +431,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                         float rr = MathF.Exp(0.9f * t) * (8f + 28f * ease);
                         Vector2 pos = head + new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * rr;
 
-                        int type = (k % 2 == 0) ? DustID.GemDiamond : DustID.YellowTorch;
+                        int type = (k % 2 == 0) ? DustID.Firefly : DustID.YellowTorch;
                         Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.3f + 0.7f * t);
                         float sc = (0.8f + 0.9f * t) * (0.8f + 0.4f * ease);
 
@@ -360,7 +456,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                         Vector2 dir = a.ToRotationVector2();
                         Vector2 pos = head + dir * (arcR + t);
 
-                        Dust d = Dust.NewDustPerfect(pos, DustID.UltraBrightTorch, Vector2.Zero, 160, Color.Lerp(Color.White, Color.Orange, 0.4f), 0.8f + 0.4f * ease);
+                        Dust d = Dust.NewDustPerfect(pos, DustID.Lava, Vector2.Zero, 160, Color.Lerp(Color.White, Color.Orange, 0.4f), 0.8f + 0.4f * ease);
                         d.noGravity = true;
                         d.velocity = dir * (0.5f + 0.8f * ease) + dir.RotatedBy(MathHelper.PiOver2) * (0.45f + 0.3f * ease);
                     }

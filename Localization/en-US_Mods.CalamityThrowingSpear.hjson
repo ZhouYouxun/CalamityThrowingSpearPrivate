@@ -54,6 +54,10 @@ Projectiles: {
 			NuclearFuelRodLightCircle.DisplayName: Nuclear Fuel Rod Light Circle
 			SunsetCConceptRightCutBig.DisplayName: Sunset C Concept Right Cut Big
 			SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
+			SunsetCConceptRightCut1Time.DisplayName: Sunset C Concept Right Cut1 Time
+			SunsetCConceptRightCut2Item.DisplayName: Sunset C Concept Right Cut2 Item
+			SunsetCConceptRightCut3Space.DisplayName: Sunset C Concept Right Cut3 Space
+			SunsetCConceptRightCut4Energy.DisplayName: Sunset C Concept Right Cut4 Energy
 		}
 
 		BPrePlantera: {

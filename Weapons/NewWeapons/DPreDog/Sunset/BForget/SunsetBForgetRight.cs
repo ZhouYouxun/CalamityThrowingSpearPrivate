@@ -15,6 +15,7 @@ using Terraria.DataStructures;
 using static CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget.SunsetBForgetLeft;
 using Terraria.GameContent.Drawing;
 using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 {
@@ -29,7 +30,62 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1
+                ? SpriteEffects.FlipHorizontally
+                : SpriteEffects.None;
+
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 origin = texture.Size() * 0.5f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+            float rotation = Projectile.rotation + (Projectile.spriteDirection == -1 ? MathHelper.PiOver2 : 0f);
+
+            // ===== 动态包边颜色（黄绿交替，可随时间变化）=====
+            // 利用 Main.GlobalTimeWrappedHourly 做动态旋转，使颜色条纹不断流动
+            float time = Main.GlobalTimeWrappedHourly * 3f;
+            float offsetRadius = 6f;     // 包边半径大小
+            int segments = 18;           // 多少条边缘光
+
+            for (int i = 0; i < segments; i++)
+            {
+                // 动态旋转，让颜色不断流动
+                float ang = (MathHelper.TwoPi * i / segments) + time;
+
+                Vector2 offset = ang.ToRotationVector2() * offsetRadius;
+
+                // 经过 sin 波动决定颜色在黄 ↔ 绿之间变化
+                float wave = (float)Math.Sin(ang + time * 0.7f);
+                Color edgeColor = Color.Lerp(new Color(230, 255, 60), new Color(100, 255, 120), (wave + 1f) * 0.5f);
+
+                edgeColor *= 0.55f; // 半透明辉光
+                edgeColor.A = 0;
+
+                Main.spriteBatch.Draw(
+                    texture,
+                    drawPos + offset,
+                    null,
+                    edgeColor,
+                    rotation,
+                    origin,
+                    Projectile.scale,
+                    spriteEffects,
+                    0f
+                );
+            }
+
+            // ===== 绘制本体 =====
+            Main.spriteBatch.Draw(
+                texture,
+                drawPos,
+                null,
+                Projectile.GetAlpha(lightColor),
+                rotation,
+                origin,
+                Projectile.scale,
+                spriteEffects,
+                0f
+            );
+
             return false;
         }
 
@@ -221,6 +277,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
 
             Vector2 gunHead = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitX) * 80f;
+
             CTSLightingBoltsSystem.Spawn_BlueGoldFloaters(gunHead, 1f);
 
 

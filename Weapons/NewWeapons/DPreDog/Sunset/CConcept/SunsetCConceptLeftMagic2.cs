@@ -106,7 +106,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Player owner = Main.player[parent.owner];
                 SunsetCConceptLeftListener parentProj = parent.ModProjectile as SunsetCConceptLeftListener;
 
-                Vector2 gunHeadPosition = owner.Center + parentProj.InitialDirection.ToRotationVector2() * 80f;
+                Vector2 gunHeadPosition = owner.Center + parentProj.InitialDirection.ToRotationVector2() * 150f; // 220是最尖端，150是尖端中心点
                 Projectile.Center = gunHeadPosition;
                 Projectile.timeLeft = 60;
             }

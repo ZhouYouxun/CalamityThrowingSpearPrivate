@@ -150,7 +150,7 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
 
 
         // **注册拖尾 Shader**
-        [System.Obsolete]
+        [global::System.Obsolete]
         private static void RegisterTrailShader(Effect shader, string passName, string registrationName)
         {
             Ref<Effect> shaderPointer = new(shader);
@@ -165,7 +165,7 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
         //    GameShaders.Misc[$"ModNamespace:{registrationName}"] = passParamRegistration;
         //}
 
-
+        
         // 统一的 Shader 加载方法
         private static Effect AddShader(string name)
         {

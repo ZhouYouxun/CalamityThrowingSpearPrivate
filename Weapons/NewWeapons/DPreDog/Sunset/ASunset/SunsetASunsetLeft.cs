@@ -12,6 +12,9 @@ using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Projectiles.Typeless;
 using Terraria.Audio;
+using Microsoft.Xna.Framework.Graphics;
+using CalamityMod.Graphics.Primitives;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 {
@@ -26,9 +29,121 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            SpriteBatch sb = Main.spriteBatch;
+
+            Texture2D tex = ModContent.Request<Texture2D>(
+                Projectile.ModProjectile.Texture
+            ).Value;
+
+            Vector2 origin = tex.Size() * 0.5f;
+
+            // ======== 太阳黑子橙色调色盘 ========
+            Color[] firePalette = new Color[]
+            {
+        new Color(255, 200, 80),   // 金
+        new Color(255, 150, 40),   // 橙
+        new Color(255, 100, 30),   // 深橙
+        new Color(255, 60, 20),    // 红橙
+            };
+
+            // ======== EXO 风格：能量丝带拖尾（Primitive Trail） ========
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
+                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            // === 定义宽度函数 ===
+            float PrimitiveWidthFunction(float t)
+            {
+                float w = Projectile.width * 3.55f;
+                w *= MathHelper.SmoothStep(0.5f, 1.0f, Utils.GetLerpValue(0f, 0.25f, t, true));
+                return w;
+            }
+
+            // === 定义颜色函数（用你的橙色调色盘） ===
+            Color PrimitiveTrailColor(float t)
+            {
+                Color c = firePalette[(int)(t * firePalette.Length) % firePalette.Length];
+
+                // 透明度沿着尾迹递减
+                c *= Projectile.Opacity * (1f - t);
+
+                // 速度越快颜色越亮（能量感）
+                float speedBoost = Utils.GetLerpValue(1f, 6f, Projectile.velocity.Length(), true);
+                c *= speedBoost;
+
+                c.A = 0;
+                return c;
+            }
+
+
+            // === 将 oldPos 整体往前移动到“弹幕前端” ===
+            Vector2 frontOffset = Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.5f);
+
+            // 创建一个新的数组存前推后的 oldPos
+            Vector2[] shiftedOldPos = new Vector2[Projectile.oldPos.Length];
+            for (int i = 0; i < Projectile.oldPos.Length; i++)
+            {
+                shiftedOldPos[i] = Projectile.oldPos[i] + frontOffset;
+            }
+
+
+            // === 偏移：让丝带稍微抬起（增强立体感）===
+            Vector2 PrimitiveOffsetFunction(float t)
+            {
+                return Projectile.Size * 0.5f + Projectile.velocity.SafeNormalize(Vector2.Zero) * Projectile.scale * 2f;
+            }
+
+            // === 绘制能量丝带（关键）=====
+            PrimitiveRenderer.RenderTrail(
+                shiftedOldPos,
+                new(PrimitiveWidthFunction, PrimitiveTrailColor, PrimitiveOffsetFunction,
+                    shader: GameShaders.Misc["CalamityMod:SideStreakTrail"]),
+                60
+            );
+
+
+            // ======== 回到正常绘图（主体绘制） ========
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            // === 主体绘制 ===
+            {
+                Vector2 drawPos = Projectile.Center - Main.screenPosition;
+                sb.Draw(tex, drawPos, null, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+            }
+
+            // ======== 第二层：普通虚化拖尾（oldPos-based fade trail） ========
+            for (int i = 0; i < Projectile.oldPos.Length; i++)
+            {
+                Vector2 pos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+
+                // 透明度衰减
+                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
+
+                Color c = new Color(255, 160, 60) * 0.35f * fade; // 柔和橙色虚光
+                c.A = 0;
+
+                float scale = Projectile.scale * (0.6f + fade * 0.4f);
+
+                Main.spriteBatch.Draw(
+                    tex,
+                    pos,
+                    null,
+                    c,
+                    Projectile.rotation,
+                    tex.Size() * 0.5f,
+                    scale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+
             return false;
         }
+
+
 
         public override void SetDefaults()
         {
@@ -37,67 +152,154 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 3;
-            Projectile.timeLeft = 480;
+            Projectile.timeLeft = 180;
             Projectile.light = 0.5f;
+            Projectile.scale = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
+
         public override void AI()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            // 获取枪头位置
-            Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 0.35f;
-
+            // === 新太阳黑子调色盘（橙色 & 深褐色 权重提升） ===
+            Color[] firePaletteSolar = new Color[]
             {
-                if (Main.rand.NextBool(2)) // 控制生成频率
+        new Color(255, 150, 40),  // 橙色 ×2 权重由双次加入
+        new Color(255, 150, 40),
+
+        new Color(255, 210, 90),  // 金色
+        new Color(255, 235, 160), // 淡金色
+        new Color(255, 250, 200), // 淡黄色
+
+        new Color(180, 90, 30),   // 深褐 ×2
+        new Color(180, 90, 30),
+            };
+
+            // === 基础方向 ===
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.Zero);
+            Vector2 backDir = -forward;
+
+            // === 枪头 ===
+            Vector2 headPos = Projectile.Center + forward * (Projectile.width * 0.55f);
+
+            // === 时间因子（数学结构核心） ===
+            float t = Main.GameUpdateCount * 0.12f;
+            float pulse = (float)Math.Sin(t * 1.4f) * 0.5f + 0.5f;  // 节奏脉动 0~1
+            float swirl = (float)Math.Sin(t * 0.8f) * 6f;          // 半螺旋偏移
+            float micro = (float)Math.Cos(t * 2.5f) * 3f;          // 高频噪声微偏移
+
+            // ============================================================
+            // ① 主太阳喷流（SquishyLightParticle）── 半螺旋 + 羽状扩散
+            // ============================================================
+            if (Main.rand.NextBool(2))
+            {
+                for (int i = 0; i < 3; i++)
                 {
-                    // === 能量雾化粒子（WaterFlavoredParticle） ===
-                    float angle = Projectile.ai[0] * 0.1f + Main.GameUpdateCount * 0.2f;
-                    Vector2 offset = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle)) * 6f;
+                    Color c = firePaletteSolar[Main.rand.Next(firePaletteSolar.Length)];
 
-                    WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                        Projectile.Center + offset,                    // 中心 + 数学扰动
-                        -Projectile.velocity * 0.1f,                   // 轻微反向速度，制造扩散感
-                        false,                                         // 不受重力
-                        Main.rand.Next(18, 26),                        // 生命周期
-                        0.9f + Main.rand.NextFloat(0.3f),              // 缩放
-                        Color.Gold * Main.rand.NextFloat(0.8f, 1.0f)   // 能量黄色
+                    // 半螺旋偏移（加数学结构）
+                    Vector2 swirlOffset =
+                        forward.RotatedBy(MathHelper.PiOver2) * (swirl + Main.rand.NextFloat(-3f, 3f));
+
+                    Vector2 spawn = headPos + swirlOffset * 0.25f;
+
+                    // 速度：主后喷 + 扰动
+                    Vector2 vel = backDir
+                        .RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f))
+                        * Main.rand.NextFloat(1.1f, 3.1f);
+
+                    SquishyLightParticle flare = new SquishyLightParticle(
+                        spawn,
+                        vel,
+                        Main.rand.NextFloat(0.45f, 0.75f + pulse * 0.2f),
+                        c,
+                        Main.rand.Next(20, 36),
+                        1f,
+                        Main.rand.NextFloat(1.2f, 2.0f) + pulse * 0.3f
                     );
-                    GeneralParticleHandler.SpawnParticle(mist);
 
-                    // === 高能火花（PointParticle） ===
-                    for (int i = 0; i < 2; i++)
-                    {
-                        Vector2 sparkVel = (-Projectile.velocity * 0.5f)
-                                           .RotatedByRandom(MathHelper.ToRadians(12)); // 扰动角度
-
-                        PointParticle spark = new PointParticle(
-                            Projectile.Center,
-                            sparkVel,
-                            false,
-                            15,
-                            1.0f + Main.rand.NextFloat(0.3f),
-                            Main.rand.NextBool() ? Color.Orange : Color.Yellow
-                        );
-                        GeneralParticleHandler.SpawnParticle(spark);
-                    }
+                    GeneralParticleHandler.SpawnParticle(flare);
                 }
-
             }
 
-            // 计算双螺旋特效（仍然使用 Dust）
-            float phaseShift = (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 1f;
-            Vector2 leftOffset = Projectile.velocity.RotatedBy(MathHelper.PiOver2) * phaseShift;
-            Vector2 rightOffset = Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * phaseShift;
+            // ============================================================
+            // ② 日珥式雾光（WaterFlavoredParticle）── 高温膨胀感
+            // ============================================================
+            if (Main.rand.NextBool(3))
+            {
+                Color c = firePaletteSolar[Main.rand.Next(firePaletteSolar.Length)];
 
-            // 生成 Dust（YellowTorch, IchorTorch）
-            int dustType = Main.rand.NextBool() ? DustID.YellowTorch : DustID.IchorTorch;
-            Dust.NewDustPerfect(Projectile.Center + leftOffset, dustType, -Projectile.velocity * 0.3f, Scale: 1.2f);
-            Dust.NewDustPerfect(Projectile.Center + rightOffset, dustType, -Projectile.velocity * 0.3f, Scale: 1.2f);
+                Vector2 vel = backDir * Main.rand.NextFloat(0.25f, 0.65f);
+
+                // 羽状扩散
+                Vector2 radialOffset = Main.rand.NextVector2Circular(4f + pulse * 2f, 4f + pulse * 2f);
+
+                WaterFlavoredParticle mist = new WaterFlavoredParticle(
+                    headPos + radialOffset,
+                    vel,
+                    false,
+                    Main.rand.Next(24, 36),
+                    0.9f + Main.rand.NextFloat(0.4f) + pulse * 0.1f,
+                    c * Main.rand.NextFloat(0.7f, 1.0f)
+                );
+
+                GeneralParticleHandler.SpawnParticle(mist);
+            }
+
+            // ============================================================
+            // ③ 高能耀斑火花（PointParticle）── 强能量爆裂
+            // ============================================================
+            if (Main.rand.NextBool(2))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    Color c = firePaletteSolar[Main.rand.Next(firePaletteSolar.Length)];
+
+                    Vector2 vel = backDir
+                        .RotatedByRandom(MathHelper.ToRadians(18))
+                        * Main.rand.NextFloat(1.6f, 3.3f);
+
+                    PointParticle spark = new PointParticle(
+                        headPos,
+                        vel,
+                        false,
+                        20,
+                        1.1f + Main.rand.NextFloat(0.4f),
+                        c
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+            }
+
+            // ============================================================
+            // ④ 双螺旋 Dust（数学感最强）── 带微偏移
+            // ============================================================
+            float osc = (float)Math.Sin(t * 1.6f) * 1.2f + micro * 0.15f;
+
+            Vector2 leftOffset = forward.RotatedBy(MathHelper.PiOver2) * osc;
+            Vector2 rightOffset = forward.RotatedBy(-MathHelper.PiOver2) * osc;
+
+            int dustType = DustID.GoldFlame;
+
+            Dust.NewDustPerfect(
+                headPos + leftOffset,
+                dustType,
+                backDir * Main.rand.NextFloat(0.4f, 0.7f),
+                Scale: 1.2f + pulse * 0.1f
+            ).noGravity = true;
+
+            Dust.NewDustPerfect(
+                headPos + rightOffset,
+                dustType,
+                backDir * Main.rand.NextFloat(0.4f, 0.7f),
+                Scale: 1.2f + pulse * 0.1f
+            ).noGravity = true;
         }
 
         public override void OnKill(int timeLeft)
@@ -111,6 +313,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Vector2 explosionPosition = Projectile.Center;
             SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮开火") with { Volume = 1.2f, Pitch = 0.0f }, Projectile.Center);
 
+
+            // 屏幕震动效果
+            float shakePower = 5f; // 设置震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
             // 生成爆炸粒子
             Particle explosion = new DetailedExplosion(
