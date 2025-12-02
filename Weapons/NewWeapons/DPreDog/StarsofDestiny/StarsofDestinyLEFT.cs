@@ -177,20 +177,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             base.OnHitNPC(target, hit, damageDone);
 
-            // 保留你原本的全部逻辑（Debuff 触发 + Buff + CLK50）
-            if (target.HasBuff(ModContent.BuffType<StarsofDestinyEDebuff>()))
-            {
-                Vector2 shootDirection = Projectile.velocity;
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    shootDirection,
-                    ModContent.ProjectileType<StarsofDestinyLSTAR>(),
-                    (int)(Projectile.damage * 0.6f),
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-            }
+            //// 保留你原本的全部逻辑（Debuff 触发 + Buff + CLK50）
+            //if (target.HasBuff(ModContent.BuffType<StarsofDestinyEDebuff>()))
+            //{
+            //    Vector2 shootDirection = Projectile.velocity;
+            //    Projectile.NewProjectile(
+            //        Projectile.GetSource_FromThis(),
+            //        Projectile.Center,
+            //        shootDirection,
+            //        ModContent.ProjectileType<StarsofDestinyLSTAR>(),
+            //        (int)(Projectile.damage * 0.6f),
+            //        Projectile.knockBack,
+            //        Projectile.owner
+            //    );
+            //}
 
             foreach (Player player in Main.player)
             {
@@ -256,20 +256,20 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
 
 
-            // 在死亡时发射5发弹幕，正前方散射
-            for (int i = -2; i <= 2; i++) // 扩散角度 -2 到 +2
-            {
-                Vector2 shootDirection = Projectile.velocity.RotatedBy(MathHelper.ToRadians(6f * i));
-                Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    Projectile.Center,
-                    shootDirection,
-                    ModContent.ProjectileType<StarsofDestinyLSTAR>(),
-                    (int)(Projectile.damage * 0.36f), // 伤害倍率0.4倍
-                    Projectile.knockBack,
-                    Projectile.owner
-                );
-            }
+            //// 在死亡时发射5发弹幕，正前方散射
+            //for (int i = -2; i <= 2; i++) // 扩散角度 -2 到 +2
+            //{
+            //    Vector2 shootDirection = Projectile.velocity.RotatedBy(MathHelper.ToRadians(6f * i));
+            //    Projectile.NewProjectile(
+            //        Projectile.GetSource_FromThis(),
+            //        Projectile.Center,
+            //        shootDirection,
+            //        ModContent.ProjectileType<StarsofDestinyLSTAR>(),
+            //        (int)(Projectile.damage * 0.36f), // 伤害倍率0.4倍
+            //        Projectile.knockBack,
+            //        Projectile.owner
+            //    );
+            //}
 
 
 

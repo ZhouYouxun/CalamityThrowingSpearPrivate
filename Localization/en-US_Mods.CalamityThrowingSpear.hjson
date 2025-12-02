@@ -899,7 +899,7 @@ NewWeapons: {
 				The crimson spear, burning with twilight.
 				Left-click — unleash a four-strike volley, each spear detonating into a miniature starburst.
 				Right-click — raise the spear to the heavens, gathering the light of every star,
-				then hurl it as a newborn sun, collapsing into a cataclysmic explosion.
+				As a newborn sun, collapsing into a cataclysmic explosion.
 
 				— This is the sight he cherished most,
 				made beautiful by her presence, burning in his grasp.
@@ -1120,12 +1120,13 @@ NewWeapons: {
 		}
 
 		TEM00: {
-			DisplayName: TEM00
+			DisplayName: Fundamental Gaussian Mode
 			Tooltip:
 				'''
-				Left-click channels energy into a serialized array of laser bursts, firing in five volleys before releasing the ultimate beam.
-				Right-click summons an orbital laser warship that traces elliptical paths around foes, raining down beams before ending in a self-destructive charge.
-				[c/00fff0:""]
+				Left-click: unleash continuous sweeping laser sequences; after five cycles, fire a final converging beam
+				Right-click: summon orbiting laser emitters that auto-target nearby enemies and release dense laser fire
+				Note: requires activation on first use
+				[c/00fff0:“I glimpsed the end in a single moment.”]
 				'''
 		}
 	}
@@ -1374,13 +1375,31 @@ Buffs: {
 	}
 
 	StarsofDestinyPBuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyPBuff.Description
-		DisplayName: Starsof Destiny P Buff
+		DisplayName: Chrono Regeneration
+		Description:
+			'''
+			Slightly increases movement speed and life regeneration
+			Your time begins to accelerate!
+			'''
 	}
 
 	StarsofDestinyEDebuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
-		DisplayName: Starsof Destiny E Debuff
+		DisplayName: Chrono Mark
+		Description:
+			'''
+			The target is marked by time
+			Takes increased damage from you
+			'''
+	}
+
+	StarsofDestinyP2Buff: {
+		DisplayName: Temporal Shelter
+		Description:
+			'''
+			Greatly shortens the duration of negative debuffs
+			Grants minor life regeneration
+			Time bends in your favor
+			'''
 	}
 
 	SurfeiterDrumEDebuff: {
@@ -1389,34 +1408,48 @@ Buffs: {
 	}
 
 	SunsetCConceptPBuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.SunsetCConceptPBuff.Description
-		DisplayName: Sunset C Concept P Buff
+		DisplayName: Concept Dominion
+		Description:
+			'''
+			The crown of logic brushes against your thoughts
+			Abstract power quietly rewrites your fate
+			'''
 	}
 
 	SunsetBForgetPBuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetPBuff.Description
-		DisplayName: Sunset B Forget P Buff
+		DisplayName: Eternal Affection
+		Description:
+			'''
+			Forget-me-not petals drift across your palm
+			Gentle memories form a protective embrace
+			'''
 	}
 
 	SunsetBForgetEDebuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetEDebuff.Description
-		DisplayName: Sunset B Forget E Debuff
+		DisplayName: Dream Reversion
+		Description:
+			'''
+			Tears return to their very first coordinates
+			The target is trapped within an echoing dream
+			'''
 	}
 
 	SunsetASunsetEDebuff: {
-		Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
-		DisplayName: Sunset A Sunset E Debuff
-	}
-
-	StarsofDestinyP2Buff: {
-		DisplayName: Starsof Destiny P2 Buff
-		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyP2Buff.Description
+		DisplayName: Sunset Afterglow
+		Description:
+			'''
+			The last light of dusk settles upon the grass
+			The target withers beneath the fading glow
+			'''
 	}
 }
 
 TheSpecialText: {
 	ElementalArkJav2: ingested too many pigments
 	ReworkPrompt: CTS: This weapon can be converted into a throwing version
+	Sunset1: 落日
+	Sunset2: 勿忘草
+	Sunset3: 概念
 }
 
 Tiles: {

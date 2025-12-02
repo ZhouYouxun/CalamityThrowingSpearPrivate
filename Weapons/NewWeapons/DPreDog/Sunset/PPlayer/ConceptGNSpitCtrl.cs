@@ -5,7 +5,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 {
-    internal class SunsetPlayerGNSpitCtrl : ModPlayer
+    internal class ConceptGNSpitCtrl : ModPlayer
     {
         // —— 生成节奏与总数 —— //
         private const int BladeTotal = 10;  // 一共 10 个

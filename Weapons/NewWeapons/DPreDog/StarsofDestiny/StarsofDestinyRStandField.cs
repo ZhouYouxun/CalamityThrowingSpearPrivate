@@ -77,7 +77,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override void AI()
         {
-
+            
             // 优先跟随指定敌人
             if (Projectile.ai[1] >= 0)
             {

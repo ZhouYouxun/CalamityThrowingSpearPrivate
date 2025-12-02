@@ -899,11 +899,15 @@ NewWeapons: {
 				化为一轮巨日坠落，带来湮灭般的爆炸。
 
 				有些承诺，需要以星辰为薪柴才能履行。
-				此刃，便是那场盛大焚烧后，唯一未被风化的灰烬。
+				便是那场盛大焚烧后，唯一未被风化的灰烬。
 
-				它并不锋利——因为真正的终结，从来无需切割。当群星被赋予“坠落”的意志，当沸腾的光年被压缩为一握之温，它所代表的，便不再是毁灭，而是一种至高的仁慈：为所有奔流不息、疲惫不堪的存在，提供一个终于可以驻足的理由。
+				它并不锋利——因为真正的终结，从来无需切割。
+				当群星被赋予“坠落”的意志，当沸腾的光年被压缩为一握之温。
+				它所代表的，便不再是毁灭，而是一种至高的仁慈：为所有奔流不息、疲惫不堪的存在，提供一个终于可以驻足的理由。
 
-				据说，在最后那个被凝固的黄昏里，没有挽歌。只有光，以违背一切物理法则的姿态，温柔地匍匐下来，覆上两尊并肩的影子。那是一个殉道者，能为一个世界写下的，最寂静的句号。
+				据说，在最后那个被凝固的黄昏里，没有挽歌。
+				只有光，以违背一切物理法则的姿态，温柔地匍匐下来，覆上两尊并肩的影子。
+				那是一个殉道者，能为一个世界写下的，最寂静的句号。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -928,9 +932,12 @@ NewWeapons: {
 				有些路途，在迈出第一步时，就已抵达了永恒。
 				便是那条贯穿无数“不可能”的、血与魂铺就的归途。
 
-				其重量无法计量——那是无数次轮回中，积攒的所有“回望”的总和。其锋刃无法定义——那是用“绝望”反复磨砺后，诞生的、足以刺穿“宿命”本身的尖锐。
+				其重量无法计量——那是无数次轮回中，积攒的所有“回望”的总和。
+				其锋刃无法定义——那是用“绝望”反复磨砺后，诞生的、足以刺穿“宿命”本身的尖锐。
 
-				她并非在“寻找”。只是在用每一次的抵达，对虚无本身进行一场漫长的、沉默的证伪。证明纵使故事被重置，纵使名字被擦去，纵使连“曾经存在”的概念都被剥夺，仍有一些事物，能留下比金石更坚硬的痕迹。这道蓝痕，便是虚无也无法消化、无法同化的“异物”，是锚定在所有破碎可能性中央的、唯一的真实坐标。
+				她并非在“寻找”。只是在用每一次的抵达，对虚无本身进行一场漫长的、沉默的证伪。
+				证明纵使故事被重置，纵使名字被擦去，纵使连“曾经存在”的概念都被剥夺，仍有一些事物，能留下比金石更坚硬的痕迹。
+				这道蓝痕，便是虚无也无法消化、无法同化的“异物”，是锚定在所有破碎可能性中央的、唯一的真实坐标。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -959,7 +966,9 @@ NewWeapons: {
 				有些王座，唯有在其崩塌时，才真正完成了加冕。
 				便是那顶被权力自身献祭的、至高冠冕的最终形态。
 
-				逻辑的王冠，本可定义“正确”，裁定“真实”，成为万有之上那唯一的、不容置疑的“作者”。然而，真正的伟大，或许正在于对这般伟力的弃绝。他以创造者的权能，下达了唯一的、也是最终的神谕：让“必然”之枷锁锈蚀，让“注定”之洪流改道，让每一个渺小的灵魂，都成为自己故事的、唯一的、且犯错也被允许的作者。
+				逻辑的王冠，本可定义“正确”，裁定“真实”，成为万有之上那唯一的、不容置疑的“作者”。
+				然而，真正的伟大，或许正在于对这般伟力的弃绝。他以创造者的权能，下达了唯一的、也是最终的神谕：
+				让“必然”之枷锁锈蚀，让“注定”之洪流改道，让每一个渺小的灵魂，都成为自己故事的、唯一的、且犯错也被允许的作者。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -1120,8 +1129,8 @@ NewWeapons: {
 			DisplayName: 最低阶横模
 			Tooltip:
 				'''
-				左键将能量汇聚为序列化的激光阵列，连续五轮扫射后释放终极主束；
-				右键召唤环绕的激光枪，在敌群间描绘椭圆轨迹并倾泻光束，最终以自毁冲锋收尾。
+				左键持续扫射序列激光阵列，五轮之后释放终极光束
+				右键召唤环绕的激光枪，自动瞄准周围的敌人，并发射大量激光
 				注：首次使用需要激活
 				[c/00fff0:“我一眼望到了尽头”]
 				'''
@@ -1378,17 +1387,31 @@ Buffs: {
 	}
 
 	StarsofDestinyPBuff: {
+		DisplayName: 时之再生
 		Description:
 			'''
 			小幅度提升移动速度与再生速度
 			你的时间开始加速了！
 			'''
-		DisplayName: 时之再生
 	}
 
 	StarsofDestinyEDebuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyEDebuff.Description
-		// DisplayName: Starsof Destiny E Debuff
+		DisplayName: 时之烙印
+		Description:
+			'''
+			目标被时间标记
+			受到来自你的更高伤害
+			'''
+	}
+
+	StarsofDestinyP2Buff: {
+		DisplayName: 时律护佑
+		Description:
+			'''
+			大幅缩短负面状态的持续时间
+			并获得轻微的生命恢复
+			时间正在偏向你的一侧
+			'''
 	}
 
 	SurfeiterDrumEDebuff: {
@@ -1397,34 +1420,48 @@ Buffs: {
 	}
 
 	SunsetCConceptPBuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetCConceptPBuff.Description
-		// DisplayName: Sunset C Concept P Buff
+		DisplayName: 概念支配
+		Description:
+			'''
+			逻辑的王冠轻触你的思维
+			抽象的力量正在为你重新编写结局
+			'''
 	}
 
 	SunsetBForgetPBuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetPBuff.Description
-		// DisplayName: Sunset B Forget P Buff
+		DisplayName: 永恒的爱
+		Description:
+			'''
+			勿忘草的花瓣在掌心轻轻飘散
+			温柔的记忆庇护着你的灵魂
+			'''
 	}
 
 	SunsetBForgetEDebuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetBForgetEDebuff.Description
-		// DisplayName: Sunset B Forget E Debuff
+		DisplayName: 幻梦回归
+		Description:
+			'''
+			泪珠折返至最初的坐标
+			目标被困在不断回响的幻梦中
+			'''
 	}
 
 	SunsetASunsetEDebuff: {
-		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
-		// DisplayName: Sunset A Sunset E Debuff
-	}
-
-	StarsofDestinyP2Buff: {
-		// DisplayName: Starsof Destiny P2 Buff
-		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyP2Buff.Description
+		DisplayName: 落日余晖
+		Description:
+			'''
+			落日的余晖静静洒在草地上
+			目标在渐沉的光芒里逐渐枯萎
+			'''
 	}
 }
 
 TheSpecialText: {
-	ElementalArkJav2: 摄入了过量的色素
+	ElementalArkJav2: 摄入了过量的色素!
 	ReworkPrompt: CTS：此武器可被转化投掷版本
+	Sunset1: 落日
+	Sunset2: 勿忘草
+	Sunset3: 概念
 }
 
 Tiles: {

@@ -23,6 +23,8 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using Terraria.ModLoader.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Localization;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Terraria.GameContent;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 {
@@ -181,44 +183,83 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
         public override void HoldItem(Player player)
         {
+            // 必须：Calamity 的右键监听
             if (Main.myPlayer == player.whoAmI)
                 player.Calamity().rightClickListener = true;
 
+            // 本地右键冷却（不是概念形态的全局冷却）
             if (rightClickCooldown > 0)
-                rightClickCooldown--; // 递减冷却计时器
+                rightClickCooldown--;
 
+            // ==========================
+            //  形态切换逻辑（保持原样）
+            // ==========================
             if (KeybindSystem.WeaponSkill.JustPressed)
             {
-                currentMode = (currentMode + 1) % 3; // 循环切换形态
-                CombatText.NewText(player.getRect(), Color.Red, modeNames[currentMode]);
-                SoundEngine.PlaySound(SoundID.Item4, player.position);
+                currentMode = (currentMode + 1) % 3;
 
-                // 播放切换特效
+                string modeName = Language.GetTextValue(
+                    $"Mods.CalamityThrowingSpear.TheSpecialText.Sunset{currentMode + 1}"
+                );
+
+                CombatText.NewText(player.getRect(), Color.Red, modeName);
+                SoundEngine.PlaySound(SoundID.Item4, player.position);
                 PlaySwitchEffect(player.Center, currentMode);
             }
 
-            if (player.Calamity().mouseRight && rightClickCooldown == 0 && CanUseItem(player) && player.whoAmI == Main.myPlayer && !Main.mapFullscreen && !Main.blockMouse)
+            // ==========================
+            //  C 形态的全局冷却判定
+            // ==========================
+            var modPlayer = player.GetModPlayer<ConceptRightCooldown>();
+
+            // ⭐ 冷却期间：禁止 C 形态右键启动
+            if (currentMode == 2 && modPlayer.IsConceptCooling)
             {
-                // 🚫 如果正在左键攻击动画中，直接禁止右键触发
+                // 玩家按住右键时，也要阻止进入 Aim 阶段
+                if (player.Calamity().mouseRight)
+                    return;
+
+                // 如果不是按右键，只是普通 HoldItem 流程，也直接 return
+                return;
+            }
+
+            // ==========================
+            //  右键行为触发逻辑（保持原结构）
+            // ==========================
+            if (player.Calamity().mouseRight &&
+                rightClickCooldown == 0 &&
+                CanUseItem(player) &&
+                player.whoAmI == Main.myPlayer &&
+                !Main.mapFullscreen &&
+                !Main.blockMouse)
+            {
+                // 禁止在左键动画期间触发右键
                 if (player.itemAnimation > 0 && player.altFunctionUse != 2)
                     return;
 
-                // 🚨 **检查所有投射物，拦截所有形态的 `Aim` 状态**
+                // ⛔ 检查是否已经存在右键 Aim 投射物（所有三个形态）
                 foreach (Projectile proj in Main.projectile)
                 {
                     if (proj.active && proj.owner == player.whoAmI)
                     {
-                        if (proj.type == ModContent.ProjectileType<SunsetASunsetRight>() && proj.ModProjectile is SunsetASunsetRight rightProj && rightProj.CurrentState == SunsetASunsetRight.BehaviorState.Aim)
-                            return; // 只拦截 Aim 状态的 `SunsetASunsetRight`
+                        if (proj.type == ModContent.ProjectileType<SunsetASunsetRight>() &&
+                            proj.ModProjectile is SunsetASunsetRight rightProj &&
+                            rightProj.CurrentState == SunsetASunsetRight.BehaviorState.Aim)
+                            return;
 
-                        if (proj.type == ModContent.ProjectileType<SunsetBForgetRight>() && proj.ModProjectile is SunsetBForgetRight forgetProj && forgetProj.CurrentState == SunsetBForgetRight.BehaviorState.Aim)
-                            return; // 只拦截 Aim 状态的 `SunsetBForgetRight`
+                        if (proj.type == ModContent.ProjectileType<SunsetBForgetRight>() &&
+                            proj.ModProjectile is SunsetBForgetRight forgetProj &&
+                            forgetProj.CurrentState == SunsetBForgetRight.BehaviorState.Aim)
+                            return;
 
-                        if (proj.type == ModContent.ProjectileType<SunsetCConceptRight>() && proj.ModProjectile is SunsetCConceptRight conceptProj && conceptProj.CurrentState == SunsetCConceptRight.BehaviorState.Aim)
-                            return; // 只拦截 Aim 状态的 `SunsetCConceptRight`
+                        if (proj.type == ModContent.ProjectileType<SunsetCConceptRight>() &&
+                            proj.ModProjectile is SunsetCConceptRight conceptProj &&
+                            conceptProj.CurrentState == SunsetCConceptRight.BehaviorState.Aim)
+                            return;
                     }
                 }
 
+                // 确定右键主弹幕类型
                 int projType = currentMode switch
                 {
                     0 => ModContent.ProjectileType<SunsetASunsetRight>(),
@@ -230,7 +271,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 int damage = (int)player.GetTotalDamage<MeleeDamageClass>().ApplyTo(Item.damage);
                 float kb = player.GetTotalKnockback<MeleeDamageClass>().ApplyTo(Item.knockBack);
 
-                // 🟢 生成右键主弹幕，并传递暴击率
+                // 生成右键主投射物
                 int projIndex = Projectile.NewProjectile(
                     Item.GetSource_FromThis(),
                     player.Center,
@@ -240,18 +281,41 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                     kb,
                     player.whoAmI
                 );
+
                 if (projIndex.WithinBounds(Main.maxProjectiles))
                 {
-                    Main.projectile[projIndex].CritChance = Item.crit; // ✅ 让主弹幕继承武器暴击率
+                    Main.projectile[projIndex].CritChance = Item.crit;
                 }
 
-                // 设置右键冷却时间
                 rightClickCooldown = 40;
             }
+        }
 
 
 
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            var modPlayer = Main.LocalPlayer.GetModPlayer<ConceptRightCooldown>();
 
+            if (!modPlayer.IsConceptCooling)
+                return;
+
+            float barScale = 1.0f;
+            Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack").Value;
+            Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront").Value;
+
+            Vector2 barOrigin = barBG.Size() * 0.5f;
+
+            // 绘制在武器下方
+            Vector2 drawPos = position + new Vector2(0, frame.Height * scale + 12f);
+
+            float progress = 1f - modPlayer.conceptRightCooldown / (float)ConceptRightCooldown.ConceptCooldownMax;
+            Rectangle crop = new Rectangle(0, 0, (int)(barFG.Width * progress), barFG.Height);
+
+            Color barColor = Color.Cyan;
+
+            spriteBatch.Draw(barBG, drawPos, null, barColor * 0.6f, 0f, barOrigin, scale * barScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(barFG, drawPos, crop, barColor, 0f, barOrigin, scale * barScale, SpriteEffects.None, 0f);
         }
 
 
@@ -470,7 +534,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
 
 
-
+     
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             // 三个形态对应不同的键

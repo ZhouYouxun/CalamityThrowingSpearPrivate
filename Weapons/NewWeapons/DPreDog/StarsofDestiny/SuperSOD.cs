@@ -214,7 +214,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 Projectile.GetSource_FromThis(),
                 Projectile.Center,
                 shootDir * starSpeed,
-                ModContent.ProjectileType<StarsofDestinyLSTAR>(),
+                ModContent.ProjectileType<StarsofDestinyRLIGHT>(),
                 Projectile.damage,
                 0f,
                 Projectile.owner
@@ -246,60 +246,72 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         private void SpawnBackCones()
         {
-            Vector2 forward = Projectile.rotation.ToRotationVector2();
             Vector2 origin = Projectile.Center;
 
-            // 后方两侧：±135° 方向的 15° 扇形
+            // 后方两侧：±135° 方向的扇形
             float coneCenter1 = Projectile.rotation + MathHelper.ToRadians(135f);
             float coneCenter2 = Projectile.rotation - MathHelper.ToRadians(135f);
-            float halfAngle = MathHelper.ToRadians(15f);
+            float halfAngle = MathHelper.ToRadians(20f); // 稍微再宽一点
 
             Color exo1 = new Color(255, 240, 140);
             Color exo2 = new Color(130, 255, 200);
 
-            // 每边做几条射线
+            // === 每边 7 条主射线，每条再叠 2 个 EXO + 若干水雾 ===
             for (int side = 0; side < 2; side++)
             {
                 float center = side == 0 ? coneCenter1 : coneCenter2;
-                Color c = side == 0 ? exo1 : exo2;
+                Color baseColor = side == 0 ? exo1 : exo2;
 
-                int rays = 3;
+                int rays = 7; // 原来是 3，直接提到 7
                 for (int i = 0; i < rays; i++)
                 {
                     float t = (i + 0.5f) / rays; // 0~1
                     float ang = center + MathHelper.Lerp(-halfAngle, halfAngle, t);
                     Vector2 dir = ang.ToRotationVector2();
 
-                    // EXO 光粒子
-                    SquishyLightParticle exo = new SquishyLightParticle(
-                        origin,
-                        dir * Main.rand.NextFloat(4f, 7f),
-                        Main.rand.NextFloat(0.22f, 0.30f),
-                        c,
-                        Main.rand.Next(18, 26),
-                        opacity: 1f,
-                        squishStrenght: 1f,
-                        maxSquish: Main.rand.NextFloat(2.0f, 3.0f),
-                        hueShift: 0f
-                    );
-                    GeneralParticleHandler.SpawnParticle(exo);
-
-                    // 少量水雾补充质感
-                    if (Main.rand.NextBool(2))
+                    // ---- 2 个层次的 EXO 光粒子（速度不同，数量×2）----
+                    for (int k = 0; k < 2; k++)
                     {
+                        float speed = Main.rand.NextFloat(5f + 2f * k, 10f + 3f * k); // 第二层更快更远
+                        float life = Main.rand.Next(20 + 2 * k, 30 + 4 * k);
+                        float scale = Main.rand.NextFloat(0.24f + 0.03f * k, 0.32f + 0.04f * k);
+
+                        SquishyLightParticle exo = new SquishyLightParticle(
+                            origin,
+                            dir * speed,
+                            scale,
+                            baseColor,
+                            (int)life,
+                            opacity: 1f,
+                            squishStrenght: 1f,
+                            maxSquish: Main.rand.NextFloat(2.2f, 3.4f),
+                            hueShift: 0f
+                        );
+                        GeneralParticleHandler.SpawnParticle(exo);
+                    }
+
+                    // ---- 水雾：每条射线再来 1~2 个，填充体积感 ----
+                    int mistCount = Main.rand.Next(5, 9);
+                    for (int m = 0; m < mistCount; m++)
+                    {
+                        float mistSpeed = Main.rand.NextFloat(2.0f, 4.0f);
+                        float mistLife = Main.rand.Next(18, 26);
+                        float mistScale = 1.0f + Main.rand.NextFloat(0.4f);
+
                         WaterFlavoredParticle mist = new WaterFlavoredParticle(
                             origin,
-                            dir * Main.rand.NextFloat(1.5f, 3f),
+                            dir * mistSpeed,
                             false,
-                            Main.rand.Next(16, 22),
-                            0.9f + Main.rand.NextFloat(0.3f),
-                            c * 0.65f
+                            (int)mistLife,
+                            mistScale,
+                            baseColor * 0.7f
                         );
                         GeneralParticleHandler.SpawnParticle(mist);
                     }
                 }
             }
         }
+
 
         public override void OnKill(int timeLeft)
         {

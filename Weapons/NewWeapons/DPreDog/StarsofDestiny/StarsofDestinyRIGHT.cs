@@ -359,7 +359,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
                         float maxSpeed = 54f;   // 18×3
                         float accel = 0.22f * 1.9f;
-                        float maxTurn = 0.12f * 9f;
+                        // 追踪时间越久，角速度限制越大（从 0.05 → 0.15）
+                        float trackT = MathHelper.Clamp(stateTimer / 90f, 0f, 1f);
+                        float maxTurn = MathHelper.Lerp(0.75f, 2.95f, trackT);
 
                         Vector2 toTarget = currentTarget.Center - Projectile.Center;
                         float targetRot = toTarget.ToRotation();

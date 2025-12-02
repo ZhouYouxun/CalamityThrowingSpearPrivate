@@ -317,7 +317,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            base.ModifyHitNPC(target, ref modifiers);
+            // 对 Boss：若当前血量 ≤ 最大生命值 15%，造成最大生命值 100% 的额外伤害
+            if (target.boss && target.life <= target.lifeMax * 0.15f)
+            {
+                // +100% 最大生命值的额外伤害（等价于 FinalDamage *= 2）
+                float bonus = target.lifeMax; // 直接加等同于 100% maxHP 的额外伤害
+                modifiers.FinalDamage += bonus;
+            }
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
