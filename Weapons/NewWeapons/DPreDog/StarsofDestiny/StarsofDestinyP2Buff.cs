@@ -46,42 +46,151 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 }
             }
 
-            // —— 星光粒子特效 —— //
-            // 少量、柔和的星光在玩家周围浮动，呼应“时间/星辰”的主题
-            if (Main.rand.NextBool(6))
+
+
+
+
+
+
+
+
             {
-                // 在玩家附近一个小环形区域随机生成
-                Vector2 offset = Main.rand.NextVector2Circular(32f, 24f);
-                Vector2 spawnPos = player.Center + offset;
+                // ==============================================
+                // 🌌 Sunset / Stars of Destiny 混合粒子核心特效
+                // ==============================================
 
-                // 粒子缓慢向玩家中心飘回
-                Vector2 vel = (player.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.2f, 0.6f);
+                // 主色调
+                Color mainA = Color.White * 0.9f;       // 亮白
+                Color mainB = Color.Cyan * 0.8f;        // 天蓝
+                Color soft = new Color(100, 200, 255) * 0.8f;
 
-                Dust d = Dust.NewDustPerfect(
-                    spawnPos,
-                    DustID.WhiteTorch,
-                    vel,
-                    150,
-                    Color.White * 0.9f,
-                    Main.rand.NextFloat(1.0f, 1.4f)
-                );
-                d.noGravity = true;
-                d.fadeIn = 1.1f;
+                // 玩家中心
+                Vector2 c = player.Center;
+
+
+                // ---------------------------
+                // ① 流动向上星屑（持续性，视觉基底）
+                // 60% 几率
+                // ---------------------------
+                if (Main.rand.NextFloat() < 0.6f)
+                {
+                    Vector2 spawn = c + Main.rand.NextVector2Circular(30f, 24f);
+                    Vector2 vel = new Vector2(
+                        Main.rand.NextFloat(-0.15f, 0.15f),
+                        Main.rand.NextFloat(-1.9f, -0.7f)
+                    );
+
+                    Dust d = Dust.NewDustPerfect(
+                        spawn,
+                        DustID.GemDiamond,
+                        vel,
+                        160,
+                        soft,
+                        Main.rand.NextFloat(1.0f, 1.5f)
+                    );
+
+                    d.noGravity = true;
+                    d.fadeIn = 1.2f;
+                }
+
+
+
+                // ---------------------------
+                // ② 时间折射短线 —— 线性科技感闪现
+                //（原：SparkParticle）
+                // 20% 概率
+                // ---------------------------
+                //if (Main.rand.NextFloat() < 0.20f)
+                //{
+                //    Vector2 pos = c + Main.rand.NextVector2Circular(14f, 14f);
+                //    Vector2 vel = new Vector2(0f, -2.6f).RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f));
+
+                //    SparkParticle sp = new SparkParticle(
+                //        pos,
+                //        vel,
+                //        false,
+                //        18,
+                //        1.25f,
+                //        mainA
+                //    );
+
+                //    GeneralParticleHandler.SpawnParticle(sp);
+                //}
+
+
+
+                // ---------------------------
+                // ③ 十字星 —— 高光星爆点
+                //（泛用：GenericSparkle）
+                // 8% 概率
+                // ---------------------------
+                if (Main.rand.NextFloat() < 0.08f)
+                {
+                    GenericSparkle star = new GenericSparkle(
+                        c + Main.rand.NextVector2Circular(10f, 10f),
+                        Vector2.Zero,
+                        mainA,
+                        mainB,
+                        Main.rand.NextFloat(1.6f, 2.3f),
+                        8,
+                        Main.rand.NextFloat(-0.02f, 0.02f),
+                        1.7f
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(star);
+                }
+
+
+
+                // ---------------------------
+                // ④ 辉光球 —— 亮点闪烁（补光、节奏）
+                // 10% 概率
+                // ---------------------------
+                if (Main.rand.NextFloat() < 0.10f)
+                {
+                    GlowOrbParticle orb = new GlowOrbParticle(
+                        c + Main.rand.NextVector2Circular(12f, 12f),
+                        Vector2.Zero,
+                        false,
+                        8,
+                        1.0f,
+                        mainB,
+                        true,
+                        false,
+                        true
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(orb);
+                }
+
+
+
+                // ---------------------------
+                // ⑤ 四方科技粒子 —— 数字能量碎片
+                //（低频出现，提升层次）
+                // 5% 概率
+                // ---------------------------
+                if (Main.rand.NextFloat() < 0.05f)
+                {
+                    SquareParticle sq = new SquareParticle(
+                        c + Main.rand.NextVector2Circular(20f, 20f),
+                        new Vector2(0f, -1.2f).RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f)),
+                        false,
+                        26,
+                        Main.rand.NextFloat(1.6f, 2.3f),
+                        mainB * 1.5f
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(sq);
+                }
+
             }
 
-            // 偶尔加一条细线星光，保持和武器整体风格一致
-            if (Main.rand.NextBool(18))
-            {
-                SparkParticle spark = new SparkParticle(
-                    player.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    Main.rand.NextVector2Circular(0.3f, 0.3f),
-                    false,
-                    14,
-                    1.1f,
-                    Color.White
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
+
+
+
+
+
         }
     }
 }

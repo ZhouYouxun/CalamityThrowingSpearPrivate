@@ -151,6 +151,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
             Player.endurance -= 0.25f; // 受到伤害 +25%
             Player.immuneTime = 0; // 禁用无敌帧
 
+            // ★ 无限飞行（最强方式）
+            Player.wingTime = Player.wingTimeMax = int.MaxValue;
+            Player.rocketTime = Player.rocketTimeMax = int.MaxValue;
+            Player.slowFall = false;
+
             // **最终伤害 x4**
             finalDamageMultiplier = 4f;
 

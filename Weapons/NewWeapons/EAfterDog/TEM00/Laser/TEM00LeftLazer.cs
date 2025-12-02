@@ -70,15 +70,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
             float power = (float)Projectile.timeLeft / Lifetime;
             Projectile.scale = MaxBeamScale * power;
 
-            // 用 LaserScan 探测最大长度
-            float[] laserScanResults = new float[NumSamplePoints];
-            float scanWidth = Projectile.scale < 1f ? 1f : Projectile.scale;
-            Collision.LaserScan(Projectile.Center, beamVector, BeamTileCollisionWidth * scanWidth, MaxBeamLength, laserScanResults);
-            float avg = 0f;
-            for (int i = 0; i < laserScanResults.Length; ++i)
-                avg += laserScanResults[i];
-            avg /= NumSamplePoints;
-            Projectile.ai[0] = MathHelper.Lerp(Projectile.ai[0], avg, BeamLengthChangeFactor);
+            // 碰到方块就停下
+            //{
+            //    // 用 LaserScan 探测最大长度
+            //    float[] laserScanResults = new float[NumSamplePoints];
+            //    float scanWidth = Projectile.scale < 1f ? 1f : Projectile.scale;
+            //    Collision.LaserScan(Projectile.Center, beamVector, BeamTileCollisionWidth * scanWidth, MaxBeamLength, laserScanResults);
+            //    float avg = 0f;
+            //    for (int i = 0; i < laserScanResults.Length; ++i)
+            //        avg += laserScanResults[i];
+            //    avg /= NumSamplePoints;
+            //    Projectile.ai[0] = MathHelper.Lerp(Projectile.ai[0], avg, BeamLengthChangeFactor);
+            //}
+
+            // ★ 无视方块：光束直接使用最大长度，不做 Tile 扫描
+            Projectile.ai[0] = MaxBeamLength;
 
             // 生成额外特效：在激光路径上撒 Dust
             ProduceBeamDust();

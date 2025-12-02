@@ -12,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
 {
-    // 阶段1：1x1 幼苗
+    // 阶段1：3×3 幼苗
     public class SunsetSEEDTile1 : ModTile
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/DSeed/SunsetSEEDTile1";
@@ -23,8 +23,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             Main.tileLavaDeath[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.Width = 1;
-            TileObjectData.newTile.Height = 1;
+            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.CoordinateHeights = new[]
+{
+                16, 16, 16
+            };
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 1, 0);
@@ -44,7 +48,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
         { if (!fail) ModContent.GetInstance<SunsetSEEDTE>().Kill(i, j); }
     }
 
-    // 阶段2：3x3
+    // 阶段2：6×10
     public class SunsetSEEDTile2 : ModTile
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/DSeed/SunsetSEEDTile2";
@@ -55,10 +59,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             Main.tileLavaDeath[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 3; // ★ 别写 6
+            TileObjectData.newTile.Width = 6;
+            TileObjectData.newTile.Height = 10;
             TileObjectData.newTile.Origin = new Point16(1, 2); // 底部中间
-            TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = new[]
+            {
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+            };
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
 
@@ -68,7 +75,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
         }
     }
 
-    // 阶段3：3x3
+    // 阶段3：8×13
     public class SunsetSEEDTile3 : ModTile
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/DSeed/SunsetSEEDTile3";
@@ -79,10 +86,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             Main.tileLavaDeath[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 3; // ★ 修正
+            TileObjectData.newTile.Width = 8;
+            TileObjectData.newTile.Height = 13;
             TileObjectData.newTile.Origin = new Point16(1, 2);
-            TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = new[]
+            {
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+            };
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
 
@@ -92,7 +102,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
         }
     }
 
-    // 阶段4（最终）：3x3，破坏掉落奖励
+    // 阶段4（最终）：10×14，破坏掉落奖励
     public class SunsetSEEDTile4 : ModTile
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/Sunset/DSeed/SunsetSEEDTile4";
@@ -103,10 +113,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             Main.tileLavaDeath[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 3; // ★ 修正
+            TileObjectData.newTile.Width = 10;
+            TileObjectData.newTile.Height = 14;
             TileObjectData.newTile.Origin = new Point16(1, 2);
-            TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = new[]
+            {
+                16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16
+            };
             TileObjectData.newTile.AnchorBottom = new AnchorData(
                 AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, 3, 0);
 
@@ -128,7 +141,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
     // ============ TileEntity：记录天数并按 15 天/阶段成长 =============
     public class SunsetSEEDTE : ModTileEntity
     {
-        public const int DaysPerStage = 15; // 每阶段 15 天
+        public const int DaysPerStage = 1; // 每阶段 15 天
         private int _daysPassed = 0;
         private bool _countedToday = false;
 
@@ -163,25 +176,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
         private void TryGrow(int tileType)
         {
             int i = Position.X, j = Position.Y;
-            if (!HasSpaceFor3x3(i, j)) return;
+
+            // ★ 只检测上方空间
+            if (!HasSpaceAbove(i, j, 25)) return;
 
             WorldGen.KillTile(i, j, noItem: true, effectOnly: false);
             bool placed = WorldGen.PlaceObject(i, j, tileType);
+
             if (placed && Main.netMode == NetmodeID.Server)
                 NetMessage.SendObjectPlacement(-1, i, j, tileType, 0, 0, -1, -1);
         }
 
-        private bool HasSpaceFor3x3(int i, int j)
+        // ★ 新增函数（极简安全）
+        private bool HasSpaceAbove(int i, int j, int height)
         {
-            int left = i - 1, top = j - 2;
-            for (int x = left; x < left + 3; x++)
-                for (int y = top; y < top + 3; y++)
-                {
-                    if (x == i && y == j) continue; // 幼苗自身
-                    Tile t = Framing.GetTileSafely(x, y);
-                    if (t.HasTile && !Main.tileCut[t.TileType]) return false;
-                }
+            for (int y = 1; y <= height; y++)
+            {
+                Tile t = Framing.GetTileSafely(i, j - y);
+                if (t.HasTile && !Main.tileCut[t.TileType])
+                    return false;
+            }
             return true;
         }
+
     }
 }
