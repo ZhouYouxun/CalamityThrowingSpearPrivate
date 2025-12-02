@@ -58,6 +58,9 @@ Projectiles: {
 			SunsetCConceptRightCut2Item.DisplayName: Sunset C Concept Right Cut2 Item
 			SunsetCConceptRightCut3Space.DisplayName: Sunset C Concept Right Cut3 Space
 			SunsetCConceptRightCut4Energy.DisplayName: Sunset C Concept Right Cut4 Energy
+			SODLazer.DisplayName: S O D Lazer
+			SODMoment.DisplayName: S O D Moment
+			SODCLK50.DisplayName: S O D C L K50
 		}
 
 		BPrePlantera: {
@@ -172,6 +175,8 @@ Projectiles: {
 			TEM00Right.DisplayName: T E M00 Right
 			TEM00RightAIM.DisplayName: T E M00 Right A I M
 			TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
+			SODLazer.DisplayName: S O D Lazer
+			SuperSOD.DisplayName: Super S O D
 		}
 	}
 
@@ -259,6 +264,7 @@ Projectiles: {
 			DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
 			DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
 			EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
+			StarsofDestinyRIGHTINV.DisplayName: Starsof Destiny R I G H T I N V
 		}
 	}
 
@@ -295,6 +301,7 @@ Projectiles: {
 	SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
 	SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
 	SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
+	StarsofDestinyLEFTCLK.DisplayName: Starsof Destiny L E F T C L K
 }
 
 ChangedWeapons: {
@@ -1399,6 +1406,11 @@ Buffs: {
 	SunsetASunsetEDebuff: {
 		Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
 		DisplayName: Sunset A Sunset E Debuff
+	}
+
+	StarsofDestinyP2Buff: {
+		DisplayName: Starsof Destiny P2 Buff
+		Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyP2Buff.Description
 	}
 }
 

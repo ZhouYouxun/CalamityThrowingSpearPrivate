@@ -399,7 +399,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
             {
                 // ========= 枪口（枪头）空间点：指向速度方向 5 * 16 =========
-                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 15f;
+                Vector2 gunHeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 10f;
 
                 // ========= 科技蓝 VFX（瞄准阶段常驻）=========
                 vfxTimer++;

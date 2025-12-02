@@ -22,6 +22,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
 using Terraria.ModLoader.IO;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.Localization;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 {
@@ -142,7 +143,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
         }
         private int rightClickCooldown = 0; // 右键冷却计时器
         private int currentMode = 0; // 当前形态 (0 = A, 1 = B, 2 = C)
-        private static readonly string[] modeNames = { "恒星运动", "别忘了草", "思维构筑" };
+        private static readonly string[] modeNames = {
+            Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.Sunset1"),
+            Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.Sunset2"),
+            Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.Sunset3")
+        };
         public override void SetDefaults()
         {
             Item.width = 44;

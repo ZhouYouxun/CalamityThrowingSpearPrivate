@@ -13,6 +13,7 @@ using CalamityMod;
 using CalamityMod.Rarities;
 using Microsoft.Xna.Framework;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
+using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 {
@@ -42,7 +43,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Item.crit = 4; // 基础暴击率都是4
 
             Item.autoReuse = true;
-            Item.channel = true; // 允许持续按住左键
+            Item.channel = false; // 允许持续按住左键
         }
 
         public override void SetStaticDefaults()
@@ -80,18 +81,46 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            // 遍历当前世界中的所有弹幕
-            foreach (Projectile proj in Main.projectile)
+            // W + 左键 / 右键：特殊 SuperSOD
+            if (player.controlUp)
             {
-                if (proj.active && proj.owner == player.whoAmI && proj.type == Item.shoot)
+                // 统计并清空属于自己的 SODCLK50（“时刻”）
+                int momentCount = 0;
+                for (int i = 0; i < Main.maxProjectiles; i++)
                 {
-                    // 检查是否为 Aim 状态
-                    if (proj.ModProjectile is StarsofDestinyLEFT SDL && SDL.CurrentState == StarsofDestinyLEFT.BehaviorState.Aim)
+                    Projectile p = Main.projectile[i];
+                    if (p.active &&
+                        p.owner == player.whoAmI &&
+                        p.type == ModContent.ProjectileType<SODCLK50>())
                     {
-                        return false; // 如果已经存在一个 Aim 状态的弹幕，阻止新的生成
-                                      // Fire 阶段的弹幕不会影响这个判断
+                        momentCount++;
+                        p.Kill();
                     }
                 }
+
+                // 至少 6 发星弹 + 消耗的时刻数，数量传到 SuperSOD 的 ai[2]
+                Vector2 spawnPos = player.Center;
+                Vector2 shootVel = new Vector2(0f, -Item.shootSpeed);
+
+                int superDamage = damage * 3; // 3 倍伤害
+
+                Projectile.NewProjectile(
+                    source,
+                    spawnPos,
+                    shootVel,
+                    ModContent.ProjectileType<SuperSOD>(),
+                    superDamage,
+                    knockback,
+                    player.whoAmI,
+                    0f,
+                    0f,
+                    momentCount
+                );
+
+                SoundEngine.PlaySound(SoundID.Item68, spawnPos);
+
+                // 特殊技触发时，不再执行原有左右键逻辑
+                return false;
             }
 
             // 区分左键和右键逻辑

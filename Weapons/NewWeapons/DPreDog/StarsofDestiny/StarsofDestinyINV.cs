@@ -29,7 +29,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
-            Projectile.timeLeft = 15;
+            Projectile.timeLeft = 4;
             Projectile.extraUpdates = 1;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;

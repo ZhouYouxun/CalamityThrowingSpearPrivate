@@ -13,6 +13,7 @@ using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
 using System.ComponentModel;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {
@@ -259,7 +260,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
     new Color(180, 220, 255),
     Color.WhiteSmoke
 };
-
+                    
                     // SquishyLight：亮度核心
                     for (int i = 0; i < 6; i++)
                     {

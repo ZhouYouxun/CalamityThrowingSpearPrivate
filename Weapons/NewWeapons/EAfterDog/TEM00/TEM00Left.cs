@@ -16,7 +16,8 @@ using CalamityMod.Physics;
 using CalamityMod.Graphics.Primitives;
 using Terraria.Graphics.Shaders;
 using CalamityMod.Physics; // ← 来自 Calamity 的 Rope 系统
-using CalamityMod.Graphics.Primitives; // ← 用于渲染 trail
+using CalamityMod.Graphics.Primitives;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny; // ← 用于渲染 trail
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {

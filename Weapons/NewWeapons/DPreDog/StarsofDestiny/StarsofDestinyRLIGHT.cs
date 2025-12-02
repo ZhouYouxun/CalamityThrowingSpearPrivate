@@ -69,6 +69,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.6f);
             Projectile.velocity *= 1.01f;
 
+            if (Projectile.ai[1] > 25)
+            {
+                // 超过45帧后开始追踪敌人
+                NPC target = Projectile.Center.ClosestNPCAt(1800); // 查找范围内最近的敌人
+                if (target != null)
+                {
+                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * 25f, 0.08f); // 调整速度
+                }
+            }
+            else
+            {
+                // 未到45帧前：固定每帧右转 1° + 小幅减速
+                float angle = MathHelper.ToRadians(1f);
+                Projectile.velocity = Projectile.velocity.RotatedBy(angle);
+                Projectile.velocity *= 0.995f;   // 小幅减速
+                Projectile.ai[1]++;
+            }
+
             // 生成白色科技流动粒子
             if (Main.rand.NextBool(2))
             {

@@ -470,7 +470,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                 Projectile parentMagic = Main.projectile[parentIndex];
 
-                float targetAngle = HoverOffsetAngle;
+                //float targetAngle = HoverOffsetAngle;
+                // 改后：间隔仍然是 NoDamageIndex * AngleStepRadians，只把自转项 Time/30f 降速到 70%
+                float targetAngle = NoDamageIndex * AngleStepRadians + (Time / 30f) * 0.7f;
+
                 Vector2 targetPos = parentMagic.Center + targetAngle.ToRotationVector2() * OrbitRadius;
 
                 if (catchingMagic && catchProgress < 1f)
@@ -900,7 +903,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             for (int k = 0; k < chain.Length; k++)
                             {
                                 float phase = t + k * 0.65f;
-                                Vector2 p = headPosition + f * chain[k] + n * (float)System.Math.Sin(phase) * 1.3f;
+                                Vector2 p = headPosition + f * chain[k] + n * Math.Sin(phase) * 1.3f;
 
                                 // GlowOrb：蓝色“因果节点”，稳定发光；密度从近到远逐渐降低
                                 if (Main.rand.NextFloat() < 0.75f - 0.12f * k)
@@ -956,8 +959,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                             // ——③ 摆钟：一颗“因果钟摆”在前方小弧上来回摆动，模拟物理律动——
                             //    摆幅缓慢呼吸变化，位置沿 f 推进，体现“既定轨道上的偏差与回归”
-                            float amp = 5.2f + 1.2f * (float)System.Math.Sin(t * 0.8f);
-                            Vector2 pendPos = headPosition + f * 14f + n * (float)System.Math.Sin(t * 2.2f) * amp;
+                            float amp = 5.2f + 1.2f * Math.Sin(t * 0.8f);
+                            Vector2 pendPos = headPosition + f * 14f + n * Math.Sin(t * 2.2f) * amp;
                             if (Main.rand.NextBool(2))
                             {
                                 var exoPend = new SquishyLightParticle(
@@ -1024,7 +1027,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             Vector2 n = new Vector2(-f.Y, f.X);
 
                             float t = (float)Main.GameUpdateCount * 0.085f; // 全局相位（心跳速率）
-                            float breath = 1f + 0.18f * (float)System.Math.Sin(t * 1.7f); // 呼吸收缩
+                            float breath = 1f + 0.18f * Math.Sin(t * 1.7f); // 呼吸收缩
 
                             // ——① 心形收缩（Cardioid）触须：r = R * (1 - k * cosθ)，随时间收缩/旋转
                             //    取三枚“瓣端”，让形状不规则且充满生命感；每帧略变
@@ -1032,11 +1035,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             {
                                 float theta = t * 1.6f + i * (MathHelper.TwoPi / 3f); // 三瓣相位错开
                                 float k = 0.55f;                        // 心形参数
-                                float R = (16f + 6f * (float)System.Math.Sin(t * 2.3f + i)) * breath;
+                                float R = (16f + 6f * Math.Sin(t * 2.3f + i)) * breath;
                                 float cardio = (1f - k * (float)System.Math.Cos(theta)); // 心形系数
 
                                 // 平面极坐标 → 局部 f/n
-                                Vector2 dir = f * (float)System.Math.Cos(theta) + n * (float)System.Math.Sin(theta);
+                                Vector2 dir = f * (float)System.Math.Cos(theta) + n * Math.Sin(theta);
                                 Vector2 p = headPosition + dir * (R * cardio);
 
                                 // EXO：血色能量尖光（沿 f 轻推，细长）
@@ -1141,7 +1144,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             // ——① 数字矩阵方块：在 f/n 格点上生成规律方块，表现“数据流”——
                             for (int i = -1; i <= 1; i++)
                             {
-                                float offsetN = i * 6f + (float)System.Math.Sin(t + i) * 1.5f;
+                                float offsetN = i * 6f + Math.Sin(t + i) * 1.5f;
                                 Vector2 p = headPosition + n * offsetN;
 
                                 if (Main.rand.NextBool(3))
@@ -1234,7 +1237,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             for (int i = -1; i <= 1; i++)
                             {
                                 if (i == 0) continue; // 主体不生成，左右偏移
-                                float offset = (float)System.Math.Sin(t + i) * 6f; // 左右摆动
+                                float offset = Math.Sin(t + i) * 6f; // 左右摆动
                                 Vector2 p = headPosition + n * offset;
 
                                 if (Main.rand.NextBool(3))
@@ -1315,11 +1318,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                             // ——① 符文环（Square + Orb 环绕 headPosition）——
                             int runeCount = 6;
-                            float radius = 12f + (float)System.Math.Sin(t * 1.6f) * 2f; // 呼吸半径
+                            float radius = 12f + Math.Sin(t * 1.6f) * 2f; // 呼吸半径
                             for (int i = 0; i < runeCount; i++)
                             {
                                 float ang = MathHelper.TwoPi * i / runeCount + t;
-                                Vector2 offset = f * (float)System.Math.Cos(ang) * radius + n * (float)System.Math.Sin(ang) * radius;
+                                Vector2 offset = f * (float)System.Math.Cos(ang) * radius + n * Math.Sin(ang) * radius;
                                 Vector2 p = headPosition + offset;
 
                                 if (Main.rand.NextBool(2))
@@ -1442,7 +1445,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             if (Main.rand.NextBool(3))
                             {
                                 GlowOrbParticle orb = new GlowOrbParticle(
-                                    headPosition + n * (float)System.Math.Sin(t) * 4f,
+                                    headPosition + n * Math.Sin(t) * 4f,
                                     Vector2.Zero,
                                     false,
                                     12,
@@ -1509,11 +1512,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                             // ——② 曼陀罗旋涡（GlowOrb 轨迹）——
                             int orbCount = 3;
-                            float radius = 6f + (float)System.Math.Sin(t * 1.8f) * 2f;
+                            float radius = 6f + Math.Sin(t * 1.8f) * 2f;
                             for (int i = 0; i < orbCount; i++)
                             {
                                 float ang = t + MathHelper.TwoPi * i / orbCount;
-                                Vector2 offset = f * (float)System.Math.Cos(ang) * radius + n * (float)System.Math.Sin(ang) * radius;
+                                Vector2 offset = f * (float)System.Math.Cos(ang) * radius + n * Math.Sin(ang) * radius;
                                 GlowOrbParticle orb = new GlowOrbParticle(
                                     headPosition + offset,
                                     Vector2.Zero,

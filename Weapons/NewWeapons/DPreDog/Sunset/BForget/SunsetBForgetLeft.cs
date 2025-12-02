@@ -464,6 +464,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             {
                 firstHitTriggered = true;
                 Projectile.timeLeft = 20;
+                Projectile.friendly = false;
+                Projectile.tileCollide = false;
             }
 
             // 施加 Debuff 给敌人
@@ -472,13 +474,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // 施加 Buff 给玩家
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<SunsetBForgetPBuff>(), 300); // 5 秒
 
-            DoSB();
+            DoSB(target);
         }
 
 
-        private void DoSB()
+        private void DoSB(NPC hitNPC)
         {
-
             if (killedByRightCheck)
             {
                 // 如果是检测到 Right 弹幕后自杀，不执行任何额外逻辑
@@ -493,11 +494,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // 计算单个触手的伤害（总伤害固定为 1.0 倍）
             int individualDamage = (int)(Projectile.damage / (float)tentacleCount);
 
-            // 生成多个随机方向的触手
+            // ============ 原本的随机触手 ============
+
             for (int i = 0; i < tentacleCount; i++)
             {
-                float randomAngle = Main.rand.NextFloat(0f, MathHelper.TwoPi); // 0° 到 360° 全角度随机
-                Vector2 tentacleVelocity = randomAngle.ToRotationVector2() * 4f; // 全方向随机扩散
+                float randomAngle = Main.rand.NextFloat(0f, MathHelper.TwoPi); // 0°～360° 全角度随机
+                Vector2 tentacleVelocity = randomAngle.ToRotationVector2() * 4f;
 
                 SpawnGreenTentacle(tentacleVelocity, individualDamage);
             }
@@ -505,9 +507,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // 播放撞击音效
             SoundEngine.PlaySound(SoundID.Item74, Projectile.position);
 
+            // ============ 新逻辑：附近敌人额外弹幕扩散 ============
 
+            const float searchRadius = 5f * 16f; // 5×16 半径
+            List<NPC> extraTargets = new List<NPC>();
 
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
 
+                if (!npc.active || npc.friendly || npc.dontTakeDamage)
+                    continue;
+
+                // ★ 把“本次被击中的那一只”排除掉
+                if (hitNPC != null && npc.whoAmI == hitNPC.whoAmI)
+                    continue;
+
+                // 只要在范围内就作为候选
+                if (Vector2.Distance(npc.Center, Projectile.Center) <= searchRadius)
+                    extraTargets.Add(npc);
+            }
+
+            if (extraTargets.Count > 0)
+            {
+                // 最多锁敌 2 个，按距离由近到远
+                extraTargets = extraTargets
+                    .OrderBy(n => Vector2.Distance(n.Center, Projectile.Center))
+                    .Take(2)
+                    .ToList();
+
+                foreach (NPC npc in extraTargets)
+                {
+                    // 在这些额外目标身上，各自随机方向再长出 2 条触手
+                    for (int i = 0; i < 2; i++)
+                    {
+                        float angle = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+                        Vector2 vel = angle.ToRotationVector2() * 4f;
+
+                        SpawnGreenTentacle(vel, individualDamage);
+                    }
+                }
+            }
+
+            // ============ 保留你原来后面的特效部分不动 ============
 
             {
                 CalamityThrowingSpear.CTSLightingBoltsSystem.Spawn_PlantScatterBurst(spawnPosition, 22, 7f);
@@ -515,7 +557,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                 // ===================================================
                 // ② Calamity 粒子：伞状喷射
                 // ===================================================
-
                 Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
                 float forwardAngle = forward.ToRotation();
 
@@ -571,14 +612,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                         GeneralParticleHandler.SpawnParticle(sq);
                     }
                 }
-
-
-
             }
-
-
         }
-
 
 
         // 生成绿色触手的方法

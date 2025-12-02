@@ -119,10 +119,8 @@ namespace CalamityThrowingSpear.System
                 // 屏幕震动效果（以玩家为中心，强度 95）
                 float shakePower = 95f;
                 float distanceFactor = 1f; // 以玩家为中心，不需要距离衰减
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(
-                    Main.LocalPlayer.Calamity().GeneralScreenShakePower,
-                    shakePower * distanceFactor
-                );
+                Main.LocalPlayer.Calamity().GeneralScreenShakePower =
+                    MathF.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
 
             }
         }

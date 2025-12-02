@@ -147,14 +147,45 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 if (Main.rand.NextBool(20) && Main.netMode != NetmodeID.Server)
                     Gore.NewGore(Projectile.GetSource_FromAI(), Projectile.position, new Vector2(Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f), Main.rand.Next(16, 18), 1f);
             }
-
-
-
-
-
-
-
             Time++;
+        }
+
+        private bool hasSpawnedCLK50 = false;
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            {
+                Player owner = Main.player[Projectile.owner];
+
+                // ☆ 查找玩家周围是否已经有属于这个玩家的 CLK50
+                bool alreadyHasOne = false;
+                int clkCount = 0;
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile p = Main.projectile[i];
+                    if (p.active &&
+                        p.owner == owner.whoAmI &&
+                        p.type == ModContent.ProjectileType<SODCLK50>())
+                    {
+                        clkCount++;
+                        if (clkCount >= 12) break;
+                    }
+                }
+
+
+                if (clkCount < 12)
+                {
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_OnHit(target),
+                        owner.Center,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<SODCLK50>(),
+                        Projectile.damage,
+                        0f,
+                        owner.whoAmI
+                    );
+                }
+            }
         }
 
         //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -213,7 +244,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 2);
             return false;
         }
-        public override bool? CanDamage() => Time >= 12f; // 初始的时候不会造成伤害，直到12为止
+        public override bool? CanDamage() => Time >= 3f; // 初始的时候不会造成伤害，直到X为止
 
     }
 }

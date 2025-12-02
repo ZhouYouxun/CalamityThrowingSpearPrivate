@@ -64,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 720 * 8;
+            Projectile.timeLeft = 120 * 8;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false; // 允许与方块碰撞

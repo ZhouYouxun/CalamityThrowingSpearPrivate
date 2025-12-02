@@ -58,6 +58,9 @@ Projectiles: {
 			// SunsetCConceptRightCut2Item.DisplayName: Sunset C Concept Right Cut2 Item
 			// SunsetCConceptRightCut3Space.DisplayName: Sunset C Concept Right Cut3 Space
 			// SunsetCConceptRightCut4Energy.DisplayName: Sunset C Concept Right Cut4 Energy
+			// SODLazer.DisplayName: S O D Lazer
+			// SODMoment.DisplayName: S O D Moment
+			// SODCLK50.DisplayName: S O D C L K50
 		}
 
 		BPrePlantera: {
@@ -172,6 +175,8 @@ Projectiles: {
 			// TEM00Right.DisplayName: T E M00 Right
 			// TEM00RightAIM.DisplayName: T E M00 Right A I M
 			// TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
+			// SODLazer.DisplayName: S O D Lazer
+			// SuperSOD.DisplayName: Super S O D
 		}
 	}
 
@@ -259,6 +264,7 @@ Projectiles: {
 			DragonRageJavFire.DisplayName: 巨龙怒火
 			DragonRageJavFireBall.DisplayName: 巨龙怒焰
 			// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
+			// StarsofDestinyRIGHTINV.DisplayName: Starsof Destiny R I G H T I N V
 		}
 	}
 
@@ -295,6 +301,7 @@ Projectiles: {
 	// SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
 	// SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
 	// SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
+	// StarsofDestinyLEFTCLK.DisplayName: Starsof Destiny L E F T C L K
 }
 
 ChangedWeapons: {
@@ -886,15 +893,17 @@ NewWeapons: {
 			DisplayNameS0: 落日
 			TooltipS0:
 				'''
-				赤红之矛，燃尽余晖。
+				星辰在此坠落后，我们将执掌结局的形状
 				左键——四连投掷，标枪命中引爆小型恒星火焰。
 				右键——举枪于天，凝聚全宇宙的星辉，
 				化为一轮巨日坠落，带来湮灭般的爆炸。
 
-				——这是男主最钟爱的光景，
-				因她相伴而美丽，因他手中而燃烧，
-				在终局，他将亿万恒星捏合成一轮落日，
-				只为和她共度最后的黄昏。
+				有些承诺，需要以星辰为薪柴才能履行。
+				此刃，便是那场盛大焚烧后，唯一未被风化的灰烬。
+
+				它并不锋利——因为真正的终结，从来无需切割。当群星被赋予“坠落”的意志，当沸腾的光年被压缩为一握之温，它所代表的，便不再是毁灭，而是一种至高的仁慈：为所有奔流不息、疲惫不堪的存在，提供一个终于可以驻足的理由。
+
+				据说，在最后那个被凝固的黄昏里，没有挽歌。只有光，以违背一切物理法则的姿态，温柔地匍匐下来，覆上两尊并肩的影子。那是一个殉道者，能为一个世界写下的，最寂静的句号。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -911,15 +920,17 @@ NewWeapons: {
 			DisplayNameS1: 勿忘草
 			TooltipS1:
 				'''
-				蓝之矛，记忆的花。
+				在尽头踱步于最后坐标，铭刻追寻的永恒
 				左键——散射光矢，击中后召唤能量触手反复撕裂。
 				右键——长枪隐于掌心，召唤无数碎片与触手，
 				以敌人为中心，编织致命的囚笼。
 
-				——她为让他逃离剧本，随他重启数次时间线，
-				直到名字被遗忘，容颜消散，
-				唯有勿忘草在无数轮回里轻声低语：
-				“请不要忘记我。”
+				有些路途，在迈出第一步时，就已抵达了永恒。
+				便是那条贯穿无数“不可能”的、血与魂铺就的归途。
+
+				其重量无法计量——那是无数次轮回中，积攒的所有“回望”的总和。其锋刃无法定义——那是用“绝望”反复磨砺后，诞生的、足以刺穿“宿命”本身的尖锐。
+
+				她并非在“寻找”。只是在用每一次的抵达，对虚无本身进行一场漫长的、沉默的证伪。证明纵使故事被重置，纵使名字被擦去，纵使连“曾经存在”的概念都被剥夺，仍有一些事物，能留下比金石更坚硬的痕迹。这道蓝痕，便是虚无也无法消化、无法同化的“异物”，是锚定在所有破碎可能性中央的、唯一的真实坐标。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -936,7 +947,7 @@ NewWeapons: {
 			DisplayNameS2: 概念
 			TooltipS2:
 				'''
-				银白与金辉交织之矛，统御一切的概念具现。
+				当王冠扼杀自身，自由才开始真正的呼吸
 				切换形态——十枚灵感碎片浮现，环绕身侧。
 				左键——挥枪旋舞，近身撕裂，随后升枪，
 				于敌人身上召唤巨大的源初矩阵，锁定并啃噬其灵魂，
@@ -945,9 +956,10 @@ NewWeapons: {
 				每三十枚汇聚成一枚超级时间碎片，
 				从天而降，碾碎时空。
 
-				——这是男主的真正力量，
-				凌驾万物，统御一切，
-				连“概念”本身，也在他的枪尖低头。
+				有些王座，唯有在其崩塌时，才真正完成了加冕。
+				便是那顶被权力自身献祭的、至高冠冕的最终形态。
+
+				逻辑的王冠，本可定义“正确”，裁定“真实”，成为万有之上那唯一的、不容置疑的“作者”。然而，真正的伟大，或许正在于对这般伟力的弃绝。他以创造者的权能，下达了唯一的、也是最终的神谕：让“必然”之枷锁锈蚀，让“注定”之洪流改道，让每一个渺小的灵魂，都成为自己故事的、唯一的、且犯错也被允许的作者。
 
 				① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
 				   若独自无辅，则会净化一切负面诅咒。  
@@ -1402,6 +1414,11 @@ Buffs: {
 	SunsetASunsetEDebuff: {
 		// Description: Mods.CalamityThrowingSpear.Buffs.SunsetASunsetEDebuff.Description
 		// DisplayName: Sunset A Sunset E Debuff
+	}
+
+	StarsofDestinyP2Buff: {
+		// DisplayName: Starsof Destiny P2 Buff
+		// Description: Mods.CalamityThrowingSpear.Buffs.StarsofDestinyP2Buff.Description
 	}
 }
 
