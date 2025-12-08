@@ -257,10 +257,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Texture2D[] vortexTextures = new Texture2D[]
             {
         //ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SunsetChange").Value,
-        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_04").Value,
-        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_05").Value,
-        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_06").Value,
-        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_08").Value,
+        //ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_04").Value,
+        //ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_05").Value,
+        //ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_06").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/Sun/fbmnoise2_003").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/Sun/fbmnoise2_004").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/Sun/fbmnoise2_005").Value,
+        ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/SuperTexturePack/Sun/fbmnoise2_006").Value,
         ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/window_04").Value
             };
             Texture2D centerTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/LargeBloom").Value;

@@ -15,7 +15,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             {
                 // 只在夜晚才有可能掉落
                 npcLoot.Add(ItemDropRule.ByCondition(new NightTimeCondition(),
-                    ModContent.ItemType<SunsetSEED>(), 2));
+                    ModContent.ItemType<SunsetSEEDItem>(), 2));
                 // 这里的 2 表示 1/2 概率掉落（50%）
             }
         }

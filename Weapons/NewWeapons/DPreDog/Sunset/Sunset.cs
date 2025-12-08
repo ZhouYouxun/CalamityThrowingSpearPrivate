@@ -67,19 +67,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
             switch (currentMode)
             {
                 case 0:
-                    Item.SetNameOverride("落日"); // 可选
+                    //Item.SetNameOverride("落日"); // 可选
                     Item.width = 44;
                     Item.height = 50;
                     break;
 
                 case 1:
-                    Item.SetNameOverride("勿忘草");
+                    //Item.SetNameOverride("勿忘草");
                     Item.width = 44;
                     Item.height = 50;
                     break;
 
                 case 2:
-                    Item.SetNameOverride("概念");
+                    //Item.SetNameOverride("概念");
                     Item.width = 44;
                     Item.height = 50;
                     break;
@@ -97,11 +97,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
             float customScale = scale;
 
             if (currentMode == 0)       // 第一种贴图
-                customScale *= 0.30f;
+                customScale *= 0.930f;
             else if (currentMode == 1)  // 第二种贴图
-                customScale *= 0.30f;
+                customScale *= 0.930f;
             else if (currentMode == 2)  // 第三种贴图
-                customScale *= 0.30f;
+                customScale *= 0.930f;
 
             // 手动绘制
             spriteBatch.Draw(

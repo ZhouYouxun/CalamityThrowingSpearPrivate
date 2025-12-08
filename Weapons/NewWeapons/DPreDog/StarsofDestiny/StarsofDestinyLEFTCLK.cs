@@ -139,7 +139,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-
+            if (hasSpawnedCLK50)
+                return;
 
             {
 
@@ -172,6 +173,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                         0f,
                         owner.whoAmI
                     );
+                    // ★ 标记为已触发
+                    hasSpawnedCLK50 = true;
                 }
             }
         }

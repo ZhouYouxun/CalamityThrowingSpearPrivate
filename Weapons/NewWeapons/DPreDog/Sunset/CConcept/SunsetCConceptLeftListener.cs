@@ -144,7 +144,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                 float radialSpeed = Main.rand.NextFloat(6f, 10f);        // 初速度（向外）
                                 float angularSpeed = 0.04f * SpinDirection;              // 轻微随武器旋向的涡旋
 
-                                Vector2 spawnPos = center + angle.ToRotationVector2() * radius;
+                                Vector2 spawnPos = center + angle.ToRotationVector2() * radius * 2;
 
                                 // 生成 SquishyLightParticle（EXO之光）
                                 SquishyLightParticle exoEnergy = new SquishyLightParticle(

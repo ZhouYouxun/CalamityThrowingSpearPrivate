@@ -444,6 +444,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         // ==========================================================
         private void FireLazerAtTarget(bool singleShot)
         {
+            SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
+
             if (currentTarget == null)
                 return;
 
@@ -461,6 +463,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         }
         private void FireExtraLazers()
         {
+            SoundEngine.PlaySound(SoundID.Item73, Projectile.Center);
+
             if (currentTarget == null)
                 return;
 

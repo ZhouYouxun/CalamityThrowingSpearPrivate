@@ -98,6 +98,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     }
                 }
 
+                // ★ 若没有任何 SODCLK50，则拒绝发动 SuperSOD
+                if (momentCount <= 0)
+                {
+                    return false;
+                }
+
                 // 至少 6 发星弹 + 消耗的时刻数，数量传到 SuperSOD 的 ai[2]
                 Vector2 spawnPos = player.Center;
                 Vector2 shootVel = new Vector2(0f, -Item.shootSpeed);

@@ -1118,9 +1118,9 @@ NewWeapons: {
 			DisplayName: 命定星启
 			Tooltip:
 				'''
-				左键扔出长针枪，到底特定位置后散射流星
-				右键扔出短针枪，扎在目标上形成立场，可被长针枪提前引爆
-				长按左键可蓄力提升长针枪的伤害，造成伤害后短暂提升机动性
+				左键投掷召唤时钟阵的长针，右键则投出自主追击的短针
+				左键攻击会累计时间刻痕，每一刻将强化一次右键攻击
+				按住上键攻击将唤来星辰骤雨
 				[c/e1ffff:“海洋与冰雪之国的女王把你误认为自己的爱人”]
 				'''
 		}
@@ -1276,6 +1276,11 @@ Items: {
 
 	SunsetSEED: {
 		// DisplayName: Sunset S E E D
+		// Tooltip: ""
+	}
+
+	SunsetSEEDItem: {
+		// DisplayName: Sunset S E E D Item
 		// Tooltip: ""
 	}
 }

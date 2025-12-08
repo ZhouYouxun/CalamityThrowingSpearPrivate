@@ -1110,11 +1110,10 @@ NewWeapons: {
 			DisplayName: Chronoseeker
 			Tooltip:
 				'''
-				Left-click to throw a long needle-lance that rains down meteors after reaching a set position.  
-				Right-click to throw a short needle that embeds in targets and creates a field,  
-				which can be prematurely detonated by the long needle.  
-				Holding left-click charges up the long needle for more damage;  
-				successful hits briefly enhance mobility.  
+				Left-click hurls the Clock Lance's long hand, forming a temporal array.
+				Right-click releases the short hand, a seeker that hunts targets on its own.
+				Each left-click strike inscribes a Time Mark, and every mark empowers your next right-click attack.
+				Hold the Up key while attacking to call down a sudden rain of stars.
 				[c/e1ffff:"The Queen of Snow and Sea mistook you for her beloved."]  
 				'''
 		}
@@ -1267,6 +1266,11 @@ Items: {
 
 	SunsetSEED: {
 		DisplayName: Sunset S E E D
+		Tooltip: ""
+	}
+
+	SunsetSEEDItem: {
+		DisplayName: Sunset S E E D Item
 		Tooltip: ""
 	}
 }
