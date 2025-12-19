@@ -180,44 +180,150 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
             SpriteEffects effects = facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             float drawRotation = Projectile.rotation + (facingLeft ? MathHelper.PiOver2 : 0f);
 
-            // ====== 发光描边 ======
+            // =================================================
+            // ① 立方体中心：玩家正中心（世界坐标）
+            // =================================================
+            Vector2 cubeCenter = Owner.Center;
+
+            // =================================================
+            // ② 立方体参数（边长 = X × 16）
+            // =================================================
+            float halfSize = 12.5f * 16f;
+            float t = Main.GlobalTimeWrappedHourly;
+
+            // 稳定、缓慢的三轴旋转
+            float yaw = t * 0.8f;
+            float pitch = t * 0.6f;
+            float roll = t * 0.4f;
+
+            Matrix rot = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
+
+            // 近似正交的透视参数（保证可见、不中心漂移）
+            float focal = 1200f;
+            float zBias = 1200f;
+
+            // =================================================
+            // ③ 单位立方体顶点
+            // =================================================
+            Vector3[] v =
+            {
+        new(-1,-1,-1), new( 1,-1,-1), new( 1, 1,-1), new(-1, 1,-1),
+        new(-1,-1, 1), new( 1,-1, 1), new( 1, 1, 1), new(-1, 1, 1)
+    };
+
+            int[,] e =
+            {
+        {0,1},{1,2},{2,3},{3,0},
+        {4,5},{5,6},{6,7},{7,4},
+        {0,4},{1,5},{2,6},{3,7}
+    };
+
+            // =================================================
+            // ④ 3D → 2D 投影（世界坐标）
+            // =================================================
+            Vector2[] pv = new Vector2[8];
+
+            for (int i = 0; i < 8; i++)
+            {
+                Vector3 p = Vector3.Transform(v[i] * halfSize, rot);
+                float persp = focal / (focal + p.Z + zBias);
+                pv[i] = cubeCenter + new Vector2(p.X, p.Y) * persp;
+            }
+
+            // =================================================
+            // ⑤ 中心纠偏：确保立方体几何中心 = 玩家中心
+            // =================================================
+            Vector2 projectedCenter = Vector2.Zero;
+            for (int i = 0; i < 8; i++)
+                projectedCenter += pv[i];
+            projectedCenter /= 8f;
+
+            Vector2 fix = cubeCenter - projectedCenter;
+            for (int i = 0; i < 8; i++)
+                pv[i] += fix;
+
+            // =================================================
+            // ⑥ 蓝色线框立方体绘制
+            // =================================================
+            Color lineColor = Color.Lerp(
+                new Color(80, 200, 255),
+                Color.White,
+                0.5f + 0.5f * (float)Math.Sin(t * 3f)
+            );
+
+            for (int i = 0; i < 12; i++)
+            {
+                Vector2 a = pv[e[i, 0]];
+                Vector2 b = pv[e[i, 1]];
+                Main.spriteBatch.DrawLineBetter(a, b, lineColor, 7f);
+            }
+
+            // =================================================
+            // ⑦ 原有描边（完全不动）
+            // =================================================
             float chargeOffset = 6f;
             int segments = 16;
 
             for (int i = 0; i < segments; i++)
             {
-                Vector2 offset = (MathHelper.TwoPi * i / segments).ToRotationVector2() * chargeOffset;
+                Vector2 offset =
+                    (MathHelper.TwoPi * i / segments).ToRotationVector2() * chargeOffset;
 
                 Color edgeColor;
-                if (rainbowOutline) // 彩虹模式（柔和渐变）
+                if (rainbowOutline)
                 {
-                    float hue = (Main.GlobalTimeWrappedHourly * 0.5f + i / (float)segments) % 1f;
+                    float hue =
+                        (Main.GlobalTimeWrappedHourly * 0.5f + i / (float)segments) % 1f;
                     edgeColor = Main.hslToRgb(hue, 0.8f, 0.6f) * 0.7f;
                 }
-                else // 白色闪烁模式
+                else
                 {
                     edgeColor = Color.White * outlineFlash;
                 }
-                edgeColor.A = 0;
 
-                Main.spriteBatch.Draw(tex, drawPos + offset, null, edgeColor, drawRotation, origin, Projectile.scale, effects, 0f);
+                edgeColor.A = 0;
+                Main.spriteBatch.Draw(
+                    tex,
+                    drawPos + offset,
+                    null,
+                    edgeColor,
+                    drawRotation,
+                    origin,
+                    Projectile.scale,
+                    effects,
+                    0f
+                );
             }
 
-            // ====== 本体 ======
-            Main.EntitySpriteDraw(tex, drawPos, null, Projectile.GetAlpha(lightColor), drawRotation, origin, Projectile.scale, effects, 0);
+            // =================================================
+            // ⑧ 本体绘制
+            // =================================================
+            Main.EntitySpriteDraw(
+                tex,
+                drawPos,
+                null,
+                Projectile.GetAlpha(lightColor),
+                drawRotation,
+                origin,
+                Projectile.scale,
+                effects,
+                0
+            );
 
             return false;
         }
 
 
 
-    //    public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
-    //List<int> behindNPCs, List<int> behindProjectiles,
-    //List<int> overPlayers, List<int> overWiresUI)
-    //    {
-    //        // 碎片始终算作“上层”，压在魔法阵之上
-    //        overPlayers.Add(index);
-    //    }
+
+
+        //    public override void DrawBehind(int index, List<int> behindNPCsAndTiles,
+        //List<int> behindNPCs, List<int> behindProjectiles,
+        //List<int> overPlayers, List<int> overWiresUI)
+        //    {
+        //        // 碎片始终算作“上层”，压在魔法阵之上
+        //        overPlayers.Add(index);
+        //    }
 
 
         public override void SetDefaults()

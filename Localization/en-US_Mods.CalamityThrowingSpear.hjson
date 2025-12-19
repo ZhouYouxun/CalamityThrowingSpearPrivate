@@ -1124,6 +1124,7 @@ NewWeapons: {
 				'''
 				Left-click: unleash continuous sweeping laser sequences; after five cycles, fire a final converging beam
 				Right-click: summon orbiting laser emitters that auto-target nearby enemies and release dense laser fire
+				While held, deploys a high-dimensional construct, placing all players under its defensive calculations.
 				Note: requires activation on first use
 				[c/00fff0:“I glimpsed the end in a single moment.”]
 				'''

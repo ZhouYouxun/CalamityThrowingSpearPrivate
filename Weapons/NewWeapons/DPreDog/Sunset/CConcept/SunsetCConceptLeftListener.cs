@@ -119,7 +119,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     if (SpinCompletion >= 0f && SpinCompletion < 1f)
                     {
                         Vector2 center = Projectile.Center;
-                        float baseRadius = 3f * 16f;         // 初始圆环半径
+                        float baseRadius = 8f * 16f;         // 初始圆环半径
                         int ringCount = 8;                    // 有序分布数量（适度克制）
                         float phase = Main.GlobalTimeWrappedHourly * 2.8f; // 旋转相位，优雅而不急躁
 
@@ -135,7 +135,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
  
                         // ---------- 1) 环形线性粒子：改为 SquishyLightParticle ----------
-                        if ((Time % 3) == 0) // 节流：每 3 帧打一圈
+                        if ((Time % 1) == 0) // 节流：每 3 帧打一圈
                         {
                             for (int i = 0; i < ringCount; i++)
                             {
@@ -208,7 +208,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                                 center,
                                 Color.GreenYellow * 0.8f,
                                 Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi),
-                                1.7f,
+                                3.7f,
                                 new Vector2(1f, 1f),
                                 0.9f,
                                 5,
@@ -687,7 +687,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 Color smearColor = Color.GhostWhite * CalamityUtils.Convert01To010(SpinCompletion) * 0.9f;
                 Vector2 smearOrigin = smear.Size() * 0.5f;
 
-                Main.EntitySpriteDraw(smear, Owner.Center - Main.screenPosition, null, smearColor with { A = 0 }, rotation, smearOrigin, Projectile.scale * 1.45f, 0, 0);
+                Main.EntitySpriteDraw(smear, Owner.Center - Main.screenPosition, null, smearColor with { A = 0 }, rotation, smearOrigin, Projectile.scale * 4.45f, 0, 0);
             }
 
             // 绘制线条法阵特效

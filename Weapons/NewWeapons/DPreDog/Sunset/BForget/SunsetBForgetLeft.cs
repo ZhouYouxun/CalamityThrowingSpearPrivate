@@ -168,6 +168,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             // ===== 统一朝向（保持你的原始逻辑）=====
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
+            // ===== 前 30 帧可穿墙，之后恢复实体碰撞 =====
+            if (Projectile.timeLeft > 135)
+                Projectile.tileCollide = false;
+            else
+                Projectile.tileCollide = true;
+
+
+
+
 
             // ========== 击中第一次后的减速与透明化 ==========
             if (firstHitTriggered)
