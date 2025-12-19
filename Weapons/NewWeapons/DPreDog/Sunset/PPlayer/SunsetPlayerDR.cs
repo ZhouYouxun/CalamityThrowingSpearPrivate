@@ -8,6 +8,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 {
     public class SunsetPlayerDR : ModPlayer
     {
+        // 重嶂倾轧
+
         // ================================
         // 核心状态变量（每帧重算）
         // ================================
@@ -76,26 +78,29 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
             {
                 case 1:
                     bonusDR = 0.10f;
-                    extraIFrames = 6;
+                    extraIFrames = 1;
+                    bonusLifeRegen = 3;
                     break;
 
                 case 2:
                     bonusDR = 0.30f;
-                    extraIFrames = 30;
+                    extraIFrames = 3;
+                    bonusLifeRegen = 9;
                     break;
 
                 case 3:
                     bonusDR = 0.50f;
-                    extraIFrames = 60;
+                    extraIFrames = 6;
+                    bonusLifeRegen = 12;
                     finalDamageMultiplier = 0.5f;
                     break;
 
                 case 4:
                     bonusDR = 0.80f;
-                    extraIFrames = 120;
+                    extraIFrames = 9;
                     finalDamageMultiplier = 0.15f;
                     bonusDefense = 100;
-                    bonusLifeRegen = 6;
+                    bonusLifeRegen = 30;
                     break;
             }
 
@@ -372,8 +377,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
             Player.immuneNoBlink = true;
             Player.immuneTime += extraIFrames;
 
+            // ★ 最高档位：单次伤害硬上限
+            if (inviolabilityTier == 4 && hurtInfo.Damage > 20)
+            {
+                hurtInfo.Damage = 20;
+            }
+
             hurtInfo.Damage = (int)(hurtInfo.Damage * finalDamageMultiplier);
         }
+
+
+
     }
 }
 

@@ -14,7 +14,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 {
     public class SunsetPlayer : ModPlayer
     {
-        // 概念一致性
+        // 概念一致性：权能剥夺
 
         // 存放所有违规武器的ID
         private static readonly HashSet<int> BannedWeapons = new HashSet<int>

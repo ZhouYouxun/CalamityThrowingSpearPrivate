@@ -13,7 +13,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 {
     public class SunsetPlayerSpeed : ModPlayer
     {
-        // 无防护假设
+        // 无防护假设：破绽暴露
 
 
         // 活力凝胶, 鹰身女妖戒指, 反击围巾, 天蓝石, 闪避围巾, 深潜者, 宝光盾, 天使靴, 阿斯加德英勇, 利维坦龙涎香,
