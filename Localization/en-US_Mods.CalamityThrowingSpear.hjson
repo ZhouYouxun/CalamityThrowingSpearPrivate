@@ -1452,9 +1452,9 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: ingested too many pigments
 	ReworkPrompt: CTS: This weapon can be converted into a throwing version
-	Sunset1: 落日
-	Sunset2: 勿忘草
-	Sunset3: 概念
+	Sunset1: Witnessing the End
+	Sunset2: Memories Blossom
+	Sunset3: Redefining the Definition
 }
 
 Tiles: {

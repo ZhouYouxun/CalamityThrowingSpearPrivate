@@ -183,6 +183,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
 
         public override void HoldItem(Player player)
         {
+            // === 名字同步（必须在这里） ===
+            string nameKey = currentMode switch
+            {
+                0 => "DisplayNameS0",
+                1 => "DisplayNameS1",
+                2 => "DisplayNameS2",
+                _ => "DisplayNameS0"
+            };
+            Item.SetNameOverride(this.GetLocalizedValue(nameKey));
+
+
+
             // 必须：Calamity 的右键监听
             if (Main.myPlayer == player.whoAmI)
                 player.Calamity().rightClickListener = true;
@@ -545,16 +557,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset
                 2 => "TooltipS2",
                 _ => "TooltipS0"
             };
-            string nameKey = currentMode switch
-            {
-                0 => "DisplayNameS0",
-                1 => "DisplayNameS1",
-                2 => "DisplayNameS2",
-                _ => "DisplayNameS0"
-            };
+            //string nameKey = currentMode switch
+            //{
+            //    0 => "DisplayNameS0",
+            //    1 => "DisplayNameS1",
+            //    2 => "DisplayNameS2",
+            //    _ => "DisplayNameS0"
+            //};
 
-            // 替换名字
-            Item.SetNameOverride(this.GetLocalizedValue(nameKey));
+            //// 替换名字
+            //Item.SetNameOverride(this.GetLocalizedValue(nameKey));
 
             // 替换 Tooltip 中的占位符
             tooltips.FindAndReplace("[Stage]", this.GetLocalizedValue(stageKey));

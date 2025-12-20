@@ -1,17 +1,18 @@
-﻿using CalamityMod.Particles;
+﻿using CalamityMod;
+using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
-using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -324,7 +325,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 float bonus = target.lifeMax; // 直接加等同于 100% maxHP 的额外伤害
                 modifiers.FinalDamage += bonus;
             }
+
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
         }
+
+
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
 

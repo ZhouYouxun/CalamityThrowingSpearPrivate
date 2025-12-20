@@ -1,21 +1,22 @@
 ﻿using CalamityMod;
+using CalamityMod.Particles;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics; // PunchCameraModifier
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Terraria.GameContent.Drawing;
-using Terraria.DataStructures;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept;
-using CalamityMod.Particles;
-using Terraria.Audio;
-using Terraria.Graphics.CameraModifiers;
-using Microsoft.Xna.Framework.Graphics; // PunchCameraModifier
 
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
@@ -829,6 +830,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Vector2 explosionPosition = target.Center;

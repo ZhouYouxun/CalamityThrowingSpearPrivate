@@ -234,6 +234,7 @@
 	<ItemGroup>
 	  <Folder Include="Sound\New\" />
 	  <Folder Include="Sound\新文件夹\" />
+	  <Folder Include="System\" />
 	  <Folder Include="Weapons\NewWeapons\AAA这下面是新的武器-----------------\" />
 	  <Folder Include="Weapons\NewWeapons\DPreDog\Sunset\EGive\" />
 	  <Folder Include="Weapons\NewWeapons\DPreDog\Sunset\新文件夹\" />

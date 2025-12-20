@@ -1,18 +1,19 @@
-﻿using CalamityMod.Particles;
+﻿using CalamityMod;
+using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
-using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -100,6 +101,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         private float turnAngle90 = MathHelper.ToRadians(90f);
 
         private int turnCount = 0;     // <<< 新增，用来计数
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
 
         public override void AI()
         {

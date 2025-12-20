@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
-using CalamityMod;
 using Terraria.GameContent.Events;
+using Terraria.Graphics.Shaders;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -26,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 7 * 60;
+            Projectile.timeLeft = 420;
         }
         public override void OnKill(int timeLeft)
         {
@@ -92,6 +93,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
 
         public override void AI()
         {
@@ -108,12 +117,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.scale = MathHelper.Lerp(0f, 1.4f, chargeupCompletion);
             Projectile.Opacity = Projectile.scale * Projectile.scale;
 
-            int fadeOutTime = 40; // 这是淡出的时间
-            if (Projectile.timeLeft < fadeOutTime)
+            int fadeOutTime = 40;
+            int fadeOutStart = 60; // 420 - 360 = 60
+
+            if (Projectile.timeLeft <= fadeOutStart)
             {
                 float fadeFactor = Projectile.timeLeft / (float)fadeOutTime;
+                fadeFactor = MathHelper.Clamp(fadeFactor, 0f, 1f);
                 Projectile.Opacity *= fadeFactor;
             }
+
 
             // ===== 锁定目标敌人 =====
             NPC target = null;
@@ -130,7 +143,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
 
             // ===== 提前释放大弹幕 =====
-            int releaseTime = 360;
+            int releaseTime = 320;
             existTime++;
 
             if (existTime == releaseTime)

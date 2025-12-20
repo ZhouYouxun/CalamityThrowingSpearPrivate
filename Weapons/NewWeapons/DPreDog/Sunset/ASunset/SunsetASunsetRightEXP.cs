@@ -1,16 +1,17 @@
-﻿using System;
+﻿using CalamityMod.Particles;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Terraria.GameContent.Drawing;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using CalamityMod.Particles;
-using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 {
@@ -252,6 +253,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
 
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -1,12 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿// SunsetSEEDTile.cs
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using CalamityMod.Particles; // 特效库：GeneralParticleHandler + 粒子类
+using CalamityMod.Particles; // GeneralParticleHandler + 粒子类
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
 {
@@ -43,121 +45,173 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
         {
             Tile tile = Main.tile[i, j];
 
-            // 只在“基准块”绘制一次，避免 3×4 每格重复画
-            if (tile.TileFrameX == (int)(Width * 0.5f) * 18 &&
-                tile.TileFrameY == (Height - 1) * 18)
+            // 只在“左上角那一格”绘制一次，避免 3×4 每格重复画
+            if (tile.TileFrameX % (Width * 18) != 0 ||
+                tile.TileFrameY % (Height * 18) != 0)
             {
-                var system = ModContent.GetInstance<SunsetSEEDTileSystem>();
-                Point p = new Point(i, j);
-
-                // 画植物本体（由 System 负责）
-                system.RenderAt(p, spriteBatch);
-
-                // 根据阶段设置强度（同一个特效函数，不同强度）
-                int stage = 0;
-                system.TryGetStage(p, out stage);
-
-                float intensity = stage switch
-                {
-                    0 => 0.25f,
-                    1 => 0.45f,
-                    2 => 0.70f,
-                    _ => 1.00f
-                };
-
-                // 特效锚点：跟渲染锚点保持一致，再往上抬一点
-                Vector2 anchor = new Vector2((i + 0.5f) * 16f, j * 16f + 24f) + new Vector2(0f, -38f);
-                SpawnSeedVFX(anchor, intensity);
+                return false;
             }
 
-            // 不让原生 Tile 自己画
+            // i, j 就是左上角
+            Point topLeft = new Point(i, j);
+
+            var system = ModContent.GetInstance<SunsetSEEDTileSystem>();
+
+            // 双保险：确保字典有记录（NearbyEffects 也会注册，但这里不赌调用顺序）
+            system.RegisterSeed(topLeft);
+
+            // 画植物本体（中心对齐已在 System 内处理）
+            system.RenderAt(topLeft, spriteBatch);
+
+            // 刷蓝绿迷幻特效：覆盖范围随阶段扩张
+            if (system.TryGetStage(topLeft, out int stage))
+                SpawnSeedVFX(topLeft, stage, system);
+
+            // 不让原生 Tile 自己画（否则叠两套）
             return false;
         }
+
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Main.tile[i, j];
 
-            // 只在“基准块”注册，避免重复
-            if (tile.TileFrameX == (int)(Width * 0.5f) * 18 &&
-                tile.TileFrameY == (Height - 1) * 18)
+            // 与 PreDraw 同步：只在左上角注册一次
+            if (tile.TileFrameX % (Width * 18) != 0 ||
+                tile.TileFrameY % (Height * 18) != 0)
             {
-                ModContent.GetInstance<SunsetSEEDTileSystem>().RegisterSeed(new Point(i, j));
+                return;
             }
+
+            ModContent.GetInstance<SunsetSEEDTileSystem>().RegisterSeed(new Point(i, j));
         }
 
         public override bool CanDrop(int i, int j) => false;
 
-        // 同一个特效函数：强度越大越夸张（临时方案，后面好改）
-        private static void SpawnSeedVFX(Vector2 anchorWorldPos, float intensity)
+        // ====== 阶段特效覆盖范围（单位：Tile）======
+        // Stage0：3×4
+        // Stage1：3×5
+        // Stage2：5×7
+        // Stage3：5×10
+        private static readonly Point[] StageVFXAreaTiles =
+        {
+            new Point(3, 4),
+            new Point(3, 5),
+            new Point(5, 7),
+            new Point(5, 10)
+        };
+
+        private static float Frac(float x) => x - (float)Math.Floor(x);
+
+        private static void SpawnSeedVFX(Point topLeftTile, int stage, SunsetSEEDTileSystem system)
         {
             if (Main.gamePaused)
                 return;
 
+            stage = Utils.Clamp(stage, 0, 3);
+
+            // 以“贴图绘制中心”为核心（与你的 RenderAt 完全同源），确保永远对齐
+            Vector2 worldCenter =
+                system.GetWorldCenterForDraw(topLeftTile, stage)
+                + new Vector2(-12f * 16f, -12f * 16f);
+
             // 距离太远就不刷，避免后台浪费
             float maxDist = 1200f;
-            if (Vector2.DistanceSquared(Main.LocalPlayer.Center, anchorWorldPos) > maxDist * maxDist)
+            if (Vector2.DistanceSquared(Main.LocalPlayer.Center, worldCenter) > maxDist * maxDist)
                 return;
 
-            // 刷新频率：强度越大越频繁
-            int interval = (int)MathHelper.Lerp(18f, 6f, intensity);
-            if (interval < 2)
-                interval = 2;
+            // 覆盖范围（像素）：阶段越高越大
+            Point areaTiles = StageVFXAreaTiles[stage];
+            float halfW = areaTiles.X * 16f * 0.5f;
+            float halfH = areaTiles.Y * 16f * 0.5f;
 
-            if (Main.GameUpdateCount % (uint)interval != 0u)
+            // 频率：约“两帧一针”
+            if (Main.GameUpdateCount % 2u != 0u)
                 return;
 
-            // 用确定性角度做“有秩序”的旋绕（避免纯随机重复）
-            float t = (float)Main.GameUpdateCount * 0.08f;
-            float angle = t + anchorWorldPos.X * 0.003f + anchorWorldPos.Y * 0.002f;
-            Vector2 dir = angle.ToRotationVector2();
-
-            float radius = MathHelper.Lerp(8f, 34f, intensity);
-            Vector2 spawnPos = anchorWorldPos + dir * radius;
-
-            float speed = MathHelper.Lerp(0.4f, 2.2f, intensity);
-            Vector2 vel = dir.RotatedBy(MathHelper.PiOver2) * (speed * 0.35f) + (-Vector2.UnitY * (0.5f + intensity));
-
-            // 1) Spark 粒子：小火花拖尾（强度越大越亮、越大、寿命越长）
-            Color sparkColor = Color.Lerp(Color.Orange, Color.OrangeRed, intensity);
-            Particle spark = new SparkParticle(
-                spawnPos,
-                vel,
-                false,
-                18 + (int)(24f * intensity),
-                0.55f + 1.15f * intensity,
-                sparkColor
-            );
-            GeneralParticleHandler.SpawnParticle(spark);
-
-            // 2) Bloom：偶尔来一下“热量脉冲”
-            int bloomInterval = (int)MathHelper.Lerp(90f, 30f, intensity);
-            if (bloomInterval < 10)
-                bloomInterval = 10;
-
-            if (Main.GameUpdateCount % (uint)bloomInterval == 0u)
+            // 数量：明确收敛（主次清晰）
+            // 每次触发只喷少量点，但阶段越高覆盖更大
+            int count = stage switch
             {
-                Particle bloom = new GenericBloom(
-                    anchorWorldPos,
-                    Vector2.Zero,
-                    Color.Lerp(Color.OrangeRed, Color.Gold, intensity),
-                    0.6f + 1.2f * intensity,
-                    18 + (int)(18f * intensity)
-                );
-                GeneralParticleHandler.SpawnParticle(bloom);
-            }
+                0 => 3, // 3×4：很克制
+                1 => 7, // 3×5
+                2 => 9, // 5×7
+                _ => 10  // 5×10：最多也就 4 个点/两帧
+            };
 
-            // 3) 原版 Dust：补一点细节火点（确保不报错）
-            int dustType = DustID.Torch;
-            Dust d = Dust.NewDustPerfect(
-                spawnPos + Main.rand.NextVector2Circular(4f, 4f),
-                dustType,
-                vel * 0.25f,
-                0,
-                Color.Lerp(Color.Orange, Color.Red, intensity),
-                0.8f + 0.9f * intensity
-            );
-            d.noGravity = true;
+            // 蓝绿迷幻主色（你要的同源体系）
+            Color cA = new Color(40, 255, 220);  // 青绿
+            Color cB = new Color(80, 140, 255);  // 青蓝
+
+            // “数学秩序”采样：确定性铺点 + 呼吸相位
+            float t = (float)Main.GameUpdateCount * 0.06f;
+            ulong step = Main.GameUpdateCount / 2u;
+
+            for (int n = 0; n < count; n++)
+            {
+                float s = (float)(step * (ulong)count + (ulong)n);
+
+                // 确定性铺点（不靠 Main.rand）：黄金比序列
+                float u = Frac(s * 0.6180339f);
+                float v = Frac(s * 0.3236068f);
+
+                // 覆盖矩形内的点（阶段越高范围越大）
+                float x = MathHelper.Lerp(-halfW, halfW, u);
+                float y = MathHelper.Lerp(-halfH, halfH, v);
+
+                // 轻微旋序扰动：让点“活着”，但不乱
+                float a = s * 2.39996323f + t;
+                Vector2 swirl = new Vector2((float)Math.Cos(a), (float)Math.Sin(a * 1.27f + 0.9f));
+                Vector2 pos = worldCenter + new Vector2(x, y) + swirl * (2f + stage * 1.0f);
+
+                // 色彩呼吸：青绿↔青蓝
+                float pulse = 0.5f + 0.5f * (float)Math.Sin(t * 1.2f + s * 0.35f);
+                Color c = Color.Lerp(cA, cB, pulse);
+
+                // 速度：上扬+轻微发散（非常轻，避免喧宾夺主）
+                Vector2 toOut = pos - worldCenter;
+                if (toOut.LengthSquared() < 0.001f)
+                    toOut = Vector2.UnitY;
+                else
+                    toOut.Normalize();
+
+                Vector2 vel = (-Vector2.UnitY * (0.35f + 0.08f * stage)) + toOut * (0.05f + 0.02f * stage);
+
+                // ===== 9.EXO之光（SquishyLightParticle）=====
+                // 低数量但很亮：作为“主光”
+                SquishyLightParticle exoEnergy = new(
+                    pos,
+                    vel,
+                    0.20f + 0.03f * stage,                 // scale：阶段越高略大
+                    c,                                     // color：蓝绿迷幻
+                    18 + stage * 6,                        // lifetime：略随阶段增加
+                    opacity: 1f,
+                    squishStrenght: 1f,
+                    maxSquish: 3f,
+                    hueShift: 0f
+                );
+                GeneralParticleHandler.SpawnParticle(exoEnergy);
+
+                // ===== 10.辉光球（GlowOrbParticle）=====
+                // 作为“辅光点缀”：快、清爽、短命
+                GlowOrbParticle orb = new GlowOrbParticle(
+                    pos,
+                    Vector2.Zero,
+                    false,
+                    6,                                     // lifetime：短促
+                    0.55f + 0.08f * stage,                 // scale：阶段越高略大
+                    c,
+                    true,
+                    false,
+                    true
+                );
+                GeneralParticleHandler.SpawnParticle(orb);
+            }
         }
+
+
+
+
+
     }
 }

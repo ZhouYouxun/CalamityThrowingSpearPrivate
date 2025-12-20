@@ -888,7 +888,7 @@ NewWeapons: {
 		}
 
 		Sunset: {
-			DisplayName: Sunset
+			DisplayName: 落日
 			Tooltip: "[Stage]"
 			DisplayNameS0: 落日
 			TooltipS0:
@@ -1465,9 +1465,9 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: 摄入了过量的色素!
 	ReworkPrompt: CTS：此武器可被转化投掷版本
-	Sunset1: 落日
-	Sunset2: 勿忘草
-	Sunset3: 概念
+	Sunset1: 见证终焉
+	Sunset2: 记忆绽放
+	Sunset3: 定义改写
 }
 
 Tiles: {

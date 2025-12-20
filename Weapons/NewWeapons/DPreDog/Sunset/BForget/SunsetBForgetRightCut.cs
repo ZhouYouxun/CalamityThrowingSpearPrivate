@@ -1,19 +1,20 @@
 ﻿using CalamityMod;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Melee;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
-using Microsoft.Xna.Framework;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
-using Microsoft.Xna.Framework.Graphics;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 {
@@ -155,6 +156,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
         private bool spawnedTentacles = false;
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
+
         public override void OnSpawn(IEntitySource source)
         {
             base.OnSpawn(source);
