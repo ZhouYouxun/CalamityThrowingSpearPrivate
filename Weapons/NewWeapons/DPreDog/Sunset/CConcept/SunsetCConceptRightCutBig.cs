@@ -133,7 +133,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             else if (lifeTimer == smashFrame)
             {
                 // 触发下砸：朝下高速
-                Projectile.velocity = Vector2.UnitY * 40f;
+                Projectile.velocity = Vector2.UnitY * 90f;
 
                 // 可以在这里触发一个「预兆特效」
                 // 比如小范围收缩环

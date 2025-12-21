@@ -141,6 +141,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.extraUpdates = 1; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
+            Projectile.scale = 0.7f; // 弹幕使用本地无敌帧
+
         }
         private bool killedByRightCheck = false;
         private bool firstHitTriggered = false;

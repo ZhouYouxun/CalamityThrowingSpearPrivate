@@ -27,20 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-        // ========= 能量条系统（蓄力 → 满格 → 释放大招）=========
-
-        // 当前蓄力值（0 ~ energyMax）
-        private float energyCharge = 0f;
-
-        // 每次发射一发小弹幕就增加多少能量
-        private const float energyGainPerShot = 1f;
-
-        // 满格阈值（例如发射 120 发小弹幕后触发）
-        private const float energyMax = 120f;
-
-        // 大招刚触发后锁定 10 帧，避免重复触发
-        private int energyReleaseLock = 0;
-
+ 
         public override bool PreDraw(ref Color lightColor)
         {
             // 先画弹幕本体（你原来的效果保持不变）
@@ -56,8 +43,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 // 玩家头顶 36 像素位置
                 Vector2 drawPos = Owner.Center - Main.screenPosition + new Vector2(0, -48);
 
-                // 60 秒读条：60s = 3600 帧
-                float p = holdTime / 3600f;
+                // X 秒读条：下面是3000帧
+                float p = holdTime / 3000f;
                 p = MathHelper.Clamp(p, 0f, 1f);
 
                 // 裁切前景条显示长度
@@ -214,18 +201,28 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
                 frameTimer++;
                 holdTime++;
-                Projectile.timeLeft = 300;
 
-                NPC target = FindClosestTarget();
+                NPC target = FindClosestTargetInRange(12000f);
 
                 // -------------------------------
                 // 45 秒（2700 帧）：生成魔法阵
                 // -------------------------------
-                if (holdTime == 2700 && target != null)
+                if (holdTime == 2700)
                 {
+                    Vector2 anchorBase;
 
-                    // =============== 生成魔法阵（原逻辑保持不变） ===============
-                    Vector2 magicSpawnPos = target.Center + new Vector2(0, -30 * 16);
+                    if (target != null)
+                    {
+                        // 有敌人 → 敌人头顶
+                        anchorBase = target.Center;
+                    }
+                    else
+                    {
+                        // 无敌人 → 玩家头顶
+                        anchorBase = Owner.Center;
+                    }
+
+                    Vector2 magicSpawnPos = anchorBase + new Vector2(0, -30 * 16);
                     Vector2 magicVelocity = Vector2.UnitY * 30f;
 
                     Projectile.NewProjectile(
@@ -251,6 +248,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 // -------------------------------
                 if (!forbidSmallShots && holdTime < 3000)
                 {
+
                     int minInterval = 5;
                     int startInterval = 18;
                     int interval = Math.Max(minInterval, startInterval - (shotIndex / 2));
@@ -441,33 +439,41 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
 
 
-        private NPC FindClosestTarget()
+        private NPC FindClosestTargetInRange(float maxRange)
         {
             NPC closestTarget = null;
-            float closestDistance = float.MaxValue;
+            float closestDistance = maxRange;
+
+            Vector2 playerCenter = Owner.Center;
 
             foreach (NPC npc in Main.npc)
             {
-                if (npc.CanBeChasedBy()) // 确保是合法目标
-                {
-                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
+                if (!npc.CanBeChasedBy())
+                    continue;
 
-                    // 优先选择 Boss，如果不存在 Boss 则选择最近的小怪
-                    if (npc.boss && distance < closestDistance)
+                float distance = Vector2.Distance(playerCenter, npc.Center);
+                if (distance > maxRange)
+                    continue;
+
+                // Boss 优先
+                if (npc.boss)
+                {
+                    if (closestTarget == null || !closestTarget.boss || distance < closestDistance)
                     {
                         closestTarget = npc;
                         closestDistance = distance;
                     }
-                    else if (!closestTarget?.boss ?? true) // 如果当前目标不是 Boss，允许更新为最近的非 Boss 目标
+                }
+                else if (closestTarget == null || !closestTarget.boss)
+                {
+                    if (distance < closestDistance)
                     {
-                        if (distance < closestDistance)
-                        {
-                            closestTarget = npc;
-                            closestDistance = distance;
-                        }
+                        closestTarget = npc;
+                        closestDistance = distance;
                     }
                 }
             }
+
             return closestTarget;
         }
 

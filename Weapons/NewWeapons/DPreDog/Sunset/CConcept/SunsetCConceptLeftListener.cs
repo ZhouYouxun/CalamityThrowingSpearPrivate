@@ -30,7 +30,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 
         public override void SetDefaults()
         {
-            Projectile.width = Projectile.height = 160;
+            Projectile.width = Projectile.height = 560;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;

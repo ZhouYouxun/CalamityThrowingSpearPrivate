@@ -101,6 +101,30 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             new Point(5, 10)
         };
 
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            // 计算左上角（和你系统用的是同一套坐标）
+            Point topLeft = new Point(
+                i - frameX / 18 % Width,
+                j - frameY / 18 % Height
+            );
+
+            var system = ModContent.GetInstance<SunsetSEEDTileSystem>();
+
+            // 只有最终阶段才掉落 Sunset
+            if (system.IsFinalStage(topLeft))
+            {
+                Item.NewItem(
+                    new Terraria.DataStructures.EntitySource_TileBreak(i, j),
+                    topLeft.X * 16,
+                    topLeft.Y * 16,
+                    Width * 16,
+                    Height * 16,
+                    ModContent.ItemType<Sunset>()
+                );
+            }
+        }
+
         private static float Frac(float x) => x - (float)Math.Floor(x);
 
         private static void SpawnSeedVFX(Point topLeftTile, int stage, SunsetSEEDTileSystem system)
