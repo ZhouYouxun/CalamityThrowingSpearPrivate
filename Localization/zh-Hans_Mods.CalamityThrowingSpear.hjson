@@ -1272,17 +1272,12 @@ Items: {
 
 	XiaoZhiTiaoSoD2: {
 		DisplayName: 不思议之旅
-		Tooltip: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉祭坛
-	}
-
-	SunsetSEED: {
-		// DisplayName: Sunset S E E D
-		// Tooltip: ""
+		Tooltip: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉信标
 	}
 
 	SunsetSEEDItem: {
-		// DisplayName: Sunset S E E D Item
-		// Tooltip: ""
+		DisplayName: 小草种子
+		Tooltip: 只是一颗种子，没什么特殊的含义
 	}
 }
 
@@ -1382,8 +1377,8 @@ Configs: {
 
 Keybinds: {
 	更改长枪形态.DisplayName: 更改长枪形态
-	// 技能.DisplayName: 技能
-	// 武器技能.DisplayName: 武器技能
+	// 技能.DisplayName: Skill
+	// 武器技能.DisplayName: Weapon skill
 }
 
 Buffs: {

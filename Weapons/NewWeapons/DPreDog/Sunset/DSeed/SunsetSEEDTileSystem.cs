@@ -42,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
                     continue;
                 }
 
-                if (seedDays[p] < 3)
+                if (seedDays[p] < 60)
                     seedDays[p]++;
             }
         }
@@ -59,7 +59,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.DSeed
             return false;
         }
 
-        private int GetStage(int days) => days >= 3 ? 3 : days;
+        private int GetStage(int days)
+        {
+            if (days < 10)
+                return 0;       // 0 ~ 9 天
+            if (days < 30)
+                return 1;       // 10 ~ 29 天
+            if (days < 60)
+                return 2;       // 30 ~ 59 天
+
+            return 3;           // ≥ 60 天（完全体）
+        }
 
         private Texture2D GetStageTexture(int stage)
         {

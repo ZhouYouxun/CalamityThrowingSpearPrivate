@@ -1256,23 +1256,26 @@ Items: {
 	}
 
 	XiaoZhiTiaoSoD: {
-		DisplayName: Xiao Zhi Tiao So D
-		Tooltip: ""
+		DisplayName: A Wondrous Journey
+		Tooltip:
+			'''
+			[c/e1ffff:“O soul of darkness, accept this absurd masquerade.”]
+			[c/e1ffff:“Bring an unflinching end to sorrow.”]
+			[c/e1ffff:“Bury the promise deep within the memories of the comet-born.”]
+			[c/e1ffff:“Offer the pocket watch that bridges past and present.”]
+			[c/e1ffff:“Like a falling jewel, washed free of all pretense.”]
+			[c/e1ffff:“A tale of stars, drifting from the unknowable beyond.”]
+			'''
 	}
 
 	XiaoZhiTiaoSoD2: {
-		DisplayName: Xiao Zhi Tiao So D2
-		Tooltip: ""
-	}
-
-	SunsetSEED: {
-		DisplayName: Sunset S E E D
-		Tooltip: ""
+		DisplayName: A Wondrous Journey
+		Tooltip: Challenge: Defeat Polterghast, then right-click the Astral Beacon with a Gold Watch or Platinum Watch
 	}
 
 	SunsetSEEDItem: {
-		DisplayName: Sunset S E E D Item
-		Tooltip: ""
+		DisplayName: Grass Seed
+		Tooltip: Just a seed, nothing special about it.
 	}
 }
 
@@ -1369,8 +1372,8 @@ Configs: {
 
 Keybinds: {
 	更改长枪形态.DisplayName: Switch Spear
-	技能.DisplayName: 技能
-	武器技能.DisplayName: 武器技能
+	技能.DisplayName: Skill
+	武器技能.DisplayName: Weapon skill
 }
 
 Buffs: {
