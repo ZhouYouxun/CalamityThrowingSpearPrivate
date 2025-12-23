@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
-using CalamityMod;
 using Terraria.GameContent.Events;
+using Terraria.Graphics.Shaders;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -26,7 +27,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 7 * 60;
+            Projectile.timeLeft = 420;
         }
         public override void OnKill(int timeLeft)
         {
@@ -92,6 +93,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             }
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
 
         public override void AI()
         {
@@ -103,19 +112,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 return;
             }
 
-            // ===== 视觉淡入淡出 ===== 这里的(X,Y,Z)，Y表示了淡入时间
+            // ===== 视觉淡入淡出 =====
             float chargeupCompletion = Utils.GetLerpValue(0f, 90f, 180 - Projectile.timeLeft, true);
             Projectile.scale = MathHelper.Lerp(0f, 1.4f, chargeupCompletion);
             Projectile.Opacity = Projectile.scale * Projectile.scale;
 
-            int fadeOutTime = 40; // 这是淡出的时间
-            if (Projectile.timeLeft < fadeOutTime)
+            int fadeOutTime = 40;
+            int fadeOutStart = 60;
+
+            if (Projectile.timeLeft <= fadeOutStart)
             {
                 float fadeFactor = Projectile.timeLeft / (float)fadeOutTime;
+                fadeFactor = MathHelper.Clamp(fadeFactor, 0f, 1f);
                 Projectile.Opacity *= fadeFactor;
             }
 
-            // ===== 锁定目标敌人 =====
+            // ===== 寻找最近敌人（以玩家为中心）=====
             NPC target = null;
             float maxDist = 1200f;
 
@@ -128,14 +140,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 }
             }
 
-
             // ===== 提前释放大弹幕 =====
-            int releaseTime = 360;
+            int releaseTime = 320;
             existTime++;
 
             if (existTime == releaseTime)
             {
-                // =============== 播放音效 ===============
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/SunsetConceptRE")
                 {
                     Volume = 1.0f,
@@ -143,40 +153,40 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                     PitchVariance = 0.06f
                 }, Projectile.Center);
 
-                // =============== 屏幕白光（Terminus 同款） ===============
-                // Terminus 的白光是通过 MoonlordDeathDrama.RequestLight()
-                //   intensity：亮度（0 ~ 1）
-                //   position：光效中心（一般用玩家中心）
-                // 我们这里瞬间触发一次 1f 强度的白光
-
                 MoonlordDeathDrama.RequestLight(
-                    1f,                         // ★ 强度 = 1 → 全屏白光
-                    Main.LocalPlayer.Center     // ★ 光效中心（玩家）
+                    1f,
+                    Main.LocalPlayer.Center
                 );
 
-                // =============== 屏幕震动（严格按你的“标准震动代码”） ===============
                 {
-                    // 屏幕震动效果
-                    float shakePower = 150f; // 设置震动强度
-                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+                    // 屏幕震动效果（你的标准代码）
+                    float shakePower = 150f;
+                    float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true);
                     Main.LocalPlayer.Calamity().GeneralScreenShakePower =
                         Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
                 }
-                ReleaseBigProjectile(); // 回调到一个你定义的函数
+
+                ReleaseBigProjectile();
             }
 
+            // ===== 位置锚定逻辑 =====
+            Vector2 anchorBase;
 
-            if (target == null)
+            if (target != null)
             {
-                Projectile.Kill();
-                return;
+                // 有敌人 → 敌人头顶
+                anchorBase = target.Center;
+            }
+            else
+            {
+                // 无敌人 → 最近玩家（这里就是 owner）
+                anchorBase = owner.Center;
             }
 
-            // ===== 固定在敌人头顶，不公转 =====
-            Vector2 anchor = target.Center + new Vector2(0f, -35 * 16f);
-            Projectile.Center = anchor;
+            // 悬空高度保持一致
+            Projectile.Center = anchorBase + new Vector2(0f, -35f * 16f);
 
-            // ===== 魔法阵自转变量（弹幕不转）=====
+            // ===== 魔法阵自转 =====
             magicCircleRot += 0.03f;
         }
 

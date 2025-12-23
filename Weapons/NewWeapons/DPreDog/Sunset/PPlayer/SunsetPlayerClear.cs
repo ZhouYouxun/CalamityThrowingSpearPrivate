@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using CalamityMod.Buffs.Alcohol;
+using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Buffs.StatBuffs;
+using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Items.Weapons.Typeless;
+using CalamityMod.Particles;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Buffs.StatBuffs;
-using CalamityMod.Items.Weapons.Typeless;
-using CalamityMod.Particles;
-using System; // ← 新增：粒子类型/生成器在这
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 {
@@ -31,7 +32,33 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
         {
             ModContent.BuffType<AdrenalineMode>(), // 肾上腺素模式
             BuffID.PotionSickness, // 药水病
-            ModContent.BuffType<RageMode>() // 狂怒模式
+            ModContent.BuffType<RageMode>(), // 狂怒模式
+
+            // ===== 酒精类 Buff（模组效果，允许保留） =====
+            ModContent.BuffType<AlcoholPoisoning>(),      // 酒精中毒
+            ModContent.BuffType<BloodyMaryBuff>(),        // 血腥玛丽
+            ModContent.BuffType<CaribbeanRumBuff>(),      // 加勒比朗姆酒
+            ModContent.BuffType<CinnamonRollBuff>(),      // 肉桂卷酒
+            ModContent.BuffType<EverclearBuff>(),         // Everclear 高度酒
+            ModContent.BuffType<EvergreenGinBuff>(),      // 常青金酒
+            ModContent.BuffType<CalamityMod.Buffs.Alcohol.PurpleHazeBuff>(),       // Fabsol 伏特加，新版本叫紫色阴霾
+            ModContent.BuffType<FireballBuff>(),          // 火球威士忌
+            ModContent.BuffType<GrapeBeerBuff>(),         // 葡萄啤酒
+            ModContent.BuffType<MargaritaBuff>(),         // 玛格丽塔
+            ModContent.BuffType<MoonshineBuff>(),          // 私酿烈酒
+            ModContent.BuffType<MoscowMuleBuff>(),        // 莫斯科骡子
+            ModContent.BuffType<OldFashionedBuff>(),      // 古典鸡尾酒
+            ModContent.BuffType<RedWineBuff>(),            // 红酒
+            ModContent.BuffType<RumBuff>(),                // 朗姆酒
+            ModContent.BuffType<ScrewdriverBuff>(),       // 螺丝刀
+            ModContent.BuffType<StarBeamRyeBuff>(),       // 星辉黑麦威士忌
+            ModContent.BuffType<TequilaBuff>(),            // 龙舌兰
+            ModContent.BuffType<TequilaSunriseBuff>(),    // 龙舌兰日出
+            ModContent.BuffType<Trippy>(),                 // 致幻效果
+            ModContent.BuffType<VodkaBuff>(),              // 伏特加
+            ModContent.BuffType<WhiskeyBuff>(),            // 威士忌
+            ModContent.BuffType<WhiteWineBuff>(),          // 白葡萄酒
+
         };
 
         // 视觉特效触发标记

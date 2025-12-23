@@ -1,19 +1,20 @@
 ﻿using CalamityMod;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Melee;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
-using Microsoft.Xna.Framework;
-using CalamityMod.Projectiles.Melee;
-using CalamityMod.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
-using Microsoft.Xna.Framework.Graphics;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 {
@@ -155,6 +156,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为35帧
         }
         private bool spawnedTentacles = false;
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
+
         public override void OnSpawn(IEntitySource source)
         {
             base.OnSpawn(source);
@@ -181,6 +191,48 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
         public override void AI()
         {
+            // 始终保持朝向 = 正前
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            Projectile.rotation = forward.ToRotation() + MathHelper.PiOver4;
+            // ====================
+            // 常态加速（始终存在）
+            // ====================
+            Projectile.velocity *= 1.01f;
+
+            // ====================
+            // 延迟追踪计时
+            // ====================
+            Projectile.ai[1]++;
+
+            if (Projectile.ai[1] > 40)
+            {
+                NPC target = Projectile.Center.ClosestNPCAt(3800);
+                if (target != null)
+                {
+                    Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+
+                    // 追踪阶段目标速度（更高上限）
+                    float targetSpeed = 28f;
+
+                    // 追踪本身也带“加速感”
+                    Projectile.velocity = Vector2.Lerp(
+                        Projectile.velocity,
+                        direction * targetSpeed,
+                        0.10f
+                    );
+                }
+            }
+
+            // ====================
+            // 最大速度硬上限（防炸）
+            // ====================
+            float maxSpeed = Projectile.ai[1] > 40 ? 50f : 32f;
+            if (Projectile.velocity.Length() > maxSpeed)
+            {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * maxSpeed;
+            }
+
+
             if (!spawnedTentacles) // 确保只在生成时触发一次
             {
                 spawnedTentacles = true;
@@ -197,7 +249,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
             flightTimer++;
 
-            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
 
             // 命中过一次 → 开始快速停下
             //bool hitEnemy = Projectile.penetrate < 200;
@@ -210,24 +261,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             //    Projectile.velocity *= 0.88f;
             //}
 
-            // —— 阶段 1：极短倒退 (0~5 帧) ——
-            if (flightTimer < 5)
-            {
-                float t = flightTimer / 5f;
-                Projectile.velocity = -forward * MathHelper.Lerp(5f, 0.2f, t);
-            }
-            // —— 阶段 2：极快前进过渡 (5~15 帧) ——
-            else if (flightTimer < 15)
-            {
-                float t = (flightTimer - 5) / 10f;
-                float speed = MathHelper.Lerp(0.5f, 12f, MathF.Pow(t, 0.8f));
-                Projectile.velocity = forward * speed;
-            }
-            // —— 阶段 3：稳定飞行 ——
-            else
-            {
-                Projectile.velocity = forward * 12f;
-            }
+            //// —— 阶段 1：极短倒退 (0~5 帧) ——
+            //if (flightTimer < 5)
+            //{
+            //    float t = flightTimer / 5f;
+            //    Projectile.velocity = -forward * MathHelper.Lerp(5f, 0.2f, t);
+            //}
+            //// —— 阶段 2：极快前进过渡 (5~15 帧) ——
+            //else if (flightTimer < 15)
+            //{
+            //    float t = (flightTimer - 5) / 10f;
+            //    float speed = MathHelper.Lerp(0.5f, 12f, MathF.Pow(t, 0.8f));
+            //    Projectile.velocity = forward * speed;
+            //}
+            //// —— 阶段 3：稳定飞行 ——
+            //else
+            //{
+            //    Projectile.velocity = forward * 12f;
+            //}
 
             // 命中过的情况再叠加减速
             //if (hitEnemy)
@@ -238,8 +289,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
 
 
 
-            // 始终保持朝向 = 正前
-            Projectile.rotation = forward.ToRotation() + MathHelper.PiOver4;
+
 
             {
                 // =================== 优雅蓝紫配色 ===================

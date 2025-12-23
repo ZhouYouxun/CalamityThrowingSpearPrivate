@@ -1,16 +1,17 @@
-﻿using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityMod;
+using CalamityMod.Particles;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.ID;
-using Terraria.DataStructures;
-using Terraria.Audio;
-using Terraria.Graphics.Shaders;
-using Terraria.GameContent.Drawing;
-using CalamityMod;
 using System;
-using CalamityMod.Particles;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -58,6 +59,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             Color.Red, Color.Gray, Color.Silver
         };
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
+        }
 
 
         // ========== VFX（魔法阵AI特效）新增字段 ==========

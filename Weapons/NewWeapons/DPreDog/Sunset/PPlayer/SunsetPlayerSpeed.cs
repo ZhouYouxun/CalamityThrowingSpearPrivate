@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Accessories;
+﻿using CalamityMod;
+using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Accessories.Wings;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
@@ -206,9 +207,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 
         public override void ResetEffects()
         {
-            // 这里只做“重置”
             finalDamageMultiplier = 1f;
+            noArmorHypothesisActive = false;
         }
+
 
         public override void PostUpdate()
         {
@@ -461,7 +463,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 
 
 
-     
 
 
 
@@ -470,8 +471,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
 
 
 
+        public bool NoArmorHypothesisActive => noArmorHypothesisActive;
+
+        public static void ApplyNoArmorHypothesisHitEffect(
+                Projectile projectile,
+                NPC target,
+                ref NPC.HitModifiers modifiers
+            )
+        {
+            Player owner = Main.player[projectile.owner];
+            SunsetPlayerSpeed sp = owner.GetModPlayer<SunsetPlayerSpeed>();
+
+            // 技能未开启，直接返回，保持原版逻辑
+            if (!sp.NoArmorHypothesisActive)
+                return;
+
+            // =========================
+            // 无视防御
+            // =========================
+            modifiers.DefenseEffectiveness *= 0f;
+
+            // =========================
+            // 无视伤害减免（DR）
+            // =========================
+            float dr = target.Calamity().DR;
+            if (dr > 0f && dr < 0.999f)
+                modifiers.FinalDamage /= (1f - dr);
+        }
 
 
 
     }
+
+
+
 }
+

@@ -1,17 +1,18 @@
-﻿using CalamityMod.Particles;
+﻿using CalamityMod;
+using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
-using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
@@ -132,7 +133,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             else if (lifeTimer == smashFrame)
             {
                 // 触发下砸：朝下高速
-                Projectile.velocity = Vector2.UnitY * 40f;
+                Projectile.velocity = Vector2.UnitY * 90f;
 
                 // 可以在这里触发一个「预兆特效」
                 // 比如小范围收缩环
@@ -324,7 +325,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 float bonus = target.lifeMax; // 直接加等同于 100% maxHP 的额外伤害
                 modifiers.FinalDamage += bonus;
             }
+
+            SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
+                Projectile,
+                target,
+                ref modifiers
+            );
         }
+
+
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
 
