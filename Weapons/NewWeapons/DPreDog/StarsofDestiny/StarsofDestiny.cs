@@ -57,7 +57,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
         {
             if (player.altFunctionUse == 2) // 右键
             {
-                Item.damage = 360;
+                Item.damage = 180;
                 Item.useTime = 24;
                 Item.useAnimation = 24;
                 Item.shoot = ModContent.ProjectileType<StarsofDestinyRIGHT>();
@@ -67,7 +67,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             }
             else // 左键
             {
-                Item.damage = 720;
+                Item.damage = 90;
                 Item.useTime = 24;
                 Item.useAnimation = 24;
                 Item.shootSpeed = 5f; 
@@ -107,8 +107,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 // 至少 6 发星弹 + 消耗的时刻数，数量传到 SuperSOD 的 ai[2]
                 Vector2 spawnPos = player.Center;
                 Vector2 shootVel = new Vector2(0f, -Item.shootSpeed);
-
-                int superDamage = damage * 3; // 3 倍伤害
+                int superDamageFix = momentCount * 2;
+                int superDamage = 60 * superDamageFix; // 60x两倍时刻数 的伤害
 
                 Projectile.NewProjectile(
                     source,
