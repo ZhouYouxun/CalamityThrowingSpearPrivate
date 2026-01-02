@@ -149,7 +149,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             Projectile.penetrate = -1;
             Projectile.timeLeft = 150;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 1;
+            Projectile.localNPCHitCooldown = 2;
         }
         private int growTimer = 0;
         private float currentScale = 0f; // 实时缩放值

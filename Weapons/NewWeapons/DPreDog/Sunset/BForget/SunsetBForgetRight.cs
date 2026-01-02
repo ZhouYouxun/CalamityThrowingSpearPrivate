@@ -242,7 +242,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                         spawnPos1,
                         velocity1,
                         ModContent.ProjectileType<SunsetBForgetRightCut>(),
-                        Projectile.damage / 2,
+                        Projectile.damage / 3,
                         Projectile.knockBack,
                         Projectile.owner
                     );
@@ -254,7 +254,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
                         spawnPos2,
                         velocity2,
                         ModContent.ProjectileType<SunsetBForgetRightCut>(),
-                        Projectile.damage / 2,
+                        Projectile.damage / 3,
                         Projectile.knockBack,
                         Projectile.owner
                     );

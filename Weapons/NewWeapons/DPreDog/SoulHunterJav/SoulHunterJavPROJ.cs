@@ -68,6 +68,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1; // 允许-1次伤害
+            Projectile.ArmorPenetration = 15;
             Projectile.timeLeft = 480;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;

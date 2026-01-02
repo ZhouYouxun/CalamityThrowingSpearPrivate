@@ -230,7 +230,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                         magicSpawnPos,
                         magicVelocity,
                         ModContent.ProjectileType<SunsetCConceptRightMagic>(),
-                        Projectile.damage * 8,
+                        Projectile.damage * 12,
                         Projectile.knockBack,
                         Projectile.owner
                     );
@@ -286,7 +286,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                             spawnPos,
                             velocity,
                             pickType,
-                            Projectile.damage / 2,
+                            (int)(Projectile.damage * 0.66),
                             Projectile.knockBack,
                             Projectile.owner
                         );

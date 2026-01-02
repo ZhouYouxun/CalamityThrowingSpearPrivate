@@ -64,13 +64,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 120 * 8;
+            Projectile.timeLeft = 120 * 6;
             Projectile.light = 0.5f;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false; // 允许与方块碰撞
-            Projectile.extraUpdates = 8; // 额外更新次数
+            Projectile.ArmorPenetration = 30;
+            Projectile.extraUpdates = 6; // 额外更新次数
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 240; // 无敌帧冷却时间
+            Projectile.localNPCHitCooldown = 120; // 无敌帧冷却时间
         }
 
         private int smokeTimer = 0; // 用于记录当前生成烟雾的位置
