@@ -46,6 +46,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
+            Projectile.ArmorPenetration = 60;
             Projectile.timeLeft = 360;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;

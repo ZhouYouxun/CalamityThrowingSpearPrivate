@@ -25,6 +25,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.penetrate = -1;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.ignoreWater = true;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 59;
         }
 
         // 用于旋转粒子系统的角度累计
@@ -213,7 +215,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                             pos,
                             Vector2.Zero,
                             ModContent.ProjectileType<StarsofDestinyINV>(),
-                            Projectile.damage,
+                            (int)(Projectile.damage * 0.6),
                             0f,
                             Projectile.owner
                         );

@@ -456,7 +456,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 Projectile.Center,
                 dir * 2f,
                 ModContent.ProjectileType<SODLazer>(),
-                Projectile.damage,
+                (int)(Projectile.damage * 2.4),
                 0f,
                 Projectile.owner
             );
@@ -483,7 +483,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                     Projectile.Center,
                     dir * 26f,                                   // 速度可改
                     ModContent.ProjectileType<StarsofDestinyRLIGHT>(),
-                    Projectile.damage,
+                    (int)(Projectile.damage * 0.6),
                     0f,
                     Projectile.owner
                 );
@@ -525,7 +525,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                         Projectile.Center,
                         Vector2.Zero,
                         ModContent.ProjectileType<StarsofDestinyRStandField>(),
-                        Projectile.damage,
+                        (int)(Projectile.damage * 2),
                         0f,
                         Projectile.owner
                     );

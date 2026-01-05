@@ -30,11 +30,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 2;
             Projectile.timeLeft = 4;
-            Projectile.extraUpdates = 1;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 600;
+            Projectile.idStaticNPCHitCooldown = 1;
             Projectile.alpha = 255; // 完全透明
         }
 

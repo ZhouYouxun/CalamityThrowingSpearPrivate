@@ -512,7 +512,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.BForget
             int tentacleCount = Main.rand.Next(3, 7);
 
             // 计算单个触手的伤害（总伤害固定为 1.0 倍）
-            int individualDamage = (int)(Projectile.damage / (float)tentacleCount);
+            //int individualDamage = (int)(Projectile.damage / (float)tentacleCount);
+            int individualDamage = (int)(Projectile.damage / 4);
 
             // ============ 原本的随机触手 ============
 

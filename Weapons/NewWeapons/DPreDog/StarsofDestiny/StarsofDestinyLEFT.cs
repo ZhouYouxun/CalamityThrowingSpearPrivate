@@ -222,7 +222,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                         owner.Center,
                         Vector2.Zero,
                         ModContent.ProjectileType<SODCLK50>(),
-                        Projectile.damage,
+                        (int)(Projectile.damage = 240),
                         0f,
                         owner.whoAmI
                     );
@@ -278,7 +278,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 Projectile.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<StarsofDestinyLEFTCLK>(),
-                Projectile.damage,
+                (int)(Projectile.damage * 3.65),
                 Projectile.knockBack,
                 Projectile.owner
             );
