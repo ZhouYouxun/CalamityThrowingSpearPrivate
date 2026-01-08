@@ -318,14 +318,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            // 对 Boss：若当前血量 ≤ 最大生命值 15%，造成最大生命值 100% 的额外伤害
+            // ===== Boss 40% 血量以下：强制斩杀 =====
+            if (target.boss && target.life > 0 && target.life <= target.lifeMax * 0.40f)
+            {
+                // 通过 FinalDamage 直接给出一个“必死量”的伤害
+                // 这里使用一个远大于当前生命值的数，确保结算在伤害阶段完成
+                modifiers.FinalDamage += target.life + target.lifeMax * 5f;
+                return; // 斩杀成立后不再叠加下面的 15% 逻辑
+            }
+
+            // ===== 原有逻辑：Boss 15% 血量以下，追加一次最大生命值伤害 =====
             if (target.boss && target.life <= target.lifeMax * 0.15f)
             {
-                // +100% 最大生命值的额外伤害（等价于 FinalDamage *= 2）
-                float bonus = target.lifeMax; // 直接加等同于 100% maxHP 的额外伤害
+                float bonus = target.lifeMax; // 等价于追加 100% maxHP 的伤害
                 modifiers.FinalDamage += bonus;
             }
 
+            // ===== 你原本的附加命中效果（保持不变）=====
             SunsetPlayerSpeed.ApplyNoArmorHypothesisHitEffect(
                 Projectile,
                 target,
