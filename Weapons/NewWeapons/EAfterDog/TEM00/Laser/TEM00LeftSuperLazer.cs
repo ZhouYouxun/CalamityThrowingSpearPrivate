@@ -87,7 +87,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
             if (ownerProj != null && ownerProj.active && (ownerProj.type == nuclearType || ownerProj.type == leftType))
             {
                 // 绑定到父弹幕的“枪口”位置与朝向（与你原实现一致）
-                Projectile.Center = ownerProj.Center + (ownerProj.rotation - MathHelper.PiOver4).ToRotationVector2() * 28f;
+                Projectile.Center = ownerProj.Center + (ownerProj.rotation - MathHelper.PiOver4).ToRotationVector2() * 18f;
                 Projectile.rotation = (ownerProj.rotation - MathHelper.PiOver4);
 
                 // --------- 关键：只要父弹幕存在，就不断刷新自身寿命，确保永远不死 ---------
