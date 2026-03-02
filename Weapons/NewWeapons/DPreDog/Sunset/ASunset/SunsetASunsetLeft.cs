@@ -100,20 +100,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 return Projectile.Size * 0.5f + Projectile.velocity.SafeNormalize(Vector2.Zero) * Projectile.scale * 2f;
             }
 
-			// === 绘制能量丝带（关键）=====
-			PrimitiveRenderer.RenderTrail(
-				shiftedOldPos,
-				new(
-					PrimitiveWidthFunction,
-					PrimitiveTrailColor,
-					PrimitiveOffsetFunction,
-					shader: GameShaders.Misc["CalamityMod:XXX"]
-				),
-				60
-			);
+            // === 绘制能量丝带（关键）=====
+            GameShaders.Misc["CalamityMod:SideStreakTrail"].UseImage1("Images/Misc/Perlin");
 
-			// ======== 回到正常绘图（主体绘制） ========
-			sb.End();
+            PrimitiveRenderer.RenderTrail(
+                shiftedOldPos,
+                new(
+                    PrimitiveWidthFunction,
+                    PrimitiveTrailColor,
+                    PrimitiveOffsetFunction,
+                    shader: GameShaders.Misc["CalamityMod:SideStreakTrail"]
+                ),
+                60
+            );
+
+            // ======== 回到正常绘图（主体绘制） ========
+            sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                      DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
