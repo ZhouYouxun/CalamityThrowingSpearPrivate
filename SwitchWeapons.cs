@@ -52,7 +52,7 @@ namespace CalamityThrowingSpear
             typeof(GoldplumeJav), // 金羽
             typeof(SausageMakerJav), // 香肠枪
             typeof(YateveoBloomJav), // 绽花毒蔓
-            typeof(RedtideJav), // 赤潮
+            // typeof(RedtideJav), // 赤潮
 
             typeof(BrimlanceJav), // 硫磺火
             typeof(EarthenJav), // 大地
@@ -60,7 +60,7 @@ namespace CalamityThrowingSpear
 
             typeof(AstralPikeJav), // 幻星矛
             typeof(BotanicPiercerJav), // 璀芒尖枪
-            typeof(DiseasedJav), // 瘟疫长枪
+            // typeof(DiseasedJav), // 瘟疫长枪
             typeof(GalvanizingGlaiveJav), // 磁能切割
             typeof(HellionFlowerJav), // 刺花长枪
             typeof(TenebreusTidesJav), // 深渊潮涌
@@ -84,7 +84,7 @@ namespace CalamityThrowingSpear
             typeof(GoldplumeSpear),
             typeof(SausageMaker),
             typeof(YateveoBloom),
-            typeof(RedtideSpear),
+            // typeof(RedtideSpear),
 
             typeof(Brimlance),
             typeof(EarthenPike),
@@ -92,7 +92,7 @@ namespace CalamityThrowingSpear
 
             typeof(AstralPike),
             typeof(BotanicPiercer),
-            typeof(DiseasedPike),
+            // typeof(DiseasedPike),
             typeof(GalvanizingGlaive),
             typeof(HellionFlowerSpear),
             typeof(TenebreusTides),
@@ -100,7 +100,7 @@ namespace CalamityThrowingSpear
             typeof(VulcaniteLance),
 
             typeof(BansheeHook),
-            typeof(ElementalLance),
+            typeof(VanishingPoint),
             typeof(GildedProboscis),
 
             typeof(DragonRage),

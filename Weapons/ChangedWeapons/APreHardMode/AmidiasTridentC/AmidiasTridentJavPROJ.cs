@@ -53,9 +53,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
                 new(
-                    ratio => MathHelper.SmoothStep(12f, 2f, ratio),
-                    _ => Color.Cyan,
-                    _ => Projectile.Size * 0.5f,
+                    (completionRatio, vertexPos) => MathHelper.SmoothStep(12f, 2f, completionRatio),
+                    (completionRatio, vertexPos) => Color.Cyan,
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f,
                     shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
                 ),
                 100

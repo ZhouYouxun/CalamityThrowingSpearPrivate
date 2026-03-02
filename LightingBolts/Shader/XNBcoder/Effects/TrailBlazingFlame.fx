@@ -80,7 +80,7 @@ technique TrailTechnique{
 //        .UseSecondaryColor(new Color(150, 30, 30)) // Ì¿»¯ºìºÚ
 //        .Apply();
 //
-//    PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(TrailWidth, TrailColor, (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailBlazingFlame"]), 10);
+//    PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio), (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailBlazingFlame"]), 10);
 //    Main.spriteBatch.ExitShaderRegion();
 //
 //    Main.EntitySpriteDraw(texture, drawPosition, null, Projectile.GetAlpha(Color.White), Projectile.rotation, origin, Projectile.scale, 0, 0);

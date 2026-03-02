@@ -20,8 +20,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         // 检测 NPC 死亡逻辑
         public override void OnKill(NPC npc)
         {
-            // 检查是否为 Bumblefuck 且奖励未被触发过
-            if (npc.type == ModContent.NPCType<Bumblefuck>() && !hasGivenXiaoZhiTiaoFT)
+            // 检查是否为 Bumblefuck【Dragonfolly】 且奖励未被触发过
+            if (npc.type == ModContent.NPCType<Dragonfolly>() && !hasGivenXiaoZhiTiaoFT)
             {
                 hasGivenXiaoZhiTiaoFT = true; // 标记物品已触发
 

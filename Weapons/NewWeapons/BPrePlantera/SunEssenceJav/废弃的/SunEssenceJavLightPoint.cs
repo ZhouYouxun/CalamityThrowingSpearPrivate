@@ -158,8 +158,8 @@
 //                Projectile.oldPos, // 使用历史轨迹点
 //                new( // 创建拖尾的绘制逻辑
 //                    TrailWidth, // 拖尾宽度函数
-//                    TrailColor, // 拖尾颜色函数
-//                    (_) => Projectile.Size * 0.5f, // 偏移量设置
+//                    (completionRatio, vertexPos) => TrailColor(completionRatio), // 拖尾颜色函数
+//                    (completionRatio, vertexPos) => Projectile.Size * 0.5f, // 偏移量设置
 //                    shader: GameShaders.Misc["CalamityMod:ArtAttack"] // 使用的着色器
 //                ),
 //                180 // 拖尾最大长度

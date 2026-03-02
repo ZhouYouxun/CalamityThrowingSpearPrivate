@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             Item.UseSound = SoundID.Item20;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.rare = ModContent.RarityType<DarkBlue>();
+            Item.rare = ModContent.RarityType<CosmicPurple>();
             Item.shoot = ModContent.ProjectileType<StreamGougeJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
         }

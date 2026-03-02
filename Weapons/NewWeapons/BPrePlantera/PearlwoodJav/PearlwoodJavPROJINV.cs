@@ -171,7 +171,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         }
 
 
-        private float PrimitiveWidthFunction(float completionRatio)
+        private float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             // 保持尖头形状
             float arrowheadCutoff = 0.36f;
@@ -183,7 +183,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
             return width;
         }
 
-        private Color PrimitiveColorFunction(float completionRatio)
+        private Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // PearlwoodJavPROJ 的颜色逻辑：粉色渐变
             Color start = Color.Pink;
@@ -207,7 +207,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
 
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
-                new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => overallOffset,
+                new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => overallOffset,
                 shader: GameShaders.Misc["CalamityMod:Flame"]),
                 numPoints
             );

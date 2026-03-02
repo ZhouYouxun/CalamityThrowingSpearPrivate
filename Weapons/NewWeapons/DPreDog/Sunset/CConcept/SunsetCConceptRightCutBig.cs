@@ -335,7 +335,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
                 ref modifiers
             );
         }
-
+        
 
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

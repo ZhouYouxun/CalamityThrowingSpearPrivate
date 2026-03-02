@@ -17,7 +17,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
 {
     internal class SunsetCConceptLeftNoDamage : ModProjectile
     {
-
         public override void SetDefaults()
         {
             Projectile.width = 30;
@@ -529,7 +528,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 45;
         }
-        public Color TrailColorFunction(float completionRatio)
+        public Color TrailColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float opacity = (float)Math.Pow(Utils.GetLerpValue(1f, 0.45f, completionRatio, true), 4D);
             opacity *= Projectile.Opacity * 0.6f;
@@ -542,7 +541,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             float t = MathHelper.Clamp(completionRatio * 1.4f, 0f, 1f);
             return Color.Lerp(start, end, t) * opacity * (1f - fadeOutProgress);
         }
-        public float TrailWidthFunction(float completionRatio)
+        public float TrailWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             return Projectile.height * (1f - completionRatio) * 3.8f;
         }
@@ -603,8 +602,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.CConcept
             TrailDrawer.PrepareStrip(
                 Projectile.oldPos,
                 Projectile.oldRot,
-                (r) => TrailColorFunction(r) * fade,   // ★★★ 再乘一次保证颜色计算也淡出
-                TrailWidthFunction,
+                (r) => TrailColorFunction(r, Vector2.Zero) * fade,
+                (r) => TrailWidthFunction(r, Vector2.Zero),
                 Projectile.Size * 0.5f - Main.screenPosition,
                 Projectile.oldPos.Length,
                 true

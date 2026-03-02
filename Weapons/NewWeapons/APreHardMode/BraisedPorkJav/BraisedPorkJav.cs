@@ -41,7 +41,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<RottenMatter>(12);
+            // recipe.AddIngredient<RottenMatter>(12); // 腐烂物质已被移除
+            // 我们用腐肉来替代
+
             recipe.AddIngredient(ItemID.RottenChunk, 4);
             recipe.AddIngredient(ItemID.DemoniteBar, 5);
             recipe.AddTile(TileID.DemonAltar);

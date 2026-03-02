@@ -20,7 +20,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
     {
 
         // ✅ 修复插入位置，使用推荐的 LastVanillaLayer
-        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.LastVanillaLayer);
+
+        // 倒数第2个版本的代码【现已弃用】
+        // public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.LastVanillaLayer);
 
         // 以下均可直接替换使用，用于不同渲染时机控制
         // public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.BackAcc); // 在背饰层后绘制，适合背部特效
@@ -29,13 +31,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         // public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem); // 在持武器层后绘制，适合手持特效
         // public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.SolarShield); // 在日耀护盾层后绘制，特殊情况使用
 
-        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-        {
-            //return drawInfo.drawPlayer.GetModPlayer<FinishingTouch10Player>().finishingTouchOrangeTrailActive;
 
-            Player player = drawInfo.drawPlayer;
-            return player.HeldItem?.type == ModContent.ItemType<FinishingTouch>() && !player.dead && drawInfo.shadow == 0f;
-        }
+        // 倒数第2个版本的代码【现已弃用】
+        //public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+        //{
+        //    //return drawInfo.drawPlayer.GetModPlayer<FinishingTouch10Player>().finishingTouchOrangeTrailActive;
+
+        //    Player player = drawInfo.drawPlayer;
+        //    return player.HeldItem?.type == ModContent.ItemType<FinishingTouch>() && !player.dead && drawInfo.shadow == 0f;
+        //}
 
 
         //protected override void Draw(ref PlayerDrawSet drawInfo)
@@ -121,47 +125,126 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         //    }
         //}
 
+        // 这是倒数第2个版本的代码
+        //protected override void Draw(ref PlayerDrawSet drawInfo)
+        //{
+        //    Player drawPlayer = drawInfo.drawPlayer;
+        //    List<DrawData> existingDrawData = drawInfo.DrawDataCache;
+
+        //    // 保留动态根据速度控制透明度（可选）
+        //    float movementSpeedInterpolant = CobaltArmorSetChange.CalculateMovementSpeedInterpolant(drawPlayer);
+
+        //    // === 可调参数 ===
+        //    float stepInterval = 2.5f; // 分身相隔帧数（原1.7f），越大距离越远
+        //    float minScale = 0.16f;
+        //    float maxScale = 1f;
+        //    float minOpacity = 0.04f; // 可微调
+        //    float maxOpacity = 0.18f; // 可微调
+        //    Color trailColor = new Color(255, 140, 0); // 稳定橙色
+
+        //    for (float i = 0f; i < drawPlayer.Calamity().oldPos.Length; i += stepInterval)
+        //    {
+        //        float completionRatio = i / (float)drawPlayer.Calamity().OldPositions.Length;
+        //        float scale = MathHelper.Lerp(maxScale, minScale, completionRatio);
+        //        float opacity = MathHelper.Lerp(maxOpacity, minOpacity, completionRatio) * movementSpeedInterpolant;
+
+        //        List<DrawData> afterimages = new List<DrawData>();
+        //        for (int j = 0; j < existingDrawData.Count; j++)
+        //        {
+        //            var drawData = existingDrawData[j];
+
+        //            // ✅ 精华核心：使用原来的位置计算逻辑，在历史位置绘制
+        //            drawData.position = existingDrawData[j].position - drawPlayer.position + drawPlayer.oldPosition;
+
+        //            drawData.color = trailColor * opacity;
+        //            drawData.scale = new Vector2(scale);
+
+        //            afterimages.Add(drawData);
+        //        }
+        //        drawInfo.DrawDataCache.InsertRange(0, afterimages);
+        //    }
+        //}
+
+
+
+
+
+        public override Position GetDefaultPosition()
+         => new AfterParent(PlayerDrawLayers.BackAcc);
+
+        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+            => drawInfo.shadow == 0f;
 
         protected override void Draw(ref PlayerDrawSet drawInfo)
         {
             Player drawPlayer = drawInfo.drawPlayer;
+            var modPlayer = drawPlayer.GetModPlayer<AfterimagePlayer>();
+
             List<DrawData> existingDrawData = drawInfo.DrawDataCache;
 
-            // 保留动态根据速度控制透明度（可选）
-            float movementSpeedInterpolant = CobaltArmorSetChange.CalculateMovementSpeedInterpolant(drawPlayer);
-
-            // === 可调参数 ===
-            float stepInterval = 2.5f; // 分身相隔帧数（原1.7f），越大距离越远
+            float stepInterval = 2.5f;
             float minScale = 0.16f;
             float maxScale = 1f;
-            float minOpacity = 0.04f; // 可微调
-            float maxOpacity = 0.18f; // 可微调
-            Color trailColor = new Color(255, 140, 0); // 稳定橙色
+            float minOpacity = 0.04f;
+            float maxOpacity = 0.18f;
 
-            for (float i = 0f; i < drawPlayer.Calamity().OldPositions.Length; i += stepInterval)
+            Color trailColor = new Color(255, 140, 0);
+
+            for (float i = 0; i < modPlayer.OldPositions.Length; i += stepInterval)
             {
-                float completionRatio = i / (float)drawPlayer.Calamity().OldPositions.Length;
+                Vector2 oldPos = modPlayer.OldPositions[(int)i];
+
+                float completionRatio = i / modPlayer.OldPositions.Length;
                 float scale = MathHelper.Lerp(maxScale, minScale, completionRatio);
-                float opacity = MathHelper.Lerp(maxOpacity, minOpacity, completionRatio) * movementSpeedInterpolant;
+                float opacity = MathHelper.Lerp(maxOpacity, minOpacity, completionRatio);
 
                 List<DrawData> afterimages = new List<DrawData>();
-                for (int j = 0; j < existingDrawData.Count; j++)
-                {
-                    var drawData = existingDrawData[j];
 
-                    // ✅ 精华核心：使用原来的位置计算逻辑，在历史位置绘制
-                    drawData.position = existingDrawData[j].position - drawPlayer.position + drawPlayer.oldPosition;
+                foreach (var original in existingDrawData)
+                {
+                    DrawData drawData = original;
+
+                    drawData.position =
+                        original.position
+                        - drawPlayer.position
+                        + oldPos;
 
                     drawData.color = trailColor * opacity;
-                    drawData.scale = new Vector2(scale);
+                    drawData.scale *= scale;
 
                     afterimages.Add(drawData);
                 }
+
                 drawInfo.DrawDataCache.InsertRange(0, afterimages);
             }
         }
 
 
 
+
     }
+
+
+    public class AfterimagePlayer : ModPlayer
+    {
+        public Vector2[] OldPositions = new Vector2[20];
+
+        public override void PostUpdate()
+        {
+            for (int i = OldPositions.Length - 1; i > 0; i--)
+            {
+                OldPositions[i] = OldPositions[i - 1];
+            }
+
+            OldPositions[0] = Player.position;
+        }
+    }
+
+
+
+
+
+
+
+
 }

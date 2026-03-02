@@ -17,7 +17,7 @@
 //        public ref float InitialVelocityAngle => ref Projectile.ai[0];
 //        // Technically not a ratio, and more of a seed, but its used in a 0-2pi squash
 //        // later in the code to get an arbitrary unit vector (which is then checked).
-//        public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
+//        public ref float BaseTurnAngle(completionRatio, vertexPos) => ref Projectile.ai[1];
 //        public ref float AccumulatedXMovementSpeeds => ref Projectile.localAI[0];
 //        public ref float BranchingIteration => ref Projectile.localAI[1];
 //        /*public float Time
@@ -124,7 +124,7 @@
 //        }
 //        public override bool PreDraw(ref Color lightColor)
 //        {
-//            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(WidthFunction, ColorFunction, (_) => Projectile.Size * 0.5f, false), 90);
+//            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(WidthFunction, ColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, false), 90);
 //            return false;
 //        }
 //    }

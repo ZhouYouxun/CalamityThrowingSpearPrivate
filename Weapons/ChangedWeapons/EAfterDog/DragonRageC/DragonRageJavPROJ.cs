@@ -64,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
 
             }
         }
-        public Color TrailColor(float completionRatio)
+        public Color TrailColor(float completionRatio, Vector2 vertexPos)
         {
             float opacity = Utils.GetLerpValue(1f, 0.6f, completionRatio, true) * Projectile.Opacity;
             return Color.Lerp(Color.OrangeRed, Color.Orange, 0.5f) * opacity;
@@ -131,9 +131,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
                 PrimitiveRenderer.RenderTrail(
                     gunTipTrail,
                     new(
-                        ratio => MathHelper.SmoothStep(12f, 2f, ratio),
-                        TrailColor,
-                        (_) => Projectile.Size * 0.5f,
+                        (completionRatio, vertexPos) => MathHelper.SmoothStep(12f, 2f, completionRatio),
+                        (completionRatio, vertexPos) => TrailColor(completionRatio, vertexPos),
+                        (completionRatio, vertexPos) => Projectile.Size * 0.5f,
                         shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
                     ),
                     10

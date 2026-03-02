@@ -42,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
                 new(
                     ExoSlashWidthFunction,
                     ExoSlashColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:ExobladeSlash"]
                 ),
                 numPoints
@@ -77,13 +77,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
 
 
         // 调整拖尾宽度
-        private float ExoSlashWidthFunction(float completionRatio)
+        private float ExoSlashWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             return 28f + (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 3f) * 6f; // 让拖尾更宽
         }
 
         // 调整颜色，使其更亮
-        private Color ExoSlashColorFunction(float completionRatio)
+        private Color ExoSlashColorFunction(float completionRatio, Vector2 vertexPos)
         {
             return Color.Lerp(Color.White, Color.Cyan, completionRatio) * 1.5f; // 增强亮度
         }

@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityVioletBuyPrice;
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = ModContent.RarityType<BurnishedAuric>();
             Item.shoot = ModContent.ProjectileType<ViolenceJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 11f; // 更改使用时的武器弹幕飞行速度
         }

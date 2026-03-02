@@ -70,7 +70,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
                     new(
                         CosmicWidthFunction,  // 拖尾宽度函数
                         CosmicColorFunction,  // 拖尾颜色函数
-                        (_) => overallOffset,
+                        (completionRatio, vertexPos) => overallOffset,
                         shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
                     ),
                     numPoints
@@ -94,7 +94,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         }
 
         // 拖尾宽度函数
-        private float CosmicWidthFunction(float completionRatio)
+        private float CosmicWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             float baseWidth = 45f;
             float flicker = (float)Math.Sin(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 3f) * 2f;
@@ -102,7 +102,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         }
 
         // 拖尾颜色函数
-        private Color CosmicColorFunction(float completionRatio)
+        private Color CosmicColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float intensity = (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
             Color baseColor = Color.Lerp(Color.MediumPurple, Color.HotPink, intensity); // 紫色到粉色渐变
@@ -400,7 +400,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             for (int i = 0; i < numEssence; i++)
             {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero,
-                    ModContent.ProjectileType<EssenceFlame2>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<CTSEssenceFlame2>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Projectile.owner);
             }
         }
         public override void OnKill(int timeLeft)

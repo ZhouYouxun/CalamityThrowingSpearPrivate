@@ -31,7 +31,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             ModContent.ItemType<SeashineSword>(), // 海耀之刃
             ModContent.ItemType<TeardropCleaver>(), // 泪水之刃
             ModContent.ItemType<GeliticBlade>(), // 凝胶波刃
-            ModContent.ItemType<EutrophicScimitar>(), // 水华弯刀
+            //ModContent.ItemType<EutrophicScimitar>(), // 水华弯刀[被删了]
             ModContent.ItemType<Floodtide>(), // 鲨潮
             ModContent.ItemType<Greentide>(), // 翡翠之潮
             ModContent.ItemType<BrinyBaron>(), // 海爵剑
@@ -39,11 +39,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.TidalMechanics
             ModContent.ItemType<Riptide>(), // 涡旋
             ModContent.ItemType<TheGodsGambit>(), // 神旨
             ModContent.ItemType<SulphurousGrabber>(), // 硫磺掠夺者
-            ModContent.ItemType<RedtideSpear>(), // 赤潮矛
+            //ModContent.ItemType<	RedtideJav>(), // 赤潮矛[被删了]
             ModContent.ItemType<AmidiasTrident>(), // 海王三叉戟
             ModContent.ItemType<TenebreusTides>(), // 深渊潮涌
             ModContent.ItemType<UrchinMace>(), // 海胆链枷
-            ModContent.ItemType<UrchinFlail>(), // 海胆链球
+            //ModContent.ItemType<UrchinFlail>(), // 海胆链球[被删了]
             ModContent.ItemType<BallOFugu>(), // 河豚链球
             ModContent.ItemType<ClamCrusher>(), // 海蚌锤
             ModContent.ItemType<DepthCrusher>(), // 深渊碾碎者

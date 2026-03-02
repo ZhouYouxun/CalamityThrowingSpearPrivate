@@ -1,16 +1,19 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityMod.Tiles.FurnitureStatigel;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityMod.Items.Materials;
-using CalamityMod.Tiles.Furniture.CraftingStations;
+using static CalamityMod.Projectiles.Melee.BladecrestOathswordThrownBlade;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTenmonJav
 {

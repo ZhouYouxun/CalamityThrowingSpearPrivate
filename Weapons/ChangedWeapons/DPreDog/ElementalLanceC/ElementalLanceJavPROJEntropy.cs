@@ -156,14 +156,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
                 new(
-                    ratio => MathHelper.SmoothStep(12f, 2f, ratio),
-                    _ => new Color(10, 10, 10),
-                    _ => Projectile.Size * 0.5f,
+                    (completionRatio, vertexPos) => MathHelper.SmoothStep(12f, 2f, completionRatio),
+					(completionRatio, vertexPos) => new Color(10, 10, 10),
+					(completionRatio, vertexPos) => Projectile.Size * 0.5f,
                     shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
                 ),
                 10
             );
-
+            
             Main.spriteBatch.ExitShaderRegion();
             return false;
         }

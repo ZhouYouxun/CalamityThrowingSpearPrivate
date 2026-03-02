@@ -45,7 +45,7 @@
 //                new(
 //                    ExoPierceWidthFunction,
 //                    ExoPierceColorFunction,
-//                    (_) => overallOffset,
+//                    (completionRatio, vertexPos) => overallOffset,
 //                    shader: GameShaders.Misc["CalamityMod:ExobladePierce"]
 //                ),
 //                numPoints

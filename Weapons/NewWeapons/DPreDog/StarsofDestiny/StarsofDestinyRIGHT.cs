@@ -645,13 +645,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
-        public Color TrailColor(float completionRatio)
+        public Color TrailColor(float completionRatio, Vector2 vertexPos)
         {
             float opacity = Utils.GetLerpValue(1f, 0.6f, completionRatio, true) * Projectile.Opacity;
             return new Color(40, 120, 240) * opacity; // 深海蓝渐隐
         }
 
-        public float TrailWidth(float completionRatio)
+        public float TrailWidth(float completionRatio, Vector2 vertexPos)
         {
             return MathHelper.SmoothStep(16f, 26f, completionRatio);
         }
@@ -680,13 +680,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             //PrimitiveRenderer.RenderTrail(
             //    Projectile.oldPos,
             //    new(
-            //        ratio => MathHelper.SmoothStep(18f, 6f, ratio), // 拖尾宽度（偏金能量风）
+            //        (completionRatio, vertexPos) => MathHelper.SmoothStep(18f, 6f, completionRatio), // 拖尾宽度（偏金能量风）
             //        r =>
             //        {
             //            float op = Utils.GetLerpValue(1f, 0.5f, r, true) * Projectile.Opacity;
             //            return new Color(255, 220, 100) * op;
             //        },
-            //        _ => Projectile.Size * 0.5f,
+            //        (completionRatio, vertexPos) => Projectile.Size * 0.5f,
             //        shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
             //    ),
             //    12

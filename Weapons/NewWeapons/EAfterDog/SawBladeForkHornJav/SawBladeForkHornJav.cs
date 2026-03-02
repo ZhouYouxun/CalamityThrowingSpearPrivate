@@ -170,7 +170,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient<Aftershock>(1);
+            //recipe.AddIngredient<Aftershock>(1);
             recipe.AddIngredient<EarthenPike>(1);
             recipe.AddIngredient(ItemID.SoulofMight, 30);
             recipe.AddIngredient<ShadowspecBar>(5);

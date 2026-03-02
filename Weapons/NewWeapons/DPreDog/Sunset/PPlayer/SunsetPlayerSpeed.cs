@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Accessories.Wings;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using System;
@@ -38,7 +39,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
             ModContent.ItemType<AngelTreads>(), // 天使靴
             ModContent.ItemType<AsgardsValor>(), // 阿斯加德英勇
             ModContent.ItemType<LeviathanAmbergris>(), // 利维坦龙涎香
-            ModContent.ItemType<GravistarSabaton>(), // 重力靴
+            ModContent.ItemType<InterstellarStompers>(), // 重力靴[现在不叫GravistarSabaton]
             ModContent.ItemType<ShieldoftheHighRuler>(), // 高统盾
             ModContent.ItemType<StatisNinjaBelt>(), // 斯塔提斯忍者腰带
             ModContent.ItemType<ElysianAegis>(), // 极乐世界之盾
@@ -66,14 +67,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.PPlayer
             ModContent.ItemType<HadalMantle>(),         // 幽渊斗篷
             ModContent.ItemType<ExodusWings>(),         // 逸界之翼
 
-            ModContent.ItemType<TracersCelestial>(),    // 天界翼靴
+            ModContent.ItemType<MoonWalkers>(),         // 天界翼靴[现在不叫TracersCelestial]
             ModContent.ItemType<TarragonWings>(),       // 龙蒿叶之翼
             ModContent.ItemType<ElysianWings>(),        // 极乐之翼
-            ModContent.ItemType<TracersElysian>(),      // 极乐翼靴
+            ModContent.ItemType<VoidStriders>(),      // 极乐翼靴[现在不叫TracersElysian][顺带一提，现在是虚空翼靴，是三仆从的]
 
             ModContent.ItemType<SilvaWings>(),           // 始源林海之翼
             ModContent.ItemType<WingsofRebirth>(),      // 涅槃龙翼
-            ModContent.ItemType<TracersSeraph>(),       // 炽天使翼靴
+            ModContent.ItemType<SeraphTracers>(),       // 炽天使翼靴[现在不叫TracersSeraph]
 
 
 

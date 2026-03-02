@@ -28,7 +28,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-        internal Color ColorFunction(float completionRatio)
+        internal Color ColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // 末端渐隐效果
             float fadeToEnd = MathHelper.Lerp(0.65f, 1f, (float)Math.Cos(-Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f);
@@ -42,7 +42,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
 
             return Color.Lerp(Color.Black, endColor, fadeToEnd) * fadeOpacity;
         }
-        internal float WidthFunction(float completionRatio)
+        internal float WidthFunction(float completionRatio, Vector2 vertexPos)
         {
             // 拖尾宽度动态衰减
             float expansionCompletion = (float)Math.Pow(1 - completionRatio, 3);
@@ -63,7 +63,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.InfiniteDarknessJav
             GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
-                new(WidthFunction, ColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:TrailStreak"]),
+                new(WidthFunction, ColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:TrailStreak"]),
                 30
             );
 

@@ -90,7 +90,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 new(
                     FinishingTouchWidthFunction,
                     FinishingTouchColorFunction,
-                    (_) => Projectile.Size * 0.5f + frontOffset + leftOffset,
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f + frontOffset + leftOffset,
                     shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
                 ),
                 36
@@ -102,7 +102,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
                 new(
                     FinishingTouchWidthFunction,
                     FinishingTouchColorFunction,
-                    (_) => Projectile.Size * 0.5f + frontOffset + rightOffset,
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f + frontOffset + rightOffset,
                     shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
                 ),
                 36
@@ -115,7 +115,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         /// <summary>
         /// 拖尾宽度函数：基础宽度 + 微抖动，模拟火焰呼吸感
         /// </summary>
-        private float FinishingTouchWidthFunction(float completionRatio)
+        private float FinishingTouchWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             float baseWidth = 18f;
             float flicker = (float)Math.Sin(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 4f) * 2f;
@@ -125,7 +125,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
         /// <summary>
         /// 拖尾颜色函数：橙红 → 黄橙 → 透明的平滑渐变
         /// </summary>
-        private Color FinishingTouchColorFunction(float completionRatio)
+        private Color FinishingTouchColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float intensity = (float)Math.Sin(completionRatio * 10f + Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
             Color baseColor = Color.Lerp(Color.OrangeRed, Color.Orange, intensity);

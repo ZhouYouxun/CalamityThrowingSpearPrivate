@@ -49,7 +49,7 @@
 //                0 => Color.Red,
 //                1 => Color.MediumTurquoise,
 //                2 => Color.Orange,
-//                _ => Color.LawnGreen,
+//                (completionRatio, vertexPos) => Color.LawnGreen,
 //            };
 //            Time++;
 //            Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.2f);

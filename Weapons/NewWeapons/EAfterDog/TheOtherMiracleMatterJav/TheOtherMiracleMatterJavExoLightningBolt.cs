@@ -25,13 +25,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
         public const int Lifetime = 45;
         public ref float InitialVelocityAngle => ref Projectile.ai[0];
 
-        // Technically not a ratio, and more of a seed, but it is used in a 0-2pi squash
-        // later in the code to get an arbitrary unit vector (which is then checked).
-        public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
+		// Technically not a ratio, and more of a seed, but it is used in a 0-2pi squash
+		// later in the code to get an arbitrary unit vector (which is then checked).
+		public ref float BaseTurnAngle => ref Projectile.ai[1];
         public ref float AccumulatedXMovementSpeeds => ref Projectile.localAI[0];
         public ref float BranchingIteration => ref Projectile.localAI[1];
-
-        public virtual float LightningTurnRandomnessFactor { get; } = 2f;
+		public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
+		public virtual float LightningTurnRandomnessFactor { get; } = 2f;
         public override string Texture => "CalamityMod/Projectiles/LightningProj";
         public override void SetStaticDefaults()
         {
@@ -142,9 +142,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
+        public float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
 
-        public Color PrimitiveColorFunction(float completionRatio)
+        public Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
             Color color = CalamityUtils.MulticolorLerp(colorInterpolant, Color.GreenYellow, Color.Lime, Color.Cyan);
@@ -160,7 +160,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
             for (int i = 0; i < checkPoints.Count - 1; i++)
             {
                 float _ = 0f;
-                float width = PrimitiveWidthFunction(i / (float)checkPoints.Count);
+				float width = PrimitiveWidthFunction(i / (float)checkPoints.Count, checkPoints[i]);
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), checkPoints[i], checkPoints[i + 1], width * 0.8f, ref _))
                     return true;
             }
@@ -172,7 +172,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.5f, false, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 18);
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, false, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 18);
             return false;
         }
 

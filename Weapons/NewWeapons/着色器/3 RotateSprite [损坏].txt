@@ -13,7 +13,7 @@
                 new(
                     RotateWidthFunction,  // ¼ÆËãÍÏÎ²¿í¶È
                     RotateColorFunction,  // ¼ÆËãÍÏÎ²ÑÕÉ«
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:RotationPass"] // °ó¶¨ `RotateSprite`
                 ),
                 numPoints

@@ -173,7 +173,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
 
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
-                new(TrailWidth, TrailColor, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailBlazingFlameEffect"]),
+                new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio, vertexPos), (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailBlazingFlameEffect"]),
                 10
             );
 
@@ -232,17 +232,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
                 2 => new Color(80, 130, 180),  // 徒：阴蓝
                 3 => new Color(140, 100, 180), // 流：紫灰
                 4 => new Color(20, 20, 20),    // 死：深黑灰
-                _ => Color.Gray,
-            };
+				_ => Color.Gray,
+			};
         }
 
-        public Color TrailColor(float completionRatio)
+        public Color TrailColor(float completionRatio, Vector2 vertexPos)
         {
             float opacity = Utils.GetLerpValue(1f, 0.5f, completionRatio, true) * Projectile.Opacity;
             return GetColorByForm() * opacity;
         }
 
-        public float TrailWidth(float completionRatio)
+        public float TrailWidth(float completionRatio, Vector2 vertexPos)
         {
             return MathHelper.SmoothStep(12f, 25f, Utils.GetLerpValue(0f, 1f, completionRatio, true));
         }

@@ -108,7 +108,7 @@ technique TrailTechnique
 //    // **äÖÈ¾ÍÏÎ²**
 //    PrimitiveRenderer.RenderTrail(
 //        Projectile.oldPos,
-//        new(TrailWidth, TrailColor, (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TailFirstEffect"]),
+//        new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio), (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TailFirstEffect"]),
 //        10
 //    );
 //

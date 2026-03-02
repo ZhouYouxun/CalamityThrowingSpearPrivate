@@ -48,7 +48,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             overallOffset += Projectile.velocity * 1.4f;
             int numPoints = 76;
 
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => overallOffset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), numPoints);
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => overallOffset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), numPoints);
 
             // 绘制弹幕本体
             Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value; // 获取弹幕的纹理
@@ -70,12 +70,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
         }
 
 
-        private float PrimitiveWidthFunction(float completionRatio)
+        private float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             return MathHelper.Lerp(36f, 76f, completionRatio); // 拖尾宽度函数
         }
 
-        private Color PrimitiveColorFunction(float completionRatio)
+        private Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // 使用紫色、灰色和中紫色生成渐变效果
             float colorLerpFactor = 0.6f;

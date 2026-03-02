@@ -369,7 +369,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
                     new(
                         PrimitiveWidthFunction,          // 轨迹宽度逻辑
                         PrimitiveColorFunction,         // 轨迹颜色逻辑
-                        (_) => Projectile.Size * 0.5f,  // 轨迹大小逻辑
+                        (completionRatio, vertexPos) => Projectile.Size * 0.5f,  // 轨迹大小逻辑
                         shader: GameShaders.Misc["CalamityMod:TrailStreak"], // 使用的轨迹着色器
                         smoothen: true                  // 是否平滑轨迹
                     ),
@@ -403,7 +403,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
         }
 
         // 着色器效果 负责绘制旋转的着色器宽度
-        internal float PrimitiveWidthFunction(float completionRatio)
+        internal float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             float tipWidthFactor = MathHelper.SmoothStep(0f, 1f, Utils.GetLerpValue(0.01f, 0.04f, completionRatio));
             float bodyWidthFactor = (float)Math.Pow(Utils.GetLerpValue(1f, 0.04f, completionRatio), 0.9D);
@@ -411,7 +411,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
         }
 
         // 着色器颜色逻辑，调整为深海风格
-        internal Color PrimitiveColorFunction(float completionRatio)
+        internal Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float fadeInterpolant = (float)Math.Cos(Main.GlobalTimeWrappedHourly * -9f + completionRatio * 6f + Projectile.identity * 2f) * 0.5f + 0.5f;
 

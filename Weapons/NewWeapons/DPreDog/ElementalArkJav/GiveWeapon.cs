@@ -28,7 +28,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 if (player != null && player.TryGetModPlayer(out CalamityPlayer calamityPlayer))
                 {
                     // 检查条件是否都为"否"
-                    if (!calamityPlayer.bOrange && !calamityPlayer.eBerry && !calamityPlayer.dFruit && !calamityPlayer.mFruit)
+                    if (!calamityPlayer.sTangerine && !calamityPlayer.mFruit && !calamityPlayer.tCloudberry && !calamityPlayer.sStrawberry)
                     {
                         // 判定成功，发放武器
                         int itemID = ModContent.ItemType<ElementalArkJav>();

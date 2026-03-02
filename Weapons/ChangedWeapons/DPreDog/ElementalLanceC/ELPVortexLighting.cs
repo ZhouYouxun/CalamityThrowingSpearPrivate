@@ -30,7 +30,7 @@
 
 //        // Technically not a ratio, and more of a seed, but it is used in a 0-2pi squash
 //        // later in the code to get an arbitrary unit vector (which is then checked).
-//        public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
+//        public ref float BaseTurnAngle(completionRatio, vertexPos) => ref Projectile.ai[1];
 //        public ref float AccumulatedXMovementSpeeds => ref Projectile.localAI[0];
 //        public ref float BranchingIteration => ref Projectile.localAI[1];
 //        public ref float InitialVelocityAngle => ref Projectile.ai[0];
@@ -182,7 +182,7 @@
 //            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
 //            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
-//            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.3f, false,
+//            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.3f, false,
 //                shader: GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 10);
 //            return false;
 //        }

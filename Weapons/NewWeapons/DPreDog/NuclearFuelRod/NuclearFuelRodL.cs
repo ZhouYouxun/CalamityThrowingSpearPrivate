@@ -117,7 +117,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
                 .UseColor(Color.LimeGreen) // 荧光绿色
                 .Apply();
 
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(TrailWidth, TrailColor, (_) => Projectile.Size * 0.5f,
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio, vertexPos), (completionRatio, vertexPos) => Projectile.Size * 0.5f,
                 shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]), 10);
 
             Main.spriteBatch.ExitShaderRegion();
@@ -127,13 +127,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             return false;
         }
 
-        public Color TrailColor(float completionRatio)
+        public Color TrailColor(float completionRatio, Vector2 vertexPos)
         {
             float opacity = Utils.GetLerpValue(1f, 0.5f, completionRatio, true) * Projectile.Opacity;
             return Color.LimeGreen * opacity; // 荧光绿色
         }
 
-        public float TrailWidth(float completionRatio)
+        public float TrailWidth(float completionRatio, Vector2 vertexPos)
         {
             return MathHelper.SmoothStep(12f, 26f, Utils.GetLerpValue(0f, 1f, completionRatio, true));
         }

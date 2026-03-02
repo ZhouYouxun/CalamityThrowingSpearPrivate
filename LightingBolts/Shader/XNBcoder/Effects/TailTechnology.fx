@@ -76,7 +76,7 @@ technique TrailTechnique{
 //        .Apply();
 
 //    PrimitiveRenderer.RenderTrail(Projectile.oldPos,
-//        new(TrailWidth, TrailColor, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TailTechnologyEffect"]),
+//        new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio), (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TailTechnologyEffect"]),
 //        10);
 
 //    Main.spriteBatch.ExitShaderRegion();

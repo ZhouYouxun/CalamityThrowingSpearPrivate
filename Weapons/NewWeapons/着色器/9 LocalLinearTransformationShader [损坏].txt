@@ -13,7 +13,7 @@
                 new(
                     LinearWidthFunction,
                     LinearColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:LinearTransformation"]
                 ),
                 numPoints

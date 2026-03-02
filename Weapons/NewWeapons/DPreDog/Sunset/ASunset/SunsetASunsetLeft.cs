@@ -52,33 +52,39 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                      DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            // === 定义宽度函数 ===
-            float PrimitiveWidthFunction(float t)
-            {
-                float w = Projectile.width * 3.55f;
-                w *= MathHelper.SmoothStep(0.5f, 1.0f, Utils.GetLerpValue(0f, 0.25f, t, true));
-                return w;
-            }
+			// === 定义宽度函数 ===
+			float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
+			{
+				float w = Projectile.width * 3.55f;
+				w *= MathHelper.SmoothStep(
+					0.5f,
+					1.0f,
+					Utils.GetLerpValue(0f, 0.25f, completionRatio, true)
+				);
+				return w;
+			}
 
-            // === 定义颜色函数（用你的橙色调色盘） ===
-            Color PrimitiveTrailColor(float t)
-            {
-                Color c = firePalette[(int)(t * firePalette.Length) % firePalette.Length];
+			// === 定义颜色函数 ===
+			Color PrimitiveTrailColor(float completionRatio, Vector2 vertexPos)
+			{
+				Color c = firePalette[
+					(int)(completionRatio * firePalette.Length) % firePalette.Length
+				];
 
-                // 透明度沿着尾迹递减
-                c *= Projectile.Opacity * (1f - t);
+				c *= Projectile.Opacity * (1f - completionRatio);
 
-                // 速度越快颜色越亮（能量感）
-                float speedBoost = Utils.GetLerpValue(1f, 6f, Projectile.velocity.Length(), true);
-                c *= speedBoost;
+				float speedBoost =
+					Utils.GetLerpValue(1f, 6f, Projectile.velocity.Length(), true);
 
-                c.A = 0;
-                return c;
-            }
+				c *= speedBoost;
+
+				c.A = 0;
+				return c;
+			}
 
 
-            // === 将 oldPos 整体往前移动到“弹幕前端” ===
-            Vector2 frontOffset = Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.5f);
+			// === 将 oldPos 整体往前移动到“弹幕前端” ===
+			Vector2 frontOffset = Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width * 1.5f);
 
             // 创建一个新的数组存前推后的 oldPos
             Vector2[] shiftedOldPos = new Vector2[Projectile.oldPos.Length];
@@ -89,22 +95,25 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
             // === 偏移：让丝带稍微抬起（增强立体感）===
-            Vector2 PrimitiveOffsetFunction(float t)
-            {
+            Vector2 PrimitiveOffsetFunction(float t, Vector2 vertexPos)
+			{
                 return Projectile.Size * 0.5f + Projectile.velocity.SafeNormalize(Vector2.Zero) * Projectile.scale * 2f;
             }
 
-            // === 绘制能量丝带（关键）=====
-            PrimitiveRenderer.RenderTrail(
-                shiftedOldPos,
-                new(PrimitiveWidthFunction, PrimitiveTrailColor, PrimitiveOffsetFunction,
-                    shader: GameShaders.Misc["CalamityMod:SideStreakTrail"]),
-                60
-            );
+			// === 绘制能量丝带（关键）=====
+			PrimitiveRenderer.RenderTrail(
+				shiftedOldPos,
+				new(
+					PrimitiveWidthFunction,
+					PrimitiveTrailColor,
+					PrimitiveOffsetFunction,
+					shader: GameShaders.Misc["CalamityMod:XXX"]
+				),
+				60
+			);
 
-
-            // ======== 回到正常绘图（主体绘制） ========
-            sb.End();
+			// ======== 回到正常绘图（主体绘制） ========
+			sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                      DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 

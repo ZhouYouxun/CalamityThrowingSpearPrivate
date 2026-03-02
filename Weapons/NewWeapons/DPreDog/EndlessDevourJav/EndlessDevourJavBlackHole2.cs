@@ -209,7 +209,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
                     0 => Color.Red,
                     1 => Color.MediumTurquoise,
                     2 => Color.Orange,
-                    _ => Color.LawnGreen,
+					_ => Color.LawnGreen,
                 };
 
                 float rot = MathHelper.ToRadians(e * rotFactorlines);

@@ -156,7 +156,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
         //    // 绘制拖尾特效
         //    PrimitiveRenderer.RenderTrail(
         //        Projectile.oldPos,
-        //        new(WidthFunction, ColorFunction, (_) => Projectile.Size * 0.5f),
+        //        new(WidthFunction, ColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f),
         //        30);
 
         //    // 绘制发光效果
@@ -208,7 +208,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
         {
             Main.projFrames[Projectile.type] = 4;
         }
-
+        
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {

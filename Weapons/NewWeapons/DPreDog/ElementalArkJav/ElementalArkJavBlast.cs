@@ -290,9 +290,18 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
         }
 
         // 修改伤害值的衰减逻辑，击中次数越多，伤害降低得越多
+        public const float DamageFalloffStrength = 0.15f; // 每次命中损失 15%
+        public const float DamageFalloffSpeed = 1f;       // 命中计数倍数
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            modifiers.SourceDamage *= (float)Math.Pow(1 - ArkoftheCosmos.blastFalloffStrenght, Projectile.numHits * ArkoftheCosmos.blastFalloffSpeed);
+            //modifiers.SourceDamage *= (float)Math.Pow(1 - ArkoftheCosmos.blastFalloffStrenght, Projectile.numHits * ArkoftheCosmos.blastFalloffSpeed);
+
+            float falloffFactor = (float)Math.Pow(
+                1f - DamageFalloffStrength,
+                Projectile.numHits * DamageFalloffSpeed
+            );
+
+            modifiers.SourceDamage *= falloffFactor;
         }
 
         // 当投射物消失时触发的效果

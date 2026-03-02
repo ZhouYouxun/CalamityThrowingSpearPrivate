@@ -39,7 +39,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
         private static Color ShaderColorOne = Color.DarkGreen; // 着色器颜色1，设置为深绿色
         private static Color ShaderColorTwo = Color.Black; // 着色器颜色2，设置为黑色
         private static Color ShaderEndColor = Color.ForestGreen; // 着色器结束颜色，设置为森林绿色（另一种深绿色）
-        private float PrimitiveWidthFunction(float completionRatio)
+        private float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             float arrowheadCutoff = 0.36f;
             float width = 24f;
@@ -50,7 +50,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
             return width;
         }
 
-        private Color PrimitiveColorFunction(float completionRatio)
+        private Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float endFadeRatio = 0.41f;
             float completionRatioFactor = 2.7f;
@@ -79,7 +79,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
                 new(
                     PrimitiveWidthFunction,
                     PrimitiveColorFunction,
-                    (_) => offset,
+                    (completionRatio, vertexPos) => offset,
                     shader: GameShaders.Misc["CalamityMod:TrailStreak"]
                 ),
                 46

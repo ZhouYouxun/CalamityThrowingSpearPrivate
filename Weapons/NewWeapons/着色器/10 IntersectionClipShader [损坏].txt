@@ -13,7 +13,7 @@
                 new(
                     IntersectionWidthFunction,
                     IntersectionColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:IntersectionClip"]
                 ),
                 numPoints

@@ -309,9 +309,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
         }
 
 
-        public float LaserWidthFunction(float _) => Projectile.scale * Projectile.width + 180;
+        public float LaserWidthFunction(float completionRatio, Vector2 vertexPos) => Projectile.scale * Projectile.width + 180;
 
-        public static Color LaserColorFunction(float completionRatio)
+        public static Color LaserColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // 轻呼吸 + 扭曲，色相在浅青(靠近白) 与 天蓝之间摆动
             float osc = (float)Math.Sin(Main.GlobalTimeWrappedHourly * -3.2f + completionRatio * 23f) * 0.5f + 0.5f;

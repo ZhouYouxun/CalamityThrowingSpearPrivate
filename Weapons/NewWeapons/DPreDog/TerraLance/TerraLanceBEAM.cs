@@ -107,11 +107,19 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             Projectile.netUpdate = true;
         }
 
-        public float SlashWidthFunction(float _) => Projectile.width * Projectile.scale * Utils.GetLerpValue(0f, 0.1f, _, true);
+		public float SlashWidthFunction(float completionRatio, Vector2 vertexPos)
+		{
+			return Projectile.width
+				* Projectile.scale
+				* Utils.GetLerpValue(0f, 0.1f, completionRatio, true);
+		}
 
-        public Color SlashColorFunction(float _) => Color.Turquoise;
+		public Color SlashColorFunction(float completionRatio, Vector2 vertexPos)
+		{
+			return Color.Turquoise;
+		}
 
-        public override bool PreDraw(ref Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
         {
             GameShaders.Misc["CalamityMod:ExobladePierce"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/BlobbyNoise"));
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseImage2("Images/Extra_189");
@@ -119,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseSecondaryColor(Terratomere.TerraColor2);
 
             // 17MAY2024: Ozzatron: remove Terratomere rendering its trails multiple times
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(SlashWidthFunction, SlashColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:ExobladePierce"]), 30);
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(SlashWidthFunction, SlashColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:ExobladePierce"]), 30);
 
             return false;
         }

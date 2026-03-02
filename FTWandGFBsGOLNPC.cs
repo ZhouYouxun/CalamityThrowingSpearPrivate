@@ -34,8 +34,8 @@ namespace CalamityThrowingSpear
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
         {
-            // 检查是否为 Bumblefuck（痴愚金龙） 或 Bumblefuck2（癫狂龙裔），以及是否为 ZenithWorld 模式
-            if ((npc.type == ModContent.NPCType<Bumblefuck>() || npc.type == ModContent.NPCType<Bumblefuck2>()) &&
+            // 检查是否为 Bumblefuck[但是现在叫Dragonfolly]（痴愚金龙） 或 Bumblefuck2[但是现在叫DraconicSwarmer]（癫狂龙裔），以及是否为 ZenithWorld 模式
+            if ((npc.type == ModContent.NPCType<Dragonfolly>() || npc.type == ModContent.NPCType<DraconicSwarmer>()) &&
                 Main.zenithWorld)
             {
                 // 检查弹幕类型是否为 画龙点睛 系列

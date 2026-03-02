@@ -203,13 +203,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
         }
 
 
-        private float PrimitiveWidthFunction(float completionRatio)
+        private float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             // 定义轨迹宽度变化
             return MathHelper.Lerp(6f, 20f, completionRatio);
         }
 
-        private Color PrimitiveColorFunction(float completionRatio)
+        private Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // 定义轨迹颜色渐变（示例蓝紫色调）
             Color startColor = new Color(40, 0, 80);
@@ -221,7 +221,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC
         {
             //GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/spark_07"));
             //Vector2 offset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;
-            //PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => offset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), 50);
+            //PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => offset, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), 50);
             return false;
         }
 

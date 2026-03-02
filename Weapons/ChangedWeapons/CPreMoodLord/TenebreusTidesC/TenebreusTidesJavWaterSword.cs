@@ -23,13 +23,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
-        public Color TrailColor(float completionRatio)
+        public Color TrailColor(float completionRatio, Vector2 vertexPos)
         {
             float opacity = Utils.GetLerpValue(1f, 0.6f, completionRatio, true) * Projectile.Opacity;
             return new Color(40, 120, 240) * opacity; // 深海蓝渐隐
         }
 
-        public float TrailWidth(float completionRatio)
+        public float TrailWidth(float completionRatio, Vector2 vertexPos)
         {
             return MathHelper.SmoothStep(16f, 26f, completionRatio);
         }
@@ -53,14 +53,11 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
             //PrimitiveRenderer.RenderTrail(
             //    Projectile.oldPos,
-            //    new(TrailWidth, TrailColor, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailWarpDistortion"]),
+            //    new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio), (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["ModNamespace:TrailWarpDistortion"]),
             //    10
             //);
 
             //Main.spriteBatch.ExitShaderRegion();
-
-
-
 
 
             Main.spriteBatch.EnterShaderRegion();
@@ -71,16 +68,61 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                 .UseSecondaryColor(new Color(100, 200, 255))
                 .Apply();
 
+            // 2.1 大更新之后的修改:
+            // 先说一下原有的版本，但是中间需要改成双参数
+            //PrimitiveRenderer.RenderTrail(
+            //    Projectile.oldPos,
+            //    new(
+            //        ratio => MathHelper.SmoothStep(16f, 4f, ratio) * 1.0f, // ← 这里 * Xf 可以控制梯形的宽窄程度
+            //        TrailColor,
+            //        (_) => Projectile.Size * 0.5f,
+            //        shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
+            //    ),
+            //    10
+            //);
+
+            // 我们改成了这样的
             PrimitiveRenderer.RenderTrail(
                 Projectile.oldPos,
-                new(
-                    ratio => MathHelper.SmoothStep(16f, 4f, ratio) * 1.0f, // ← 这里 * Xf 可以控制梯形的宽窄程度
-                    TrailColor,
-                    (_) => Projectile.Size * 0.5f,
+                new PrimitiveSettings(
+                    (completionRatio, vertexPos) => MathHelper.SmoothStep(16f, 4f, completionRatio) * 1.0f,
+                    (completionRatio, vertexPos) => TrailColor(completionRatio, vertexPos),
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f,
                     shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
                 ),
                 10
             );
+
+            //新版 PrimitiveSettings 委托签名变成：
+
+            //float Width(float completionRatio, Vector2 vertexPos)
+            //Color Color(float completionRatio, Vector2 vertexPos)
+            //Vector2 Offset(float completionRatio, Vector2 vertexPos)
+
+            //你原来只传 1 个参数的 lambda，现在必须传 2 个。
+
+            //vertexPos 不用也要写出来。
+
+
+
+
+            //ratio =>
+            //替换成
+            //(completionRatio, vertexPos) =>
+
+            //ratio
+            //替换成
+            //completionRatio
+
+            //(completionRatio, vertexPos) => TrailColor(completionRatio),
+            //替换成
+            //(completionRatio, vertexPos) => TrailColor(completionRatio),
+
+            //(_) =>
+            //替换成
+            //(completionRatio, vertexPos) =>
+
+
 
 
             Main.spriteBatch.ExitShaderRegion();

@@ -43,8 +43,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 // 检查是否启用了 zenithWorld 模式
                 if (Main.zenithWorld)
                 {
-                    // 获取 CalamityPlayer 实例并检查是否吃过任意一种水果
-                    if (calamityPlayer.bOrange || calamityPlayer.eBerry || calamityPlayer.dFruit || calamityPlayer.mFruit)
+                    // 获取 CalamityPlayer 实例并检查是否吃过任意一种水果[按顺序分别为：沐血柑橘，奇迹之果，污浊云莓，圣佑草莓]
+                    if (calamityPlayer.sTangerine || calamityPlayer.mFruit || calamityPlayer.tCloudberry || calamityPlayer.sStrawberry)
                     {
                         // 如果玩家吃过任意一种水果，拒绝右键攻击并显示提示
                         CombatText.NewText(player.getRect(), Microsoft.Xna.Framework.Color.Pink, Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav1"));
@@ -75,10 +75,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 // 否则按照普通模式的逻辑扣除血量和检测水果
                 //CalamityPlayer calamityPlayer = player.Calamity();
                 int fruitCount = 0;
-                if (calamityPlayer.bOrange) fruitCount++;
-                if (calamityPlayer.eBerry) fruitCount++;
-                if (calamityPlayer.dFruit) fruitCount++;
+                if (calamityPlayer.sTangerine) fruitCount++;
                 if (calamityPlayer.mFruit) fruitCount++;
+                if (calamityPlayer.tCloudberry) fruitCount++;
+                if (calamityPlayer.sStrawberry) fruitCount++;
                 
                 if (fruitCount == 4)
                 {
@@ -112,10 +112,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
                 CalamityPlayer calamityPlayer = player.Calamity();
 
                 int fruitCount = 0;
-                if (calamityPlayer.bOrange) fruitCount++;
-                if (calamityPlayer.eBerry) fruitCount++;
-                if (calamityPlayer.dFruit) fruitCount++;
+                if (calamityPlayer.sTangerine) fruitCount++;
                 if (calamityPlayer.mFruit) fruitCount++;
+                if (calamityPlayer.tCloudberry) fruitCount++;
+                if (calamityPlayer.sStrawberry) fruitCount++;
 
                 int healthLoss = fruitCount; // 每种水果扣除1点血量
                 player.statLife -= healthLoss;

@@ -13,7 +13,7 @@
                 new(
                     ExoSlashWidthFunction,
                     ExoSlashColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:ExobladeSlash"]
                 ),
                 numPoints

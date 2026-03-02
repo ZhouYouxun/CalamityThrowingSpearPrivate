@@ -13,7 +13,7 @@
                 new(
                     PrismaticWidthFunction,
                     PrismaticColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:PrismaticStreak"]
                 ),
                 numPoints

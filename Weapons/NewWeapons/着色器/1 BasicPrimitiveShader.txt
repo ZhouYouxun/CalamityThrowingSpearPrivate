@@ -44,7 +44,7 @@
           new(
               PrimitiveWidthFunction,  // 计算拖尾宽度
               PrimitiveColorFunction,  // 计算拖尾颜色
-              (_) => overallOffset,    // 位置偏移
+              (completionRatio, vertexPos) => overallOffset,    // 位置偏移
               shader: GameShaders.Misc["CalamityMod:PrimitiveDrawer"] // 使用 `BasicPrimitiveShader`
           ),
           numPoints

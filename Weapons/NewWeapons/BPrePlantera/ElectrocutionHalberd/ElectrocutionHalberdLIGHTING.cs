@@ -141,15 +141,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
+        public float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
 
-        public Color PrimitiveColorFunction(float completionRatio)
+        public Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             // 使用不同亮度的白色进行渐变
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
             Color color = CalamityUtils.MulticolorLerp(colorInterpolant, Color.White, new Color(230, 230, 230), new Color(245, 245, 245)); // 纯白色、很浅的灰色和鬼白色
             return color;
         }
+
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
@@ -160,7 +161,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             for (int i = 0; i < checkPoints.Count - 1; i++)
             {
                 float _ = 0f;
-                float width = PrimitiveWidthFunction(i / (float)checkPoints.Count);
+                float width = PrimitiveWidthFunction(i / (float)checkPoints.Count, checkPoints[i]);
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), checkPoints[i], checkPoints[i + 1], width * 0.8f, ref _))
                     return true;
             }
@@ -172,7 +173,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.5f, false, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 18);
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    PrimitiveWidthFunction,
+                    PrimitiveColorFunction,
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f,
+                    false,
+                    shader: GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]
+                ),
+                46
+            );
             return false;
         }
 

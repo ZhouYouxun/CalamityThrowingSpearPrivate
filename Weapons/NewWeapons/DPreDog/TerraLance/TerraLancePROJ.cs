@@ -491,7 +491,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                     {
                         0 => Color.ForestGreen,
                         1 => Color.LimeGreen,
-                        _ => Color.GreenYellow,
+						_ => Color.GreenYellow,
                     };
 
                     Particle pulse = new CustomPulse(

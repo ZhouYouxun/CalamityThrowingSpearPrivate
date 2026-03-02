@@ -41,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityVioletBuyPrice;
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = ModContent.RarityType<BurnishedAuric>();
             Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<NadirJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 23f; // 更改使用时的武器弹幕飞行速度

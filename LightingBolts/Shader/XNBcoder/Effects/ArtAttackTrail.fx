@@ -110,7 +110,7 @@ technique Technique1
 //    // **»æÖÆÍÏÎ²**
 //    PrimitiveRenderer.RenderTrail(
 //        Projectile.oldPos,
-//        new(TrailWidth, TrailColor, (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:ArtAttack"]),
+//        new(TrailWidth, (completionRatio, vertexPos) => TrailColor(completionRatio), (_) = > Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:ArtAttack"]),
 //        180
 //    );
 //

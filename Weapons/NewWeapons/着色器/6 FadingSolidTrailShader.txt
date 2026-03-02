@@ -13,7 +13,7 @@
                 new(
                     FadingWidthFunction,
                     FadingColorFunction,
-                    (_) => overallOffset,
+                    (completionRatio, vertexPos) => overallOffset,
                     shader: GameShaders.Misc["CalamityMod:FadingSolidTrail"]
                 ),
                 numPoints

@@ -33,7 +33,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
             Item.autoReuse = true;
             Item.UseSound = SoundID.DD2_SkyDragonsFurySwing;
             Item.value = CalamityGlobalItem.RarityVioletBuyPrice;
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = ModContent.RarityType<BurnishedAuric>();
             Item.shoot = ModContent.ProjectileType<DragonRageJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
         }

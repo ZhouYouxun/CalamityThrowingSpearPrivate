@@ -272,7 +272,7 @@
 
 
 
-//        public Color TrailColor(float completionRatio)
+//        public Color TrailColor(float completionRatio, Vector2 vertexPos)
 //        {
 //            float opacity = Utils.GetLerpValue(1f, 0.6f, completionRatio, true) * Projectile.Opacity;
 //            return Color.Lerp(Color.OrangeRed, Color.Orange, 0.4f) * opacity;
@@ -394,9 +394,9 @@
 //                PrimitiveRenderer.RenderTrail(
 //                    Projectile.oldPos,
 //                    new(
-//                        ratio => MathHelper.SmoothStep(12f, 2f, ratio),
-//                        TrailColor,
-//                        (_) => Projectile.Size * 0.5f,
+//                        (completionRatio, vertexPos) => MathHelper.SmoothStep(12f, 2f, completionRatio),
+//                        (completionRatio, vertexPos) => TrailColor(completionRatio),
+//                        (completionRatio, vertexPos) => Projectile.Size * 0.5f,
 //                        shader: GameShaders.Misc["ModNamespace:TrailWarpDistortionEffect"]
 //                    ),
 //                    30

@@ -82,7 +82,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
                 // 普通拖尾
                 PrimitiveRenderer.RenderTrail(
                     Projectile.oldPos,
-                    new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]),
+                    new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]),
                     53
                 );
             }
@@ -94,7 +94,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
 
                 PrimitiveRenderer.RenderTrail(
                     headTrail,
-                    new(PrimitiveWidthFunction, PrimitiveColorFunction, (_) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]),
+                    new(PrimitiveWidthFunction, PrimitiveColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]),
                     53
                 );
             }
@@ -108,11 +108,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TheOtherMiracleMatt
 
 
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 30f;
+		public float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos) => Projectile.scale * 30f;
 
-        public Color PrimitiveColorFunction(float _) => Color.Lime * Projectile.Opacity;
+		public Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos) => Color.Lime * Projectile.Opacity;
 
-        private Vector2 desiredDirection;
+		private Vector2 desiredDirection;
         private float travelDuration = 90f; // 第一阶段总时长
         private float maxStage1Duration = 60f;
         private float travelDuration1 = 60f; // 加速阶段时长

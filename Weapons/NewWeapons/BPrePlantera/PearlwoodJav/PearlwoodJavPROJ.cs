@@ -41,7 +41,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         //    return width;
         //}
 
-        private float PrimitiveWidthFunction(float completionRatio)
+        private float PrimitiveWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             return 8f; // 始终保持 X 像素宽度
         }
@@ -64,7 +64,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
         //}
 
         // 长度方向的粉红色系渐变
-        private Color PrimitiveColorFunction(float completionRatio)
+        private Color PrimitiveColorFunction(float completionRatio, Vector2 vertexPos)
         {
             float timeFactor = Main.GlobalTimeWrappedHourly * 4.0f;
             float flicker = (float)Math.Sin(completionRatio * 6f + timeFactor) * 0.5f + 0.5f;
@@ -132,7 +132,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PearlwoodJav
                 new(
                     PrimitiveWidthFunction,    // 保持原有的宽度函数
                     PrimitiveColorFunction,    // 保持原有的颜色函数
-                    (_) => overallOffset,      // 偏移量
+                    (completionRatio, vertexPos) => overallOffset,      // 偏移量
                     shader: GameShaders.Misc["CalamityMod:Flame"] // 替换为 Flame 着色器
                 ),
                 numPoints

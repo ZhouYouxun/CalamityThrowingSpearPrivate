@@ -65,7 +65,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             // 通过 PrimitiveRenderer 渲染剑气轨迹
             PrimitiveRenderer.RenderTrail(
                 GenerateSlashPoints(),
-                new(SlashWidthFunction, SlashColorFunction, (_) => Projectile.Center, shader: GameShaders.Misc["CalamityMod:ExobladeSlash"]),
+                new(SlashWidthFunction, SlashColorFunction, (completionRatio, vertexPos) => Projectile.Center, shader: GameShaders.Misc["CalamityMod:ExobladeSlash"]),
                 95
             );
 
@@ -93,13 +93,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
         }
 
         // 计算刀光轨迹宽度
-        private float SlashWidthFunction(float completionRatio)
+        // 旧版签名：private float SlashWidthFunction(float completionRatio)
+        private float SlashWidthFunction(float completionRatio, Vector2 vertexPos)
         {
             return Projectile.scale * 50f;
         }
 
         // 计算刀光颜色
-        private Color SlashColorFunction(float completionRatio)
+        // 旧版签名：private Color SlashColorFunction(float completionRatio)
+        private Color SlashColorFunction(float completionRatio, Vector2 vertexPos)
         {
             return Color.Lerp(Color.MediumPurple, Color.Violet, (float)Math.Sin(completionRatio * MathHelper.Pi)) * 0.8f;
         }
@@ -124,7 +126,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.StreamGougeC
             // **渲染刀光轨迹**
             PrimitiveRenderer.RenderTrail(
                 GenerateSwingTrailPoints(),
-                new(width => 20f, completion => Color.Red * 0.8f, (_) => swingCenter, true), // 将第四个参数设为 true
+                //new(width => 20f, completion => Color.Red * 0.8f, (_) => swingCenter, true), // 将第四个参数设为 true
+                // 新版的写法为:
+                new PrimitiveSettings(
+                    (completionRatio, vertexPos) => 20f,
+                    (completionRatio, vertexPos) => Color.Red * 0.8f,
+                    (completionRatio, vertexPos) => swingCenter,
+                    true
+                ),
                 40
             );
 
