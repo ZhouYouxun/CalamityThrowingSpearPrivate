@@ -1,15 +1,20 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.NPCs.AcidRain;
+using CalamityMod.NPCs.HiveMind;
+using CalamityMod.Projectiles.Summon;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityMod.Items.Materials;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
 {
@@ -43,7 +48,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
             Recipe recipe = CreateRecipe();
             // recipe.AddIngredient<RottenMatter>(12); // 腐烂物质已被移除
             // 我们用腐肉来替代
-
             recipe.AddIngredient(ItemID.RottenChunk, 4);
             recipe.AddIngredient(ItemID.DemoniteBar, 5);
             recipe.AddTile(TileID.DemonAltar);
@@ -51,3 +55,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav
         }
     }
 }
+
+public class BraisedPorkDropInjector : GlobalNPC
+{
+
+    public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+    {
+        if (npc.type == ModContent.NPCType<HiveMind> ())
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<BraisedPorkJav>(), 1));
+        }
+    }
+}
+
+

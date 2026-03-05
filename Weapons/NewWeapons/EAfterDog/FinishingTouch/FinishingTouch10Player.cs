@@ -21,10 +21,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             finishingTouchOrangeTrailActive = false;
 
             // === 在手持武器 FinishingTouch 时自动激活光晕尾迹调试 ===
-            //if (Player.HeldItem != null && Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
-            //{
-            //    finishingTouchOrangeTrailActive = true;
-            //}
+            if (Player.HeldItem != null && Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
+            {
+                finishingTouchOrangeTrailActive = true;
+            }
         }
 
 

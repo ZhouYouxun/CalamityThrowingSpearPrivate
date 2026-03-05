@@ -38,14 +38,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.SausageMaker
         }
 
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient(ItemID.CrimtaneBar, 4).
-        //        AddIngredient<BloodSample>(12).
-        //        AddIngredient(ItemID.Vertebrae, 4).
-        //        AddTile(TileID.DemonAltar).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.CrimtaneBar, 4).
+                AddIngredient(ItemID.Vertebrae, 4).
+                AddTile(TileID.DemonAltar).
+                Register();
+        }
     }
 }

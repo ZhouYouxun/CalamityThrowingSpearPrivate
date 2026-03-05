@@ -1,21 +1,27 @@
-﻿using System;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Melee
+;
+using CalamityMod.NPCs.HiveMind;
+using CalamityMod.NPCs.PlaguebringerGoliath;
+using CalamityMod.Projectiles.Melee.Spears;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPikeC;
+using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav;
+using Microsoft.Xna.Framework;
+using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee.Spears;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items;
-using CalamityMod;
-using CalamityMod.Items.Weapons.Melee
-;
-using Terraria.DataStructures;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPikeC
 {
@@ -65,12 +71,26 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPike
             return false; // 不执行默认发射逻辑
         }
 
-        //public override void AddRecipes()
-        //{
-        //    Recipe recipe = CreateRecipe();
-        //    recipe.AddIngredient<DiseasedPike>();
-        //    recipe.Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.ChlorophytePartisan).
+                AddIngredient<PlagueCellCanister>(5).
+                AddIngredient<InfectedArmorPlating> (4).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }
 
+public class DiseasedPikeDropInjector : GlobalNPC
+{
+
+    public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+    {
+        if (npc.type == ModContent.NPCType<PlaguebringerGoliath>())
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DiseasedJav>(), 1));
+        }
+    }
+}
