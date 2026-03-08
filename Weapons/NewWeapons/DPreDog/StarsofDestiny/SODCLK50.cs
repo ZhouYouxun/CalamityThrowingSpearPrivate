@@ -286,21 +286,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                 GeneralParticleHandler.SpawnParticle(pulse);
             }
 
-            // ================================
-            // 4）水雾：中心轻微散逸，填补层次
-            // ================================
-            if (Main.rand.NextBool(4))
-            {
-                WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                    center + Main.rand.NextVector2Circular(4f, 4f),
-                    -forward * Main.rand.NextFloat(0.3f, 0.9f),
-                    false,
-                    Main.rand.Next(18, 26),
-                    0.9f + Main.rand.NextFloat(0.3f),
-                    Color.LightBlue * (0.7f * alpha)
-                );
-                GeneralParticleHandler.SpawnParticle(mist);
-            }
+            //// ================================
+            //// 4）水雾：中心轻微散逸，填补层次
+            //// ================================
+            //if (Main.rand.NextBool(4))
+            //{
+            //    WaterFlavoredParticle mist = new WaterFlavoredParticle(
+            //        center + Main.rand.NextVector2Circular(4f, 4f),
+            //        -forward * Main.rand.NextFloat(0.3f, 0.9f),
+            //        false,
+            //        Main.rand.Next(18, 26),
+            //        0.9f + Main.rand.NextFloat(0.3f),
+            //        Color.LightBlue * (0.7f * alpha)
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(mist);
+            //}
 
             // ================================
             // 5）Bloom + 数字方块：偶尔闪一下

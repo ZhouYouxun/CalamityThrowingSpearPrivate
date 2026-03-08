@@ -34,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
             {
                 oldPos[i] = oldPos[i - 1];
                 oldRot[i] = oldRot[i - 1];
-            }
+            }   
             oldPos[0] = Player.Center; // 🚩 将 position 改为 Center，避免偏移
             oldRot[0] = Player.fullRotation;
         }

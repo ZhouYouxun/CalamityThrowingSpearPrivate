@@ -192,6 +192,13 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             //    );
             //}
 
+
+
+
+
+
+
+
             foreach (Player player in Main.player)
             {
                 if (player.active && !player.dead)
@@ -252,6 +259,49 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
             SoundEngine.PlaySound(boostedSound, Projectile.Center);
 
 
+
+
+
+
+            // ================= 时空冲击粒子（Forward Temporal Burst） =================
+
+            // 命中位置
+            Vector2 pos = Projectile.Center;
+
+            // 计算当前弹幕的前进方向
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            // 前方喷射粒子数量
+            int particleCount = 4;
+
+            for (int i = 0; i < particleCount; i++)
+            {
+                // 控制扩散角度（越小越集中）
+                float spreadAngle = MathHelper.ToRadians(12f);
+
+                // 在前方扇形内随机旋转
+                Vector2 velocity =
+                    forward.RotatedByRandom(spreadAngle) *
+                    Main.rand.NextFloat(4f, 9f); // 粒子速度
+
+                // GlowSparkParticle
+                Particle spark = new GlowSparkParticle(
+                    pos,                    // 生成位置
+                    velocity,               // 粒子速度（向前）
+                    false,
+                    Main.rand.Next(8, 14),  // 生命周期
+                    Main.rand.NextFloat(0.12f, 0.18f), // 粒子大小
+                    Main.rand.NextBool()
+                        ? Color.White       // 时间闪光
+                        : Color.LightYellow,// 时空能量
+                    new Vector2(2.6f, 0.45f), // 拉长粒子形状（越大越像能量线）
+                    true,
+                    false,
+                    1
+                );
+
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
 
 
 

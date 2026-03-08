@@ -60,48 +60,126 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
 
 
-                // === AltSpark 作为电流中心核心 ===
-                AltSparkParticle centerSpark = new AltSparkParticle(
-                    Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), // 轻微漂移
-                    Projectile.velocity.SafeNormalize(Vector2.UnitX) * 0.3f + Main.rand.NextVector2Circular(0.1f, 0.1f), // 缓慢向前
-                    false,
-                    Main.rand.Next(14, 20), // 生命周期较短
-                    Main.rand.NextFloat(1.0f, 1.3f),
-                    Color.LightGoldenrodYellow * 0.45f // 柔金色调
-                );
-                GeneralParticleHandler.SpawnParticle(centerSpark);
 
 
-                // === 干涉波轨迹粒子 ===
-                float waveAmplitude1 = 24f;
-                float waveAmplitude2 = 12f;
-                float waveFreq1 = 0.52f;
-                float waveFreq2 = 1.15f;
 
-                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-                Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
-
-                int stepsPerFrame = 2;
-                for (int i = 0; i < stepsPerFrame; i++)
+                // === 金色推进火花（GlowSparkParticle 推进尾焰） ===
+                // 每 2 帧释放一次，形成连续直线尾迹
+                if (Time % 2 == 0) // 控制粒子生成频率：数值越小粒子越密集
                 {
-                    float t = Time + i / (float)stepsPerFrame;
+                    Particle spark = new GlowSparkParticle(
+                        Projectile.Center + Projectile.velocity * Main.rand.NextFloat(-1.5f, -0.5f),
+                        // 生成位置：在弹幕后方一点点位置生成
+                        // 数值越小越靠近弹幕尾部
 
-                    // ✅ 双波干涉轨迹偏移（模拟示波器）
-                    float wave1 = MathF.Sin(t * waveFreq1) * waveAmplitude1;
-                    float wave2 = MathF.Sin(t * waveFreq2 + MathF.Cos(t * 0.3f) * 0.5f) * waveAmplitude2;
-                    float offsetY = wave1 + wave2;
+                        -Projectile.velocity * 0.35f,
+                        // 粒子飞行速度：沿着“反方向速度”
+                        // 数值越大尾焰越长
 
-                    Vector2 spawnPos = Projectile.Center + normal * offsetY;
+                        false,
+                        // 是否受重力（false = 不受重力）
 
-                    int dustType = Main.rand.NextBool(2)
-                        ? yellowDust[Main.rand.Next(yellowDust.Length)]
-                        : blueDust[Main.rand.Next(blueDust.Length)];
+                        8,
+                        // 粒子生命周期（帧数）
+                        // 越大尾焰越长
 
-                    int idx = Dust.NewDust(spawnPos, 0, 0, dustType, 0f, 0f, 100, Color.White, 0.8f);
-                    Main.dust[idx].noGravity = true;
-                    Main.dust[idx].fadeIn = 1.2f;
+                        0.09f,
+                        // 粒子基础大小
+                        // 越大火花越粗
+
+                        new Color(255, 210, 80) * 0.75f,
+                        // 粒子颜色（金黄色）
+                        // 可以改为：
+                        // Color.Gold
+                        // Color.Goldenrod
+                        // Color.Yellow
+
+                        new Vector2(1.2f, 0.35f),
+                        // 粒子形状比例
+                        // X = 长度
+                        // Y = 厚度
+                        // X大 → 细长推进尾焰
+
+                        true,
+                        // 是否有发光效果
+
+                        false,
+                        // 是否旋转
+
+                        1
+                    // 图层深度
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(spark);
                 }
 
+
+                // === 示波器双轨迹粒子（Oscilloscope Dual Trace） ===
+
+                // 波形最大振幅（控制线条离中心多远）
+                // 建议 4~10 之间，越大越散
+                float waveAmplitude = 6f;
+
+                // 波形频率（控制波形密度）
+                // 越大波越密
+                float waveFrequency = 0.35f;
+
+                // 沿飞行方向的单位向量
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+                // 垂直方向（示波器波形上下摆动的方向）
+                Vector2 normal = forward.RotatedBy(MathHelper.Pi / 2f);
+
+                // 每帧生成几个点（决定线条密度）
+                int pointsPerFrame = 3;
+
+                for (int i = 0; i < pointsPerFrame; i++)
+                {
+                    // 时间偏移，用于制造连续扫描线效果
+                    float t = Time + i * 0.35f;
+
+                    // === 黄色示波器线 ===
+                    float yellowWave = MathF.Sin(t * waveFrequency) * waveAmplitude;
+
+                    Vector2 yellowPos =
+                        Projectile.Center
+                        + normal * yellowWave          // 上下波动
+                        - forward * (i * 4f);          // 向后拖尾形成连续扫描
+
+                    Dust yellow = Dust.NewDustPerfect(
+                        yellowPos,
+                        269,                           // 金色电能Dust
+                        Vector2.Zero,
+                        100,
+                        Color.Gold,
+                        0.9f                           // 粒子大小
+                    );
+
+                    yellow.noGravity = true;
+                    yellow.fadeIn = 0.5f;
+
+
+
+                    // === 蓝色示波器线 ===
+                    float blueWave = MathF.Sin(t * waveFrequency + MathHelper.Pi) * waveAmplitude;
+
+                    Vector2 bluePos =
+                        Projectile.Center
+                        + normal * blueWave
+                        - forward * (i * 4f);
+
+                    Dust blue = Dust.NewDustPerfect(
+                        bluePos,
+                        226,                           // 蓝色能量Dust
+                        Vector2.Zero,
+                        100,
+                        Color.Cyan,
+                        0.9f
+                    );
+
+                    blue.noGravity = true;
+                    blue.fadeIn = 0.5f;
+                }
 
 
 

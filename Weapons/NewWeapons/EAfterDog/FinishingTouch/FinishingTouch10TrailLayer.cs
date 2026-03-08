@@ -173,12 +173,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
          => new AfterParent(PlayerDrawLayers.BackAcc);
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-            => drawInfo.shadow == 0f;
+        {
+            Player player = drawInfo.drawPlayer;
+            return player.GetModPlayer<FinishingTouch10Player>().finishingTouchOrangeTrailActive
+                && drawInfo.shadow == 0f;
+        }
 
         protected override void Draw(ref PlayerDrawSet drawInfo)
         {
             Player drawPlayer = drawInfo.drawPlayer;
-            var modPlayer = drawPlayer.GetModPlayer<AfterimagePlayer>();
+            var modPlayer = drawPlayer.GetModPlayer<FinishingTouch10Player>();
 
             List<DrawData> existingDrawData = drawInfo.DrawDataCache;
 
@@ -190,11 +194,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
 
             Color trailColor = new Color(255, 140, 0);
 
-            for (float i = 0; i < modPlayer.OldPositions.Length; i += stepInterval)
+            for (float i = 0; i < modPlayer.oldPos.Length; i += stepInterval)
             {
-                Vector2 oldPos = modPlayer.OldPositions[(int)i];
+                Vector2 oldPos = modPlayer.oldPos[(int)i];
 
-                float completionRatio = i / modPlayer.OldPositions.Length;
+                float completionRatio = i / modPlayer.oldPos.Length;
                 float scale = MathHelper.Lerp(maxScale, minScale, completionRatio);
                 float opacity = MathHelper.Lerp(maxOpacity, minOpacity, completionRatio);
 
@@ -225,6 +229,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch
     }
 
 
+
+
+    // 这个废了：
     public class AfterimagePlayer : ModPlayer
     {
         public Vector2[] OldPositions = new Vector2[20];

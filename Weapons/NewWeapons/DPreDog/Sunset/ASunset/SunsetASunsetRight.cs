@@ -438,75 +438,75 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 // 随时间自转相位（统一相位，避免乱）
                 float phase = Main.GlobalTimeWrappedHourly;
 
-                // ================== 1) 向日葵分布（黄金角）——稳定聚拢的“能量花盘” ==================
-                // 公式：θ = n * goldenAngle，r ~ sqrt(n/N)，N 随蓄力逐渐增大
-                int seeds = (int)MathHelper.Lerp(5f, 12f, ease);             // 点数从少 → 多
-                float golden = MathHelper.ToRadians(137.50776f);              // 黄金角
-                float baseR = MathHelper.Lerp(6f, 28f, ease);                 // 花盘半径渐增
-                for (int n = 0; n < seeds; n++)
-                {
-                    float ang = n * golden + phase * (0.8f + 0.4f * ease);    // 随时间慢转
-                    float rad = baseR * MathF.Sqrt((n + 1f) / (seeds + 1f));  // sqrt 分布更匀
-                    Vector2 pos = head + ang.ToRotationVector2() * rad;
+                //// ================== 1) 向日葵分布（黄金角）——稳定聚拢的“能量花盘” ==================
+                //// 公式：θ = n * goldenAngle，r ~ sqrt(n/N)，N 随蓄力逐渐增大
+                //int seeds = (int)MathHelper.Lerp(5f, 12f, ease);             // 点数从少 → 多
+                //float golden = MathHelper.ToRadians(137.50776f);              // 黄金角
+                //float baseR = MathHelper.Lerp(6f, 28f, ease);                 // 花盘半径渐增
+                //for (int n = 0; n < seeds; n++)
+                //{
+                //    float ang = n * golden + phase * (0.8f + 0.4f * ease);    // 随时间慢转
+                //    float rad = baseR * MathF.Sqrt((n + 1f) / (seeds + 1f));  // sqrt 分布更匀
+                //    Vector2 pos = head + ang.ToRotationVector2() * rad;
 
-                    // 切向 + 轻微外扩，体现“旋着聚气”
-                    Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
-                    Vector2 tan = dir.RotatedBy(MathHelper.PiOver2);
+                //    // 切向 + 轻微外扩，体现“旋着聚气”
+                //    Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
+                //    Vector2 tan = dir.RotatedBy(MathHelper.PiOver2);
 
-                    int dustType = (n % 2 == 0) ? DustID.Lava : DustID.Lava;
-                    Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.5f + 0.5f * ease);
+                //    int dustType = (n % 2 == 0) ? DustID.Lava : DustID.Lava;
+                //    Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.5f + 0.5f * ease);
 
-                    Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.Zero, 150, c, 0.9f + 0.6f * ease);
-                    d.noGravity = true;
-                    d.fadeIn = 0.8f;
-                    d.velocity = tan * (0.6f + 1.0f * ease) + dir * (0.2f + 0.6f * ease);
-                }
+                //    Dust d = Dust.NewDustPerfect(pos, dustType, Vector2.Zero, 150, c, 0.9f + 0.6f * ease);
+                //    d.noGravity = true;
+                //    d.fadeIn = 0.8f;
+                //    d.velocity = tan * (0.6f + 1.0f * ease) + dir * (0.2f + 0.6f * ease);
+                //}
 
-                // ================== 2) 对数螺线臂（双臂反向）——有“吸附/缠绕”的动态感 ==================
-                // 极坐标：r = r0 * e^(b t)，θ = θ0 + a t，t ∈ [0,1]
-                for (int arm = 0; arm < 2; arm++)
-                {
-                    float sign = (arm == 0) ? 1f : -1f;
-                    float theta0 = forward.ToRotation() + sign * (MathHelper.PiOver4 * (0.6f + 0.4f * ease));
-                    int steps = 8; // 段数适中
-                    for (int k = 0; k <= steps; k++)
-                    {
-                        float t = k / (float)steps;
-                        // 角度和半径随 t 增长
-                        float theta = theta0 + sign * (2.6f * t + 1.2f * ease * t);
-                        float rr = MathF.Exp(0.9f * t) * (8f + 28f * ease);
-                        Vector2 pos = head + new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * rr;
+                //// ================== 2) 对数螺线臂（双臂反向）——有“吸附/缠绕”的动态感 ==================
+                //// 极坐标：r = r0 * e^(b t)，θ = θ0 + a t，t ∈ [0,1]
+                //for (int arm = 0; arm < 2; arm++)
+                //{
+                //    float sign = (arm == 0) ? 1f : -1f;
+                //    float theta0 = forward.ToRotation() + sign * (MathHelper.PiOver4 * (0.6f + 0.4f * ease));
+                //    int steps = 8; // 段数适中
+                //    for (int k = 0; k <= steps; k++)
+                //    {
+                //        float t = k / (float)steps;
+                //        // 角度和半径随 t 增长
+                //        float theta = theta0 + sign * (2.6f * t + 1.2f * ease * t);
+                //        float rr = MathF.Exp(0.9f * t) * (8f + 28f * ease);
+                //        Vector2 pos = head + new Vector2(MathF.Cos(theta), MathF.Sin(theta)) * rr;
 
-                        int type = (k % 2 == 0) ? DustID.Lava : DustID.YellowTorch;
-                        Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.3f + 0.7f * t);
-                        float sc = (0.8f + 0.9f * t) * (0.8f + 0.4f * ease);
+                //        int type = (k % 2 == 0) ? DustID.Lava : DustID.YellowTorch;
+                //        Color c = Color.Lerp(Color.Orange, Color.Yellow, 0.3f + 0.7f * t);
+                //        float sc = (0.8f + 0.9f * t) * (0.8f + 0.4f * ease);
 
-                        Dust d = Dust.NewDustPerfect(pos, type, Vector2.Zero, 140, c, sc);
-                        d.noGravity = true;
+                //        Dust d = Dust.NewDustPerfect(pos, type, Vector2.Zero, 140, c, sc);
+                //        d.noGravity = true;
 
-                        Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
-                        d.velocity = dir * (1.0f + 2.0f * t) + dir.RotatedBy(sign * MathHelper.PiOver2) * (0.25f + 0.65f * ease);
-                    }
-                }
+                //        Vector2 dir = (pos - head).SafeNormalize(Vector2.UnitX);
+                //        d.velocity = dir * (1.0f + 2.0f * t) + dir.RotatedBy(sign * MathHelper.PiOver2) * (0.25f + 0.65f * ease);
+                //    }
+                //}
 
-                // ================== 3) 刻度短弧（几何刻度感）——“读数/灌能”的视觉语言 ==================
-                int ticks = 6;
-                int seg = 4;
-                float arcR = MathHelper.Lerp(20f, 50f, ease);
-                for (int m = 0; m < ticks; m++)
-                {
-                    float ang0 = forward.ToRotation() + MathHelper.TwoPi * m / ticks + phase * (0.4f + 0.2f * ease);
-                    for (int t = 0; t < seg; t++)
-                    {
-                        float a = ang0 + (t - seg / 2f) * 0.07f;        // 很短的一小段弧
-                        Vector2 dir = a.ToRotationVector2();
-                        Vector2 pos = head + dir * (arcR + t);
+                //// ================== 3) 刻度短弧（几何刻度感）——“读数/灌能”的视觉语言 ==================
+                //int ticks = 6;
+                //int seg = 4;
+                //float arcR = MathHelper.Lerp(20f, 50f, ease);
+                //for (int m = 0; m < ticks; m++)
+                //{
+                //    float ang0 = forward.ToRotation() + MathHelper.TwoPi * m / ticks + phase * (0.4f + 0.2f * ease);
+                //    for (int t = 0; t < seg; t++)
+                //    {
+                //        float a = ang0 + (t - seg / 2f) * 0.07f;        // 很短的一小段弧
+                //        Vector2 dir = a.ToRotationVector2();
+                //        Vector2 pos = head + dir * (arcR + t);
 
-                        Dust d = Dust.NewDustPerfect(pos, DustID.Lava, Vector2.Zero, 160, Color.Lerp(Color.White, Color.Orange, 0.4f), 0.8f + 0.4f * ease);
-                        d.noGravity = true;
-                        d.velocity = dir * (0.5f + 0.8f * ease) + dir.RotatedBy(MathHelper.PiOver2) * (0.45f + 0.3f * ease);
-                    }
-                }
+                //        Dust d = Dust.NewDustPerfect(pos, DustID.Lava, Vector2.Zero, 160, Color.Lerp(Color.White, Color.Orange, 0.4f), 0.8f + 0.4f * ease);
+                //        d.noGravity = true;
+                //        d.velocity = dir * (0.5f + 0.8f * ease) + dir.RotatedBy(MathHelper.PiOver2) * (0.45f + 0.3f * ease);
+                //    }
+                //}
 
 
 
@@ -537,6 +537,57 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                     );
                     GeneralParticleHandler.SpawnParticle(orb);
                 }
+
+
+
+                // ================== GlowSpark 蓄力扩散 ==================
+
+                float progress = MathHelper.Clamp(chargeTimer / 300f, 0f, 1f);
+
+                // 枪头位置
+                Vector2 hea1d = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 48f;
+
+                // 扩散速度（整体降低 + 后期更强压缩）
+                float speed = MathHelper.Lerp(4f, 0.4f, progress); // 原 8→1.2 现在 4→0.4
+
+                // 扩散角度（整体更集中）
+                float spread = MathHelper.Lerp(MathHelper.PiOver2, MathHelper.PiOver4, progress);
+
+                // 粒子数量逐渐增加
+                int count = (int)MathHelper.Lerp(2f, 3f, progress);
+
+                for (int i = 0; i < count; i++)
+                {
+                    // 随机方向
+                    Vector2 dir = Main.rand.NextVector2Unit();
+
+                    // 控制扩散（速度整体缩小）
+                    Vector2 vel = dir * Main.rand.NextFloat(speed * 0.5f, speed);
+
+                    // 颜色（太阳主题）
+                    Color c =
+                        Main.rand.NextBool()
+                        ? Color.Gold
+                        : Color.Orange;
+
+                    Particle spark = new GlowSparkParticle(
+                        hea1d,
+                        vel,
+                        false,
+                        Main.rand.Next(10, 16),   // 生命周期 ↓ 原16~26 → 10~16
+                        Main.rand.NextFloat(0.10f, 0.15f), // 粒子尺寸略缩小
+                        c,
+                        new Vector2(2.0f, 0.40f), // 粒子长度稍微缩短
+                        true,
+                        false,
+                        1
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
+
+
+
             }
 
 
@@ -553,7 +604,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
         private void DoBehavior_Dash()
         {
-
+            Projectile.ai[1]++;
+            int dashPhaseTimer = (int)Projectile.ai[1];
             // 重置速度的逻辑
             {
                 float initialSpeed = 35f; // 设定初始速度值，可根据需求替换具体值
@@ -680,6 +732,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
                 return; // 直线阶段直接返回（注意：我们已经在上面先递增了计时器）
             }
 
+
+
+
             // ========== 边界帧：先放特效，再传送 ==========
             if (dashPhaseTimer == teleportDelayFrames)
             {
@@ -716,6 +771,53 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
             // （剩余帧：保持上冲，不再改角度/速度）
 
+
+
+            //if (dashPhaseTimer == teleportDelayFrames)
+            //{
+            //    NPC target = GetClosestChaseableNPC(searchRadius);
+
+            //    if (target != null)
+            //    {
+            //        Vector2 di1r = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
+
+            //        // 修改飞行方向
+            //        Projectile.velocity = dir * straightSpeed;
+
+            //        // ====== 转向瞬间太阳火花 ======
+
+            //        int sparkCount = 16;
+
+            //        for (int i = 0; i < sparkCount; i++)
+            //        {
+            //            Vector2 vel =
+            //                di1r.RotatedByRandom(MathHelper.ToRadians(25f))
+            //                * Main.rand.NextFloat(4f, 10f);
+
+            //            Color color =
+            //                Main.rand.NextBool()
+            //                ? Color.Gold
+            //                : Color.Orange;
+
+            //            Particle spark = new GlowSparkParticle(
+            //                Projectile.Center,
+            //                vel,
+            //                false,
+            //                Main.rand.Next(10, 16),
+            //                Main.rand.NextFloat(0.15f, 0.25f),
+            //                color,
+            //                new Vector2(2.6f, 0.5f),
+            //                true,
+            //                false,
+            //                1
+            //            );
+
+            //            GeneralParticleHandler.SpawnParticle(spark);
+            //        }
+            //    }
+
+            //    Projectile.netUpdate = true;
+            //}
 
 
         }

@@ -394,59 +394,83 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.Sunset.ASunset
 
 
 
-                // ================= 轻型烟雾环绕 =================
-                int lightSmokeCount = 30;
-                float lightRadius = 64f; // 初始生成半径更大
-                for (int i = 0; i < lightSmokeCount; i++)
+
+                // ================= 太阳核心冲击（Solar Core Flash） =================
+
+                // 核心闪光：模拟太阳耀斑爆心
+                for (int i = 0; i < 6; i++)
                 {
-                    // 在更大范围的圆环内生成
-                    Vector2 spawnOffset = Main.rand.NextVector2Circular(lightRadius, lightRadius);
-                    Vector2 spawnPos = pos + spawnOffset;
-
-                    // 速度 = 径向向外 + 随机扰动
-                    Vector2 velocity = spawnOffset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(1f, 3f)
-                                       + Main.rand.NextVector2Circular(0.5f, 0.5f);
-
-                    Particle smokeL = new HeavySmokeParticle(
-                        spawnPos,
-                        velocity,
-                        Color.Yellow,
-                        26, // 稍微延长寿命
-                        Main.rand.NextFloat(1.2f, 1.8f),
-                        0.35f,
-                        Main.rand.NextFloat(-1f, 1f),
-                        false // ❌ 轻烟
+                    Particle core = new GlowSparkParticle(
+                        pos,
+                        Main.rand.NextVector2Circular(0.5f, 0.5f), // 微小随机漂移
+                        false,
+                        6,                       // 生命周期
+                        0.18f,                   // 粒子尺寸（越大越亮）
+                        Color.Gold * 0.9f,       // 核心颜色（金色）
+                        new Vector2(1.4f, 0.6f),  // 粒子形状（拉长）
+                        true,
+                        false,
+                        1
                     );
-                    GeneralParticleHandler.SpawnParticle(smokeL);
-                }
-
-                // ================= 重型烟雾冲击 =================
-                int heavySmokeCount = 15;
-                float heavyRadius = 32f;
-                for (int i = 0; i < heavySmokeCount; i++)
-                {
-                    // 半径更大，像“环形冲击”
-                    Vector2 spawnOffset = Main.rand.NextVector2Circular(heavyRadius, heavyRadius);
-                    Vector2 spawnPos = pos + spawnOffset;
-
-                    // 径向外扩 + 上飘
-                    Vector2 velocity = spawnOffset.SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 5f)
-                                       + new Vector2(0f, -Main.rand.NextFloat(1f, 2.5f));
-
-                    Particle smokeH = new HeavySmokeParticle(
-                        spawnPos,
-                        velocity,
-                        Color.Gray,
-                        36, // 更长寿命
-                        Projectile.scale * Main.rand.NextFloat(1.0f, 1.6f), // 更大尺寸
-                        1.0f,
-                        MathHelper.ToRadians(Main.rand.NextFloat(1.5f, 3.5f)),
-                        true // ✅ 重烟
-                    );
-                    GeneralParticleHandler.SpawnParticle(smokeH);
+                    GeneralParticleHandler.SpawnParticle(core);
                 }
 
 
+                // ================= 太阳喷流（Solar Flare Jet） =================
+
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+                for (int i = 0; i < 14; i++)
+                {
+                    Vector2 vel =
+                        forward.RotatedByRandom(MathHelper.ToRadians(10f)) // 喷射角度范围
+                        * Main.rand.NextFloat(4f, 9f);                       // 喷射速度
+
+                    Particle jet = new GlowSparkParticle(
+                        pos,
+                        vel,
+                        false,
+                        Main.rand.Next(8, 12),               // 生命周期
+                        Main.rand.NextFloat(0.12f, 0.18f),   // 粒子尺寸
+                        new Color(255, 210, 80),              // 金黄色
+                        new Vector2(2.4f, 0.45f),            // 长条形火焰
+                        true,
+                        false,
+                        1
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(jet);
+                }
+
+
+                // ================= 日冕爆发环（Solar Corona Ring） =================
+
+                int coronaCount = 16;
+                float coronaRadius = 10f;
+
+                for (int i = 0; i < coronaCount; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / coronaCount;
+
+                    Vector2 vel =
+                        angle.ToRotationVector2()
+                        * Main.rand.NextFloat(2f, 4f);
+
+                    Particle corona = new GlowSparkParticle(
+                        pos,
+                        vel,
+                        false,
+                        10,
+                        0.14f,
+                        Color.Orange * 0.8f,
+                        new Vector2(1.5f, 0.5f),
+                        true,
+                        false,
+                        1
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(corona);
+                }
 
             }
 

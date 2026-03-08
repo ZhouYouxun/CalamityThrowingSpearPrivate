@@ -291,24 +291,24 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny
                         GeneralParticleHandler.SpawnParticle(exo);
                     }
 
-                    // ---- 水雾：每条射线再来 1~2 个，填充体积感 ----
-                    int mistCount = Main.rand.Next(5, 9);
-                    for (int m = 0; m < mistCount; m++)
-                    {
-                        float mistSpeed = Main.rand.NextFloat(2.0f, 4.0f);
-                        float mistLife = Main.rand.Next(18, 26);
-                        float mistScale = 1.0f + Main.rand.NextFloat(0.4f);
+                    //// ---- 水雾：每条射线再来 1~2 个，填充体积感 ----
+                    //int mistCount = Main.rand.Next(5, 9);
+                    //for (int m = 0; m < mistCount; m++)
+                    //{
+                    //    float mistSpeed = Main.rand.NextFloat(2.0f, 4.0f);
+                    //    float mistLife = Main.rand.Next(18, 26);
+                    //    float mistScale = 1.0f + Main.rand.NextFloat(0.4f);
 
-                        WaterFlavoredParticle mist = new WaterFlavoredParticle(
-                            origin,
-                            dir * mistSpeed,
-                            false,
-                            (int)mistLife,
-                            mistScale,
-                            baseColor * 0.7f
-                        );
-                        GeneralParticleHandler.SpawnParticle(mist);
-                    }
+                    //    WaterFlavoredParticle mist = new WaterFlavoredParticle(
+                    //        origin,
+                    //        dir * mistSpeed,
+                    //        false,
+                    //        (int)mistLife,
+                    //        mistScale,
+                    //        baseColor * 0.7f
+                    //    );
+                    //    GeneralParticleHandler.SpawnParticle(mist);
+                    //}
                 }
             }
         }

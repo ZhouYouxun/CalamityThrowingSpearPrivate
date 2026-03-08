@@ -1,23 +1,26 @@
 ﻿using CalamityMod;
+using CalamityMod.Enums;
+using CalamityMod.Graphics.Primitives;
+using CalamityMod.Graphics.Primitives;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Melee;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.Audio;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework.Graphics;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Melee;
-using Terraria.Audio;
-using CalamityMod.Graphics.Primitives;
-using Terraria.Graphics.Shaders;
+
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHalberd
 {
-    public class ElectrocutionHalberdPROJ : ModProjectile, ILocalizedModType
+    public class ElectrocutionHalberdPROJ : ModProjectile, ILocalizedModType, IPixelatedPrimitiveRenderer
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/BPrePlantera/ElectrocutionHalberd/ElectrocutionHalberdJav";
 
@@ -76,16 +79,57 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             // 渲染实际的投射物本体
             Main.EntitySpriteDraw(textureGlow, drawPositionGlow, null, Projectile.GetAlpha(lightColor), Projectile.rotation, originGlow, Projectile.scale, SpriteEffects.None, 0f);
 
-            // 冲刺阶段启用拖尾特效
-            if (CurrentState == BehaviorState.Dash)
-            {
-                GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-                PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(WidthFunction, ColorFunction, (completionRatio, vertexPos) => Projectile.Size * 0.5f, shader: GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
-            }
+         
 
             return false;
         }
 
+
+        public void RenderPixelatedPrimitives(SpriteBatch spriteBatch, GeneralDrawLayer layer)
+        {
+            if (CurrentState != BehaviorState.Dash)
+                return;
+
+            GameShaders.Misc["CalamityMod:ImpFlameTrail"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
+            );
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new(
+                    DashTrailWidthFunction,
+                    DashTrailColorFunction,
+                    (completionRatio, vertexPos) => Projectile.Size * 0.5f,
+                    true,
+                    true,
+                    GameShaders.Misc["CalamityMod:ImpFlameTrail"]
+                ),
+                Projectile.oldPos.Length * 2
+            );
+        }
+        private float DashTrailWidthFunction(float completionRatio, Vector2 vertexPos)
+        {
+            float maxWidth = 46f * Projectile.scale;
+            float curve = 0.18f;
+
+            float width;
+            if (completionRatio < curve)
+                width = MathF.Sin(completionRatio / curve * MathHelper.PiOver2) * maxWidth;
+            else
+                width = Utils.Remap(completionRatio, curve, 1f, maxWidth, 0f);
+
+            return width;
+        }
+
+        private Color DashTrailColorFunction(float completionRatio, Vector2 vertexPos)
+        {
+            Color start = new Color(255, 40, 40);
+            Color end = new Color(255, 120, 80);
+
+            Color body = Color.Lerp(start, end, completionRatio);
+
+            return body * Utils.GetLerpValue(1f, 0.35f, completionRatio, true);
+        }
         public override void SetDefaults()
         {
             Projectile.width = Projectile.height = 14;
@@ -235,6 +279,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
         // 放在类字段区域
         private List<SparkParticle> ownedSilverSparks = new();
 
+
+
+
+
+
         private void DoBehavior_Dash()
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
@@ -245,6 +294,16 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 float initialSpeed = 25f; // 设定初始速度值，可根据需求替换具体值
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * initialSpeed;
             }
+
+
+
+
+
+
+
+
+
+
 
             {
                 // ⚡ 高阶冲刺飞行特效（红尖刺 + 银 Spark + 蓝 Electric Dust）
@@ -258,114 +317,170 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
                 PointParticle redSpark = new PointParticle(Projectile.Center + lissOffset, redVelocity, false, 20, 1.3f, Color.Red);
                 GeneralParticleHandler.SpawnParticle(redSpark);
 
-                // === ⚪ 银色 SparkParticle（黄金角螺旋散射） ===
-                float goldenAngle = MathHelper.ToRadians(137.5f);
-                int sparkCount = 3;
-                for (int i = 0; i < sparkCount; i++)
-                {
-                    float angle = i * goldenAngle + Main.GameUpdateCount * 0.05f;
-                    Vector2 sparkVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
-                    //SparkParticle silverSpark = new SparkParticle(
-                    //    Projectile.Center,
-                    //    sparkVelocity,
-                    //    false,
-                    //    20,
-                    //    1.0f,
-                    //    Color.Silver
-                    //);
-                    //GeneralParticleHandler.SpawnParticle(silverSpark);
-                    SparkParticle silverSpark = new SparkParticle(
-                        Projectile.Center,
-                        sparkVelocity,
-                        false,
-                        20,
-                        1.0f,
-                        Color.Silver
-                    );
-                    GeneralParticleHandler.SpawnParticle(silverSpark);
-                    ownedSilverSparks.Add(silverSpark);
 
+
+                // ===== SHPB风格数学粒子 =====
+
+                t = Main.GameUpdateCount * 0.12f;
+
+                int particleCount = 3;
+
+                for (int i = 0; i < particleCount; i++)
+                {
+                    float angle = MathHelper.TwoPi * i / particleCount + t;
+
+                    // 黄金比例旋转
+                    float golden = MathHelper.ToRadians(137.5f);
+                    angle += golden * i;
+
+                    float radius = 10f + (float)Math.Sin(t + i) * 4f;
+
+                    Vector2 offset = angle.ToRotationVector2() * radius;
+
+                    Vector2 velocity =
+                        -Projectile.velocity * 0.25f +
+                        offset.SafeNormalize(Vector2.Zero) * 0.8f;
+
+                    Color plasmaColor = Color.Lerp(
+                        new Color(255, 40, 40),
+                        Color.White,
+                        0.35f
+                    );
+
+                    SquishyLightParticle plasma = new SquishyLightParticle(
+                        Projectile.Center + offset,
+                        velocity,
+                        Main.rand.NextFloat(0.35f, 0.55f),
+                        plasmaColor,
+                        Main.rand.Next(20, 35)
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(plasma);
                 }
 
-                // === 🔵 蓝色 Electric Dust（阿基米德双螺旋，稳定缓慢扩散） ===
-                float spiralSpeed = 0.12f; // 螺旋增长速度（影响旋转速度）
-                float maxTheta = MathHelper.TwoPi * 6f; // 最大旋转角度（6圈）
-                float spiralT = (Main.GameUpdateCount * spiralSpeed) % maxTheta;
 
-                // 阿基米德螺旋参数
-                float a = 1.4f * 16f;          // 起始半径
-                float b = 0.08f;       // 每弧度增长率（小，避免飞太远）
 
-                for (int i = 0; i < 10; i++)
-                {
-                    float phaseOffset = MathHelper.TwoPi * i / 4f; // X等分相位
 
-                    // === 正向螺旋 ===
-                    float theta1 = spiralT + phaseOffset;
-                    float r1 = a + b * theta1;
-                    Vector2 spiralOffset1 = theta1.ToRotationVector2() * r1;
 
-                    Dust electricDust1 = Dust.NewDustPerfect(
-                        Projectile.Center + spiralOffset1,
-                        DustID.Electric,
-                        spiralOffset1 * 0.2f, // 慢速飘动
-                        100,
-                        Color.Blue,
-                        0.6f
-                    );
-                    electricDust1.noGravity = true;
 
-                    // === 反向螺旋（交替方向） ===
-                    float theta2 = -spiralT + phaseOffset;
-                    float r2 = a + b * Math.Abs(theta2);
-                    Vector2 spiralOffset2 = theta2.ToRotationVector2() * r2;
 
-                    Dust electricDust2 = Dust.NewDustPerfect(
-                        Projectile.Center + spiralOffset2,
-                        DustID.Electric,
-                        spiralOffset2 * 0.2f,
-                        100,
-                        Color.Red,
-                        0.4f
-                    );
-                    electricDust2.noGravity = true;
-                }
+
+
+
+
+
+
+
+
+
+                //// === ⚪ 银色 SparkParticle（黄金角螺旋散射） ===
+                //float goldenAngle = MathHelper.ToRadians(137.5f);
+                //int sparkCount = 3;
+                //for (int i = 0; i < sparkCount; i++)
+                //{
+                //    float angle = i * goldenAngle + Main.GameUpdateCount * 0.05f;
+                //    Vector2 sparkVelocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+                //    //SparkParticle silverSpark = new SparkParticle(
+                //    //    Projectile.Center,
+                //    //    sparkVelocity,
+                //    //    false,
+                //    //    20,
+                //    //    1.0f,
+                //    //    Color.Silver
+                //    //);
+                //    //GeneralParticleHandler.SpawnParticle(silverSpark);
+                //    SparkParticle silverSpark = new SparkParticle(
+                //        Projectile.Center,
+                //        sparkVelocity,
+                //        false,
+                //        20,
+                //        1.0f,
+                //        Color.Silver
+                //    );
+                //    GeneralParticleHandler.SpawnParticle(silverSpark);
+                //    ownedSilverSparks.Add(silverSpark);
+
+                //}
+
+                //// === 🔵 蓝色 Electric Dust（阿基米德双螺旋，稳定缓慢扩散） ===
+                //float spiralSpeed = 0.12f; // 螺旋增长速度（影响旋转速度）
+                //float maxTheta = MathHelper.TwoPi * 6f; // 最大旋转角度（6圈）
+                //float spiralT = (Main.GameUpdateCount * spiralSpeed) % maxTheta;
+
+                //// 阿基米德螺旋参数
+                //float a = 1.4f * 16f;          // 起始半径
+                //float b = 0.08f;       // 每弧度增长率（小，避免飞太远）
+
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    float phaseOffset = MathHelper.TwoPi * i / 4f; // X等分相位
+
+                //    // === 正向螺旋 ===
+                //    float theta1 = spiralT + phaseOffset;
+                //    float r1 = a + b * theta1;
+                //    Vector2 spiralOffset1 = theta1.ToRotationVector2() * r1;
+
+                //    Dust electricDust1 = Dust.NewDustPerfect(
+                //        Projectile.Center + spiralOffset1,
+                //        DustID.Electric,
+                //        spiralOffset1 * 0.2f, // 慢速飘动
+                //        100,
+                //        Color.Blue,
+                //        0.6f
+                //    );
+                //    electricDust1.noGravity = true;
+
+                //    // === 反向螺旋（交替方向） ===
+                //    float theta2 = -spiralT + phaseOffset;
+                //    float r2 = a + b * Math.Abs(theta2);
+                //    Vector2 spiralOffset2 = theta2.ToRotationVector2() * r2;
+
+                //    Dust electricDust2 = Dust.NewDustPerfect(
+                //        Projectile.Center + spiralOffset2,
+                //        DustID.Electric,
+                //        spiralOffset2 * 0.2f,
+                //        100,
+                //        Color.Red,
+                //        0.4f
+                //    );
+                //    electricDust2.noGravity = true;
+                //}
 
 
             }
 
 
-            {
-                // === 🌀 SparkParticle 蛇形步轨迹修正 ===
-                for (int i = ownedSilverSparks.Count - 1; i >= 0; i--)
-                {
-                    SparkParticle p = ownedSilverSparks[i];
+            //{
+            //    // === 🌀 SparkParticle 蛇形步轨迹修正 ===
+            //    for (int i = ownedSilverSparks.Count - 1; i >= 0; i--)
+            //    {
+            //        SparkParticle p = ownedSilverSparks[i];
 
-                    // 粒子超时后移除引用避免持久保留
-                    if (p.Time >= p.Lifetime)
-                    {
-                        ownedSilverSparks.RemoveAt(i);
-                        continue;
-                    }
+            //        // 粒子超时后移除引用避免持久保留
+            //        if (p.Time >= p.Lifetime)
+            //        {
+            //            ownedSilverSparks.RemoveAt(i);
+            //            continue;
+            //        }
 
-                    // 计算蛇形步旋转
-                    int cycle = 10; // 5 左 + 5 右 = 10 帧循环
-                    int phase = p.Time % cycle;
+            //        // 计算蛇形步旋转
+            //        int cycle = 10; // 5 左 + 5 右 = 10 帧循环
+            //        int phase = p.Time % cycle;
 
-                    float angleOffset = MathHelper.ToRadians(3f); // 每帧 3°
-                    if (phase < 5)
-                    {
-                        // 前 5 帧左转
-                        p.Velocity = p.Velocity.RotatedBy(-angleOffset);
-                    }
-                    else
-                    {
-                        // 后 5 帧右转
-                        p.Velocity = p.Velocity.RotatedBy(angleOffset);
-                    }
-                }
+            //        float angleOffset = MathHelper.ToRadians(3f); // 每帧 3°
+            //        if (phase < 5)
+            //        {
+            //            // 前 5 帧左转
+            //            p.Velocity = p.Velocity.RotatedBy(-angleOffset);
+            //        }
+            //        else
+            //        {
+            //            // 后 5 帧右转
+            //            p.Velocity = p.Velocity.RotatedBy(angleOffset);
+            //        }
+            //    }
 
-            }
+            //}
 
 
             // 弹幕保持旋转并持续加速
