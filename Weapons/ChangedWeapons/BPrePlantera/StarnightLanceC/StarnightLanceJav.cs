@@ -44,13 +44,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.StarnightLan
         }
 
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<CryonicBar>(12).
-        //        AddTile(TileID.MythrilAnvil).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<CryonicBar>(12).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }
 

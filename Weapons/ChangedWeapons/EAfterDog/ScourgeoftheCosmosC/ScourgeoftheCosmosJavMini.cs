@@ -1,9 +1,13 @@
-﻿using System;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Enums;
+using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,11 +16,106 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
     public class ScourgeoftheCosmosJavMini : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
+       
+        public ref float Time => ref Projectile.ai[1];
+
         public override void SetStaticDefaults()
         {
-            Main.projFrames[Projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 1;
+
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
         }
-        public ref float Time => ref Projectile.ai[1];
+        public override bool PreDraw(ref Color lightColor)
+        {
+            // ===== 1️⃣ 拖尾 =====
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetShaderTexture(
+                ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/SylvestaffStreak")
+            );
+
+            Vector2 offset = Projectile.Size * 0.5f + Projectile.velocity * 1.4f;
+
+            PrimitiveRenderer.RenderTrail(
+                Projectile.oldPos,
+                new PrimitiveSettings(
+                    PurpleWidthFunction,
+                    PurpleColorFunction,
+                    (completionRatio, vertexPos) => offset,
+                    shader: GameShaders.Misc["CalamityMod:TrailStreak"]
+                ),
+                46
+            );
+
+            // ===== 2️⃣ 本体 + 包边 =====
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Rectangle? frame = null;
+            Vector2 origin = texture.Size() * 0.5f;
+
+            // ✦ 包边颜色（紫色发光）
+            Color glowColor = Color.MediumPurple * 0.6f;
+
+            // ✦ 四方向偏移（outline效果）
+            float outlineSize = 2f;
+
+            Main.EntitySpriteDraw(texture, drawPos + new Vector2(outlineSize, 0), frame, glowColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texture, drawPos + new Vector2(-outlineSize, 0), frame, glowColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texture, drawPos + new Vector2(0, outlineSize), frame, glowColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texture, drawPos + new Vector2(0, -outlineSize), frame, glowColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+
+            // ✦ 本体（最后画）
+            Main.EntitySpriteDraw(
+                texture,
+                drawPos,
+                frame,
+                Projectile.GetAlpha(lightColor),
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0
+            );
+
+            return false; // ❗我们自己画了本体，所以关闭默认绘制
+        }
+
+
+        private float PurpleWidthFunction(float completionRatio, Vector2 vertexPos)
+        {
+            float arrowheadCutoff = 0.36f;
+
+            float minWidth = 2f;
+            float maxWidth = 38f; // ✦你可以调这个
+
+            if (completionRatio <= arrowheadCutoff)
+                return MathHelper.Lerp(minWidth, maxWidth,
+                    Utils.GetLerpValue(0f, arrowheadCutoff, completionRatio, true));
+
+            return maxWidth;
+        }
+
+        private Color PurpleColorFunction(float completionRatio, Vector2 vertexPos)
+        {
+            float time = Main.GlobalTimeWrappedHourly;
+
+            // ✦ 动态紫 → 粉
+            Color colorA = Color.MediumPurple;
+            Color colorB = Color.Violet;
+            Color colorC = Color.HotPink;
+
+            float wave = (float)Math.Cos(completionRatio * 3f - time * 5f) * 0.5f + 0.5f;
+
+            Color baseColor = Color.Lerp(colorA, colorB, wave);
+            baseColor = Color.Lerp(baseColor, colorC, completionRatio);
+
+            // ✦ 尾部淡出
+            return Color.Lerp(baseColor, Color.Transparent, completionRatio);
+        }
+
+
+
+
+
 
         public override void SetDefaults()
         {
@@ -28,7 +127,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             Projectile.alpha = 255;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 375;
-            Projectile.extraUpdates = 1;
+            Projectile.extraUpdates = 0;
         }
         private bool prioritizingX = true; // 初始时随机决定优先对齐哪个方向
         public override void OnSpawn(IEntitySource source)
@@ -151,14 +250,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
 
         public override bool? CanDamage() => Time >= 12f; // 初始的时候不会造成伤害，直到12为止
 
-        public override void PostDraw(Color lightColor)
-        {
-            Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-            int framing = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type];
-            int y6 = framing * Projectile.frame;
-            Vector2 origin = new Vector2(9f, 10f);
-            Main.EntitySpriteDraw(ModContent.Request<Texture2D>("CalamityMod/Projectiles/Melee/ScourgeoftheCosmosMiniGlow").Value, Projectile.Center - Main.screenPosition, new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, y6, texture2D13.Width, framing)), Color.White, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
-        }
+     
 
     }
 }

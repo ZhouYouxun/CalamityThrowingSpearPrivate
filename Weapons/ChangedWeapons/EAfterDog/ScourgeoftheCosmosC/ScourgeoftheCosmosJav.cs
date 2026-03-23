@@ -30,7 +30,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = 15;
+            Item.useTime = 5;
             Item.useAnimation = 25; // 更改使用时的武器攻击速度
             Item.useLimitPerAnimation = 2;
             Item.knockBack = 8.5f;
@@ -56,14 +56,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
         //    return false; // 阻止默认的弹幕生成，确保只发射这两发
         //}
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient(ItemID.ScourgeoftheCorruptor).
-        //        AddIngredient<Bonebreaker>().
-        //        AddIngredient<CosmiliteBar>(10).
-        //        AddTile<CosmicAnvil>().
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.ScourgeoftheCorruptor).
+                AddIngredient<Bonebreaker>().
+                AddIngredient<CosmiliteBar>(10).
+                AddTile<CosmicAnvil>().
+                Register();
+        }
     }
 }

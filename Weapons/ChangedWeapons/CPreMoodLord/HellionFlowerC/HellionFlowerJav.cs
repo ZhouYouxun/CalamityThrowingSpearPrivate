@@ -41,13 +41,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
             Item.shootSpeed = 12f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<PerennialBar>(12).
-        //        AddTile(TileID.MythrilAnvil).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<PerennialBar>(12).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }
 

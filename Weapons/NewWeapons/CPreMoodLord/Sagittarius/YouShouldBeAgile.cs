@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
@@ -60,12 +61,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<Sagittarius>(), 1);
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                    //Main.NewText("我去，纽币！", 0, 255, 0); // 成功
+                    Main.NewText(Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.SagittariusPerfect"), 0, 255, 0);
                 }
                 else
                 {
                     player.QuickSpawnItem(npc.GetSource_Loot(), ModContent.ItemType<XiaoZhiTiaoSG>(), 1);
-                    //Main.NewText("回去重练", 255, 0, 0); // 失败
+                    Main.NewText(Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.SagittariusFailed"), 255, 0, 0);
                 }
 
                 isTrackingEmpress = false; // 重置追踪状态

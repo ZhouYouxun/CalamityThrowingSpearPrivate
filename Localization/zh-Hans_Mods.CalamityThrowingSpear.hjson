@@ -177,6 +177,7 @@ Projectiles: {
 			// TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
 			// SODLazer.DisplayName: S O D Lazer
 			// SuperSOD.DisplayName: Super S O D
+			// AuricJavPROJL.DisplayName: Auric Jav P R O J L
 		}
 	}
 
@@ -741,11 +742,11 @@ NewWeapons: {
 			DisplayName: 贯星枪-人马座
 			Tooltip:
 				'''
-				扔出高速的贯星枪
-				连续命中5次即可释放一个逐渐蓄力的充能贯星枪
-				充能贯星枪击中后造成极高伤害并召唤大量追踪小型贯星枪
-				击中敌人时释放施加减益
-				耀光在白天降低敌人30%的攻击力，在晚上降低敌人50%的防御力
+				连续向自身周围抛出4柄贯星枪，迅速减速并锁定随后发动精准冲刺
+				当四柄贯星枪全部消散后，一柄巨型充能贯星枪自天而降
+				每次命中都会引发扇形爆发，释放出大量分裂长枪
+				击中敌人时施加“耀光”减益：
+				白天降低敌人30%攻击力，夜晚降低敌人50%防御力
 				[c/fff94b:“贯穿星辰”]
 				'''
 		}
@@ -1461,6 +1462,11 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: 摄入了过量的色素!
 	ReworkPrompt: CTS：此武器可被转化投掷版本
+	TidalMechanicsFast: 你战胜了海洋，这是你的奖品！
+	TidalMechanicsSlow: 速度还有待提升，如果想获得更多奖励的话，就看看给你的这个东西吧！
+	SagittariusPerfect: 近乎无瑕的闪避，你征服了这场试炼。这是属于你的奖励。
+	SagittariusFailed: 你的闪避还不够完美。若想获得更高奖励，就减少失误吧。
+	TheLastLance: 你居然真的停下来找海马了……这东西送你吧，算是对你耐心的奖励。
 	Sunset1: 见证终焉
 	Sunset2: 记忆绽放
 	Sunset3: 定义改写

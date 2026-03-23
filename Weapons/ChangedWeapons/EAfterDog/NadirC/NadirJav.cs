@@ -52,15 +52,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         //    Projectile.NewProjectile(source, position, velocity, type, damage / 2, knockback, player.whoAmI);
         //    return false;
         //}
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<ElementalLanceJav>().
-        //        AddIngredient<AuricBar>(5).
-        //        AddIngredient<TwistingNether>(5).
-        //        AddIngredient<DarksunFragment>(8).
-        //        AddTile<CosmicAnvil>().
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<ElementalLanceJav>().
+                AddIngredient<AuricBar>(5).
+                AddIngredient<TwistingNether>(5).
+                AddIngredient<DarksunFragment>(8).
+                AddTile<CosmicAnvil>().
+                Register();
+        }
     }
 }

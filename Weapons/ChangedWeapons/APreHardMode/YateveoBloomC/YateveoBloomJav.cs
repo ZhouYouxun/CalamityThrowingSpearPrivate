@@ -66,16 +66,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.YateveoBloom
             return base.CanUseItem(player);
         }
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient(ItemID.JungleRose).
-        //        AddIngredient(ItemID.RichMahogany, 15).
-        //        AddIngredient(ItemID.JungleSpores, 12).
-        //        AddIngredient(ItemID.Stinger, 4).
-        //        AddIngredient(ItemID.Vine, 2).
-        //        AddTile(TileID.Anvils).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.JungleRose).
+                AddIngredient(ItemID.RichMahogany, 15).
+                AddIngredient(ItemID.JungleSpores, 12).
+                AddIngredient(ItemID.Stinger, 4).
+                AddIngredient(ItemID.Vine, 2).
+                AddTile(TileID.Anvils).
+                Register();
+        }
     }
 }

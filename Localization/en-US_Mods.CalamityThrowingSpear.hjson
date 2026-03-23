@@ -177,6 +177,7 @@ Projectiles: {
 			TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
 			SODLazer.DisplayName: S O D Lazer
 			SuperSOD.DisplayName: Super S O D
+			AuricJavPROJL.DisplayName: Auric Jav P R O J L
 		}
 	}
 
@@ -742,11 +743,14 @@ NewWeapons: {
 			DisplayName: Starpiercer - Sagittarius
 			Tooltip:
 				'''
-				Throws a high-speed Starpiercer.
-				Hitting enemies 5 times consecutively releases a charging Starpiercer.
-				The charged Starpiercer deals massive damage upon impact and summons numerous homing mini Starpiercers.
-				Applies the Radiance debuff upon hitting enemies.
-				Radiance reduces enemy attack power by 30% during the day and defense by 50% at night.
+				Launches 4 Starpiercers around you
+				They rapidly decelerate and lock onto enemies before striking
+				After all 4 dissipate, a massive charged Starpiercer descends from above
+				Each hit triggers a fan-shaped burst of splitting lances
+				Applies the Radiance debuff upon hitting enemies
+				Reduces enemy attack by 30% during the day
+				Reduces enemy defense by 50% at night
+
 				[c/fff94b:"Piercing the stars."]
 				'''
 		}
@@ -1456,6 +1460,11 @@ Buffs: {
 TheSpecialText: {
 	ElementalArkJav2: ingested too many pigments
 	ReworkPrompt: CTS: This weapon can be converted into a throwing version
+	TidalMechanicsFast: You have conquered the ocean. This is your reward!
+	TidalMechanicsSlow: Your speed still needs improvement. If you want greater rewards, take a look at what I've given you.
+	SagittariusPerfect: Nearly flawless evasion—you have conquered this trial. This is your reward.
+	SagittariusFailed: Your evasion is not yet perfect. If you want greater rewards, make fewer mistakes.
+	TheLastLance: You actually slowed down and looked for a seahorse... Fine, take this. Consider it a reward for your patience.
 	Sunset1: Witnessing the End
 	Sunset2: Memories Blossom
 	Sunset3: Redefining the Definition

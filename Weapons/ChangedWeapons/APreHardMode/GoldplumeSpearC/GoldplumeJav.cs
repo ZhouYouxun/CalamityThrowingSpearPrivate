@@ -38,13 +38,17 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.GoldplumeSpe
         }
 
 
-        //public override void AddRecipes()
-        //{
-        //    Recipe recipe = CreateRecipe();
-        //    recipe.AddIngredient<AerialiteBar>(10);
-        //    recipe.AddIngredient(ItemID.SunplateBlock, 4);
-        //    recipe.AddTile(TileID.SkyMill);
-        //    recipe.Register();
-        //}
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient<AerialiteBar>(10);
+            recipe.AddIngredient(ItemID.SunplateBlock, 4);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
+
+
+
+
     }
 }

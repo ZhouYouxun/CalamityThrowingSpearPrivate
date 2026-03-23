@@ -42,17 +42,13 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
         }
-
-
-
-
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<AstralBar>(8).
-        //        AddTile(TileID.LunarCraftingStation).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<AstralBar>(8).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+        }
     }
 }
 

@@ -13,9 +13,11 @@ using CalamityMod.Projectiles.Melee.Spears;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items;
 using CalamityMod;
-using CalamityMod.Items.Weapons.Melee
-;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Placeables;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables.Abyss;
+using CalamityMod.Projectiles.Melee;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreedC
 {
@@ -44,14 +46,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TyphonsGreed
             Item.crit = 4; // 基础暴击率都是4
         }
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<Voidstone>(30).
-        //        AddIngredient<DepthCells>(30).
-        //        AddTile(TileID.MythrilAnvil).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<Voidstone>(30).
+                AddIngredient<DepthCells>(30).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }
 

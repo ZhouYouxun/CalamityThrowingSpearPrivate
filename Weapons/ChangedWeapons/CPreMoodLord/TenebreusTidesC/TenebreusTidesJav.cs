@@ -83,7 +83,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
 
 
-
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<AmidiasTrident>().
+                AddIngredient<Atlantis>().
+                AddIngredient(ItemID.InfluxWaver).
+                AddIngredient<Lumenyl>(50).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+        }
 
     }
 }

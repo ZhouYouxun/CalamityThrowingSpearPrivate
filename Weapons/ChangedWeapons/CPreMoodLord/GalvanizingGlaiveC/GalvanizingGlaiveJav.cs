@@ -50,17 +50,17 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
         }
 
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<MysteriousCircuitry>(12).
-        //        AddIngredient<DubiousPlating>(18).
-        //        AddIngredient<InfectedArmorPlating>(10).
-        //        AddIngredient<LifeAlloy>(5).
-        //        AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(3, out Func<bool> condition), condition).
-        //        AddTile(TileID.MythrilAnvil).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<MysteriousCircuitry>(12).
+                AddIngredient<DubiousPlating>(18).
+                AddIngredient<InfectedArmorPlating>(10).
+                AddIngredient<LifeAlloy>(5).
+                AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(3, out Func<bool> condition), condition).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }
 

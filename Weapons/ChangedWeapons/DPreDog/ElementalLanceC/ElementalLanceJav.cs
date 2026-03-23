@@ -83,16 +83,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             return false; // 返回 false 避免默认的发射行为
         }
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient<BotanicPiercer>().
-        //        AddIngredient(ItemID.LunarBar, 5).
-        //        AddIngredient<LifeAlloy>(5).
-        //        AddIngredient<GalacticaSingularity>(5).
-        //        AddIngredient<MeldConstruct>(5).
-        //        AddTile(TileID.LunarCraftingStation).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient<BotanicPiercer>().
+                AddIngredient(ItemID.LunarBar, 5).
+                AddIngredient<LifeAlloy>(5).
+                AddIngredient(ItemID.FragmentSolar, 5).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }

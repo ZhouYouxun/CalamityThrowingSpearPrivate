@@ -104,6 +104,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
             recipe.AddIngredient<MiracleMatter>();
             recipe.AddTile(TileType<DraedonsForge>());
             recipe.Register();
+
+
+            // ===== 新增配方=====
+            Recipe recipe2 = CreateRecipe();
+            recipe2.AddIngredient<VanishingPoint>();
+            recipe2.AddIngredient<AmidiasTrident>();
+            recipe2.AddIngredient<PearlwoodJav>();
+            recipe2.AddIngredient<Nadir>();
+            recipe2.AddIngredient<MiracleMatter>();
+            recipe2.AddTile(TileType<DraedonsForge>());
+            recipe2.Register();
         }
     }
 }

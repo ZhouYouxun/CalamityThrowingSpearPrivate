@@ -38,15 +38,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
         }
 
 
-        //public override void AddRecipes()
-        //{
-        //    CreateRecipe().
-        //        AddIngredient(ItemID.ChlorophytePartisan).
-        //        AddIngredient(ItemID.DarkLance).
-        //        AddIngredient(ItemID.Gungnir).
-        //        AddIngredient<LivingShard>(12).
-        //        AddTile(TileID.MythrilAnvil).
-        //        Register();
-        //}
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.ChlorophytePartisan).
+                AddIngredient(ItemID.DarkLance).
+                AddIngredient(ItemID.Gungnir).
+                AddIngredient<LivingShard>(12).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+        }
     }
 }

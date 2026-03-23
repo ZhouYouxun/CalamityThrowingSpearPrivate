@@ -51,8 +51,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             int numPoints = 55 + x * 8; // 默认长度 ?，每个 X 增加 ?
 
             // 偏移设置
-            Vector2 overallOffset = Projectile.Size * 0.5f + Projectile.velocity * 1.2f;
-             
+            Vector2 overallOffset = Projectile.Size * 0.5f;
+
             // **如果处于传送后的 12 帧内，不渲染着色器** 
             if (shaderDisabledFrames >= 12)
             {
@@ -62,15 +62,16 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
                 );
 
                 // 定义一个额外的偏移量，让拖尾往后移
-                Vector2 trailOffset = -Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f; // 方向为弹幕的反方向，距离为 X 像素
+                Vector2 trailOffset1 = -Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f; // 方向为弹幕的反方向，距离为 X 像素
 
                 // 使用拖尾渲染器
                 PrimitiveRenderer.RenderTrail(
-                    Projectile.oldPos.Select(pos => pos + trailOffset).ToArray(), // 对每个旧位置增加偏移量
+                    Projectile.oldPos.Select(pos => pos + trailOffset1).ToArray(), // 对每个旧位置增加偏移量
                     new(
                         CosmicWidthFunction,  // 拖尾宽度函数
                         CosmicColorFunction,  // 拖尾颜色函数
-                        (completionRatio, vertexPos) => overallOffset,
+                        // (completionRatio, vertexPos) => overallOffset,
+                        (completionRatio, vertexPos) => overallOffset + CosmicOffsetFunction(completionRatio, vertexPos),
                         shader: GameShaders.Misc["CalamityMod:ImpFlameTrail"]
                     ),
                     numPoints
@@ -81,24 +82,167 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
                 shaderDisabledFrames++;
             }
 
-            // 绘制弹幕本体
+            // 两个刀盘
+            //Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            //Vector2 drawPos = Projectile.Center + forward * 12f;
+            //float spreadAngle = MathHelper.ToRadians(25f);
+
+            //float smearRotation = Projectile.velocity.ToRotation() + Main.GlobalTimeWrappedHourly * 20f;
+
+            //Texture2D smear1 = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmearSwipe").Value;
+            //Texture2D smear2 = ModContent.Request<Texture2D>("CalamityMod/Particles/CircularSmearFire3").Value;
+
+            //Color smearColor1 = Color.MediumPurple * 0.6f;
+            //Color smearColor2 = Color.Violet * 0.75f;
+
+            //Main.EntitySpriteDraw(
+            //    smear1,
+            //    drawPos - Main.screenPosition,
+            //    null,
+            //    smearColor1 with { A = 0 },
+            //    smearRotation + spreadAngle,
+            //    smear1.Size() * 0.5f,
+            //    1.2f,
+            //    Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+            //    0
+            //);
+
+            //Main.EntitySpriteDraw(
+            //    smear2,
+            //    drawPos - Main.screenPosition,
+            //    null,
+            //    smearColor2 with { A = 0 },
+            //    smearRotation - spreadAngle,
+            //    smear2.Size() * 0.5f,
+            //    1.1f,
+            //    Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+            //    0
+            //);
+
+
+            // ✦✦ 紫色星空 Glitch 本体绘制 ✦✦
             Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
             Rectangle? frame = null;
             Vector2 origin = texture.Size() * 0.5f;
             SpriteEffects direction = SpriteEffects.None;
 
-            Main.EntitySpriteDraw(texture, drawPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, direction, 0);
+            // ✦ 时间变量（驱动错位）
+            float time = Main.GlobalTimeWrappedHourly;
 
+            // ✦ 主色（紫 → 粉 动态变化）
+            Color mainColor = Color.Lerp(Color.MediumPurple, Color.Violet,
+                (float)Math.Sin(time * 3f) * 0.5f + 0.5f);
+
+            // ✦ glitch偏移方向（垂直于飞行方向）
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
+
+            // ✦ 偏移幅度（轻微抖动）
+            float offsetStrength = 2f + (float)Math.Sin(time * 20f) * 1.5f;
+            Vector2 glitchOffset = normal * offsetStrength;
+
+            // ===== 第一层：外层（淡 + 大）=====
+            Main.EntitySpriteDraw(
+                texture,
+                drawPosition + glitchOffset,
+                frame,
+                mainColor * 0.5f,
+                Projectile.rotation,
+                origin,
+                Projectile.scale * 1.15f,
+                direction,
+                0
+            );
+
+            // ===== 第二层：反向偏移（制造撕裂）=====
+            Main.EntitySpriteDraw(
+                texture,
+                drawPosition - glitchOffset,
+                frame,
+                mainColor * 0.35f,
+                Projectile.rotation,
+                origin,
+                Projectile.scale * 1.05f,
+                direction,
+                0
+            );
+
+            // ===== 第三层：核心（稳定）=====
+            Main.EntitySpriteDraw(
+                texture,
+                drawPosition,
+                frame,
+                Projectile.GetAlpha(lightColor),
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                direction,
+                0
+            );
             return false;
         }
 
         // 拖尾宽度函数
         private float CosmicWidthFunction(float completionRatio, Vector2 vertexPos)
         {
-            float baseWidth = 45f;
-            float flicker = (float)Math.Sin(completionRatio * 6f + Main.GlobalTimeWrappedHourly * 3f) * 2f;
-            return baseWidth + flicker; // 拖尾末端波动
+            float maxWidth = 55f;
+            float headRatio = 0.16f; // 头部收尖范围
+            float tailRatio = 0.82f; // 尾部开始收窄的位置
+
+            float width;
+
+            // 头部从很细逐渐展开，避免前端出现垂直切面
+            if (completionRatio <= headRatio)
+            {
+                width = MathHelper.Lerp(
+                    0.5f,
+                    maxWidth,
+                    Utils.GetLerpValue(0f, headRatio, completionRatio, true)
+                );
+            }
+            // 尾部逐渐收细
+            else if (completionRatio >= tailRatio)
+            {
+                width = MathHelper.Lerp(
+                    maxWidth,
+                    0f,
+                    Utils.GetLerpValue(tailRatio, 1f, completionRatio, true)
+                );
+            }
+            else
+            {
+                width = maxWidth;
+            }
+
+            // 轻微呼吸波动，别太大
+            float flicker = (float)Math.Sin(completionRatio * 5f + Main.GlobalTimeWrappedHourly * 3f) * 1.2f;
+
+            return Math.Max(0f, width + flicker);
+        }
+
+        // ✦ 扭曲偏移函数（让双平行线“活起来”）
+        private Vector2 CosmicOffsetFunction(float completionRatio, Vector2 vertexPos)
+        {
+            // 飞行方向
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            // 垂直方向（用于左右摆动）
+            Vector2 normal = forward.RotatedBy(MathHelper.PiOver2);
+
+            // 时间驱动波动（整体在动）
+            float time = Main.GlobalTimeWrappedHourly * 6f;
+
+            // 沿拖尾位置变化的相位（让每一段不一样）
+            float phase = completionRatio * 12f;
+
+            // 扭曲值（核心）
+            float wave = (float)Math.Sin(time + phase);
+
+            // 尾部更明显（前面稳，后面开始“活”）
+            float strength = MathHelper.Lerp(2f, 10f, completionRatio);
+
+            return normal * wave * strength;
         }
 
         // 拖尾颜色函数
@@ -197,34 +341,8 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
 
         private void GenerateDevourerHelixParticles()
         {
-            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
-            Vector2 muzzlePos = Projectile.Center + forward * 24f + Main.rand.NextVector2Circular(4f, 4f);
-
-            float phase = Main.GameUpdateCount * 0.25f;
-            float baseAngle = Main.GameUpdateCount * 0.05f; // 时间扰动
-
-            for (int i = 0; i < 4; i++)
             {
-                // 基础四方向：0°, 90°, 180°, 270°，增加微扰动形成灵动感
-                float angleOffset = MathHelper.PiOver2 * i + baseAngle + Main.rand.NextFloat(-0.2f, 0.2f);
-
-                // 速度大小随机
-                float speed = Main.rand.NextFloat(1.5f, 3.2f);
-                Vector2 swirlVelocity = forward.RotatedBy(angleOffset) * speed;
-
-                // 随机紫色系颜色
-                Color swirlColor = Color.Lerp(Color.MediumPurple, Color.Violet, Main.rand.NextFloat(0f, 1f));
-
-                SparkParticle swirlSpark = new SparkParticle(
-                    muzzlePos + swirlVelocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 8f), // 起点随机偏移
-                    swirlVelocity,
-                    false,
-                    40,
-                    Main.rand.NextFloat(0.8f, 1.4f),
-                    swirlColor
-                );
-                GeneralParticleHandler.SpawnParticle(swirlSpark);
-                ownedSparkParticles.Add(swirlSpark);
+          
             }
 
             // ✦ 星空主题 Dust 复杂扩散 ✦
@@ -260,31 +378,62 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ScourgeoftheCos
             }
 
 
-            for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
-            {
-                SparkParticle p = ownedSparkParticles[i];
-                if (p.Time >= p.Lifetime)
-                {
-                    ownedSparkParticles.RemoveAt(i);
-                    continue;
-                }
 
-                // ✦ 离谱的“灵息蛇形拐弯”逻辑 ✦
 
-                // 持续右拐形成螺旋
-                p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(2.5f));
+            //Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitY);
+            //Vector2 muzzlePos = Projectile.Center + forward * 24f + Main.rand.NextVector2Circular(4f, 4f);
 
-                // 每 15 帧倒退一次形成“撕裂回流”
-                if (p.Time % 15 == 0)
-                {
-                    p.Velocity *= -0.8f; // 短暂倒退
-                }
+            //float phase = Main.GameUpdateCount * 0.25f;
+            //float baseAngle = Main.GameUpdateCount * 0.05f; // 时间扰动
 
-                // 呼吸式加速减速
-                float cycle = 20f;
-                float scaleFactor = 1f + 0.05f * (float)Math.Sin(MathHelper.TwoPi * p.Time / cycle);
-                p.Velocity *= scaleFactor;
-            }
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    // 基础四方向：0°, 90°, 180°, 270°，增加微扰动形成灵动感
+            //    float angleOffset = MathHelper.PiOver2 * i + baseAngle + Main.rand.NextFloat(-0.2f, 0.2f);
+
+            //    // 速度大小随机
+            //    float speed = Main.rand.NextFloat(1.5f, 3.2f);
+            //    Vector2 swirlVelocity = forward.RotatedBy(angleOffset) * speed;
+
+            //    // 随机紫色系颜色
+            //    Color swirlColor = Color.Lerp(Color.MediumPurple, Color.Violet, Main.rand.NextFloat(0f, 1f));
+
+            //    SparkParticle swirlSpark = new SparkParticle(
+            //        muzzlePos + swirlVelocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 8f), // 起点随机偏移
+            //        swirlVelocity,
+            //        false,
+            //        40,
+            //        Main.rand.NextFloat(0.8f, 1.4f),
+            //        swirlColor
+            //    );
+            //    GeneralParticleHandler.SpawnParticle(swirlSpark);
+            //    ownedSparkParticles.Add(swirlSpark);
+            //}
+            //for (int i = ownedSparkParticles.Count - 1; i >= 0; i--)
+            //{
+            //    SparkParticle p = ownedSparkParticles[i];
+            //    if (p.Time >= p.Lifetime)
+            //    {
+            //        ownedSparkParticles.RemoveAt(i);
+            //        continue;
+            //    }
+
+            //    // ✦ 离谱的“灵息蛇形拐弯”逻辑 ✦
+
+            //    // 持续右拐形成螺旋
+            //    p.Velocity = p.Velocity.RotatedBy(MathHelper.ToRadians(2.5f));
+
+            //    // 每 15 帧倒退一次形成“撕裂回流”
+            //    if (p.Time % 15 == 0)
+            //    {
+            //        p.Velocity *= -0.8f; // 短暂倒退
+            //    }
+
+            //    // 呼吸式加速减速
+            //    float cycle = 20f;
+            //    float scaleFactor = 1f + 0.05f * (float)Math.Sin(MathHelper.TwoPi * p.Time / cycle);
+            //    p.Velocity *= scaleFactor;
+            //}
 
         }
 

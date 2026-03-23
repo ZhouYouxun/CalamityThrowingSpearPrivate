@@ -1,14 +1,15 @@
-﻿using System;
+﻿using CalamityMod;
+using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CalamityMod;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
-using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance;
-using System.Collections.Generic;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
 {
@@ -29,6 +30,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.TheLastLance
                     // 给玩家 TheLastLance
                     player.QuickSpawnItem(player.GetSource_Misc("Reward"), ModContent.ItemType<TheLastLance>());
                     hasAwardedTheLastLance = true; // 确保只奖励一次
+                    Main.NewText(Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.TheLastLance"), 200, 255, 200);
                 }
             }
         }

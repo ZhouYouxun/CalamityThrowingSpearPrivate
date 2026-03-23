@@ -173,7 +173,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             // ================= 第一阶段：锁敌+减速 =================
             if (timer <= 35)
             {
-                NPC target = Projectile.Center.ClosestNPCAt(1200f);
+                NPC target = Projectile.Center.ClosestNPCAt(8200f);
 
                 if (target != null)
                 {
@@ -194,8 +194,10 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 {
                     hasCharged = true;
 
+                    SoundEngine.PlaySound(SoundID.Item73, Projectile.Center);
+
                     // 重新锁定一次目标（关键！）
-                    NPC target = Projectile.Center.ClosestNPCAt(1200f);
+                    NPC target = Projectile.Center.ClosestNPCAt(8200f);
 
                     Vector2 forward;
 

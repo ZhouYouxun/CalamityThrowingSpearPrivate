@@ -202,6 +202,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                     Projectile.owner
                 );
             }
+            // 屏幕震动效果
+            float shakePower = 145f; // 设置震动强度
+            float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
+            Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
+
 
             // ================= Debuff =================
             target.AddBuff(ModContent.BuffType<SagittariusEDebuff>(), 1200);
