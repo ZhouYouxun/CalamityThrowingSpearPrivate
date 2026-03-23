@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod.Dusts;
+using CalamityMod.Particles;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityMod.Particles;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 {
@@ -52,47 +53,95 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav
 
 
             {
-                // 绘制轨迹粒子特效
-                for (int i = 0; i < 1; i++)
-                {
-                    float t = i / 3f; // ✅ 强制浮点
-                    Vector2 spawnPosition = Vector2.Lerp(Projectile.oldPosition, Projectile.position, t);
-                    Dust dust = Dust.NewDustPerfect(spawnPosition, DustID.CrimsonTorch);
-                    dust.color = Color.OrangeRed;
-                    dust.scale = 1.5f;
-                    dust.fadeIn = 1f;
-                    dust.noGravity = true;
-                }
+                // ================= 飞行特效（重构版：收敛主核 + 辅助点缀） =================
 
-                // 1️⃣ 快速暗红 SparkParticle 拖尾
+                // ===== 基础方向 =====
+                Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                Vector2 side = forward.RotatedBy(MathHelper.PiOver2);
+
+                // ===== 时间参数（用于轻微动态秩序）=====
+                float time = Main.GameUpdateCount * 0.18f;
+
+                // ================= ① 主核心：Spark（更收敛、更集中）=================
                 if (Main.rand.NextBool(1))
                 {
+                    // 让核心火花主要沿前进方向喷出，只保留较小偏角
+                    Vector2 sparkVel =
+                        forward.RotatedByRandom(MathHelper.ToRadians(10f)) *
+                        Main.rand.NextFloat(7f, 11f);
+
                     Particle spark = new SparkParticle(
-                        Projectile.Center,
-                        Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(6f, 12f),
+                        Projectile.Center + forward * 4f, // 稍微前移，核心感更强
+                        sparkVel,
                         false,
                         20,
-                        Main.rand.NextFloat(0.3f, 0.4f),
-                        Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.7f))
+                        Main.rand.NextFloat(0.32f, 0.42f),
+                        Color.Lerp(Color.DarkRed, Color.OrangeRed, Main.rand.NextFloat(0.35f, 0.75f))
                     );
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
 
-                // 2️⃣ 竹笋尾流
+                // ================= ② 次流层：AltSpark（贴体尾流）=================
                 if (Main.rand.NextBool(2))
                 {
                     AltSparkParticle altSpark = new AltSparkParticle(
-                        Projectile.Center,
-                        -Projectile.velocity * 0.05f,
+                        Projectile.Center - forward * 2f,
+                        -forward * Main.rand.NextFloat(0.05f, 0.15f),
                         false,
                         14,
-                        0.3f,
+                        0.28f,
                         Color.DarkRed * 0.25f
                     );
                     GeneralParticleHandler.SpawnParticle(altSpark);
                 }
 
-           
+                // ================= ③ 辅助点缀：SquashDust（放弃双螺旋，改为“侧翼交替脉冲”）=================
+                float wingSwing = (float)Math.Sin(time);
+                Vector2 wingOffset = side * 10f * wingSwing + forward * Main.rand.NextFloat(-6f, 6f);
+
+                if (Main.rand.NextBool(2))
+                {
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center + wingOffset,
+                        ModContent.DustType<SquashDust>(),
+                        (-forward * Main.rand.NextFloat(2.5f, 4.5f)) + side * Main.rand.NextFloat(-0.8f, 0.8f)
+                    );
+                    dust.noGravity = true;
+                    dust.scale = Main.rand.NextFloat(2.0f, 2.6f);
+                    dust.color = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat());
+                    dust.fadeIn = 2.2f;
+                }
+
+                if (Main.rand.NextBool(2))
+                {
+                    Dust dust = Dust.NewDustPerfect(
+                        Projectile.Center - wingOffset,
+                        ModContent.DustType<SquashDust>(),
+                        (-forward * Main.rand.NextFloat(2.5f, 4.5f)) + side * Main.rand.NextFloat(-0.8f, 0.8f)
+                    );
+                    dust.noGravity = true;
+                    dust.scale = Main.rand.NextFloat(2.0f, 2.6f);
+                    dust.color = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat());
+                    dust.fadeIn = 2.2f;
+                }
+
+                // ================= ④ 扰动层：DiamondDust（环境噪声）=================
+                if (Main.rand.NextBool(1))
+                {
+                    Vector2 randPos = Projectile.Center + Main.rand.NextVector2Circular(18f, 18f);
+
+                    Dust dust = Dust.NewDustPerfect(
+                        randPos,
+                        ModContent.DustType<DiamondDust>(),
+                        -forward * Main.rand.NextFloat(0.1f, 0.4f)
+                    );
+                    dust.noGravity = true;
+                    dust.scale = Main.rand.NextFloat(0.6f, 0.9f);
+                    dust.color = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat());
+                    dust.fadeIn = 1f;
+                    dust.noLight = true;
+                }
+
             }
 
 

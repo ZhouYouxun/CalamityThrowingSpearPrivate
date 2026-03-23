@@ -44,9 +44,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
             Item.shoot = ModContent.ProjectileType<GalvanizingGlaiveJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 25f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4
-            modItem.UsesCharge = true;
-            modItem.MaxCharge = 135f;
-            modItem.ChargePerUse = 0.075f;
+            //modItem.UsesCharge = true;
+            //modItem.MaxCharge = 135f;
+            //modItem.ChargePerUse = 0.075f;
         }
 
 

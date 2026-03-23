@@ -13,7 +13,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
 {
     public class ElementalLanceJavPROJEntropy : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/ElementalLanceJav";
+        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/冥思长枪";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.DPreDog";
 
         private int hitCooldown = 0;

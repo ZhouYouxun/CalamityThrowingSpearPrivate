@@ -81,11 +81,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 Vector2 largePulseScale = new Vector2(0.6f, 1.6f); // 大型冲击波
 
                 // 第一个小型垂直椭圆冲击波
-                Particle smallPulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, smallPulseScale, MathHelper.PiOver2, 0.3f, 1f, 30);
+                Particle smallPulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, smallPulseScale, Projectile.velocity.ToRotation(), 0.3f, 1f, 30);
                 GeneralParticleHandler.SpawnParticle(smallPulse);
 
                 // 第二个大型垂直椭圆冲击波
-                Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, largePulseScale, MathHelper.PiOver2, 0.2f, 1f, 30);
+                Particle largePulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.White, largePulseScale, Projectile.velocity.ToRotation(), 0.2f, 1f, 30);
                 GeneralParticleHandler.SpawnParticle(largePulse);
             }
 
@@ -103,28 +103,98 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 Dust.NewDustPerfect(Projectile.Center, 57, offset * 0.5f, 150, Color.Yellow, 1.2f).noGravity = true;
             }
 
-            // 亮黄色闪光点效果
-            for (int i = 0; i < 20; i++)
+            //// 亮黄色闪光点效果
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    if (Main.rand.NextFloat() < 0.7f) // 70% 概率生成新特效
+            //    {
+            //        Color particleColor = Color.LightYellow;
+            //        float particleScale = 0.35f;
+            //        Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f); // 扩散到周围随机位置
+            //        Vector2 particleVelocity = Main.rand.NextVector2Circular(29f, 29f); // 扩散速度（这个需要快一点）
+
+            //        GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, particleVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
+            //    }
+            //    else // 30% 概率生成原有特效
+            //    {
+            //        Vector2 offset = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15)) * Main.rand.NextFloat(1.5f, 3f); // 调整速度范围
+            //        Color startColor = Color.Gold * 0.6f;
+            //        Color endColor = Color.LightGoldenrodYellow * 1.0f;
+
+            //        SparkleParticle spark = new SparkleParticle(Projectile.Center, offset, startColor, endColor, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20), Main.rand.NextFloat(-8, 8), 0.3f, false);
+            //        GeneralParticleHandler.SpawnParticle(spark);
+            //    }
+            //}
+
+            // ===== 前方扇形神圣扩散（替代原地释放）======
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            int count = 12;
+            float spread = MathHelper.ToRadians(70f);
+
+            // ========= ① 有序层（扇形骨架）=========
+            for (int i = 0; i < count; i++)
             {
-                if (Main.rand.NextFloat() < 0.7f) // 70% 概率生成新特效
-                {
-                    Color particleColor = Color.LightYellow;
-                    float particleScale = 0.35f;
-                    Vector2 particlePosition = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f); // 扩散到周围随机位置
-                    Vector2 particleVelocity = Main.rand.NextVector2Circular(29f, 29f); // 扩散速度（这个需要快一点）
+                float t = (float)i / (count - 1);
+                float angle = MathHelper.Lerp(-spread, spread, t);
 
-                    GeneralParticleHandler.SpawnParticle(new GenericBloom(particlePosition, particleVelocity, particleColor, particleScale, Main.rand.Next(20) + 10));
-                }
-                else // 30% 概率生成原有特效
-                {
-                    Vector2 offset = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15)) * Main.rand.NextFloat(1.5f, 3f); // 调整速度范围
-                    Color startColor = Color.Gold * 0.6f;
-                    Color endColor = Color.LightGoldenrodYellow * 1.0f;
+                Vector2 dir = forward.RotatedBy(angle);
 
-                    SparkleParticle spark = new SparkleParticle(Projectile.Center, offset, startColor, endColor, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20), Main.rand.NextFloat(-8, 8), 0.3f, false);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                // ❗初始位置略微前移（避免贴脸生成）
+                Vector2 spawnPos = Projectile.Center + forward * 6f;
+
+                // ❗主速度（扇形推进）
+                Vector2 vel = dir * Main.rand.NextFloat(6f, 12f);
+
+                // ===== 主Bloom（骨架）=====
+                GeneralParticleHandler.SpawnParticle(new GenericBloom(
+                    spawnPos,
+                    vel,
+                    Color.Lerp(Color.White, Color.LightGoldenrodYellow, 0.6f),
+                    0.28f,
+                    Main.rand.Next(16, 24)
+                ));
+
+                // ===== Sparkle（结构点）=====
+                if (i % 2 == 0)
+                {
+                    SparkleParticle sparkle = new SparkleParticle(
+                        spawnPos,
+                        vel * 0.35f,
+                        Color.White * 0.8f,
+                        Color.Gold * 0.5f,
+                        Main.rand.NextFloat(0.4f, 0.6f),
+                        Main.rand.Next(16, 24),
+                        Main.rand.NextFloat(-2f, 2f),
+                        0.2f,
+                        false
+                    );
+                    GeneralParticleHandler.SpawnParticle(sparkle);
                 }
             }
+
+            // ========= ② 无序层（逸散，但仍受方向约束）=========
+            int chaoticCount = 10;
+
+            for (int i = 0; i < chaoticCount; i++)
+            {
+                // ❗生成位置：略微前方范围
+                Vector2 randPos = Projectile.Center + forward * Main.rand.NextFloat(4f, 12f);
+
+                // ❗方向：仍然围绕forward，但更散
+                Vector2 randVel =
+                    forward.RotatedByRandom(MathHelper.ToRadians(55f)) *
+                    Main.rand.NextFloat(4f, 10f);
+
+                GeneralParticleHandler.SpawnParticle(new GenericBloom(
+                    randPos,
+                    randVel,
+                    Color.LightYellow,
+                    0.22f,
+                    Main.rand.Next(12, 20)
+                ));
+            }
+
 
         }
 
@@ -150,44 +220,74 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             //    );
             //    GeneralParticleHandler.SpawnParticle(spark);
             //}
-            int arcCount = 5; // 弧段数
-            int pointsPerArc = 8;
+            // ===== 五角星结构（替代原弧线）=====
+            int starPoints = 5;           // 五角星
+            int pointsPerEdge = 6;        // 每条边的点数
             float baseRadius = 60f;
 
-            for (int arc = 0; arc < arcCount; arc++)
+            // 五角星外圈角度
+            float rotationOffset = Main.GameUpdateCount * 0.03f;
+
+            // ===== 计算五角星5个顶点 =====
+            Vector2[] starVertices = new Vector2[starPoints];
+
+            for (int i = 0; i < starPoints; i++)
             {
-                float arcStartAngle = MathHelper.TwoPi * arc / arcCount + Main.GameUpdateCount * 0.03f;
-                float arcSpan = MathHelper.PiOver4;
-                float arcRadius = baseRadius + arc * 6f;
-
-                for (int i = 0; i < pointsPerArc; i++)
-                {
-                    float t = (float)i / (pointsPerArc - 1);
-                    float angle = arcStartAngle - arcSpan * 0.5f + arcSpan * t;
-                    Vector2 baseDirection = angle.ToRotationVector2();
-
-                    // Dust 位于主弧线圆上（稳定结构）
-                    Vector2 dustPos = Projectile.Center + baseDirection * arcRadius;
-                    Dust dust = Dust.NewDustPerfect(dustPos, 267, Vector2.Zero, 0, Color.White, 1.3f);
-                    dust.noGravity = true;
-
-                    // Sparkle 位于同一方向稍内侧（脉动/能量感）
-                    //Vector2 sparklePos = Projectile.Center + baseDirection * (arcRadius - 8f);
-                    //SparkleParticle spark = new SparkleParticle(
-                    //    sparklePos,
-                    //    baseDirection.RotatedBy(MathHelper.PiOver2) * 0.4f, // 横向流动
-                    //    Color.LightYellow * 0.7f,
-                    //    Color.White * 0.3f,
-                    //    0.65f + 0.1f * arc,
-                    //    24,
-                    //    Main.rand.NextFloat(-0.05f, 0.05f),
-                    //    0.2f,
-                    //    false
-                    //);
-                    //GeneralParticleHandler.SpawnParticle(spark);
-                }
+                float angle = MathHelper.TwoPi * i / starPoints + rotationOffset - MathHelper.PiOver2;
+                starVertices[i] = Projectile.Center + angle.ToRotationVector2() * baseRadius;
             }
 
+            // ===== 五角星连接顺序（经典跳点连接：0→2→4→1→3）=====
+            int[] order = { 0, 2, 4, 1, 3 };
+
+            // ===== 画五角星边 =====
+            for (int e = 0; e < starPoints; e++)
+            {
+                Vector2 start = starVertices[order[e]];
+                Vector2 end = starVertices[order[(e + 1) % starPoints]];
+
+                for (int i = 0; i < pointsPerEdge; i++)
+                {
+                    float t = (float)i / (pointsPerEdge - 1);
+
+                    // 插值位置（边上）
+                    Vector2 pos = Vector2.Lerp(start, end, t);
+
+                    // 方向（用于微扰）
+                    Vector2 dir = (end - start).SafeNormalize(Vector2.UnitX);
+
+                    // ===== Dust主结构 =====
+                    Dust dust = Dust.NewDustPerfect(
+                        pos,
+                        267,
+                        Vector2.Zero,
+                        0,
+                        Color.White,
+                        1.3f
+                    );
+                    dust.noGravity = true;
+
+                    //// ===== 内层能量（轻微内缩+横向流）=====
+                    //if (Main.rand.NextBool(2))
+                    //{
+                    //    Vector2 innerPos = Vector2.Lerp(pos, Projectile.Center, 0.15f);
+
+                    //    SparkleParticle spark = new SparkleParticle(
+                    //        innerPos,
+                    //        dir.RotatedBy(MathHelper.PiOver2) * 0.4f, // 横向流动
+                    //        Color.LightYellow * 0.7f,
+                    //        Color.White * 0.3f,
+                    //        0.6f,
+                    //        22,
+                    //        Main.rand.NextFloat(-0.05f, 0.05f),
+                    //        0.2f,
+                    //        false
+                    //    );
+
+                    //    GeneralParticleHandler.SpawnParticle(spark);
+                    //}
+                }
+            }
 
             // 金色冲击波
             Particle pulse = new DirectionalPulseRing(
@@ -201,6 +301,8 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                 30
             );
             GeneralParticleHandler.SpawnParticle(pulse);
+
+            CTSLightingBoltsSystem.Spawn_SagittariusSpitDeath(Projectile.Center, Projectile.velocity);
         }
 
         public override bool PreDraw(ref Color lightColor)

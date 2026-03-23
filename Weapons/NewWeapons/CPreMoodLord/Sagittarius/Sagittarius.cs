@@ -13,6 +13,7 @@ using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
 using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
+using Microsoft.Xna.Framework;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 {
@@ -27,13 +28,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
         {
             Item.width = 44;
             Item.height = 50;
-            Item.damage = 151; // 设置伤害值
+            Item.damage = 70; // 设置伤害值
             Item.DamageType = DamageClass.Melee; // 设置为近战武器
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.Swing; // 更改使用模式为投掷
-            Item.useTime = Item.useAnimation = 58; // 更改使用时的武器攻击速度
+            Item.useTime = 12;
+            Item.useAnimation = 60;
+            Item.useLimitPerAnimation = 4;
             Item.knockBack = 8.5f;
             Item.UseSound = SoundID.Item114;
             Item.autoReuse = true;
@@ -43,13 +46,21 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             Item.shoot = ModContent.ProjectileType<SagittariusPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 15f; // 更改使用时的武器弹幕飞行速度
         }
-        public override bool AltFunctionUse(Player player) => true; // 启用右键功能
+        public override bool AltFunctionUse(Player player) => false; // 右键功能
+        public override bool Shoot(Player player, Terraria.DataStructures.EntitySource_ItemUse_WithAmmo source,
+    Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            // 随机一个方向（360°）
+            Vector2 randomDir = Main.rand.NextVector2Unit();
 
+            // 保持原有速度大小
+            Vector2 newVelocity = randomDir * velocity.Length();
 
+            // 发射弹幕
+            Projectile.NewProjectile(source, position, newVelocity, type, damage, knockback, player.whoAmI);
 
-
-
-
+            return false; // 阻止原本默认发射
+        }
 
 
         //public override void AddRecipes()

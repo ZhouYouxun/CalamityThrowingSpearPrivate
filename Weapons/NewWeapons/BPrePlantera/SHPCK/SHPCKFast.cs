@@ -318,6 +318,70 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK
                 //    dust.noGravity = true;
                 //}
 
+
+                {
+                    // ====== 数学驱动的有序Spark释放 ======
+                    int sparkCount = 3; // 每帧生成数量（控制密度）
+
+                    for (int i = 0; i < sparkCount; i++)
+                    {
+                        // === 时间变量（核心驱动）===
+                        float t = Main.GameUpdateCount * 0.08f + i * 0.6f;
+
+                        // === 数学表达式： (As^2 + Bs + C) / ((s + a)(s^2 + w^2)) ===
+                        float s = t;
+
+                        float A = 1.2f;
+                        float B = 0.8f;
+                        float C = 0.5f;
+                        float a = 2.5f;
+                        float w = 3.0f;
+
+                        float numerator = A * s * s + B * s + C;
+                        float denominator = (s + a) * (s * s + w * w);
+
+                        float value = numerator / denominator;
+
+                        // === 将数学值映射为角度变化（核心“数学美感”）===
+                        float angle = t + value * 6f;
+
+                        // === 椭圆轨迹（避免单一圆形）===
+                        float radiusX = 20f;
+                        float radiusY = 10f;
+
+                        Vector2 offset = new Vector2(
+                            (float)Math.Cos(angle) * radiusX,
+                            (float)Math.Sin(angle) * radiusY
+                        );
+
+                        // === 世界空间位置 ===
+                        Vector2 spawnPos = Projectile.Center + offset;
+
+                        // === 速度：沿切线方向飞出（更有设计感）===
+                        Vector2 velocity = offset.RotatedBy(MathHelper.Pi / 2f).SafeNormalize(Vector2.Zero) * 4f;
+
+                        // === CustomSpark 粒子 ===
+                        Particle spark = new CustomSpark(
+                            spawnPos,
+                            velocity,
+                            "CalamityMod/Particles/ProvidenceMarkParticle",
+                            false,
+                            20,
+                            Main.rand.NextFloat(0.9f, 1.2f),
+                            Color.Lerp(Color.Cyan, Color.BlueViolet, 0.5f + 0.5f * (float)Math.Sin(t)),
+                            new Vector2(1.2f, 0.4f),
+                            true,
+                            false,
+                            0,
+                            false,
+                            false,
+                            0.12f
+                        );
+
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+                }
+
                 // 碰撞玩家后消失
                 if (Projectile.Hitbox.Intersects(player.Hitbox))
                 {

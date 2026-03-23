@@ -1,16 +1,11 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.Graphics.Shaders;
 using Terraria.Audio;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
@@ -19,7 +14,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
     {
         public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/CPreMoodLord/Sagittarius/Sagittarius";
         public new string LocalizationCategory => "Projectiles.NewWeapons.CPreMoodLord";
+
         public ref float Time => ref Projectile.ai[1];
+
+        private int timer = 0;
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
@@ -28,19 +27,12 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
 
         public override bool PreDraw(ref Color lightColor)
         {
-            // 绘制拖尾
-            // CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
-
-            // 包裹自身的亮黄色光晕效果
             Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             Vector2 origin = texture.Size() * 0.5f;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            // 设置透明度
-            float alpha = isAttached ? 0f : 0.6f; // 如果 isAttached 为 true，则完全透明，否则为不透明
-            Color wrapColor = Color.LightGoldenrodYellow * alpha; // 设置透明度为 alpha 值
+            Color wrapColor = Color.LightGoldenrodYellow * 0.6f;
 
-            // 绘制光晕效果
             for (int i = 0; i < 8; i++)
             {
                 Vector2 drawOffset = (MathHelper.TwoPi * i / 8f).ToRotationVector2() * 3f;
@@ -56,297 +48,182 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = -1; // 允许1次伤害
-            Projectile.timeLeft = 960;
-            Projectile.light = 0.5f;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 600;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false; // 能够穿透方块
-            Projectile.extraUpdates = 1; // 额外更新次数
-            Projectile.usesLocalNPCImmunity = true; // 弹幕使用本地无敌帧
-            Projectile.localNPCHitCooldown = 30; // 无敌帧冷却时间为25帧
-            Projectile.alpha = 235;
-            //// 设置充能长枪的伤害为原始伤害的5倍
-            //Projectile.damage *= 5;
+            Projectile.tileCollide = false;
+            Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 20;
         }
-        private bool isAttached = false; // 标记是否进入粘附状态
-        private bool hasTriggeredBackSparkEffect = false; // 标记是否已触发反方向特效
 
         public override void AI()
         {
+            timer++;
 
-            if (!isAttached)// 蓄力阶段
+            // ===== 方向固定直线冲击 =====
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+            // ================= 保留充能环 =================
+            float progress = MathHelper.Clamp(timer / 120f, 0f, 1f);
+            float triggerChance = MathHelper.Lerp(0.2f, 1f, progress);
+
+            if (Main.rand.NextFloat() < triggerChance)
             {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float radius = Main.rand.NextFloat(5f * 16f, 7f * 16f);
+                Vector2 offset = angle.ToRotationVector2() * radius;
 
-                // 蓄力阶段，频率随时间增加，位置在甜甜圈环上
-                if (!isAttached)
-                {
-                    // 插值计算“频率增强”：从初始间隔5（1/5概率）提升到每帧都触发（1/1）
-                    float chargeTime = Projectile.ai[0]; // 蓄力时间
-                    float progress = MathHelper.Clamp(chargeTime / 120f, 0f, 1f); // 约2秒内完成
-                    float triggerChance = MathHelper.Lerp(0.2f, 1f, progress); // 从20%到100%
-
-                    if (Main.rand.NextFloat() < triggerChance)
-                    {
-                        // 角度随机，半径在5~7格之间
-                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                        float radius = Main.rand.NextFloat(5f * 16f, 7f * 16f);
-                        Vector2 offset = angle.ToRotationVector2() * radius;
-
-                        CTSLightingBoltsSystem.Spawn_SagittariusEchoCharging(Projectile.Center + offset);
-                    }
-                }
-
-
-                if (Main.GameUpdateCount % 12 == 0)
-                {
-                    int dustCount = 12;
-                    float radius = 32f;
-                    for (int i = 0; i < dustCount; i++)
-                    {
-                        float angle = MathHelper.TwoPi * i / dustCount + Main.GameUpdateCount * 0.05f;
-                        Vector2 offset = angle.ToRotationVector2() * radius;
-
-                        Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, 267, offset.SafeNormalize(Vector2.Zero) * 0.5f, 0, Color.White, 1.2f);
-                        dust.noGravity = true;
-                    }
-                }
-
-
-
-                // 减速并逐渐增大和旋转
-                Projectile.velocity *= 0.98f;
-                Projectile.rotation += 0.075f * Projectile.scale;
-                Projectile.scale += 0.0035f;
-                // 持续生成向中心吸引的亮黄色闪光粒子
-                if (Main.rand.NextBool(2))
-                {
-                    Vector2 sparkleVelocity = (Projectile.Center - Main.rand.NextVector2Circular(80f, 80f)).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.5f, 1.5f);
-                    Color startColor = Color.Gold * 0.4f;
-                    Color endColor = Color.LightGoldenrodYellow * 0.8f;
-                    SparkleParticle spark = new SparkleParticle(Projectile.Center + sparkleVelocity * 10f, -sparkleVelocity, startColor, endColor, Main.rand.NextFloat(0.3f, 0.5f), Main.rand.Next(6, 12), Main.rand.NextFloat(-8, 8), 0.15f, false);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
-
-                // 亮黄色冲击波效果
-                if (Projectile.timeLeft % 20 == 0)
-                {
-                    Particle pulse = new DirectionalPulseRing(Projectile.Center, Vector2.Zero, Color.Yellow, new Vector2(1.5f), Projectile.rotation, 1f, 0.1f, 30);
-                    GeneralParticleHandler.SpawnParticle(pulse);
-                }
-            }
-            else // 粘附状态
-            {
-                Projectile.velocity = Vector2.Zero; // 速度归零
+                CTSLightingBoltsSystem.Spawn_SagittariusEchoCharging(Projectile.Center + offset);
             }
 
+            // ================= 前端推进粒子（弧线推进感） =================
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 futurePos = Projectile.Center + Projectile.velocity * 0.6f;
 
-            // 2秒后锁定最近敌人并释放特效
-            if (Projectile.ai[0] > 210)
+            for (int i = 0; i < 3; i++)
             {
-                NPC target = FindClosestNPC(3000);
-                if (target != null)
-                {
-                    Projectile.velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX) * 24f;
+                Vector2 vel =
+                    forward.RotatedByRandom(MathHelper.ToRadians(15f))
+                    * Main.rand.NextFloat(4f, 8f);
 
-                    // 仅触发一次反方向生成的扇形闪光粒子特效
-                    if (!hasTriggeredBackSparkEffect)
-                    {
-                        for (int i = 0; i < 30; i++)
-                        {
-                            float angleOffset = MathHelper.ToRadians(15) * (i % 2 == 0 ? 1 : -1);
-                            Vector2 particleVelocity = Projectile.velocity.RotatedBy(MathHelper.Pi + angleOffset) * Main.rand.NextFloat(1.5f, 3f);
-                            Color startColor = Color.Gold * 0.6f;
-                            Color endColor = Color.LightGoldenrodYellow * 0.3f;
-                            SparkleParticle backSpark = new SparkleParticle(Projectile.Center, particleVelocity, startColor, endColor, Main.rand.NextFloat(0.2f, 0.5f), Main.rand.Next(10, 20), Main.rand.NextFloat(-8, 8), 0.15f, false);
-                            GeneralParticleHandler.SpawnParticle(backSpark);
-                        }
+                Particle spark = new GlowSparkParticle(
+                    futurePos,
+                    vel,
+                    false,
+                    10,
+                    0.15f,
+                    Color.Gold,
+                    new Vector2(2.2f, 0.45f),
+                    true,
+                    false,
+                    1
+                );
 
-                        hasTriggeredBackSparkEffect = true; // 标记为已触发
-                    }
-                }
+                GeneralParticleHandler.SpawnParticle(spark);
             }
 
-            Projectile.ai[0]++;
+            // ================= 后方尾焰拖拽 =================
+            if (Main.rand.NextBool(2))
+            {
+                Vector2 backPos = Projectile.Center - forward * 8f;
+
+                Particle trail = new GlowSparkParticle(
+                    backPos,
+                    -forward * Main.rand.NextFloat(1f, 3f),
+                    false,
+                    12,
+                    0.12f,
+                    Color.LightGoldenrodYellow * 0.7f,
+                    new Vector2(1.8f, 0.4f),
+                    true,
+                    false,
+                    1
+                );
+
+                GeneralParticleHandler.SpawnParticle(trail);
+            }
+
             Lighting.AddLight(Projectile.Center, Color.LightGoldenrodYellow.ToVector3() * 0.55f);
+
             Time++;
         }
 
-        public override bool? CanDamage() => Time >= 100f; // 初始的时候不会造成伤害，直到100为止
-
-        private NPC FindClosestNPC(float maxDetectDistance)
-        {
-            NPC closestNPC = null;
-            float minDistance = maxDetectDistance;
-
-            foreach (NPC npc in Main.npc)
-            {
-                float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                if (distance < minDistance && npc.CanBeChasedBy(this))
-                {
-                    minDistance = distance;
-                    closestNPC = npc;
-                }
-            }
-
-            return closestNPC;
-        }
+        public override bool? CanDamage() => Time >= 10f;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            // 如果进入了粘附状态，每次攻击都会召唤两把分裂长枪
-            if (isAttached)
+            Vector2 pos = target.Center;
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            // ================= 核心爆闪 =================
+            for (int i = 0; i < 10; i++)
             {
-                //SoundEngine.PlaySound(SoundID.Item108, Projectile.Center);
-                SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/磁轨炮开火"));
-
-                // 根据是否启用 Main.zenithWorld 决定召唤数量
-                int splitCount = Main.zenithWorld ? 10 : 3;
-
-                for (int i = 0; i < splitCount; i++)
-                {
-                    float angle = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                    Vector2 spawnPosition = target.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 70f * 16f;
-
-                    Vector2 velocitySPIT = Vector2.Normalize(target.Center - spawnPosition) * 16;
-
-                    // 生成分裂长枪，伤害为充能长枪的1/5
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPosition, velocitySPIT, ModContent.ProjectileType<SagittariusSPIT>(), Projectile.damage / 13, Projectile.knockBack, Projectile.owner);
-                }
-
-
-                {
-                    Vector2 sparkleVelocity = (Projectile.Center - Main.rand.NextVector2Circular(40f, 40f)) // 缩小随机偏移范围
-                   .SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.25f, 0.75f); // 降低初始速度范围
-
-                    Color startColor = Color.Gold * 0.4f;
-                    Color endColor = Color.LightGoldenrodYellow * 0.8f;
-
-                    // 减小粒子的大小和寿命，使吸收效果更轻微
-                    SparkleParticle spark = new SparkleParticle(
-                        Projectile.Center + sparkleVelocity * 5f, // 调整生成位置偏移
-                        -sparkleVelocity,
-                        startColor,
-                        endColor,
-                        Main.rand.NextFloat(0.15f, 0.3f), // 更小的粒子尺寸
-                        Main.rand.Next(4, 8), // 更短的粒子寿命
-                        Main.rand.NextFloat(-8, 8),
-                        0.1f, // 调整消失速度
-                        false
-                    );
-
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                Particle core = new GlowSparkParticle(
+                    pos,
+                    Main.rand.NextVector2Circular(1f, 1f),
+                    false,
+                    6,
+                    0.22f,
+                    Color.Gold,
+                    new Vector2(1.6f, 0.6f),
+                    true,
+                    false,
+                    1
+                );
+                GeneralParticleHandler.SpawnParticle(core);
             }
-            else // 仅在第一次击中时触发特效
+
+            // ================= 前向冲击喷流 =================
+            for (int i = 0; i < 20; i++)
             {
-                // 标记为进入粘附状态，确保后续不会再次触发
-                isAttached = true;
+                Vector2 vel =
+                    forward.RotatedByRandom(MathHelper.ToRadians(10f))
+                    * Main.rand.NextFloat(6f, 12f);
 
-                // 添加Debuff
-                target.AddBuff(ModContent.BuffType<SagittariusEDebuff>(), 1200);
-                // 生成20个旋转着逐渐消失的粒子效果
-                for (int i = 0; i < 20; i++)
-                {
-                    // 随机生成偏移量
-                    Vector2 sparkOffset = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.5f, 3f); // 扩大随机范围
+                Particle jet = new GlowSparkParticle(
+                    pos,
+                    vel,
+                    false,
+                    Main.rand.Next(8, 14),
+                    Main.rand.NextFloat(0.12f, 0.2f),
+                    new Color(255, 210, 80),
+                    new Vector2(2.6f, 0.45f),
+                    true,
+                    false,
+                    1
+                );
 
-                    // 设定颜色，透明度降低到原来的 25%
-                    Color startColor = new Color(Color.LightGoldenrodYellow.R, Color.LightGoldenrodYellow.G, Color.LightGoldenrodYellow.B, (int)(Color.LightGoldenrodYellow.A * 0.25f));
-                    Color endColor = new Color(Color.LightYellow.R, Color.LightYellow.G, Color.LightYellow.B, (int)(Color.LightYellow.A * 0.25f));
-
-                    // 创建并生成粒子
-                    GenericSparkle sparker = new GenericSparkle(
-                        Projectile.Center + sparkOffset,
-                        Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.5f, 2f), // 随机初始速度
-                        startColor,
-                        endColor,
-                        Main.rand.NextFloat(2.5f, 2.9f), // 尺寸
-                        14, // 粒子寿命
-                        Main.rand.NextFloat(-0.05f, 0.05f), // 旋转速度
-                        2.5f // 消失时间
-                    );
-                    GeneralParticleHandler.SpawnParticle(sparker);
-                }
-
-                // 扇形粒子效果（前后两侧）
-                int particleCount = 30;
-                float spreadAngle = MathHelper.ToRadians(5);
-                Color particleColor = Color.Purple;
-
-                // 前方扇形
-                for (int i = 0; i < particleCount; i++)
-                {
-                    float angleOffset = Main.rand.NextFloat(-spreadAngle, spreadAngle);
-                    Vector2 velocity = Projectile.velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(2f, 4f);
-                    Dust particle = Dust.NewDustPerfect(Projectile.Center, 173, velocity, 0, particleColor, 1.5f);
-                    particle.noGravity = true;
-                }
-
-                // 后方扇形
-                for (int i = 0; i < particleCount; i++)
-                {
-                    float angleOffset = MathHelper.Pi + Main.rand.NextFloat(-spreadAngle, spreadAngle);
-                    Vector2 velocity = Projectile.velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(2f, 4f);
-                    Dust particle = Dust.NewDustPerfect(Projectile.Center, 173, velocity, 0, particleColor, 1.5f);
-                    particle.noGravity = true;
-                }
-
-                // 亮黄色闪光粒子效果
-                for (int i = 0; i < 20; i++)
-                {
-                    Vector2 sparkleVelocity = Main.rand.NextVector2Circular(4f, 4f);
-                    Color startColor = Color.GhostWhite * 0.6f;
-                    Color endColor = Color.LightYellow * 0.3f;
-
-                    SparkleParticle spark = new SparkleParticle(target.Center, sparkleVelocity, startColor, endColor, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(10, 20), Main.rand.NextFloat(-8, 8), 0.2f, false);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                GeneralParticleHandler.SpawnParticle(jet);
             }
+
+            // ================= 后方扇形召唤SPIT =================
+            int spitCount = 12;
+            float arc = MathHelper.ToRadians(120f);
+
+            for (int i = 0; i < spitCount; i++)
+            {
+                float t = (float)i / (spitCount - 1);
+                Vector2 backward = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+                float angleOffset = MathHelper.Lerp(-arc / 2f, arc / 2f, t);
+                Vector2 dir = backward.RotatedBy(angleOffset);
+                Vector2 spawnPos = pos + dir * Main.rand.NextFloat(30f * 16f, 60f * 16f);
+
+                Vector2 velocity = (pos - spawnPos).SafeNormalize(Vector2.UnitX) * 18f;
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    velocity,
+                    ModContent.ProjectileType<SagittariusSPIT>(),
+                    Projectile.damage / 13,
+                    Projectile.knockBack,
+                    Projectile.owner
+                );
+            }
+
+            // ================= Debuff =================
+            target.AddBuff(ModContent.BuffType<SagittariusEDebuff>(), 1200);
         }
 
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-        {
-            // 如果未进入粘附状态，则设置为粘附状态
-            if (!isAttached)
-            {
-                isAttached = true; // 打开开关，标记为已粘附
-                // 屏幕震动效果
-                float shakePower = 19f; // 设置震动强度
-                float distanceFactor = Utils.GetLerpValue(1000f, 0f, Projectile.Distance(Main.LocalPlayer.Center), true); // 距离衰减
-                Main.LocalPlayer.Calamity().GeneralScreenShakePower = Math.Max(Main.LocalPlayer.Calamity().GeneralScreenShakePower, shakePower * distanceFactor);
-
-                // 保持原来的旋转角度
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-                // 停止弹幕移动，模拟粘附在目标上的效果
-                Projectile.velocity = Vector2.Zero;
-            }
-        }
         public override void OnKill(int timeLeft)
         {
-            // 在死亡时触发屏幕震动
-            Main.LocalPlayer.Calamity().GeneralScreenShakePower = 50f;
-
-            // 在弹幕消失时释放大量烟雾粒子
-            int smokeCount = 150; // 数量为原有逻辑的两倍
-            for (int i = 0; i < smokeCount; i++)
+            for (int i = 0; i < 60; i++)
             {
-                // 随机生成速度
-                Vector2 dustVelocity = Main.rand.NextVector2Circular(3f, 3f) * Main.rand.NextFloat(4.5f, 7f); // 提高速度范围
-                Color smokeColor = new Color(255, 200, 100); // 固定为浅橙色
+                Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
 
-                // 创建烟雾粒子
                 Particle smoke = new HeavySmokeParticle(
                     Projectile.Center,
-                    dustVelocity,
-                    smokeColor,
-                    18, // 粒子寿命
-                    Main.rand.NextFloat(1.2f, 2.2f), // 粒子大小
-                    0.4f, // 粒子淡出速度
-                    Main.rand.NextFloat(-1, 1), // 随机旋转速度
-                    true // 确保粒子启用特殊效果
+                    vel,
+                    new Color(255, 200, 100),
+                    20,
+                    Main.rand.NextFloat(1.2f, 2f),
+                    0.4f,
+                    Main.rand.NextFloat(-1, 1),
+                    true
                 );
+
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
         }

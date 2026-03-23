@@ -237,30 +237,30 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
                 // 生成两个方向的粒子特效
                 {
-                    // === 1️⃣ 黄金螺旋 Bloom 粒子（替代原对称发射）===
-                    int bloomCount = 2; // 粒子数量稍降
-                    float goldenAngle = MathHelper.ToRadians(137.5f); // 黄金角
-                    float baseAngle = Projectile.ai[0] * goldenAngle; // 利用 ai[0] 叠加旋转
+                    //// === 1️⃣ 黄金螺旋 Bloom 粒子（替代原对称发射）===
+                    //int bloomCount = 2; // 粒子数量稍降
+                    //float goldenAngle = MathHelper.ToRadians(137.5f); // 黄金角
+                    //float baseAngle = Projectile.ai[0] * goldenAngle; // 利用 ai[0] 叠加旋转
 
-                    for (int i = 0; i < bloomCount; i++)
-                    {
-                        float angle = baseAngle + i * goldenAngle;
-                        Vector2 dir = angle.ToRotationVector2();
+                    //for (int i = 0; i < bloomCount; i++)
+                    //{
+                    //    float angle = baseAngle + i * goldenAngle;
+                    //    Vector2 dir = angle.ToRotationVector2();
 
-                        Vector2 pos = Projectile.Center + dir * Main.rand.NextFloat(4f, 12f); // 轻微偏移
-                        Vector2 vel = dir * Main.rand.NextFloat(8.4f, 18.4f); // 速
+                    //    Vector2 pos = Projectile.Center + dir * Main.rand.NextFloat(4f, 12f); // 轻微偏移
+                    //    Vector2 vel = dir * Main.rand.NextFloat(8.4f, 18.4f); // 速
 
-                        Color color = Color.White * 0.82f; // 亮度
-                        float scale = Main.rand.NextFloat(0.18f, 0.26f); // 缩小
+                    //    Color color = Color.White * 0.82f; // 亮度
+                    //    float scale = Main.rand.NextFloat(0.18f, 0.26f); // 缩小
 
-                        GeneralParticleHandler.SpawnParticle(new GenericBloom(
-                            pos,
-                            vel,
-                            color,
-                            scale,
-                            Main.rand.Next(16, 28)
-                        ));
-                    }
+                    //    GeneralParticleHandler.SpawnParticle(new GenericBloom(
+                    //        pos,
+                    //        vel,
+                    //        color,
+                    //        scale,
+                    //        Main.rand.Next(16, 28)
+                    //    ));
+                    //}
 
                     // === 2️⃣ Dust 环绕效果（从半径扩大后的大圆环触发）===
                     int dustCount = 3;
@@ -408,6 +408,80 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SunEssenceJav
 
 
 
+            {
+                // =======================【三棱体弧形冲击（以弹幕为中心）【来自新版正义旗】】=======================
+
+                // 粒子总数量（建议 9 或 12，方便3等分结构）
+                int arcCount = 12;
+
+                // ================== 1️⃣ 三棱体基础方向 ==================
+                // 三个主方向（120°间隔）
+                Vector2[] baseDirs = new Vector2[3];
+                for (int k = 0; k < 3; k++)
+                {
+                    float baseAngle = MathHelper.TwoPi * k / 3f; // 0° / 120° / 240°
+                    baseDirs[k] = baseAngle.ToRotationVector2();
+                }
+
+                for (int i = 0; i < arcCount; i++)
+                {
+                    // ================== 2️⃣ 选择属于哪一条“棱” ==================
+                    int group = i % 3; // 分成3组
+                    Vector2 baseDir = baseDirs[group];
+
+                    // ================== 3️⃣ 在该方向附近做微扰（让它不是死直线） ==================
+                    float spread = 0.35f; // 扇形展开角度（越大越散）
+                    Vector2 direction = baseDir.RotatedBy(Main.rand.NextFloat(-spread, spread));
+
+                    // ================== 4️⃣ 起始位置（关键：改为以弹幕为中心的圆） ==================
+                    float spawnRadius = 2f * 16f; // 2格 = 2×16像素
+                    Vector2 spawnPos = Projectile.Center + direction * spawnRadius;
+
+                    // ================== 5️⃣ 速度强度 ==================
+                    float speed = Main.rand.NextFloat(8f, 16f); // 稍微加大一点，增强冲击感
+
+                    // ================== 6️⃣ 终点速度（向外爆） ==================
+                    Vector2 endVel = direction * speed;
+
+                    // ================== 7️⃣ 初始速度（制造弧线） ==================
+                    float arcStrength = 0.6f; // 弧度强度（越大越弯）
+                    Vector2 startVel = endVel.RotatedBy(Main.rand.NextFloat(-arcStrength, arcStrength));
+
+                    // ================== 8️⃣ 粒子大小 ==================
+                    float scale = Main.rand.NextFloat(0.18f, 0.38f);
+
+                    // ================== 9️⃣ 生命周期 ==================
+                    int lifetime = Main.rand.Next(20, 32);
+
+                    // ================== 🔟 颜色 ==================
+                    Color color = Main.rand.NextBool()
+                        ? Color.Goldenrod
+                        : Color.Lerp(Color.OrangeRed, Color.Orange, Main.rand.NextFloat());
+
+                    // ================== 1️⃣1️⃣ 创建弧形粒子 ==================
+                    Particle arc = new VelChangingSpark(
+                        spawnPos,                        // 起点（现在是弹幕周围小圆）
+                        startVel,                        // 初始偏转速度
+                        endVel,                          // 最终速度（向外）
+                        "CalamityMod/Particles/SmallBloom", // 贴图
+                        lifetime,                        // 生命周期
+                        scale,                           // 大小
+                        color * 0.9f,                    // 颜色
+                        new Vector2(0.9f, 1.2f),         // 拉伸（略微拉长）
+                        true,                            // 发光
+                        false,                           // 不受重力
+                        0,                               // 旋转
+                        false,                           // 额外逻辑关闭
+                        0.6f,                            // 速度收束强度（越大弧线越明显）
+                        0.08f                            // 阻尼（越小越“冲”）
+                    );
+
+                    GeneralParticleHandler.SpawnParticle(arc);
+
+                }
+
+                // =======================【结束】=======================
+            }
 
 
 

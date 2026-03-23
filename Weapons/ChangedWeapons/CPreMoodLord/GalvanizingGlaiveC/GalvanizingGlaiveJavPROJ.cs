@@ -217,6 +217,12 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
                 );
                 GeneralParticleHandler.SpawnParticle(pulse);
             }
+
+
+
+
+
+
         }
 
 

@@ -809,6 +809,63 @@ namespace CalamityThrowingSpear
         }
 
 
+
+        // 贯星之枪-分裂弹幕死亡（前方喷射）
+        public static void Spawn_SagittariusSpitDeath(Vector2 center, Vector2 forward)
+        {
+            forward = forward.SafeNormalize(Vector2.UnitX);
+
+            int count = 12;
+            float spread = MathHelper.ToRadians(60f);
+
+            for (int i = 0; i < count; i++)
+            {
+                float t = (float)i / (count - 1);
+                float angle = MathHelper.Lerp(-spread, spread, t);
+
+                Vector2 dir = forward.RotatedBy(angle);
+
+                // ===== 主喷射（高速）=====
+                Vector2 vel = dir * Main.rand.NextFloat(6f, 12f);
+
+                var spark = _poolPrettySparkle.RequestParticle();
+                spark.ColorTint = new Color(1f, 0.9f, 0.5f, 1f);
+                spark.LocalPosition = center;
+                spark.Velocity = vel;
+                spark.Rotation = vel.ToRotation();
+                spark.Scale = new Vector2(1.8f, 0.6f);
+                spark.FadeInNormalizedTime = 0.01f;
+                spark.FadeOutNormalizedTime = 0.9f;
+                spark.TimeToLive = Main.rand.Next(26, 36);
+                spark.FadeOutEnd = spark.TimeToLive;
+                spark.FadeInEnd = 10;
+                spark.FadeOutStart = 18;
+                spark.AdditiveAmount = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(spark);
+
+                // ===== 辅助扰动（轻微扩散）=====
+                if (Main.rand.NextBool(2))
+                {
+                    var sub = _poolPrettySparkle.RequestParticle();
+                    sub.ColorTint = new Color(1f, 1f, 0.7f, 1f);
+                    sub.LocalPosition = center;
+                    sub.Velocity = vel * Main.rand.NextFloat(0.4f, 0.7f)
+                                   + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1.5f, 1.5f);
+                    sub.Rotation = sub.Velocity.ToRotation();
+                    sub.Scale = new Vector2(1.2f, 0.5f);
+                    sub.FadeInNormalizedTime = 0.01f;
+                    sub.FadeOutNormalizedTime = 0.9f;
+                    sub.TimeToLive = Main.rand.Next(20, 30);
+                    sub.FadeOutEnd = sub.TimeToLive;
+                    sub.FadeInEnd = 8;
+                    sub.FadeOutStart = 16;
+                    sub.AdditiveAmount = 0.45f;
+                    Main.ParticleSystem_World_OverPlayers.Add(sub);
+                }
+            }
+        }
+
+
         // 泰拉巨枪-命中
         public static void Spawn_TerraLanceForestSpirals(Vector2 position, float timeOffset = 0f)
         {

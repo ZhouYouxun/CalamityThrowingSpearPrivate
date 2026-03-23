@@ -12,7 +12,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
 {
     public class ElementalLanceJavPROJNebula : ModProjectile, ILocalizedModType
     {
-        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/ElementalLanceJav";
+        public override string Texture => "CalamityThrowingSpear/Weapons/ChangedWeapons/DPreDog/ElementalLanceC/星云长枪";
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.DPreDog";
 
         private bool hasTracking = false;
