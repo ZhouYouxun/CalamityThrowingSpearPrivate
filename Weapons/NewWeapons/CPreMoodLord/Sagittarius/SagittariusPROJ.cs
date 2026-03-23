@@ -500,7 +500,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<SagittariusPROJECHO>(),
-                    (int)(Projectile.damage * 5.5f), // 伤害5.5倍
+                    (int)(Projectile.damage * 7.7f), // 伤害5.5倍
                     Projectile.knockBack,
                     Projectile.owner
                 );
