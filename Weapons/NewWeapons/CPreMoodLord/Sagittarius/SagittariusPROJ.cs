@@ -175,14 +175,23 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
             {
                 NPC target = Projectile.Center.ClosestNPCAt(8200f);
 
+                Vector2 dir;
+
+                // 有敌人 → 锁敌
                 if (target != null)
                 {
-                    Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
-                    float targetRot = dir.ToRotation() + MathHelper.PiOver4;
-
-                    // 限制角速度（核心）
-                    Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRot, 0.12f);
+                    dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
                 }
+                // 没敌人 → 指向鼠标
+                else
+                {
+                    dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
+                }
+
+                float targetRot = dir.ToRotation() + MathHelper.PiOver4;
+
+                // 限制角速度（核心）
+                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRot, 0.12f);
 
                 // 减速
                 Projectile.velocity *= 0.95f;
@@ -209,7 +218,9 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Sagittarius
                     // 如果没有目标 → 保持当前方向
                     else
                     {
-                        forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                        // 没有目标 → 冲向鼠标位置
+                        Vector2 mouseWorld = Main.MouseWorld;
+                        forward = (mouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
                     }
 
                     // 冲刺
