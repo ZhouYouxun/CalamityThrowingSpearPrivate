@@ -21,10 +21,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
 {
     public class XiaoZhiTiaoEA : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<XiaoZhiTiaoEA2>();
-        }
         public override void SetDefaults()
         {
             Item.width = 64;
@@ -34,24 +30,22 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ElementalArkJav
             Item.value = Item.buyPrice(0, 15, 0, 0);
             Item.value = Item.sellPrice(0, 15, 0, 0);
         }
-    }
 
-    public class XiaoZhiTiaoEA2 : ModItem
-    {
-        public override string Texture => "CalamityThrowingSpear/Weapons/NewWeapons/DPreDog/ElementalArkJav/XiaoZhiTiaoEA";
-        public override void SetStaticDefaults()
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<XiaoZhiTiaoEA>();
+            int index = tooltips.FindLastIndex(x => x.Mod == "Terraria" && x.Name.StartsWith("Tooltip"));
+            if (index != -1)
+            {
+                if (Main.keyState.PressingShift())
+                    tooltips.Insert(index + 1, new TooltipLine(Mod, "ShiftTooltip", GetHjsonText("Items.XiaoZhiTiaoEA.ShiftTipDetailed"))
+                    { OverrideColor = Color.LightBlue });
+                else
+                    tooltips.Insert(index + 1, new TooltipLine(Mod, "NormalTooltip", GetHjsonText("Items.XiaoZhiTiaoEA.ShiftTip"))
+                    { OverrideColor = Color.Gray });
+            }
         }
-        public override void SetDefaults()
-        {
-            Item.width = 64;
-            Item.height = 64;
-            // 困难模式前：Orange，价值15金
-            Item.rare = ItemRarityID.Orange;
-            Item.value = Item.buyPrice(0, 15, 0, 0);
-            Item.value = Item.sellPrice(0, 15, 0, 0);
-        }
+
+        private static string GetHjsonText(string key) => Language.GetTextValue($"Mods.CalamityThrowingSpear.{key}");
     }
 }
 

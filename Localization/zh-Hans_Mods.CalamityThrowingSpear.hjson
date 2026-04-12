@@ -1168,6 +1168,10 @@ Items: {
 			[c/689bf4:并不是所有的东西都能够每次出现，有些东西需要在你足够快才愿意出现]
 			[c/689bf4:现在请尝试再快一点完成这场战斗，如果时机允许，他将现身]
 			'''
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：在两分钟之内击杀猪龙鱼公爵
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：受击数小于等于4的情况下击败光之女皇
 	}
 
 	XiaoZhiTiaoEA: {
@@ -1179,6 +1183,8 @@ Items: {
 			[c/aa5fff:远离它们，保持意志凌驾于欲望和本能之上]
 			[c/aa5fff:方可在安魂曲奏响之时，驭使天体，挑动银河]
 			'''
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：在不吃下任何一种灾厄水果的情况下击杀月球领主
 	}
 
 	XiaoZhiTiaoFT: {
@@ -1190,6 +1196,8 @@ Items: {
 			[c/ffa500:而蜕下的那般污秽的躯体将作为上天之矛无止境地向下坠落]
 			[c/ffa500:为上天焚烧这世间一切的邪秽之物]
 			'''
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：全程使用画蛇添足使犽戎进入二阶段
 	}
 
 	XiaoZhiTiaoLL: {
@@ -1202,6 +1210,8 @@ Items: {
 			[c/ADD8E6:只是猎人的锚重击在骑士的战骑]
 			[c/ADD8E6:命运的眷顾再次失联]
 			'''
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：用锚杀死海马
 	}
 
 	XiaoZhiTiaoRE: {
@@ -1211,6 +1221,8 @@ Items: {
 			[c/494949:“钢铁的终点是毁灭，但在毁灭中诞生真知。]
 			[c/494949:现在，抛下那两份极黑色的，不属于你的旧力，让世界重新赋予你启示。”]
 			'''
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：扔出创世纪和群星大炮，使它们同时处于掉落物状态
 	}
 
 	KaiJuXiaoZhiTiao: {
@@ -1229,36 +1241,6 @@ Items: {
 			'''
 	}
 
-	XiaoZhiTiaoLL2: {
-		DisplayName: 一场没有人见证的处决
-		Tooltip: 挑战：用锚杀死海马
-	}
-
-	XiaoZhiTiaoSG2: {
-		DisplayName: 人马座
-		Tooltip: 挑战：受击数小于等于4的情况下击败光之女皇
-	}
-
-	XiaoZhiTiaoTM2: {
-		DisplayName: 某一篇古生物海洋学研究论文
-		Tooltip: 挑战：在两分钟之内击杀猪龙鱼公爵
-	}
-
-	XiaoZhiTiaoFT2: {
-		DisplayName: 鳞蛇化龙
-		Tooltip: 挑战：全程使用画蛇添足使犽戎进入二阶段
-	}
-
-	XiaoZhiTiaoRE2: {
-		DisplayName: 启示录-前篇
-		Tooltip: 挑战：扔出创世纪和群星大炮，使它们同时处于掉落物状态
-	}
-
-	XiaoZhiTiaoEA2: {
-		DisplayName: 星夜箴言
-		Tooltip: 挑战：在不吃下任何一种灾厄水果的情况下击杀月球领主
-	}
-
 	XiaoZhiTiaoSoD: {
 		DisplayName: 不思议之旅
 		Tooltip:
@@ -1270,11 +1252,8 @@ Items: {
 			[c/e1ffff:“如同那洗净铅华的坠落珠宝”]
 			[c/e1ffff:“来自飘渺的星之物语”]
 			'''
-	}
-
-	XiaoZhiTiaoSoD2: {
-		DisplayName: 不思议之旅
-		Tooltip: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉信标
+		ShiftTip: 按住左Shift键查看挑战要求
+		ShiftTipDetailed: 挑战：击败噬魂幽花后用金怀表或铂金怀表右键星辉信标
 	}
 
 	SunsetSEEDItem: {

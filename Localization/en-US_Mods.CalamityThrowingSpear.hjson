@@ -1164,6 +1164,10 @@ Items: {
 			[c/689bf4: Treasures are not always appear in your view，while you defeated the enemie not quickly enough]
 			[c/689bf4:Now please try to finish this battle faster, if the timing allows, he will appear]
 			'''
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:defeat the Duke Fishron within two minutes
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:defeat the Empress of Light with 4 or fewer hits
 	}
 
 	XiaoZhiTiaoEA: {
@@ -1175,6 +1179,8 @@ Items: {
 			[c/aa5fff:Keep your distance; let your will reign over desire and instinct.]
 			[c/aa5fff:Only then, when the requiem plays, can you command celestial bodies and stir the galaxy.]
 			'''
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:defeat Moon Lord without consuming any of the Calamity Permanent Health Upgrades items
 	}
 
 	XiaoZhiTiaoFT: {
@@ -1190,6 +1196,8 @@ Items: {
 			And if you think I'm noisy, you can deprive me of my right to speak in the configuration [c/d3d3d3: configuration settings]
 			I can't stop you [c/ffa500::(]
 			'''
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:make Yharon enter the Phase 2
 	}
 
 	XiaoZhiTiaoLL: {
@@ -1202,6 +1210,8 @@ Items: {
 			[c/ADD8E6: It was just that the hunter's anchor hit the knight's warhorse.]
 			[c/ADD8E6: The favor of fate lost contact again.]
 			'''
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:slay a Seahorse with an Anchor for the first time
 	}
 
 	XiaoZhiTiaoRE: {
@@ -1212,6 +1222,8 @@ Items: {
 			[c/494949:"Now, cast away those two obsidian relics that were never yours,]
 			[c/494949:and let the world grant you a new revelation."]
 			'''
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge:throw Ultima and Starmada as an item in the same time
 	}
 
 	KaiJuXiaoZhiTiao: {
@@ -1230,36 +1242,6 @@ Items: {
 			'''
 	}
 
-	XiaoZhiTiaoLL2: {
-		DisplayName: An execution without witnesses
-		Tooltip: Challenge:slay a Seahorse with an Anchor for the first time
-	}
-
-	XiaoZhiTiaoSG2: {
-		DisplayName: Sagittarius
-		Tooltip: Challenge:defeat the Empress of Light with 4 or fewer hits
-	}
-
-	XiaoZhiTiaoTM2: {
-		DisplayName: A research paper on paleobiological oceanography
-		Tooltip: Challenge:defeat the Duke Fishron within two minutes
-	}
-
-	XiaoZhiTiaoFT2: {
-		DisplayName: Dragon Nirvana
-		Tooltip: Challenge:make Yharon enter the Phase 2
-	}
-
-	XiaoZhiTiaoRE2: {
-		DisplayName: Revelation - Part I
-		Tooltip: Challenge:throw Ultima and Starmada as an item in the same time
-	}
-
-	XiaoZhiTiaoEA2: {
-		DisplayName: Proverb of Starnight
-		Tooltip: Challenge:defeat Moon Lord without consuming any of the Calamity Permanent Health Upgrades items
-	}
-
 	XiaoZhiTiaoSoD: {
 		DisplayName: A Wondrous Journey
 		Tooltip:
@@ -1271,11 +1253,8 @@ Items: {
 			[c/e1ffff:“Like a falling jewel, washed free of all pretense.”]
 			[c/e1ffff:“A tale of stars, drifting from the unknowable beyond.”]
 			'''
-	}
-
-	XiaoZhiTiaoSoD2: {
-		DisplayName: A Wondrous Journey
-		Tooltip: Challenge: Defeat Polterghast, then right-click the Astral Beacon with a Gold Watch or Platinum Watch
+		ShiftTip: Hold Left Shift to view the challenge requirement.
+		ShiftTipDetailed: Challenge: Defeat Polterghast, then right-click the Astral Beacon with a Gold Watch or Platinum Watch
 	}
 
 	SunsetSEEDItem: {
