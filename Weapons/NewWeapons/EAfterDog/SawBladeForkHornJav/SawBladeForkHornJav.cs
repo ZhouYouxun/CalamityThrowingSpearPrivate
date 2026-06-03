@@ -19,7 +19,7 @@ using CalamityMod.Projectiles.Melee;
 using static Terraria.ModLoader.ModContent;
 using CalamityMod.Projectiles.Pets;
 using System.IO.Pipelines;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation;
 
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav

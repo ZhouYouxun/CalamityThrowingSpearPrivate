@@ -16,7 +16,7 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTidesC
 {

@@ -1,0 +1,150 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			ChangedWeapons: {
+				DPreDog: {
+					BansheeHookJavPROJ.DisplayName: 女妖之爪
+					BansheeHookJavScythe.DisplayName: 女妖之爪回收镰刀
+					ElementalLanceJavPROJNebula.DisplayName: 元素长枪-星云
+					ElementalLanceJavPROJN.DisplayName: 元素长枪-星云狙击弹
+					ElementalLanceJavPROJSolar.DisplayName: 元素长枪-日耀
+					ElementalLanceJavPROJStardust.DisplayName: 元素长枪-星尘
+					ElementalLanceJavPROJS.DisplayName: 元素长枪-星尘回旋弹
+					ElementalLanceJavPROJVortex.DisplayName: 元素长枪-星漩
+					ElementalLanceJavPROJV.DisplayName: 元素长枪-星漩量子闪电漩涡
+					ElementalLanceJavPROJEntropy.DisplayName: 元素长枪-冥思
+					ElementalLanceJavPROJE.DisplayName: 元素长枪-冥思聚合爆炸
+					ELPStardust.DisplayName: 元素长枪-星尘碎片
+					ELPVortexElectricity.DisplayName: 元素长枪-星漩电磁
+					ELPVortexLighting.DisplayName: 元素长枪-星漩闪电
+					ELPVortexSpark.DisplayName: 元素长枪-星漩火花
+					ELPEntropyEXP.DisplayName: 元素长枪-冥思爆破
+					NebulaSLASH.DisplayName: 元素长枪-星云斩切
+					GildedProboscisJavBIRD.DisplayName: 镀金鸟喙-癫狂龙裔
+					GildedProboscisJavPROJ.DisplayName: 镀金鸟喙
+				}
+
+				EAfterDog: {
+					DragonRageJavPROJ.DisplayName: 巨龙之怒-可投掷
+					DRSparkInfernal.DisplayName: 巨龙之怒火焰地狱龙卷触发器
+					DragonRageFuckYou.DisplayName: 巨龙之怒的爆炸
+					OrangeSLASH.DisplayName: 斩切
+					NadirJavPROJ.DisplayName: 天底
+					NadirJavVoidEssence.DisplayName: 天底虚空精华
+					ScourgeoftheCosmosJavPROJ.DisplayName: 灾劫宙怨
+					ScourgeoftheCosmosJavMini.DisplayName: 迷你吞噬者
+					StreamGougeJavPortal.DisplayName: 宇宙暗流传送门
+					StreamGougeJavPROJ.DisplayName: 宇宙暗流
+					StreamGougeJavPROJSPLIT.DisplayName: 宇宙暗流分裂弹幕
+					ViolenceJavLight.DisplayName: 恣睢光束
+					ViolenceJavPROJ.DisplayName: 恣睢
+					StreamGougeJavEXP.DisplayName: 激流爆破
+					DragonRageJavFire.DisplayName: 巨龙怒火
+					DragonRageJavFireBall.DisplayName: 巨龙怒焰
+					// EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
+					// StarsofDestinyRIGHTINV.DisplayName: Starsof Destiny R I G H T I N V
+					// CTSEssenceFlame2.DisplayName: C T S Essence Flame2
+				}
+			}
+		}
+
+		ChangedWeapons: {
+			DPreDog: {
+				BansheeHookJav: {
+					DisplayName: 女妖之爪
+					Tooltip:
+						'''
+						直线飞行，撞到敌人后弹开
+						随后会重新飞回这个敌人，第2次造成更高伤害
+						消失时释放三片镰刀，随后镰刀会开始往玩家处回收
+						[c/ffbcd5:“上面不都写了吗，这是可回收物”]
+						'''
+				}
+
+				ElementalLanceJav: {
+					DisplayName: 元素长枪
+					Tooltip:
+						'''
+						按照顺序丢出五种矛
+						日耀投矛命中后会持续追踪攻击目标4次
+						星璇投矛命中后会在目标头顶生成漩涡，漩涡会在几秒后向下释放闪电和导弹
+						星云投矛命中后会产生数条星云射线
+						星尘投矛会粘在目标身上持续造成伤害并在消失时生成4个星星
+						冥思投矛命中后会在接下来的几秒后造成巨大爆炸
+						[c/8e8e8e:“最应该出现的白矮星却没有到场”]
+						'''
+				}
+
+				GildedProboscisJav: {
+					DisplayName: 镀金鸟喙
+					GFBName: 癫痫屮
+					Tooltip:
+						'''
+						击中敌人时释放静电光球回到玩家身边随后产生一只癫狂龙裔
+						癫狂龙裔最多存在21只，如数量为满则提升长枪本体伤害
+						每一只的伤害会随着总数量的提升而变多
+						点击右键将它们全部发射出去
+						即使切换武器也不会导致癫狂龙裔消失
+						[c/ffc71d:“爱鸟人士表示强烈谴责”]
+						'''
+				}
+			}
+
+			EAfterDog: {
+				DragonRageJav: {
+					DisplayName: 巨龙之怒
+					Tooltip:
+						'''
+						手持时将不断旋转巨龙之怒轰炸接触到的敌怪
+						按住左键允许巨龙之怒在无限范围内追踪鼠标，但距离越远伤害越低
+						右键将旋转巨龙之怒并在周边持续生成光球，光球高速旋转一段时间后冲向鼠标位置
+						左键的优先级高于右键
+						[c/ffc27a:“它要转到什么时候”]
+						'''
+				}
+
+				NadirJav: {
+					DisplayName: 天底
+					Tooltip:
+						'''
+						飞行过程中和命中时都可以生成飞升的深渊精华
+						深渊精华能够追踪敌怪并在命中时释放数个虚空触手
+						[c/867891:“它从哪里飞出来的”]
+						'''
+				}
+
+				ScourgeoftheCosmosJav: {
+					DisplayName: 灾劫宙怨
+					Tooltip:
+						'''
+						手持时随机在周边落下苹果，长矛击中苹果时会获得追踪能力并为你回复2点生命
+						命中时释放数个只能直角拐弯的追踪型小吞噬者
+						[c/9d5ad0:“我是贪吃蛇，喜欢吃苹果，越吃越厉害”]
+						'''
+				}
+
+				StreamGougeJav: {
+					DisplayName: 宇宙暗流
+					Tooltip:
+						'''
+						扔出一根高速移动的长矛，在路径上持续产生长矛幻影伤害接触到的敌怪
+						长矛在穿透7次或飞行一小段时间后在原地爆炸
+						爆炸后会在周边5个敌人身上释放一个长矛幻影对其进行一次挥砍
+						[c/9d5ad0:“神秘七费艺术书页”]
+						'''
+				}
+
+				ViolenceJav: {
+					DisplayName: 恣睢
+					Tooltip:
+						'''
+						每次击中敌人都会从玩家处释放多个追踪硫火弹
+						默认释放2发，场上每存活一个敌方Boss单位便会增加一发
+						蠕虫类Boss仅算一个
+						[c/a50101:“你们一起上吧，我等不及了”]
+						'''
+				}
+			}
+		}
+	}
+}

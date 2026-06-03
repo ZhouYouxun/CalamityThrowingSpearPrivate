@@ -16,6 +16,7 @@ using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
+using CalamityThrowingSpear.Global;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
 {
@@ -55,7 +56,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.NadirC
         public override void AddRecipes()
         {
             CreateRecipe().
-                AddIngredient<ElementalLanceJav>().
+                AddRecipeGroup(CTSRecipeGroups.ElementalLanceGroup).
                 AddIngredient<AuricBar>(5).
                 AddIngredient<TwistingNether>(5).
                 AddIngredient<DarksunFragment>(8).

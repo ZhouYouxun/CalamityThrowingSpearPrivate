@@ -15,7 +15,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.ElectrocoagulationTe
 using CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.FinishingTouch;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch;
 using System;
 using System.Collections.Generic;
 using System.Linq;

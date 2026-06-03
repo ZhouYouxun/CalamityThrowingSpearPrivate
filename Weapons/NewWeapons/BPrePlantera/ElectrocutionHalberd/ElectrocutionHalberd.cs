@@ -13,7 +13,7 @@ using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.SHPCK;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
-using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.Revelation;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation;
 using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
 

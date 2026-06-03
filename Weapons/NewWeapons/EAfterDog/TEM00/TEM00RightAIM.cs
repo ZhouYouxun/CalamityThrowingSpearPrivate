@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
 using Terraria.Utilities;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {

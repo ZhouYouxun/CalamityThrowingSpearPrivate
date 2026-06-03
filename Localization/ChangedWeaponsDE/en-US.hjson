@@ -1,0 +1,150 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			ChangedWeapons: {
+				DPreDog: {
+					BansheeHookJavPROJ.DisplayName: Banshee Claw
+					BansheeHookJavScythe.DisplayName: Banshee Claw Retrieving Scythe
+					ElementalLanceJavPROJNebula.DisplayName: Elemental Lance - Nebula
+					ElementalLanceJavPROJN.DisplayName: Elemental Lance Jav P R O J N
+					ElementalLanceJavPROJSolar.DisplayName: Elemental Lance - Solar
+					ElementalLanceJavPROJStardust.DisplayName: Elemental Lance - Stardust
+					ElementalLanceJavPROJS.DisplayName: Elemental Lance Jav P R O J S
+					ElementalLanceJavPROJVortex.DisplayName: Elemental Lance - Vortex
+					ElementalLanceJavPROJV.DisplayName: Elemental Lance Jav P R O J V
+					ElementalLanceJavPROJEntropy.DisplayName: Elemental Lance - Entropy
+					ElementalLanceJavPROJE.DisplayName: Elemental Lance Jav P R O J E
+					ELPStardust.DisplayName: Elemental Lance - Stardust Fragment
+					ELPVortexElectricity.DisplayName: Elemental Lance - Vortex Electricity
+					ELPVortexLighting.DisplayName: Elemental Lance - Vortex Lightning
+					ELPVortexSpark.DisplayName: Elemental Lance - Vortex Spark
+					ELPEntropyEXP.DisplayName: Elemental Lance - Entropy Blast
+					NebulaSLASH.DisplayName: Elemental Lance - Nebula Slash
+					GildedProboscisJavBIRD.DisplayName: Gilded Proboscis - Frenzied Dragonkin
+					GildedProboscisJavPROJ.DisplayName: Gilded Proboscis
+				}
+
+				EAfterDog: {
+					DragonRageJavPROJ.DisplayName: Dragon's Rage - Throwable
+					DRSparkInfernal.DisplayName: Dragon's Rage Infernal Firestorm Trigger
+					DragonRageFuckYou.DisplayName: Dragon's Rage Explosion
+					OrangeSLASH.DisplayName: Slash
+					NadirJavPROJ.DisplayName: Nadir
+					NadirJavVoidEssence.DisplayName: Nadir Void Essence
+					ScourgeoftheCosmosJavPROJ.DisplayName: Scourge of the Cosmos
+					ScourgeoftheCosmosJavMini.DisplayName: Mini Devourer
+					StreamGougeJavPortal.DisplayName: Cosmic Stream Portal
+					StreamGougeJavPROJ.DisplayName: Cosmic Stream
+					StreamGougeJavPROJSPLIT.DisplayName: Cosmic Stream Split Projectile
+					ViolenceJavLight.DisplayName: Rampage Light Beam
+					ViolenceJavPROJ.DisplayName: Rampage
+					StreamGougeJavEXP.DisplayName: Stream Gouge Jav E X P
+					DragonRageJavFire.DisplayName: Dragon Rage Jav Fire
+					DragonRageJavFireBall.DisplayName: Dragon Rage Jav Fire Ball
+					EndlessDevourJavOrbSmall.DisplayName: Endless Devour Jav Orb Small
+					StarsofDestinyRIGHTINV.DisplayName: Starsof Destiny R I G H T I N V
+					CTSEssenceFlame2.DisplayName: C T S Essence Flame2
+				}
+			}
+		}
+
+		ChangedWeapons: {
+			DPreDog: {
+				BansheeHookJav: {
+					DisplayName: Banshee Hook
+					Tooltip:
+						'''
+						Flies in a straight line and ricochets off enemies
+						Then returns to the same enemy, dealing increased damage on the second hit
+						Releases three scythes on disappearance, which later return to the player
+						[c/ffbcd5:“It says right there—this item is recyclable.”]
+						'''
+				}
+
+				ElementalLanceJav: {
+					DisplayName: Elemental Lance
+					Tooltip:
+						'''
+						Throws five types of javelins in order
+						Solar javelin continues to pursue and strike the target four times after impact
+						Vortex javelin creates a vortex above the target, which rains down lightning and missiles after a few seconds
+						Nebula javelin generates several nebula beams on hit
+						Stardust javelin sticks to the target, dealing damage over time and spawning four stars when it expires
+						Meld javelin causes a massive explosion a few seconds after impact
+						[c/8e8e8e:“The white dwarf was the only one who didn’t show up.”]
+						'''
+				}
+
+				GildedProboscisJav: {
+					DisplayName: Gilded Proboscis
+					GFBName: Seizure Spiker
+					Tooltip:
+						'''
+						On enemy hit, releases a static orb that returns to the player and spawns a Draconic Swarmer
+						Up to 21 Draconic Swarmers can exist at once; if at max, the lance itself deals increased damage
+						Each Swarmer deals more damage as their total number increases
+						Right-click to launch them all at once
+						Swarmers persist even when switching weapons
+						[c/ffc71d:“Bird lovers are absolutely outraged.”]
+						'''
+				}
+			}
+
+			EAfterDog: {
+				DragonRageJav: {
+					DisplayName: Dragon's Rage
+					Tooltip:
+						'''
+						While held, Dragon Rage continuously spins and bombards any enemies it touches
+						Holding left-click allows it to chase the cursor at unlimited range, with damage decreasing by distance
+						Right-click makes it spin in place, generating light orbs that rotate rapidly before charging toward the cursor
+						Left-click overrides right-click
+						[c/ffc27a:“How long is it gonna keep spinning?”]
+						'''
+				}
+
+				NadirJav: {
+					DisplayName: Nadir
+					Tooltip:
+						'''
+						Generates ascending Abyssal Essence both while flying and on impact
+						Abyssal Essences home in on enemies and release several void tendrils upon hitting them
+						[c/867891:“Where did that even come from?”]
+						'''
+				}
+
+				ScourgeoftheCosmosJav: {
+					DisplayName: Scourge of the Cosmos
+					Tooltip:
+						'''
+						While held, apples randomly fall nearby; if the lance strikes an apple, it gains homing and heals you for 2 HP
+						On hit, releases several homing Mini Devourers that can only turn at right angles
+						[c/9d5ad0:“I'm Snake.exe — I eat, I grow, I conquer.”]
+						'''
+				}
+
+				StreamGougeJav: {
+					DisplayName: Stream Gouge
+					Tooltip:
+						'''
+						Throws a high-speed lance that leaves behind damaging afterimages along its path
+						After piercing 7 times or flying for a short distance, it explodes in place
+						On explosion, releases an afterimage slash on up to 5 nearby enemies
+						[c/9d5ad0:“Worth it? Absolutely not—still cool as hell.”]
+						'''
+				}
+
+				ViolenceJav: {
+					DisplayName: Violence
+					Tooltip:
+						'''
+						Releases multiple homing Brimstone bolts from the player with every hit.
+						Defaults to releasing 3, increasing by one for each living enemy boss on the field.
+						Worm bosses only count as one.
+						[c/a50101:"Come at me, all of you."]
+						'''
+				}
+			}
+		}
+	}
+}

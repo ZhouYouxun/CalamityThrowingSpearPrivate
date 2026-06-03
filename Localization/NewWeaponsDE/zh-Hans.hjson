@@ -1,0 +1,475 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			NewWeapons: {
+				DPreDog: {
+					ElementalArkJavEonBolt.DisplayName: 元素爆裂弹
+					BloodstoneJavPROJ.DisplayName: 龙血长刀
+					ChaosWindJavAirburst.DisplayName: 无序狂风爆炸
+					ChaosWindJavElectromagneticBall.DisplayName: 无序狂风电磁球
+					ChaosWindJavLightningCloud.DisplayName: 无序狂风雷云
+					ChaosWindJavPROJ.DisplayName: 无序狂风
+					ChaosWindJavWind.DisplayName: 无序狂风小龙卷风
+					ElementalArkJavBlade.DisplayName: 鸢素方舟刀片
+					ElementalArkJavBlast.DisplayName: 鸢素方舟撕裂
+					ElementalArkJavFragments.DisplayName: 鸢素方舟残片
+					ElementalArkJavFragments05.DisplayName: 鸢素方舟残片
+					ElementalArkJavSUPERPROJ.DisplayName: 鸢素方舟聚合片
+					EndlessDevourJavOrb.DisplayName: 无止之噬暗能量
+					EndlessDevourJavPROJ.DisplayName: 无止之噬
+					BlackSLASH.DisplayName: 黑色斩切
+					InfiniteDarknessJavPROJ.DisplayName: 无边黑暗
+					InfiniteDarknessJavPROJStarBomb.DisplayName: 无边黑暗镰刀
+					SoulHunterJavPROJ.DisplayName: 魂狩
+					TerraLanceBEAM.DisplayName: 泰拉巨枪光束
+					TerraLancePROJ.DisplayName: 泰拉巨枪
+					BloodstoneRIGHT.DisplayName: 龙血千刃
+					// SunsetBForgetRightCut.DisplayName: Sunset B Forget Right Cut
+					// SunsetBForgetRight.DisplayName: Sunset B Forget Right
+					// SunsetBForgetLeft.DisplayName: Sunset B Forget Left
+					// SunsetASunsetRightEXP.DisplayName: Sunset A Sunset Right E X P
+					// SunsetASunsetRight.DisplayName: Sunset A Sunset Right
+					// SunsetASunsetLeft.DisplayName: Sunset A Sunset Left
+					// SunsetCConceptLeft.DisplayName: Sunset C Concept Left
+					// SunsetCConceptLeftEXP.DisplayName: Sunset C Concept Left E X P
+					// SunsetCConceptRight.DisplayName: Sunset C Concept Right
+					// SunsetCConceptRightCut.DisplayName: Sunset C Concept Right Cut
+					// SunsetCConceptLeftListener.DisplayName: Sunset C Concept Left Listener
+					// SunsetCConceptLeftBlack.DisplayName: Sunset C Concept Left Black
+					// SunsetCConceptLeftBlue.DisplayName: Sunset C Concept Left Blue
+					// SunsetCConceptLeftRed.DisplayName: Sunset C Concept Left Red
+					// SunsetCConceptLeftYellow.DisplayName: Sunset C Concept Left Yellow
+					// ChaosWindSpearWind.DisplayName: Chaos Wind Spear Wind
+					// TerraLanceSpearBEAM.DisplayName: Terra Lance Spear B E A M
+					// AuricSpearHoldOut.DisplayName: Auric Spear Hold Out
+					NuclearFuelRodPROJ.DisplayName: 核子风暴
+					NuclearFuelRodLazer.DisplayName: 辐射骇光
+					NuclearFuelRodL.DisplayName: 巨大辐射颗粒
+					NuclearFuelRodM.DisplayName: 迷你辐射颗粒
+					NuclearFuelRodSAM.DisplayName: 核子山姆
+					StarsofDestinyINV.DisplayName: 不可知之变数
+					EndlessDevourJavBlackHole.DisplayName: 无际黑洞
+					EndlessDevourJavBlackHoleIBV.DisplayName: 黑洞坍缩
+					EndlessDevourJavBlackHole2.DisplayName: 无际黑洞爆发
+					// NuclearFuelRodLightCircle.DisplayName: Nuclear Fuel Rod Light Circle
+					// SunsetCConceptRightCutBig.DisplayName: Sunset C Concept Right Cut Big
+					// SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
+					// SunsetCConceptRightCut1Time.DisplayName: Sunset C Concept Right Cut1 Time
+					// SunsetCConceptRightCut2Item.DisplayName: Sunset C Concept Right Cut2 Item
+					// SunsetCConceptRightCut3Space.DisplayName: Sunset C Concept Right Cut3 Space
+					// SunsetCConceptRightCut4Energy.DisplayName: Sunset C Concept Right Cut4 Energy
+					// SODLazer.DisplayName: S O D Lazer
+					// SODMoment.DisplayName: S O D Moment
+					// SODCLK50.DisplayName: S O D C L K50
+				}
+
+				EAfterDog: {
+					AuricJavBallPROJ.DisplayName: 金源量子冷却电池
+					AuricJavPROJ.DisplayName: 金源量子带电调试棒
+					FinishingTouchBALL.DisplayName: 灼焱余烬
+					FinishingTouchDASH.DisplayName: 狻猊腾云
+					FinishingTouchEPROJ.DisplayName: 画龙点睛敌对
+					FinishingTouchPROJ.DisplayName: 画龙点睛
+					FinishingTouchDASHFuckYou.DisplayName: 龙目
+					MiracleMatterJavLight.DisplayName: 恒辉之矛光束
+					MiracleMatterJavPROJ.DisplayName: 恒辉之矛
+					SawBladeForkHornJavPROJ.DisplayName: 锯刃叉角枪
+					SawBladeForkHornJavRIGHT.DisplayName: 锯刃叉角枪悬浮版本
+					SawBladeForkHornJavRPP.DisplayName: 锯刃叉角枪浮空弹
+					ShadowJavPROJ.DisplayName: 错误
+					TheOtherMiracleMatterJavExoFire.DisplayName: 视界探针激光
+					TheOtherMiracleMatterJavPROJ.DisplayName: 视界探针
+					ShadowJavREPROJ.DisplayName: 错乱
+					RevelationSUPERBoom.DisplayName: 启示录超级爆炸
+					RevelationSTAR.DisplayName: 启示录落星
+					RevelationSpark.DisplayName: 启示录火焰
+					RevelationPROJ.DisplayName: 启示录
+					RevelationBoom.DisplayName: 启示录常规爆炸
+					TheOtherMiracleMatterJavExoLightningBolt.DisplayName: 视界探针闪电
+					SoulSeekerJavBRID.DisplayName: 终幕残翼-至尊探魂眼
+					SoulSeekerJavPROJ.DisplayName: 终幕残翼
+					// TheOtherRevelationPROJ.DisplayName: The Other Revelation P R O J
+					TheOtherMiracleMatterJavEXP.DisplayName: 视界探针爆炸
+					PrimordialStatePROJ.DisplayName: 太极八荒
+					// StarsofDestinyLEFT.DisplayName: Starsof Destiny L E F T
+					// PrimeMeridianHouldOut.DisplayName: Prime Meridian Hould Out
+					AuricJavLighting.DisplayName: 金源球状闪电
+					// FinishingTouchLazer.DisplayName: Finishing Touch Lazer
+					SoulSeekerJavBRIDFire.DisplayName: 终幕火焰
+					// NuclearFuelRodLazer.DisplayName: Nuclear Fuel Rod Lazer
+					FinishingTouchINV.DisplayName: 龙玉
+					// FinishingTouchDragon1Head.DisplayName: Finishing Touch Dragon1 Head
+					FinishingTouchDragon.DisplayName: 应龙
+					// FinishingTouchEcho.DisplayName: Finishing Touch Echo
+					// FinishingTouchEchoCtrl.DisplayName: Finishing Touch Echo Ctrl
+					// TEM00LeftLazer.DisplayName: T E M00 Left Lazer
+					// TEM00Left.DisplayName: T E M00 Left
+					// TEM00Right.DisplayName: T E M00 Right
+					// TEM00RightAIM.DisplayName: T E M00 Right A I M
+					// TEM00LeftSuperLazer.DisplayName: T E M00 Left Super Lazer
+					// SODLazer.DisplayName: S O D Lazer
+					// SuperSOD.DisplayName: Super S O D
+					// AuricJavPROJL.DisplayName: Auric Jav P R O J L
+				}
+			}
+		}
+
+		NewWeapons: {
+			DPreDog: {
+				BloodstoneJav: {
+					DisplayName: 龙血长刀
+					Tooltip: "[GFB]"
+					TooltipGFB:
+						'''
+						按住左键持续消耗自身的生命力并相应增加这把矛的穿透次数与伤害
+						右键朝着鼠标方向扇形发射一组弹射长枪
+						击中敌人时将为自己回复血量
+						好像你确实可以用它来对付神明吞噬者
+						[c/cc0e11:“我借你一点血量，待会还你”]
+						'''
+					TooltipNormal:
+						'''
+						按住左键持续消耗自身的生命力并相应增加这把矛的穿透次数与伤害
+						右键朝着鼠标方向扇形发射一组弹射长枪
+						击中敌人时将为自己回复血量
+						不会有人用这东西来对付神明吞噬者吧？笑死我了！
+						[c/cc0e11:“我借你亿点血量，待会还你”]
+						'''
+				}
+
+				ChaosWindJav: {
+					DisplayName: 无序狂风
+					Tooltip:
+						'''
+						扔出一把受重力影响的高能风暴枪，在原地产生电磁球
+						如果在1.5秒内没有接触到敌人，那么产生超大范围的爆炸和大量闪电
+						否则只会产生较弱的爆炸和少量闪电
+						[c/6d63e0:“你看看你头顶呢，你再看看你头顶呢？”]
+						'''
+				}
+
+				ElementalArkJav: {
+					DisplayName: 鸢素方舟
+					Tooltip:
+						'''
+						[c/ffd700:以5次一个循环的方式丢出轨迹不同的元素残片]
+						[c/ffd700:第五下同时丢出刀片和残片，在终点处返回并产生大撕裂]
+						[c/ffa500:右键献祭大量生命值对现实进行多次切割]
+						经过了某人的改造，天赐之物展现出了更强大的力量
+						但同时，使用者也需付出一定的代价
+						[c/ff0000:如果有食用过4种提升最大生命值的物品]
+						[c/ff0000:献祭生命值时会付出更严重的代价]
+						[c/aa5fff:“世间万物皆有其价，无人能够幸免于难”]
+						'''
+				}
+
+				EndlessDevourJav: {
+					DisplayName: 无止之噬
+					Tooltip:
+						'''
+						握在手中蓄力并将其丢出
+						蓄力时间少于150产生追踪弹幕
+						大于150则会产生强大的超级黑洞
+						超级黑洞会不断喷出大量暗离子体并造成巨量伤害
+						[c/D3D3D3:“理论上连光都无法逃脱，但这个黑洞明显是个残次品”]
+						'''
+				}
+
+				InfiniteDarknessJav: {
+					DisplayName: 无边黑暗
+					Tooltip:
+						'''
+						极快的速度消失，随后出现在敌人旁边并刺向他同时丢出多个星空手里剑
+						如果在消失前击中敌人则造成更高的伤害
+						[c/492861:“避无可避，防不胜防”]
+						'''
+				}
+
+				SoulHunterJav: {
+					DisplayName: 魂狩
+					Tooltip: "[GFB]"
+					TooltipGFB: 师爷，屁股在树上呢，不疼了”
+					TooltipNormal:
+						'''
+						长矛能够在空中朝着最近的敌怪进行一次冲刺
+						命中时会在周边持续生成魂狩的复制体
+						在一段时间后产生一次巨大的深渊爆炸与3只追踪的充能猎魂鲨
+						如果找不到敌人，那么回到玩家身边并回血
+						[c/2836a1:“二哥！俺来诛你！”]
+						'''
+				}
+
+				TerraLance: {
+					DisplayName: 古茂垠峰
+					Tooltip:
+						'''
+						击中敌人之后释放泰拉爆炸
+						并从周围召唤数条无限穿透的泰拉激光
+						[c/89ff69:“半径半个屏幕的绿宝石水花”]
+						'''
+				}
+
+				NuclearFuelRod: {
+					DisplayName: 核子风暴
+					Tooltip:
+						'''
+						瞄准并释放一道无比强大的核激光，无限穿透
+						期间会释放大量的弹幕
+						拥有30秒的冷却
+						[c/95b47c:“我成为了死神，煎蛋的毁灭者”]
+						'''
+				}
+
+				Sunset: {
+					DisplayName: 落日
+					Tooltip: "[Stage]"
+					DisplayNameS0: 落日遗逢
+					TooltipS0:
+						'''
+						星辰在此坠落后，我们将执掌结局的形状
+						左键——四连投掷，标枪命中引爆小型恒星火焰。
+						右键——举枪于天，凝聚全宇宙的星辉，
+						化为一轮巨日坠落，带来湮灭般的爆炸。
+
+						有些承诺，需要以星辰为薪柴才能履行。
+						便是那场盛大焚烧后，唯一未被风化的灰烬。
+
+						它并不锋利——因为真正的终结，从来无需切割。
+						当群星被赋予“坠落”的意志，当沸腾的光年被压缩为一握之温。
+						它所代表的，便不再是毁灭，而是一种至高的仁慈：为所有奔流不息、疲惫不堪的存在，提供一个终于可以驻足的理由。
+
+						据说，在最后那个被凝固的黄昏里，没有挽歌。
+						只有光，以违背一切物理法则的姿态，温柔地匍匐下来，覆上两尊并肩的影子。
+						那是一个殉道者，能为一个世界写下的，最寂静的句号。
+
+						① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
+						   若独自无辅，则会净化一切负面诅咒。  
+
+						② 防御越坚，所受创伤越轻，  
+						   真防御与再生之力随之增强。  
+
+						③ 当防御归零，仅以翅膀与机动饰品御空时，  
+						   长枪苏醒，赋予毁灭性的馈赠：  
+						   伤害、穿甲与暴击飙升，  
+						   移动更迅疾，但免疫与减伤尽数剥夺，  
+						   最终一击，化为四倍的破灭之力。
+						'''
+					DisplayNameS1: 熏野夕唔
+					TooltipS1:
+						'''
+						在尽头踱步于最后坐标，铭刻追寻的永恒
+						左键——散射光矢，击中后召唤能量触手反复撕裂。
+						右键——长枪隐于掌心，召唤无数碎片与触手，
+						以敌人为中心，编织致命的囚笼。
+
+						有些路途，在迈出第一步时，就已抵达了永恒。
+						便是那条贯穿无数“不可能”的、血与魂铺就的归途。
+
+						其重量无法计量——那是无数次轮回中，积攒的所有“回望”的总和。
+						其锋刃无法定义——那是用“绝望”反复磨砺后，诞生的、足以刺穿“宿命”本身的尖锐。
+
+						她并非在“寻找”。只是在用每一次的抵达，对虚无本身进行一场漫长的、沉默的证伪。
+						证明纵使故事被重置，纵使名字被擦去，纵使连“曾经存在”的概念都被剥夺，仍有一些事物，能留下比金石更坚硬的痕迹。
+						这道蓝痕，便是虚无也无法消化、无法同化的“异物”，是锚定在所有破碎可能性中央的、唯一的真实坐标。
+
+						① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
+						   若独自无辅，则会净化一切负面诅咒。  
+
+						② 防御越坚，所受创伤越轻，  
+						   真防御与再生之力随之增强。  
+
+						③ 当防御归零，仅以翅膀与机动饰品御空时，  
+						   长枪苏醒，赋予毁灭性的馈赠：  
+						   伤害、穿甲与暴击飙升，  
+						   移动更迅疾，但免疫与减伤尽数剥夺，  
+						   最终一击，化为四倍的破灭之力。
+						'''
+					DisplayNameS2: 基理俯临
+					TooltipS2:
+						'''
+						当王冠扼杀自身，自由才开始真正的呼吸
+						切换形态——十枚灵感碎片浮现，环绕身侧。
+						左键——挥枪旋舞，近身撕裂，随后升枪，
+						于敌人身上召唤巨大的源初矩阵，锁定并啃噬其灵魂，
+						灵感碎片亦飞入阵中，化为毁灭之舞。
+						右键——举枪锁敌，时之碎片自虚空落下，
+						每三十枚汇聚成一枚超级时间碎片，
+						从天而降，碾碎时空。
+
+						有些王座，唯有在其崩塌时，才真正完成了加冕。
+						便是那顶被权力自身献祭的、至高冠冕的最终形态。
+
+						逻辑的王冠，本可定义“正确”，裁定“真实”，成为万有之上那唯一的、不容置疑的“作者”。
+						然而，真正的伟大，或许正在于对这般伟力的弃绝。他以创造者的权能，下达了唯一的、也是最终的神谕：
+						让“必然”之枷锁锈蚀，让“注定”之洪流改道，让每一个渺小的灵魂，都成为自己故事的、唯一的、且犯错也被允许的作者。
+
+						① 若携带其他辅助武器，它将以燃烧惩戒持有者；  
+						   若独自无辅，则会净化一切负面诅咒。  
+
+						② 防御越坚，所受创伤越轻，  
+						   真防御与再生之力随之增强。  
+
+						③ 当防御归零，仅以翅膀与机动饰品御空时，  
+						   长枪苏醒，赋予毁灭性的馈赠：  
+						   伤害、穿甲与暴击飙升，  
+						   移动更迅疾，但免疫与减伤尽数剥夺，  
+						   最终一击，化为四倍的破灭之力。
+						'''
+				}
+			}
+
+			EAfterDog: {
+				AuricJav: {
+					DisplayName: 金源量子带电调试棒
+					Tooltip:
+						'''
+						击中敌人后往左右各释放六发无限穿透的冷却电池并积攒电量
+						冷却电池在初始的12帧内不造成伤害
+						右键消耗电量发射一个高速追踪弹射球状闪电
+						[c/fff994:“到底是那个天才想到把电池插在棍子上当武器的]
+						[c/fff994:“我要用这玩意让他的脑袋好好‘冷却’一下”]
+						'''
+				}
+
+				FinishingTouch: {
+					DisplayName: 画龙点睛
+					Tooltip:
+						'''
+						左键丢出长枪，命中后沿着速度方向依次释放数个冲击波，造成多次伤害
+						每扔出九根长枪，第十根长枪便会被强化
+						强化长枪在飞行一段距离后会化作巨龙升入天空，随后猛然落下
+						右键将举起长枪，召唤巨龙与数颗龙珠
+						在一定的蓄力时间过后一同朝着鼠标方向发动冲刺
+						冲刺结束时会将所有龙珠朝着前方射出，并在短暂的延迟后追踪敌怪
+						如果你觉得这把矛很吵的话，你可以在[c/d3d3d3:配置设置]里剥夺它的发言权[c/ffa500::(]
+						[c/ff7335:“吾名为……Ki厚忒！我恸Ki厚忒！用此枪，终结这……荒唐而又幼稚的梦！”]
+						'''
+				}
+
+				MiracleMatterJav: {
+					DisplayName: 恒辉之矛
+					Tooltip:
+						'''
+						扎在敌人或者方块上，持续造成伤害
+						并在弹幕消失时爆发出多枚追踪能量弹
+						点击右键可以手动引爆所有扎在方块上的恒辉之矛
+						[c/757575:“比起隔壁，它有点轻”]
+						'''
+				}
+
+				TheOtherMiracleMatterJav: {
+					DisplayName: 视界探针
+					Tooltip:
+						'''
+						丢出缓慢的长枪，命中时产生爆炸同时从上方召唤多条激光与火焰
+						飞行一段时间后还未击中敌人则会往玩家处回收
+						回收阶段可以无限穿透
+						[c/757575:“比起隔壁，有亿点重”]
+						'''
+				}
+
+				SawBladeForkHornJav: {
+					DisplayName: 锯刃叉角枪
+					Tooltip:
+						'''
+						握在手里蓄力三秒并将其扔出
+						飞行过程中无限穿透且无视无敌帧
+						击中敌人时粉碎他们的防御力与伤害减免
+						每次击中敌人都会给予玩家可堆叠的防御力与伤害减免
+						右键消耗给玩家的可堆叠增益
+						同时丢出武器悬停在空中并进行额外的辅助攻击
+						[c/645c02:“最简单的逻辑，最粗暴的效果”]
+						'''
+				}
+
+				ShadowJav: {
+					DisplayName: E̸̬͖̋̈́R̷͉̐R̷̢̿͝O̴̮̯͗͑R̶̳̀̋
+					Tooltip:
+						'''
+						左键扔出长枪
+						飞行一小段距离后在原地分列出2~4发随机长枪
+						仅包含本模组的长枪弹幕，不包含开发者武器
+						分裂长枪时无视该长枪的限制
+						自身在分裂之后继续飞行并无限穿透
+						右键射出可以追踪并粘附在敌人身上的长枪
+						粘附过程中可以不断的从周围召唤随机长枪
+						右键长枪的存在期间点击左键或右键将会清除它并重新释放
+						[c/8f8f8f:“无视风险，继续安装”]
+						'''
+				}
+
+				Revelation: {
+					DisplayName: 启示录
+					Tooltip:
+						'''
+						长按左键将启示录握在手中，一秒之后松开左键将其丢出
+						握持时间少于一秒会降低一定程度的伤害，时间越短降伤越严重
+						点击鼠标右键可以手动摧毁存在的启示录
+						每命中敌人5次会使武器的强化提升一个等级，初始等级为零级
+						零级--命中后发生小范围爆炸
+						一级--伤害、速度与爆炸范围获得小幅提升
+						二级--自身高度发光，伤害大幅提升，飞行过程中伴随着追踪光矢
+						三级--进一步提升伤害，更换爆炸形态，爆炸会造成元素谐鸣
+						四级--进一步提升速度，爆炸时产生大量可以追踪敌人的彗星
+						受到伤害或者未击中任何物体时降低一个等级
+						不再持有该武器时将等级清空，再次切换回来不会恢复等级
+						[c/494949:“你可能听不太懂，但你应该会用”]
+						'''
+				}
+
+				SoulSeekerJav: {
+					DisplayName: 终幕残翼
+					Tooltip:
+						'''
+						命中敌人时开始螺旋飞行，并持续释放火焰弹
+						每次命中敌人都会获得一只至尊探魂眼
+						至尊探魂眼会盘旋着玩家
+						能够造成接触伤害的同时跟随武器本体攻击而进行协同攻击
+						点击右键命令他们全部冲刺过去，施加一秒钟的孱弱巫咒
+						至尊探魂眼最多存在10只，如果数量为满那么本体击中敌人造成更高的伤害
+						使用镀金鸟喙进行死灵灌注即可获取，丢进微光中转化回镀金鸟喙
+						[c/630000:“巨龙是喑哑的螺旋，自世界破碎的灵魂中汲取力量，徒长，直至落幕”]
+						'''
+				}
+
+				PrimordialState: {
+					DisplayName: 太极八荒
+					Tooltip:
+						'''
+						在飞行一段时间后开始追踪
+						追踪期间每隔12帧产生一个阴阳玉
+						阴阳玉会持续追踪长矛并造成高频的伤害
+						长矛追踪一段时间后会向着随机方向飞出
+						飞出时同时生成数个阴阳玉
+						阴阳玉会在击中时弹射并产生阴阳爆炸
+						[c/e1ffff:“断罪即为如此，非黑即白”]
+						[c/2f2f2f:“真理就存在于这黑白之间”]
+						'''
+				}
+
+				StarsofDestiny: {
+					DisplayName: 命定星启
+					Tooltip:
+						'''
+						左键投掷召唤时钟阵的长针，右键则投出自主追击的短针
+						左键攻击会累计时间刻痕，每一刻将强化一次右键攻击
+						按住上键攻击将唤来星辰骤雨
+						[c/e1ffff:“海洋与冰雪之国的女王把你误认为自己的爱人”]
+						'''
+				}
+
+				TEM00: {
+					DisplayName: 最低阶横模
+					Tooltip:
+						'''
+						左键持续扫射序列激光阵列，五轮之后释放终极光束
+						右键召唤环绕的激光枪，自动瞄准周围的敌人，并发射大量激光
+						手持时展开一个高维结构体，将所有玩家纳入其防御解算之中
+						注：首次使用需要激活
+						[c/00fff0:“我早已准备好迎接黑暗”]
+						'''
+				}
+			}
+		}
+	}
+}

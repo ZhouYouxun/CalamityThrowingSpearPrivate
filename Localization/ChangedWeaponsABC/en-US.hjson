@@ -1,0 +1,213 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			ChangedWeapons: {
+				APreHardMode: {
+					AmidiasTridentJavPROJ.DisplayName: Amidias Trident
+					AmidiasTridentJavWhirlpool.DisplayName: Amidias Trident Whirlpool
+					GoldplumeJavPROJ.DisplayName: Goldplume
+					SausageMakerJavPROJ.DisplayName: Sausage Maker Spear
+					YateveoBloomJavPROJ.DisplayName: Blooming Poison Vine
+					GoldplumeJavWind.DisplayName: Goldplume Jav Wind
+					GoldplumeJavFeather.DisplayName: Goldplume Jav Feather
+					AmidiasTridentJavWaterWall.DisplayName: Amidias Trident Jav Water Wall
+					YateveoBloomJavRight.DisplayName: Yateveo Bloom Jav Right
+				}
+
+				BPrePlantera: {
+					BrimlanceJavPROJ.DisplayName: Brimflame Spear
+					StarnightLanceJavBeam.DisplayName: Starnight Lance Beam
+					StarnightLanceJavPROJ.DisplayName: Starnight Lance
+					EarthenJavPROJ.DisplayName: Earthen Geofork
+					BrimlanceJavFireWall.DisplayName: Brimlance Jav Fire Wall
+					EarthenJavSHARD.DisplayName: Earthen Jav S H A R D
+				}
+
+				CPreMoodLord: {
+					AstralPikeJavPROJ.DisplayName: Astral Pike
+					AstralPikeSTAR.DisplayName: Astral Pike Star
+					BotanicPiercerJavPROJ.DisplayName: Botanic Piercer
+					BotanicPiercerJavPROJSPLIT.DisplayName: Botanic Piercer Beam
+					DiseasedJavLight.DisplayName: Diseased Pike Energy Bolt
+					DiseasedJavPROJ.DisplayName: Diseased Pike
+					GalvanizingGlaiveJavGaussEnergy.DisplayName: Gauss Energy Bolt
+					GalvanizingGlaiveJavGaussFlux.DisplayName: Gauss Flux Vortex
+					GalvanizingGlaiveJavPROJ.DisplayName: Gauss Split Blade
+					HellionFlowerJavPROJ.DisplayName: Hellion Flower Spear
+					HellionFlowerJavVine.DisplayName: Hellion Flower Spear Vine
+					TenebreusTidesJavPROJ.DisplayName: Tenebreus Tides
+					TenebreusTidesJavWaterSword.DisplayName: Tenebreus Tides Water Arrow
+					TyphonsGreedJavBubble.DisplayName: Typhon's Greed Bubble
+					TyphonsGreedJavPROJ.DisplayName: Typhon's Greed
+					VulcaniteLanceJavPROJ.DisplayName: Vulcanite Lance
+					VulcaniteLanceJavTinyFlare.DisplayName: Vulcanite Lance Flare Sprite
+					TyphonsGreedJavBubble2.DisplayName: Typhons Greed Jav Bubble2
+					HellionFlowerJavAbsorb.DisplayName: Hellion Flower Jav Absorb
+				}
+			}
+		}
+
+		ChangedWeapons: {
+			APreHardMode: {
+				AmidiasTridentJav: {
+					DisplayName: Amidias Trident
+					Tooltip:
+						'''
+						Throws a trident that embeds itself into enemies or terrain
+						Releases water blasts or lightning bolts upon disappearing
+						Right-click to recall the trident with infinite piercing during return
+						Emits a few homing waterspouts upon reaching the player
+						[c/5276fc:“So... do you want water, or do you want lightning?”]
+						'''
+				}
+
+				GoldplumeJav: {
+					DisplayName: Goldplume
+					Tooltip:
+						'''
+						While held, summons a whirlwind that follows the cursor
+						The javelin pierces twice and releases two feathers backward at fixed angles on hit
+						If the javelin hits the whirlwind, it gets pulled in and releases multiple feathers after a delay or upon impact
+						Feathers are affected by gravity and cannot pass through tiles or enemies
+						[c/52f2fc:“The Divine Feathers That Cleave Skulls”]
+						'''
+				}
+
+				SausageMakerJav: {
+					DisplayName: Sausage Maker
+					Tooltip:
+						'''
+						Pierce multiple times.
+						Releases homing blood bolts upon disappearing.
+						[c/a21c12:"Yummy!"]
+						'''
+				}
+
+				YateveoBloomJav: {
+					DisplayName: Yateveo Bloom
+					Tooltip:
+						'''
+						Bounces off tiles and releases deadly leaves toward the nearest enemy
+						Right-click to throw a poison vine javelin with infinite piercing
+						[c/34a212:“Give a rose, keep the blood”]
+						'''
+				}
+			}
+
+			BPrePlantera: {
+				BrimlanceJav: {
+					DisplayName: Brimlance
+					Tooltip:
+						'''
+						Continues flying after hitting an enemy and creates a brimstone ring
+						The ring damages enemies it touches and erupts with brimstone flames
+						[c/a21512:“Ah↑ha↓—a death circle!”]
+						'''
+				}
+
+				EarthenJav: {
+					DisplayName: Earthen
+					Tooltip:
+						'''
+						Sticks into tiles on hit
+						Then summons several flying rock shards in front of it
+						[c/ac8f50:“Tunnel warfare, Terra style”]
+						'''
+				}
+
+				StarnightLanceJav: {
+					DisplayName: Starnight Lance
+					Tooltip:
+						'''
+						Homes in on enemies and releases steering starlight beams upon disappearing
+						[c/f692ff:“Aurora Protocol”]
+						'''
+				}
+			}
+
+			CPreMoodLord: {
+				AstralPikeJav: {
+					DisplayName: Astral Pike
+					Tooltip:
+						'''
+						On enemy hit, the spear triggers a starburst and summons an astral construct at a distance
+						If it hits a tile, it phases through and homes in on a nearby enemy
+						[c/ffbf73:“A burrowing meteor”]
+						'''
+				}
+
+				BotanicPiercerJav: {
+					DisplayName: Botanic Piercer
+					Tooltip:
+						'''
+						Splits into two homing botanical energy bolts shortly after being thrown
+						The original javelin deals 150% damage before splitting
+						[c/8dff73:“No, you really don’t want it to hit directly”]
+						'''
+				}
+
+				DiseasedJav: {
+					DisplayName: Diseased Pike
+					Tooltip:
+						'''
+						Throws three homing spears that ricochet off enemies on contact
+						On second impact, releases a plague ring and three homing plague bolts
+						[c/49ff1f:“This plague does not include swine flu”]
+						'''
+				}
+
+				GalvanizingGlaiveJav: {
+					DisplayName: Galvanizing Glaive
+					Tooltip:
+						'''
+						Releases multiple energy bolts on enemy hit
+						Or generates a stationary magnetic vortex
+						[c/1ffbff:“Hot and neutral, side by side. Just one touch—and Zeus takes the shot.”]
+						'''
+				}
+
+				HellionFlowerJav: {
+					DisplayName: Hellion Flower
+					Tooltip:
+						'''
+						Pierces infinitely, releasing petals to both sides while flying and spawning seeds that follow alongside the spear
+						Seeds carry invisible damage auras, and the spear gradually slows down
+						Upon stopping, it releases poisonous gas and 6 thorn spikes
+						[c/007708:“Spring has come—so has your end.”]
+						'''
+				}
+
+				TenebreusTidesJav: {
+					DisplayName: Tenebreus Tides
+					Tooltip:
+						'''
+						While charging, continuously summons small tridents around the cursor, aiming at its position
+						Releasing the charge throws the main spear, spawning additional small tridents along its path
+						[c/001087:“Yes, I can confirm—Poseidon buys wholesale from me.”]
+						'''
+				}
+
+				TyphonsGreedJav: {
+					DisplayName: Typhon's Greed
+					Tooltip:
+						'''
+						Releases a burst of water orbs and enters a spinning attack mode after hitting a wall or flying for a time
+						During the spin, continuously emits homing water projectiles
+						[c/2f366b:“Typhon has no heart—but it has a stomach.”]
+						'''
+				}
+
+				VulcaniteLanceJav: {
+					DisplayName: Vulcanite Lance
+					Tooltip:
+						'''
+						Throws a gravity-affected spear
+						After a short delay, it erupts with three homing fireballs
+						On hitting a tile or at least two enemies, creates a large area of lingering flames
+						[c/ff8400:“A 1200°C shard of basalt”]
+						'''
+				}
+			}
+		}
+	}
+}

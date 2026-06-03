@@ -13,7 +13,7 @@ using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
 using Terraria.Audio;
 using System.ComponentModel;
-using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.StarsofDestiny;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny;
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 {

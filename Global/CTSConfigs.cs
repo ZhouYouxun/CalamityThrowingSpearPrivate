@@ -46,4 +46,13 @@ namespace CalamityThrowingSpear.Global
 
 
     }
+
+    public class CTSRecipeConfigs : ModConfig
+    {
+        public override ConfigScope Mode => ConfigScope.ServerSide;
+
+        [DefaultValue(false)]
+        [ReloadRequired]
+        public bool DeveloperWeaponsCraftable { get; set; }
+    }
 }

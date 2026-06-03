@@ -1,0 +1,390 @@
+Mods: {
+	CalamityThrowingSpear: {
+		DeveloperWeaponPanels: {
+			Guide: {
+				Subtitle: 模组说明
+				Acquisition:
+					'''
+					本模组内含所有原灾长枪的投掷版本。
+					请前往 设置 > 控制按键 > 配置自定义按键 > 更改长枪形态。
+					手持戳刺长枪按下切换键，可以切换至对应版本的投掷长枪，反之亦然。
+
+					感谢以下人员对 mod 作出的贡献，排名不分先后：
+					南鸢北笙、锯角、VectorChaos、终末犽戎、家庭电脑、沐雪凝春Yukimu、终子星Endticle Star。
+					'''
+			}
+
+			TheLastLance: {
+				Subtitle: 石板记录：一场没有人见证的处决
+				Acquisition:
+					'''
+					线索石板：在海洋群系击杀敌怪时获得。
+					武器获取：使用锚击杀海马，即可获得“最后的骑枪”。
+					'''
+			}
+
+			Sagittarius: {
+				Subtitle: 石板记录：人马座
+				Acquisition:
+					'''
+					线索石板：在拜月教徒被击败前挑战光之女皇，无论挑战成功与否都会获得。
+					武器获取：在同一场光之女皇战斗中受击不超过 4 次并击败她，即可获得“贯星枪-人马座”。
+					辅助配方：开启服务器配置“开发者武器可制作”后可制作。
+					'''
+			}
+
+			TidalMechanics: {
+				Subtitle: 石板记录：某一篇古生物海洋学研究论文
+				Acquisition:
+					'''
+					线索石板：在拜月教徒被击败前挑战猪龙鱼公爵，无论挑战成功与否都会获得。
+					武器获取：在 120 秒内击败猪龙鱼公爵，即可获得“潮汐”。
+					辅助配方：开启服务器配置“开发者武器可制作”后可制作。
+					'''
+			}
+
+			ElementalArk: {
+				Subtitle: 石板记录：星夜箴言
+				Acquisition:
+					'''
+					线索石板：击败第三个机械 Boss 时获得。
+					武器获取：不吃灾厄的四种永久水果，之后击败月球领主，即可获得“鸢素方舟”。
+					辅助配方：开启服务器配置“开发者武器可制作”后可制作。
+					'''
+			}
+
+			FinishingTouch: {
+				Subtitle: 石板记录：鳞蛇化龙
+				Acquisition:
+					'''
+					线索石板：击败痴愚金龙，或在犽戎进入二阶段前手持“画蛇添足”触发事件。
+					武器获取：犽戎血量降至指定阶段时，手持“画蛇添足”会触发坠落事件；事件弹幕结束后掉落“画龙点睛”。
+					也存在宇宙砧配方；开启服务器配置“开发者武器可制作”后会移除配方中的湮灭余烬需求。
+					'''
+			}
+
+			Revelation: {
+				Subtitle: 石板记录：启示录-前篇
+				Acquisition:
+					'''
+					线索石板：击败神明吞噬者时获得。
+					武器获取：将“创世纪”和“群星大炮”同时丢在世界中，二者会被合成为“启示录”。
+					辅助配方：开启服务器配置“开发者武器可制作”后可制作。
+					'''
+			}
+
+			StarsOfDestiny: {
+				Subtitle: 石板记录：不思议之旅
+				Acquisition:
+					'''
+					线索石板：击败噬魂幽花时获得。
+					武器获取：击败噬魂幽花后，手持金怀表或铂金怀表右键星辉信标，即可获得“命定星启”，怀表会被消耗。
+					辅助配方：开启服务器配置“开发者武器可制作”后可制作。
+					'''
+			}
+
+			SunsetSeed: {
+				Subtitle: 种子记录：落日
+				Acquisition:
+					'''
+					线索来源：夜晚击败亵渎天神，普罗维登斯时，种子有 50% 概率掉落。
+					武器获取：种下“小草种子”，等待其成长到最终阶段后敲掉植物，即可获得“落日”。
+					当前代码按游戏日推进成长阶段；若需要严格“七七四十九天”，还需要把成长阈值统一调整为 49 天。
+					'''
+			}
+		}
+
+		Projectiles: {
+			// SmallTridentProj.DisplayName: Small Trident Proj
+			// TideTridentProj.DisplayName: Tide Trident Proj
+			// TeachingProjectile.DisplayName: Teaching Projectile
+
+			CPreMoodLord: {
+				// DiseasedJavEXP.DisplayName: Diseased Jav E X P
+				// HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+				// VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+				// VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+			}
+
+			// GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
+			// ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
+			// BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
+			// DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+			// StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
+			// StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+			// StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+			// StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+			// FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
+
+			EAfterDog: {
+				// PrimordialStateLight.DisplayName: Primordial State Light
+				// PrimordialStateNight.DisplayName: Primordial State Night
+			}
+
+			// PrimordialStateSlash.DisplayName: Primordial State Slash
+			// SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
+			// SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
+			// SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
+			// SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
+			// SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
+			// SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
+			// StarsofDestinyLEFTCLK.DisplayName: Starsof Destiny L E F T C L K
+		}
+
+		Items: {
+			XiaoZhiTiaoSG: {
+				DisplayName: 人马座
+				Tooltip: "[c/ffe65c:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoTM: {
+				DisplayName: 某一篇古生物海洋学研究论文
+				Tooltip: "[c/56c0ff:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoEA: {
+				DisplayName: 星夜箴言
+				Tooltip: "[c/aa5fff:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoFT: {
+				DisplayName: 鳞蛇化龙
+				Tooltip: "[c/ffa648:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoLL: {
+				DisplayName: 一场没有人见证的处决
+				Tooltip: "[c/7ecaff:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoRE: {
+				DisplayName: 启示录-前篇
+				Tooltip: "[c/9ea2ae:点击左键以读取]"
+			}
+
+			KaiJuXiaoZhiTiao: {
+				DisplayName: 一张说明书？
+				Tooltip: "[c/7ac4ff:点击左键以读取]"
+			}
+
+			XiaoZhiTiaoSoD: {
+				DisplayName: 不思议之旅
+				Tooltip: "[c/c4f8ff:点击左键以读取]"
+			}
+
+			SunsetSEEDItem: {
+				DisplayName: 小草种子
+				Tooltip: 只是一颗种子，没什么特殊的含义
+			}
+		}
+
+		ModBuff: {
+			SagittariusEDebuff: {
+				DisplayName: 人马座耀光
+				Description:
+					'''
+					在白天降低30%的攻击力，在晚上降低50%的防御力
+					无论白天还是黑夜，这对于敌人来说都不是什么好事
+					'''
+			}
+
+			CreateVictoryPEBuff: {
+				DisplayName: 创造胜利
+				Description: 损失大量的生命值与防御力
+			}
+
+			SawBladeForkHornEDebuff: {
+				DisplayName: 粉碎性骨折
+				Description:
+					'''
+					就像名字一样
+					粉碎性骨折
+					'''
+			}
+
+			SawBladeForkHornPBuff: {
+				DisplayName: 防御膨胀学说
+				Description:
+					'''
+					可堆叠的防御力！
+					惊不惊喜？意不意外？
+					'''
+			}
+
+			TheLastLancePBuff: {
+				DisplayName: 冲锋形态
+				Description:
+					'''
+					其过往在陆地上逝去，当下与未来亦无意义。
+					唯有海洋，杀死海洋。			
+					'''
+			}
+
+			FinishingTouch10PBuff: {
+				DisplayName: 决斗降临
+				Description:
+					'''
+					大幅提高最终伤害，防御与伤害减免
+					将由我来刺穿！
+					'''
+			}
+		}
+
+		Configs: {
+			CTSConfigs: {
+				DisplayName: CTS Configs
+
+				EnableFTSound: {
+					Label: 开启部分武器的自定义语音
+					Tooltip:
+						'''
+						当前版本所有具有语音的武器：
+						画龙点睛
+						'''
+				}
+
+				EnableMeleeSpeed: {
+					Label: 禁用全局近战攻速加成（需要重新加载）
+					Tooltip:
+						'''
+						开启此选项后，将使本模组所有武器不受攻速加成影响
+						反之亦然
+						'''
+				}
+
+				EnableRogue: {
+					Label: 启用盗贼
+					Tooltip:
+						'''
+						将所有武器和弹幕的职业类型改为盗贼
+						注：开启后不会获得全新的潜伏攻击
+						'''
+				}
+
+				MeleeSpeedMultiplierMode: {
+					Label: 全局近战攻速加成调整
+					Tooltip:
+						'''
+						更改本模组的武器
+						让他们是否以及受到多少近战攻速加成
+						'''
+				}
+			}
+
+			CTSRecipeConfigs: {
+				DisplayName: CTS 配方配置
+
+				DeveloperWeaponsCraftable: {
+					Label: 开发者武器可制作
+					Tooltip:
+						'''
+						让开发者武器更好获取
+						需要重新加载
+						'''
+				}
+			}
+		}
+
+		Keybinds: {
+			更改长枪形态.DisplayName: 更改长枪形态
+			// 技能.DisplayName: Skill
+			// 武器技能.DisplayName: Weapon skill
+		}
+
+		Buffs: {
+			TimingBuff: {
+				// Description: Mods.CalamityThrowingSpear.Buffs.TimingBuff.Description
+				// DisplayName: Timing Buff
+			}
+
+			StarsofDestinyPBuff: {
+				DisplayName: 时之再生
+				Description:
+					'''
+					小幅度提升移动速度与再生速度
+					你的时间开始加速了！
+					'''
+			}
+
+			StarsofDestinyEDebuff: {
+				DisplayName: 时之烙印
+				Description:
+					'''
+					目标被时间标记
+					受到来自你的更高伤害
+					'''
+			}
+
+			StarsofDestinyP2Buff: {
+				DisplayName: 时律护佑
+				Description:
+					'''
+					大幅缩短负面状态的持续时间
+					并获得轻微的生命恢复
+					时间正在偏向你的一侧
+					'''
+			}
+
+			SurfeiterDrumEDebuff: {
+				// DisplayName: Surfeiter Drum E Debuff
+				// Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
+			}
+
+			SunsetCConceptPBuff: {
+				DisplayName: 概念支配
+				Description:
+					'''
+					逻辑的王冠轻触你的思维
+					抽象的力量正在为你重新编写结局
+					'''
+			}
+
+			SunsetBForgetPBuff: {
+				DisplayName: 永恒的爱
+				Description:
+					'''
+					勿忘草的花瓣在掌心轻轻飘散
+					温柔的记忆庇护着你的灵魂
+					'''
+			}
+
+			SunsetBForgetEDebuff: {
+				DisplayName: 幻梦回归
+				Description:
+					'''
+					泪珠折返至最初的坐标
+					目标被困在不断回响的幻梦中
+					'''
+			}
+
+			SunsetASunsetEDebuff: {
+				DisplayName: 落日余晖
+				Description:
+					'''
+					落日的余晖静静洒在草地上
+					目标在渐沉的光芒里逐渐枯萎
+					'''
+			}
+		}
+
+		TheSpecialText: {
+			ElementalArkJav2: 摄入了过量的色素!
+			ReworkPrompt: CTS：此武器可被转化投掷版本
+			TidalMechanicsFast: 你战胜了海洋，这是你的奖品！
+			TidalMechanicsSlow: 速度还有待提升，如果想获得更多奖励的话，就看看给你的这个东西吧！
+			SagittariusPerfect: 近乎无瑕的闪避，你征服了这场试炼。这是属于你的奖励。
+			SagittariusFailed: 你的闪避还不够完美。若想获得更高奖励，就减少失误吧。
+			TheLastLance: 你居然真的停下来找海马了……这东西送你吧，算是对你耐心的奖励。
+			Sunset1: 见证终焉
+			Sunset2: 记忆绽放
+			Sunset3: 定义改写
+		}
+
+		Tiles: {
+			// SunsetSEEDTile1.MapEntry: Sunset S E E D Tile1
+			// SunsetSEEDTile2.MapEntry: Sunset S E E D Tile2
+			// SunsetSEEDTile3.MapEntry: Sunset S E E D Tile3
+			// SunsetSEEDTile4.MapEntry: Sunset S E E D Tile4
+		}
+	}
+}

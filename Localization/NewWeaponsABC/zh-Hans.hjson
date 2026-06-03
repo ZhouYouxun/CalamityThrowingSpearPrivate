@@ -1,0 +1,294 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			NewWeapons: {
+				APreHardMode: {
+					BraisedPorkJavCloud.DisplayName: 卤肉矛毒云
+					BraisedPorkJavPROJ.DisplayName: 卤肉矛
+					ElectrocoagulationTenmonJavLight.DisplayName: 电凝十文字电光矢
+					ElectrocoagulationTenmonJavPROJ.DisplayName: 电凝十文字
+					GraniteJavPROJ.DisplayName: 花岗岩矛
+					RedtideJavPROJ.DisplayName: 赤潮矛
+					// WulfrimJavExtraPROJ.DisplayName: Wulfrim Hammer
+					WulfrimJavPROJ.DisplayName: 钨钢矛
+					RedtideJavEXP.DisplayName: 赤潮爆炸
+					TheBrokenPROJ.DisplayName: 破旧的长枪
+					TheBrokenSPIT.DisplayName: 破旧的长枪碎片
+					DLOASSnake3Tail.DisplayName: 画蛇添尾
+					DLOASSnake2Body.DisplayName: 画蛇添体
+					DLOASSnake1Head.DisplayName: 画蛇添头
+					DLOASPROJ.DisplayName: 画蛇添足
+					WulfrimJavExtraExtraEXP.DisplayName: 钨钢碎片
+					RedtideJavRight.DisplayName: 赤潮
+					// TheBrokenRight.DisplayName: The Broken Right
+					// TheBrokenSpit.DisplayName: The Broken Spit
+				}
+
+				BPrePlantera: {
+					SunEssenceJavBEAM.DisplayName: 光耀日激光
+					ChaosEssenceJavFIRE.DisplayName: 凯奥斯焰
+					ChaosEssenceJavPROJ.DisplayName: 凯奥斯
+					ElectrocutionHalberdPROJ.DisplayName: 电灼长戟
+					HeartSwordPROJ.DisplayName: 心之刺剑
+					HeartSwordPROJExtra.DisplayName: 心之刺剑僚机
+					PearlwoodJavPROJ.DisplayName: 珍珠木矛
+					PearlwoodJavRainbowFront.DisplayName: 珍珠木彩虹头部
+					PearlwoodJavRainbowTrail.DisplayName: 珍珠木彩虹尾部
+					PolarEssenceJavPROJ.DisplayName: 霜雪川
+					SHPCKEXP.DisplayName: SHPCK等离子爆炸
+					SHPCKFast.DisplayName: SHPCK右键攻击
+					SHPCKPROJ.DisplayName: SHPCK左键攻击
+					SunEssenceJavFeather.DisplayName: 光耀日羽毛
+					SunEssenceJavPROJ.DisplayName: 光耀日
+					SunEssenceJavSmallBEAM.DisplayName: 光耀日小型激光
+					TheLastLanceDASH.DisplayName: 最后的骑枪冲刺
+					TheLastLancePROJ.DisplayName: 最后的骑枪
+					TheLastLanceWater.DisplayName: 最后的骑枪水流
+					// SHPCKFast2.DisplayName: S H P C K Fast2
+					PearlwoodJavPROJINV.DisplayName: 珍珠木矛隐形弹幕
+					ElectrocutionHalberdField.DisplayName: 电圈
+					ElectrocutionHalberdRIGHT.DisplayName: 电灼球状闪电
+					// ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
+					// PearlwoodJavPROJ2.DisplayName: Pearlwood Jav P R O J2
+				}
+
+				CPreMoodLord: {
+					FestiveHalberdPROJ.DisplayName: 节日长戟
+					SagittariusPROJ.DisplayName: 贯星枪
+					SagittariusPROJECHO.DisplayName: 贯星枪蓄力攻击
+					SagittariusSPIT.DisplayName: 贯星枪分裂弹
+					TidalMechanicsBubbles.DisplayName: 潮汐泡泡
+					TidalMechanicsPROJ.DisplayName: 潮汐
+					TidalMechanicsShark.DisplayName: 潮汐鲨鱼
+					TidalMechanicsTyphoon.DisplayName: 潮汐台风
+					SurfeiterStonePillars.DisplayName: 石元柱
+					SurfeiterPROJ.DisplayName: 巴蛇吞象
+					// SurfeiterDrum.DisplayName: Surfeiter Drum
+					SurfeiterDrumINV.DisplayName: 音爆
+					SurfeiterDrumINVEXP.DisplayName: 音爆爆
+					FestiveHalberdSTAR.DisplayName: 圣诞星
+					SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
+				}
+			}
+		}
+
+		NewWeapons: {
+			APreHardMode: {
+				BraisedPorkJav: {
+					DisplayName: 卤肉矛
+					Tooltip:
+						'''
+						命中敌人后在原地产生毒云
+						毒云造成多段伤害
+						[c/daabff:“这也好次”]
+						'''
+				}
+
+				ElectrocoagulationTenmonJav: {
+					DisplayName: 电凝十文字
+					Tooltip:
+						'''
+						命中后往4个方向生成无限穿透的电磁凝胶矢
+						[c/ffabfa:“放心，这是经过食品级认证的，绝对…能吃…吃…吃…”]
+						'''
+				}
+
+				GraniteJav: {
+					DisplayName: 花岗岩矛
+					Tooltip:
+						'''
+						花岗岩矛会以无规则纯随机运动的方式投掷出去				
+						[c/8febff:“一分靠技巧，九十九分靠运气”]
+						'''
+				}
+
+				RedtideJav: {
+					DisplayName: 赤潮矛
+					Tooltip:
+						'''
+						左键丢出长矛在空中留下气泡并且多次穿透
+						在消失时造成小规模爆炸
+						右键丢出旋转追踪的长矛
+						[c/ffc3c6:“那一天的藻类，繁殖起来”]
+						'''
+				}
+
+				WulfrimJav: {
+					DisplayName: 钨钢矛
+					Tooltip:
+						'''
+						爆裂出多个不断弹跳的钨钢金属废料
+						点击右键提前引爆金属废料
+						[c/95b47c:“如果在浪费材料上排名话，这把武器绝对能排到第1”]
+						'''
+				}
+
+				TheBroken: {
+					DisplayName: 镀金银枪
+					Tooltip:
+						'''
+						左键扔出一根投矛，在短暂的延迟后依次弹出四根幻银矛
+						[c/e0e0e0:“百分之百伪黄金”]
+						'''
+				}
+
+				DLOAS: {
+					DisplayName: 画蛇添足
+					Tooltip:
+						'''
+						逐渐在空中减速并生成3条毒蛇在矛的周边盘旋
+						[c/492861:“蛇多了脚是龙还是蜥蜴”]
+						[c/FFA500:“不管它是龙还是蜥蜴，这壶酒都是我的”]
+						'''
+				}
+			}
+
+			BPrePlantera: {
+				ChaosEssenceJav: {
+					DisplayName: 凯奥斯
+					Tooltip:
+						'''
+						命中后产生爆炸并释放几个火焰弹
+						火焰弹能够在屏幕边缘反弹
+						[c/ff88a7:“我从爆炸和浓烟中走出”]
+						'''
+				}
+
+				ElectrocutionHalberd: {
+					DisplayName: 电灼长戟
+					Tooltip:
+						'''
+						按住左键举起长矛，凝聚不稳定的电能量，随后丢出
+						命中时在原地生成电圈
+						右键发射三个球状闪电，球状闪电击中时生成一道闪电
+						[c/99fffe:“安培定律”]
+						'''
+				}
+
+				HeartSword: {
+					DisplayName: 心之刺剑
+					Tooltip:
+						'''
+						按住左键在身边召唤三柄刺剑，松开左键使其冲向鼠标
+						刺剑在击中敌人时恢复少量生命值
+						[c/e97b7b:“万剑穿心之刑”]
+						'''
+				}
+
+				PearlwoodJav: {
+					DisplayName: 珍珠木矛
+					Tooltip:
+						'''
+						扎在敌人身上，并从下方召唤多个追踪的神圣光束
+						[c/bcb696:“刚刚是什么东西飞过来了”]
+						'''
+				}
+
+				PolarEssenceJav: {
+					DisplayName: 霜雪川
+					Tooltip:
+						'''
+						击中一次后获得弱追踪能力
+						消失时释放一片追踪雪花片
+						[c/b06dc3:“比她的两个哥哥要文静很多”]
+						'''
+				}
+
+				SHPCK: {
+					DisplayName: SHPCK
+					TooltipNormal:
+						'''
+						左键释放逐渐减速的超热等离子切割刀
+						缓慢在空中停下，并释放等离子爆炸
+						右键在敌怪体内生成一杆朝着自身快速回收的全息超热等离子切割刀
+						[c/99b3ff:“另一维度的传奇”]
+						'''
+					Tooltip: "[GFB]"
+					TooltipGFB: 传奇归来，现在
+				}
+
+				SunEssenceJav: {
+					DisplayName: 光耀日
+					Tooltip:
+						'''
+						击中敌人后在原地高速旋转并尝试跟上这个敌人
+						旋转期间从上空召唤许多天龙之羽
+						[c/fffaa3:“超音速羽毛”]
+						'''
+				}
+
+				TheLastLance: {
+					DisplayName: 最后的骑枪
+					Tooltip:
+						'''
+						左键丢出骑枪，命中时释放多道水流
+						自身造成冰河时代与霜冻
+						右键在短暂的旋转过后，向鼠标位置发动冲刺
+						背包里有该武器时若受到致命伤害则会抽出这把枪并执行无限冲刺
+						冲刺期间造成极高的毁灭性伤害
+						在海洋群系中造成更高伤害
+						无限冲刺可通过接触液体的方式来手动停下
+						[c/0024ff:“现在你是——命运的宠儿”]
+						'''
+				}
+			}
+
+			CPreMoodLord: {
+				FestiveHalberd: {
+					DisplayName: 节日长戟
+					Tooltip:
+						'''
+						在路径上不断的往上喷出大量的圣诞彩灯
+						命中时释放一颗追踪别人的五角星，同时释放大量的针刺和小礼物
+						[c/86ff4b:“我们可以天天都过圣诞节”]
+						'''
+				}
+
+				Sagittarius: {
+					DisplayName: 贯星枪-人马座
+					Tooltip:
+						'''
+						连续向自身周围抛出4柄贯星枪，迅速减速并锁定随后发动精准冲刺
+						当四柄贯星枪全部消散后，一柄巨型充能贯星枪自天而降
+						每次命中都会引发扇形爆发，释放出大量分裂长枪
+						击中敌人时施加“耀光”减益：
+						白天降低敌人30%攻击力，夜晚降低敌人50%防御力
+						[c/fff94b:“贯穿星辰”]
+						'''
+				}
+
+				TidalMechanics: {
+					DisplayName: 潮汐
+					Tooltip:
+						'''
+						快速消失并传送至上方尝试命中敌人
+						弹幕消失时在原地释放两个公转的无限穿透的台风
+						右键给自己套上一个泡泡，阻挡1次弹幕伤害后消失
+						随后进入30秒的冷却，右键可提早取消泡泡
+						手持该武器时，玩家背包里每有5个水元素的战士武器
+						便会给玩家提升75%的战士伤害与10点战士暴击率
+						[c/689bf4:“你看，又急”]
+						'''
+				}
+
+				Surfeiter: {
+					DisplayName: 巴蛇吞象
+					Tooltip:
+						'''
+						手持时在头顶生成一个鼓
+						左键扔出一根长枪，命中时在两侧分别生成一堵石墙碾压中间的敌人
+						在击中鼓时会产生对应的音波与火焰
+						音波会对敌人施加对应的减益，火焰会在一定时间的延迟后再次产生音波
+						笞：受到的伤害x1.03
+						杖：接触伤害降低30%
+						徒：降低40点防御
+						流：移动速度减半
+						死：每隔两秒受到5000点固定伤害
+						右键切换鼓的类型
+						[c/B8860B:“生犯贪嗔痴戾疑，死受鞭笞釜灼烹”]
+						'''
+				}
+			}
+		}
+	}
+}

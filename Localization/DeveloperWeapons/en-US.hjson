@@ -1,0 +1,387 @@
+Mods: {
+	CalamityThrowingSpear: {
+		DeveloperWeaponPanels: {
+			Guide: {
+				Subtitle: Mod guide
+				Acquisition:
+					'''
+					This mod contains thrown variants for Calamity's original spears.
+					Go to Settings > Controls > Mod Controls > Switch Spear.
+					Hold a thrusting spear and press the switch key to swap to its thrown variant, and vice versa.
+
+					Credits, in no particular order:
+					Nan Yuan Bei Sheng, Ju Jiao, VectorChaos, Zhongmo Yharon, Home Computer, Muxue Ningchun Yukimu, Zhongzi Xing Endticle Star.
+					'''
+			}
+
+			TheLastLance: {
+				Subtitle: Tablet record: An execution without witnesses
+				Acquisition:
+					'''
+					Tablet clue: obtained by killing enemies while in the Ocean biome.
+					Weapon: kill a Seahorse with an Anchor to obtain The Last Lance.
+					'''
+			}
+
+			Sagittarius: {
+				Subtitle: Tablet record: Sagittarius
+				Acquisition:
+					'''
+					Tablet clue: challenge the Empress of Light before the Lunatic Cultist is defeated. The tablet is awarded whether the challenge succeeds or fails.
+					Weapon: defeat the Empress of Light in that encounter while taking no more than 4 hits to obtain Starpiercer - Sagittarius.
+					Helper recipe: available when the server config Developer Weapons Craftable is enabled.
+					'''
+			}
+
+			TidalMechanics: {
+				Subtitle: Tablet record: A paleobiological oceanography paper
+				Acquisition:
+					'''
+					Tablet clue: challenge Duke Fishron before the Lunatic Cultist is defeated. The tablet is awarded whether the challenge succeeds or fails.
+					Weapon: defeat Duke Fishron within 120 seconds to obtain Tidal.
+					Helper recipe: available when the server config Developer Weapons Craftable is enabled.
+					'''
+			}
+
+			ElementalArk: {
+				Subtitle: Tablet record: Proverb of Starnight
+				Acquisition:
+					'''
+					Tablet clue: obtained when the third mechanical boss is defeated.
+					Weapon: defeat the Moon Lord without consuming any of Calamity's four permanent fruit boosters to obtain Kitelemental Ark.
+					Helper recipe: available when the server config Developer Weapons Craftable is enabled.
+					'''
+			}
+
+			FinishingTouch: {
+				Subtitle: Tablet record: Dragon Nirvana
+				Acquisition:
+					'''
+					Tablet clue: obtained by defeating Dragonfolly, or by triggering the Yharon event while holding Snake Embellishment before Yharon reaches phase two.
+					Weapon: when Yharon reaches the required health threshold, holding Snake Embellishment triggers the falling event; the event projectile drops Dragon's Ascent when it ends.
+					A Cosmic Anvil recipe also exists. Enabling Developer Weapons Craftable removes Ashes of Annihilation from that recipe.
+					'''
+			}
+
+			Revelation: {
+				Subtitle: Tablet record: Revelation - Part I
+				Acquisition:
+					'''
+					Tablet clue: obtained by defeating the Devourer of Gods.
+					Weapon: drop Ultima and Starmada into the world at the same time; they merge into Revelation.
+					Helper recipe: available when the server config Developer Weapons Craftable is enabled.
+					'''
+			}
+
+			StarsOfDestiny: {
+				Subtitle: Tablet record: A Wondrous Journey
+				Acquisition:
+					'''
+					Tablet clue: obtained by defeating Polterghast.
+					Weapon: after Polterghast is defeated, right-click the Astral Beacon while holding a Gold Watch or Platinum Watch to obtain Chronoseeker. The watch is consumed.
+					Helper recipe: available when the server config Developer Weapons Craftable is enabled.
+					'''
+			}
+
+			SunsetSeed: {
+				Subtitle: Seed record: Sunset
+				Acquisition:
+					'''
+					Clue source: defeat Providence at night for a 50% chance to drop the seed.
+					Weapon: plant Grass Seed, wait for it to reach its final stage, then break the plant to obtain Sunset.
+					The current code advances growth by in-game days. If the intended rule is exactly 49 days, the growth thresholds still need to be unified to 49.
+					'''
+			}
+		}
+
+		Projectiles: {
+			SmallTridentProj.DisplayName: Small Trident Proj
+			TideTridentProj.DisplayName: Tide Trident Proj
+			TeachingProjectile.DisplayName: Teaching Projectile
+
+			CPreMoodLord: {
+				DiseasedJavEXP.DisplayName: Diseased Jav E X P
+				HellionFlowerJavSPIT.DisplayName: Hellion Flower Jav S P I T
+				VulcaniteLanceJavFlame.DisplayName: Vulcanite Lance Jav Flame
+				VulcaniteLanceJavSuperFlame.DisplayName: Vulcanite Lance Jav Super Flame
+			}
+
+			GildedProboscisJavINV.DisplayName: Gilded Proboscis Jav I N V
+			ScourgeoftheCosmosJavApple.DisplayName: Scourgeofthe Cosmos Jav Apple
+			BPrePlantera.ElectrocutionHalberdLIGHTING.DisplayName: Electrocution Halberd L I G H T I N G
+			DPreDog.SoulHunterJavSHARK.DisplayName: Soul Hunter Jav S H A R K
+			StarsofDestinyLSTAR.DisplayName: Starsof Destiny L S T A R
+			StarsofDestinyRIGHT.DisplayName: Starsof Destiny R I G H T
+			StarsofDestinyRLIGHT.DisplayName: Starsof Destiny R L I G H T
+			StarsofDestinyRStandField.DisplayName: Starsof Destiny R Stand Field
+			FinishingTouchDASHINV.DisplayName: Finishing Touch D A S H I N V
+
+			EAfterDog: {
+				PrimordialStateLight.DisplayName: Primordial State Light
+				PrimordialStateNight.DisplayName: Primordial State Night
+			}
+
+			PrimordialStateSlash.DisplayName: Primordial State Slash
+			SunsetBForgetTantacle.DisplayName: Sunset B Forget Tantacle
+			SunsetCConceptLeftMagic.DisplayName: Sunset C Concept Left Magic
+			SunsetCConceptLeftNoDamage.DisplayName: Sunset C Concept Left No Damage
+			SunsetCConceptRightMagic.DisplayName: Sunset C Concept Right Magic
+			SunsetCConceptLeftMagic2.DisplayName: Sunset C Concept Left Magic2
+			SunsetASunsetRightEXPMagic2.DisplayName: Sunset A Sunset Right E X P Magic2
+			StarsofDestinyLEFTCLK.DisplayName: Starsof Destiny L E F T C L K
+		}
+
+		Items: {
+			XiaoZhiTiaoSG: {
+				DisplayName: Sagittarius
+				Tooltip: "[c/ffe65c:Left-click to read]"
+			}
+
+			XiaoZhiTiaoTM: {
+				DisplayName: A research paper on paleobiological oceanography
+				Tooltip: "[c/56c0ff:Left-click to read]"
+			}
+
+			XiaoZhiTiaoEA: {
+				DisplayName: Proverb of Starnight
+				Tooltip: "[c/aa5fff:Left-click to read]"
+			}
+
+			XiaoZhiTiaoFT: {
+				DisplayName: Dragon Nirvana
+				Tooltip: "[c/ffa648:Left-click to read]"
+			}
+
+			XiaoZhiTiaoLL: {
+				DisplayName: An execution without witnesses
+				Tooltip: "[c/7ecaff:Left-click to read]"
+			}
+
+			XiaoZhiTiaoRE: {
+				DisplayName: Revelation - Part I
+				Tooltip: "[c/9ea2ae:Left-click to read]"
+			}
+
+			KaiJuXiaoZhiTiao: {
+				DisplayName: An instruction manual?
+				Tooltip: "[c/7ac4ff:Left-click to read]"
+			}
+
+			XiaoZhiTiaoSoD: {
+				DisplayName: A Wondrous Journey
+				Tooltip: "[c/c4f8ff:Left-click to read]"
+			}
+
+			SunsetSEEDItem: {
+				DisplayName: Grass Seed
+				Tooltip: Just a seed, nothing special about it.
+			}
+		}
+
+		ModBuff: {
+			SagittariusEDebuff: {
+				DisplayName: Sagittarius Flare
+				Description:
+					'''
+					Reduces attack power by 30% during the day and defense power by 50% at night
+					Whether it is day or night, this is not a good thing for the enemy
+					'''
+			}
+
+			CreateVictoryPEBuff: {
+				DisplayName: Create Victory
+				Description: Loses a lot of health and defense
+			}
+
+			SawBladeForkHornEDebuff: {
+				DisplayName: Comminuted Fracture
+				Description:
+					'''
+					Just like the name
+					Comminuted Fracture
+					'''
+			}
+
+			SawBladeForkHornPBuff: {
+				DisplayName: Theory of Defense Expansion
+				Description:
+					'''
+					Stackable defense power!
+					Surprising? Unexpected?
+					'''
+			}
+
+			TheLastLancePBuff: {
+				DisplayName: Charge Form
+				Description:
+					'''
+					The past died on the land, and neither the present nor the future have any meaning. 
+					Only the ocean; kill the ocean. 
+					'''
+			}
+
+			FinishingTouch10PBuff: {
+				DisplayName: Finishing Touch10 P Buff
+				Description: Mods.CalamityThrowingSpear.ModBuff.FinishingTouch10PBuff.Description
+			}
+		}
+
+		Configs: {
+			CTSConfigs: {
+				DisplayName: CTS Configs
+
+				EnableFTSound: {
+					Label: Enable custom voice for some weapons
+					Tooltip:
+						'''
+						All weapons with voice in the current version:
+						Dragon's Ascent
+						'''
+				}
+
+				EnableMeleeSpeed: {
+					Label: Melee Speed Control (Need to reload)
+					Tooltip:
+						'''
+						After turning on this option, all weapons in this mod will NOT be affected by the melee attack speed bonus. 
+						Vice versa
+						'''
+				}
+
+				EnableRogue: {
+					Label: EnableRogue
+					Tooltip:
+						'''
+						Changed all weapons class type to Rogue
+						It will not include new forms of attacks
+						'''
+				}
+
+				MeleeSpeedMultiplierMode: {
+					Label: Global Melee Speed Scaling
+					Tooltip:
+						'''
+						Change how this mod's weapons
+						are affected by melee speed bonuses,
+						and to what extent.
+						'''
+				}
+			}
+
+			CTSRecipeConfigs: {
+				DisplayName: CTS Recipe Configs
+
+				DeveloperWeaponsCraftable: {
+					Label: Developer Weapons Craftable
+					Tooltip:
+						'''
+						Makes developer weapons easier to obtain.
+						Requires reload.
+						'''
+				}
+			}
+		}
+
+		Keybinds: {
+			更改长枪形态.DisplayName: Switch Spear
+			技能.DisplayName: Skill
+			武器技能.DisplayName: Weapon skill
+		}
+
+		Buffs: {
+			TimingBuff: {
+				Description: Mods.CalamityThrowingSpear.Buffs.TimingBuff.Description
+				DisplayName: Timing Buff
+			}
+
+			StarsofDestinyPBuff: {
+				DisplayName: Chrono Regeneration
+				Description:
+					'''
+					Slightly increases movement speed and life regeneration
+					Your time begins to accelerate!
+					'''
+			}
+
+			StarsofDestinyEDebuff: {
+				DisplayName: Chrono Mark
+				Description:
+					'''
+					The target is marked by time
+					Takes increased damage from you
+					'''
+			}
+
+			StarsofDestinyP2Buff: {
+				DisplayName: Temporal Shelter
+				Description:
+					'''
+					Greatly shortens the duration of negative debuffs
+					Grants minor life regeneration
+					Time bends in your favor
+					'''
+			}
+
+			SurfeiterDrumEDebuff: {
+				DisplayName: Surfeiter Drum E Debuff
+				Description: Mods.CalamityThrowingSpear.Buffs.SurfeiterDrumEDebuff.Description
+			}
+
+			SunsetCConceptPBuff: {
+				DisplayName: Concept Dominion
+				Description:
+					'''
+					The crown of logic brushes against your thoughts
+					Abstract power quietly rewrites your fate
+					'''
+			}
+
+			SunsetBForgetPBuff: {
+				DisplayName: Eternal Affection
+				Description:
+					'''
+					Forget-me-not petals drift across your palm
+					Gentle memories form a protective embrace
+					'''
+			}
+
+			SunsetBForgetEDebuff: {
+				DisplayName: Dream Reversion
+				Description:
+					'''
+					Tears return to their very first coordinates
+					The target is trapped within an echoing dream
+					'''
+			}
+
+			SunsetASunsetEDebuff: {
+				DisplayName: Sunset Afterglow
+				Description:
+					'''
+					The last light of dusk settles upon the grass
+					The target withers beneath the fading glow
+					'''
+			}
+		}
+
+		TheSpecialText: {
+			ElementalArkJav2: ingested too many pigments
+			ReworkPrompt: CTS: This weapon can be converted into a throwing version
+			TidalMechanicsFast: You have conquered the ocean. This is your reward!
+			TidalMechanicsSlow: Your speed still needs improvement. If you want greater rewards, take a look at what I've given you.
+			SagittariusPerfect: Nearly flawless evasion—you have conquered this trial. This is your reward.
+			SagittariusFailed: Your evasion is not yet perfect. If you want greater rewards, make fewer mistakes.
+			TheLastLance: You actually slowed down and looked for a seahorse... Fine, take this. Consider it a reward for your patience.
+			Sunset1: Witnessing the End
+			Sunset2: Memories Blossom
+			Sunset3: Redefining the Definition
+		}
+
+		Tiles: {
+			SunsetSEEDTile1.MapEntry: Sunset S E E D Tile1
+			SunsetSEEDTile2.MapEntry: Sunset S E E D Tile2
+			SunsetSEEDTile3.MapEntry: Sunset S E E D Tile3
+			SunsetSEEDTile4.MapEntry: Sunset S E E D Tile4
+		}
+	}
+}

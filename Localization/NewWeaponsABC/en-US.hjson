@@ -1,0 +1,300 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			NewWeapons: {
+				APreHardMode: {
+					BraisedPorkJavCloud.DisplayName: Meat Stewer Poison Cloud
+					BraisedPorkJavPROJ.DisplayName: Meat Stewer
+					ElectrocoagulationTenmonJavLight.DisplayName: Electrocoagulation Tenmon Electric Arrow
+					ElectrocoagulationTenmonJavPROJ.DisplayName: Electrocoagulation Tenmon
+					GraniteJavPROJ.DisplayName: Granite Spear
+					RedtideJavPROJ.DisplayName: Redtide Spear
+					WulfrimJavExtraPROJ.DisplayName: Wulfrim Hammer
+					WulfrimJavPROJ.DisplayName: Wulfrim Spear
+					RedtideJavEXP.DisplayName: Redtide Explosion
+					TheBrokenPROJ.DisplayName: The Broken Spear
+					TheBrokenSPIT.DisplayName: The Broken Spits
+					DLOASSnake3Tail.DisplayName: D L O A S Snake3 Tail
+					DLOASSnake2Body.DisplayName: D L O A S Snake2 Body
+					DLOASSnake1Head.DisplayName: D L O A S Snake1 Head
+					DLOASPROJ.DisplayName: D L O A S P R O J
+					WulfrimJavExtraExtraEXP.DisplayName: Wulfrim Jav Extra Extra E X P
+					RedtideJavRight.DisplayName: Redtide Jav Right
+					TheBrokenRight.DisplayName: The Broken Right
+					TheBrokenSpit.DisplayName: The Broken Spit
+				}
+
+				BPrePlantera: {
+					SunEssenceJavBEAM.DisplayName: Radiant Sun Laser
+					ChaosEssenceJavFIRE.DisplayName: Kaios Flame
+					ChaosEssenceJavPROJ.DisplayName: Kaios Spear
+					ElectrocutionHalberdPROJ.DisplayName: Electrocution Halberd
+					HeartSwordPROJ.DisplayName: Heart Stinger Sword
+					HeartSwordPROJExtra.DisplayName: Heart Sword Wingman
+					PearlwoodJavPROJ.DisplayName: Pearlwood Spear
+					PearlwoodJavRainbowFront.DisplayName: Pearlwood Rainbow Tip
+					PearlwoodJavRainbowTrail.DisplayName: Pearlwood Rainbow Trail
+					PolarEssenceJavPROJ.DisplayName: Frost Stream
+					SHPCKEXP.DisplayName: SHPCK Plasma Explosion
+					SHPCKFast.DisplayName: SHPCK Right-Click Attack
+					SHPCKPROJ.DisplayName: SHPCK Left-Click Attack
+					SunEssenceJavFeather.DisplayName: Radiant Sun Feather
+					SunEssenceJavPROJ.DisplayName: Radiant Sun
+					SunEssenceJavSmallBEAM.DisplayName: Radiant Sun Small Laser
+					TheLastLanceDASH.DisplayName: The Last Lance Dash
+					TheLastLancePROJ.DisplayName: The Last Lance
+					TheLastLanceWater.DisplayName: The Last Lance Waterflow
+					SHPCKFast2.DisplayName: S H P C K Fast2
+					PearlwoodJavPROJINV.DisplayName: Pearlwood Jav P R O J I N V
+					ElectrocutionHalberdField.DisplayName: Electrocution Halberd Field
+					ElectrocutionHalberdRIGHT.DisplayName: Electrocution Halberd R I G H T
+					ElectrocutionHalberdRIGHTJav.DisplayName: Electrocution Halberd R I G H T Jav
+					PearlwoodJavPROJ2.DisplayName: Pearlwood Jav P R O J2
+				}
+
+				CPreMoodLord: {
+					FestiveHalberdPROJ.DisplayName: Festive Halberd
+					SagittariusPROJ.DisplayName: Starpiercer
+					SagittariusPROJECHO.DisplayName: Starpiercer Charged Attack
+					SagittariusSPIT.DisplayName: Starpiercer Split
+					TidalMechanicsBubbles.DisplayName: Tidal Bubbles
+					TidalMechanicsPROJ.DisplayName: Tidal
+					TidalMechanicsShark.DisplayName: Tidal Shark
+					TidalMechanicsTyphoon.DisplayName: Tidal Typhoon
+					SurfeiterStonePillars.DisplayName: Surfeiter Stone Pillars
+					SurfeiterPROJ.DisplayName: Surfeiter P R O J
+					SurfeiterDrum.DisplayName: Surfeiter Drum
+					SurfeiterDrumINV.DisplayName: Surfeiter Drum I N V
+					SurfeiterDrumINVEXP.DisplayName: Surfeiter Drum I N V E X P
+					FestiveHalberdSTAR.DisplayName: Festive Halberd S T A R
+					SurfeiterDrumINVBack.DisplayName: Surfeiter Drum I N V Back
+				}
+			}
+		}
+
+		NewWeapons: {
+			APreHardMode: {
+				BraisedPorkJav: {
+					DisplayName: Meat Stewer
+					Tooltip:
+						'''
+						Creates a poison cloud at the impact point after hitting an enemy.
+						The poison cloud deals multiple hits of damage.
+						[c/daabff:"Yummy too"]
+						'''
+				}
+
+				ElectrocoagulationTenmonJav: {
+					DisplayName: Electrocoagulation Cross
+					Tooltip:
+						'''
+						On hit, releases infinitely piercing electro-gel bolts in four directions
+						[c/ffabfa:“Don’t worry, it’s food-grade certified—absolutely…edible…ible…ible…”]
+						'''
+				}
+
+				GraniteJav: {
+					DisplayName: Granite Lance
+					Tooltip:
+						'''
+						The lance is thrown in a completely erratic, randomized trajectory
+						[c/8febff:“One part skill, ninety-nine parts luck.”]
+						'''
+				}
+
+				RedtideJav: {
+					DisplayName: Redtide Lance
+					Tooltip:
+						'''
+						Left-click throws a lance that leaves bubbles midair and pierces multiple times  
+						Explodes in a small area upon disappearing  
+						Right-click throws a spinning, homing lance  
+						[c/ffc3c6:“That day, the algae began to bloom.”]
+						'''
+				}
+
+				WulfrimJav: {
+					DisplayName: Wulfrum Lance
+					Tooltip:
+						'''
+						Explodes into multiple bouncing Wulfrum metal scraps  
+						Right-click to prematurely detonate all scraps  
+						[c/95b47c:“If wasting materials were a sport, this weapon would be world champion.”]
+						'''
+				}
+
+				TheBroken: {
+					DisplayName: Gilded Silver Lance
+					Tooltip:
+						'''
+						Left-click throws a spear that, after a short delay, ejects four mithril phantoms in sequence  
+						[c/e0e0e0:“100% certified fake gold.”]
+						'''
+				}
+
+				DLOAS: {
+					DisplayName: Snake Embellishment
+					Tooltip:
+						'''
+						Gradually slows down midair while summoning 3 venomous serpents to spiral around the spear  
+						[c/492861:“If a snake grows legs, is it a dragon or a lizard?”]  
+						[c/FFA500:“Whatever it is, the wine’s still mine.”]
+						'''
+				}
+			}
+
+			BPrePlantera: {
+				ChaosEssenceJav: {
+					DisplayName: The Kaios
+					Tooltip:
+						'''
+						Explodes on impact and releases several firebolts  
+						Firebolts can bounce off the edges of the screen  
+						[c/ff88a7:“I walk out from the fire and smoke.”]
+						'''
+				}
+
+				ElectrocutionHalberd: {
+					DisplayName: Electrocution Halberd
+					Tooltip:
+						'''
+						Hold left-click to raise the halberd and charge unstable electricity before throwing  
+						On hit, generates an electric ring at the point of impact  
+						Right-click to launch three orbs of lightning, each spawning a lightning strike on contact  
+						[c/99fffe:“Ampère’s Law.”]
+						'''
+				}
+
+				HeartSword: {
+					DisplayName: Heart Rapier
+					Tooltip:
+						'''
+						Hold left-click to summon three piercing blades around you; release to launch them at the cursor  
+						Blades restore a small amount of health on hit  
+						[c/e97b7b:“A punishment of a thousand blades through the heart.”]
+						'''
+				}
+
+				PearlwoodJav: {
+					DisplayName: Pearlwood Pike
+					Tooltip:
+						'''
+						Entombs an enemy and summons multiple homing holy beams from below.
+						[c/bcb696:“What was that that just flew past?”]
+						'''
+				}
+
+				PolarEssenceJav: {
+					DisplayName: Frost Stream
+					Tooltip:
+						'''
+						Gains weak homing after the first hit  
+						Releases a homing snowflake burst upon disappearing  
+						[c/b06dc3:“Much quieter than her two brothers.”]
+						'''
+				}
+
+				SHPCK: {
+					DisplayName: SHPCK
+					TooltipNormal:
+						'''
+						Left-click to release a superheated plasma cutter that gradually slows down,  
+						stopping midair and causing a plasma explosion  
+						Right-click to summon a holographic plasma cutter inside an enemy, which rapidly returns to you  
+
+						[c/99b3ff:"A legend from another dimension."]
+						'''
+					Tooltip: "[GFB]"
+					TooltipGFB: LEGEND
+				}
+
+				SunEssenceJav: {
+					DisplayName: Radiant Sun
+					Tooltip:
+						'''
+						On hit, rapidly spins in place while attempting to follow the struck enemy  
+						During the spin, summons numerous Sky Dragon Feathers from above  
+						[c/fffaa3:“Supersonic feathers.”]
+						'''
+				}
+
+				TheLastLance: {
+					DisplayName: The Last Lance
+					Tooltip:
+						'''
+						Left-click to throw the lance, releasing streams of water upon impact.
+						Applies Glacial State and Frostburn debuffs.
+						Right-click to dash toward the cursor after a brief spin.
+						If in the inventory, triggers an infinite dash upon taking lethal damage,
+						dealing devastating damage during the dash.
+						Deals more damage in the Ocean biome.
+						The infinite dash can be manually stopped by contacting liquid.
+						[c/0024ff:"You are now—Fate's Favored Child."]
+						'''
+				}
+			}
+
+			CPreMoodLord: {
+				FestiveHalberd: {
+					DisplayName: Festive Halberd
+					Tooltip:
+						'''
+						Sprays out streams of Christmas lights along its flight path  
+						On hit, releases a homing star along with a burst of spikes and tiny presents  
+						[c/86ff4b:“We can have Christmas every day.”]
+						'''
+				}
+
+				Sagittarius: {
+					DisplayName: Starpiercer - Sagittarius
+					Tooltip:
+						'''
+						Launches 4 Starpiercers around you
+						They rapidly decelerate and lock onto enemies before striking
+						After all 4 dissipate, a massive charged Starpiercer descends from above
+						Each hit triggers a fan-shaped burst of splitting lances
+						Applies the Radiance debuff upon hitting enemies
+						Reduces enemy attack by 30% during the day
+						Reduces enemy defense by 50% at night
+
+						[c/fff94b:"Piercing the stars."]
+						'''
+				}
+
+				TidalMechanics: {
+					DisplayName: Tidal
+					Tooltip:
+						'''
+						Quickly disappear and teleport upwards to try to hit the enemy
+						Upon disappearing, releases two orbiting, infinitely piercing typhoons at its position.
+						Right-click to create a bubble shield that blocks 1 projectile hits before vanishing,
+						then enters a 30-second cooldown, left-click is disabled, and right-click can cancel the shield early.
+						While holding this weapon, for every 5 water melee weapon in the player's inventory,
+						will let player gains +75% melee damage and +10% melee critical strike chance.
+						[c/689bf4:"This strike, I'll block for you."]
+						'''
+				}
+
+				Surfeiter: {
+					DisplayName: The Surfeiter
+					Tooltip:
+						'''
+						While held, summons a ritual drum above your head  
+						Left-click throws a lance that, on hit, conjures two stone walls to crush enemies in between  
+						Striking the drum triggers a soundwave and fire based on its current symbol  
+						Soundwaves apply debuffs; fire triggers another soundwave after a delay  
+
+						笞 (Chī) – Takes 3% more damage  
+						杖 (Zhàng) – Reduces contact damage by 30%  
+						徒 (Tú) – Lowers defense by 40  
+						流 (Liú) – Halves movement speed  
+						死 (Sǐ) – Takes 5000 true damage every 2 seconds  
+
+						Right-click to cycle drum symbols  
+						[c/B8860B:“Sins of greed, rage, folly, wrath, and doubt—punished by lash, cauldron, and flame.”]
+						'''
+				}
+			}
+		}
+	}
+}

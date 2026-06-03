@@ -1,0 +1,213 @@
+Mods: {
+	CalamityThrowingSpear: {
+		Projectiles: {
+			ChangedWeapons: {
+				APreHardMode: {
+					AmidiasTridentJavPROJ.DisplayName: 海王三叉戟
+					AmidiasTridentJavWhirlpool.DisplayName: 海王三叉戟龙卷
+					GoldplumeJavPROJ.DisplayName: 金羽
+					SausageMakerJavPROJ.DisplayName: 香肠矛
+					YateveoBloomJavPROJ.DisplayName: 绽花毒藤
+					GoldplumeJavWind.DisplayName: 小旋风
+					GoldplumeJavFeather.DisplayName: 褪色羽毛
+					AmidiasTridentJavWaterWall.DisplayName: 水元柱
+					YateveoBloomJavRight.DisplayName: 绽花毒藤右键
+				}
+
+				BPrePlantera: {
+					BrimlanceJavPROJ.DisplayName: 硫磺火矛
+					StarnightLanceJavBeam.DisplayName: 星夜长枪光束
+					StarnightLanceJavPROJ.DisplayName: 星夜长枪
+					EarthenJavPROJ.DisplayName: 磐石地元叉
+					BrimlanceJavFireWall.DisplayName: 虚空之喉
+					EarthenJavSHARD.DisplayName: 破碎磐石
+				}
+
+				CPreMoodLord: {
+					AstralPikeJavPROJ.DisplayName: 幻星矛
+					AstralPikeSTAR.DisplayName: 幻星矛星
+					BotanicPiercerJavPROJ.DisplayName: 翠芒尖枪
+					BotanicPiercerJavPROJSPLIT.DisplayName: 翠芒尖枪光束
+					DiseasedJavLight.DisplayName: 瘟疫长枪能量弹
+					DiseasedJavPROJ.DisplayName: 瘟疫长枪
+					GalvanizingGlaiveJavGaussEnergy.DisplayName: 能量弹
+					GalvanizingGlaiveJavGaussFlux.DisplayName: 磁能漩涡
+					GalvanizingGlaiveJavPROJ.DisplayName: 磁能分割剑
+					HellionFlowerJavPROJ.DisplayName: 刺花长矛
+					HellionFlowerJavVine.DisplayName: 刺花长矛藤蔓
+					TenebreusTidesJavPROJ.DisplayName: 深渊潮涌
+					TenebreusTidesJavWaterSword.DisplayName: 深渊潮涌水箭
+					TyphonsGreedJavBubble.DisplayName: 提丰泡泡
+					TyphonsGreedJavPROJ.DisplayName: 提丰之贪婪
+					VulcaniteLanceJavPROJ.DisplayName: 火山之矛
+					VulcaniteLanceJavTinyFlare.DisplayName: 火焰精灵
+					TyphonsGreedJavBubble2.DisplayName: 提丰水流环
+					HellionFlowerJavAbsorb.DisplayName: 刺花种子
+				}
+			}
+		}
+
+		ChangedWeapons: {
+			APreHardMode: {
+				AmidiasTridentJav: {
+					DisplayName: 海王三叉戟
+					Tooltip:
+						'''
+						丢出能够扎在敌人身上或者物块上的三叉戟
+						三叉戟消失时释放水柱或闪电
+						右键呼叫三叉戟进行回收，回收期间无限穿透
+						回到玩家时能够释放几个追踪水龙卷
+						[c/5276fc:“你是想要水呢、还是想要电呢”]
+						'''
+				}
+
+				GoldplumeJav: {
+					DisplayName: 金羽
+					Tooltip:
+						'''
+						手持时释放一个跟随鼠标的旋风
+						长矛能够穿透2次并在命中时朝着后方两个固定角度释放两根羽毛
+						长矛命中旋风时会被旋风吸住，在一段时间后或碰撞时释放数个羽毛
+						羽毛受重力影响且不能穿过物块也不能穿透敌怪
+						[c/52f2fc:“天羽屠髅武”]
+						'''
+				}
+
+				SausageMakerJav: {
+					DisplayName: 香肠矛
+					Tooltip:
+						'''
+						可以穿透多次
+						消失时释放追踪血弹
+						[c/a21c12:“好次”]
+						'''
+				}
+
+				YateveoBloomJav: {
+					DisplayName: 绽花毒藤
+					Tooltip:
+						'''
+						在方块上反弹，向最近的敌人释放致命叶子
+						右键丢出无限穿透的毒藤长枪
+						[c/34a212:“赠人玫瑰，手有余猩”]
+						'''
+				}
+			}
+
+			BPrePlantera: {
+				BrimlanceJav: {
+					DisplayName: 硫磺火矛
+					Tooltip:
+						'''
+						击中敌人后再飞行一段距离产生一个硫磺火环
+						硫磺火环会伤害接触到它的敌怪并向外喷射硫磺火
+						[c/a21512:“啊↑哈↓黑圈！”]
+						'''
+				}
+
+				EarthenJav: {
+					DisplayName: 磐石地元叉
+					Tooltip:
+						'''
+						命中物块时粘在上面
+						然后往前方召唤多个会飞起来的岩石碎片
+						[c/ac8f50:“地道战”]
+						'''
+				}
+
+				StarnightLanceJav: {
+					DisplayName: 星夜长枪
+					Tooltip:
+						'''
+						本体追踪，消失时释放转向追踪的星夜光束
+						[c/f692ff:“极光效应”]
+						'''
+				}
+			}
+
+			CPreMoodLord: {
+				AstralPikeJav: {
+					DisplayName: 幻星矛
+					Tooltip:
+						'''
+						击中敌人时，投矛会产生星爆并在远端召唤幻星
+						如果撞击物块，那么投矛会穿墙并追踪敌人
+						[c/ffbf73:“钻地流星”]
+						'''
+				}
+
+				BotanicPiercerJav: {
+					DisplayName: 翠芒尖枪
+					Tooltip:
+						'''
+						飞行很短的时间后快速分裂成两发追踪植物能量束
+						分裂前投矛本体造成150%伤害
+						[c/8dff73:“不，你不想用它直接命中敌人”]
+						'''
+				}
+
+				DiseasedJav: {
+					DisplayName: 瘟疫长枪
+					Tooltip:
+						'''
+						扔出三根具备追踪能力的长矛，长矛在攻击到敌人时会被弹开
+						第二次命中时释放瘟疫环与三个追踪的瘟疫弹
+						[c/49ff1f:“传播的疾病中不包含猪瘟”]
+						'''
+				}
+
+				GalvanizingGlaiveJav: {
+					DisplayName: 磁能分割刀
+					Tooltip:
+						'''
+						击中敌人时释放多个能量弹
+						或者原地旋转的磁能漩涡
+						[c/1ffbff:“左零右火，雷公助我”]
+						'''
+				}
+
+				HellionFlowerJav: {
+					DisplayName: 刺花长矛
+					Tooltip:
+						'''
+						无限穿透，飞行期间往两边不断的发射花瓣并在周边生成几个紧随长矛的种子
+						种子带有隐形的伤害光环，而长矛会逐渐减速
+						速度归零时会释放毒气与6根荆棘
+						[c/007708:“春暖花开，众生皆亡”]
+						'''
+				}
+
+				TenebreusTidesJav: {
+					DisplayName: 深渊潮涌
+					Tooltip:
+						'''
+						蓄力期间持续在鼠标周围生成小型三叉戟瞄准鼠标位置
+						松手时扔出本体，飞行过程中产生更多的小三叉戟
+						[c/001087:“是的，我可以证明，波塞冬就是从我这里进的货”]
+						'''
+				}
+
+				TyphonsGreedJav: {
+					DisplayName: 提丰之贪婪
+					Tooltip:
+						'''
+						撞墙或是飞行一段时间后立刻释放一圈水球并进入旋转攻击模式
+						旋转模式期间不断的向外释放可以追踪的水弹
+						[c/2f366b:“提丰没有心，但它有胃”]
+						'''
+				}
+
+				VulcaniteLanceJav: {
+					DisplayName: 火山之矛
+					Tooltip:
+						'''
+						扔出一根受重力的长矛
+						一段时间后喷发出三个能追踪的火焰球
+						本体命中物块或至少两个敌怪后造成巨大面积的持续性火焰
+						[c/ff8400:“1200°C的玄武岩碎片”]
+						'''
+				}
+			}
+		}
+	}
+}
