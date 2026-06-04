@@ -27,16 +27,17 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
             }
 
             Player player = GetRewardPlayer(npc);
-            bool success = PlayerSucceeded(player) || AnyActivePlayerSucceeded();
+            Player successfulPlayer = GetSuccessfulRewardPlayer(npc, player);
+            bool success = successfulPlayer != null;
 
             if (success)
             {
-                SpawnReward(player, npc, ModContent.ItemType<Sagittarius>());
+                SpawnReward(successfulPlayer, npc, ModContent.ItemType<Sagittarius>());
                 CalamityThrowingSpearSystem.HasGivenSagittariusWeapon = true;
 
                 if (!CalamityThrowingSpearSystem.HasGivenSagittariusTablet)
                 {
-                    SpawnReward(player, npc, ModContent.ItemType<XiaoZhiTiaoSG>());
+                    SpawnReward(successfulPlayer, npc, ModContent.ItemType<XiaoZhiTiaoSG>());
                     CalamityThrowingSpearSystem.HasGivenSagittariusTablet = true;
                 }
 
@@ -58,18 +59,22 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
 
         private static Player GetRewardPlayer(NPC npc)
         {
-            int playerIndex = npc.lastInteraction;
-            if (playerIndex < 0 || playerIndex >= Main.maxPlayers || !Main.player[playerIndex].active)
+            Player player = GetActivePlayer(npc.lastInteraction);
+            if (player != null)
             {
-                playerIndex = npc.target;
+                return player;
             }
 
-            if (playerIndex >= 0 && playerIndex < Main.maxPlayers && Main.player[playerIndex].active)
+            for (int i = 0; i < Main.maxPlayers; i++)
             {
-                return Main.player[playerIndex];
+                player = GetActivePlayer(i);
+                if (PlayerInteractedWithNpc(npc, player))
+                {
+                    return player;
+                }
             }
 
-            return null;
+            return GetActivePlayer(npc.target);
         }
 
         private static void SpawnReward(Player player, NPC npc, int itemType)
@@ -91,18 +96,56 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
                 player.GetModPlayer<BossChallengeBarPlayer>().SagittariusChallengeSucceeded;
         }
 
-        private static bool AnyActivePlayerSucceeded()
+        private static Player GetSuccessfulRewardPlayer(NPC npc, Player preferredPlayer)
         {
+            if (PlayerSucceeded(preferredPlayer) && PlayerInteractedWithNpc(npc, preferredPlayer))
+            {
+                return preferredPlayer;
+            }
+
             for (int i = 0; i < Main.maxPlayers; i++)
             {
-                Player player = Main.player[i];
-                if (PlayerSucceeded(player))
+                Player player = GetActivePlayer(i);
+                if (PlayerSucceeded(player) && PlayerInteractedWithNpc(npc, player))
                 {
-                    return true;
+                    return player;
                 }
             }
 
-            return false;
+            return null;
+        }
+
+        private static bool PlayerInteractedWithNpc(NPC npc, Player player)
+        {
+            if (player == null || !player.active)
+            {
+                return false;
+            }
+
+            int playerIndex = player.whoAmI;
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers)
+            {
+                return false;
+            }
+
+            return npc.lastInteraction == playerIndex ||
+                (npc.playerInteraction != null &&
+                playerIndex < npc.playerInteraction.Length &&
+                npc.playerInteraction[playerIndex]);
+        }
+
+        private static Player GetActivePlayer(int playerIndex)
+        {
+            if (playerIndex >= 0 && playerIndex < Main.maxPlayers)
+            {
+                Player player = Main.player[playerIndex];
+                if (player.active)
+                {
+                    return player;
+                }
+            }
+
+            return null;
         }
 
         private static void CompleteAllSagittariusEncounters()

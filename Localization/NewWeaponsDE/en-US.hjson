@@ -112,6 +112,8 @@ Mods: {
 					AuricJavPROJL.DisplayName: Auric Jav P R O J L
 				}
 			}
+
+			DeveloperWeapons.DeveloperWeaponInfoPanel.DisplayName: Developer Weapon Info Panel
 		}
 
 		NewWeapons: {

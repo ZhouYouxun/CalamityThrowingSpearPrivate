@@ -379,8 +379,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch
             return base.CanUseItem(player);
         }
 
-
-
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
@@ -390,6 +388,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch
             recipe.AddTile<CosmicAnvil>();
             recipe.Register();
         }
+
 
 
 

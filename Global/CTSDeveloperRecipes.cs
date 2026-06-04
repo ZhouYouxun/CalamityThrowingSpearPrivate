@@ -1,11 +1,14 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius;
-using CalamityThrowingSpear.Weapons.DeveloperWeapons.TidalMechanics;
+using CalamityMod.Projectiles.Pets;
+using CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.ElementalArkJav;
-using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset;
+using CalamityThrowingSpear.Weapons.DeveloperWeapons.TidalMechanics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,11 +27,12 @@ namespace CalamityThrowingSpear.Global
             Recipe.Create(ModContent.ItemType<Revelation>())
                 .AddIngredient<Ultima>()
                 .AddIngredient<Starmada>()
+                .AddIngredient<CosmiliteBar>(5)
                 .AddTile(ModContent.TileType<CalamityMod.Tiles.Furniture.CraftingStations.CosmicAnvil>())
                 .Register();
 
             Recipe.Create(ModContent.ItemType<StarsofDestiny>())
-                .AddIngredient<EssenceofEleum>(15)
+                .AddIngredient<RuinousSoul>(15)
                 .AddIngredient(ItemID.Glass, 100)
                 .AddIngredient(ItemID.FastClock)
                 .AddIngredient(ItemID.StarWrath)
@@ -49,13 +53,21 @@ namespace CalamityThrowingSpear.Global
                 .Register();
 
             Recipe.Create(ModContent.ItemType<Sagittarius>())
-                .AddIngredient(ItemID.Sundial)
-                .AddIngredient(ItemID.SoulofLight, 20)
-                .AddIngredient(ItemID.HallowedBar, 12)
-                .AddIngredient(ItemID.PixieDust, 30)
-                .AddIngredient(ItemID.UnicornHorn, 2)
+                .AddIngredient(ItemID.PiercingStarlight)
+                .AddIngredient(ItemID.SoulofLight, 12)
+                .AddIngredient(ItemID.UnicornHorn, 4)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
+
+            Recipe.Create(ModContent.ItemType<Sunset>())
+                .AddIngredient<DivineGeode>(15)
+                .AddIngredient(ItemID.DaybloomSeeds, 1)
+                .AddIngredient(ItemID.Terrarium, 1)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+
+            
+
         }
 
         public override void PostAddRecipes()
