@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,7 +53,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
 
             // === 🌟 Extra_89 - 旋转能量圈 ===
-            Texture2D extra89 = Terraria.GameContent.TextureAssets.Extra[89].Value;
+            Texture2D extra89 = Terraria.GameContent.TextureAssets.Extra[Terraria.ID.ExtrasID.ThePerfectGlow].Value;
             for (int i = 0; i < 4; i++)
             {
                 float angle = MathHelper.TwoPi * i / 4f + Main.GlobalTimeWrappedHourly * 0.6f;

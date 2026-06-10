@@ -1,4 +1,4 @@
-﻿using CalamityMod.Particles;
+using CalamityMod.Particles;
 using CalamityMod;
 using System;
 using System.Collections.Generic;
@@ -138,7 +138,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
 
                     Dust magicDust = Dust.NewDustPerfect(
                         Projectile.Center,
-                        107,
+                        Terraria.ID.DustID.Terra,
                         angle.ToRotationVector2() * speed,
                         100,
                         particleColor,
@@ -158,7 +158,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.BotanicPierc
 
                 Dust ringDust = Dust.NewDustPerfect(
                     Projectile.Center,
-                    107,
+                    Terraria.ID.DustID.Terra,
                     velocity,
                     100,
                     Color.Lerp(Color.LimeGreen, Color.White, Main.rand.NextFloat(0.0f, 0.3f)),

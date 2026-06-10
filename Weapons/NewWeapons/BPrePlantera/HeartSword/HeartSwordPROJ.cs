@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -264,7 +264,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             float chance = MathHelper.Lerp(0.04f, 0.004f, healthPercent);
             if (Main.rand.NextFloat() <= chance)
             {
-                float radius = 15 * 16f;
                 for (int i = 0; i < (player.statLifeMax2 - player.statLife) / 20 * 2; i++)
                 {
                     Item.NewItem(Projectile.GetSource_OnHit(target), target.Center, ItemID.Heart);

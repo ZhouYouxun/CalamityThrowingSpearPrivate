@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
 using Microsoft.Xna.Framework;
@@ -182,7 +181,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.ChaosWindJav
             int effectCount = Projectile.ai[0] == 1 ? 100 : 40;
             for (int k = 0; k < effectCount; k++)
             {
-                Dust dust2 = Dust.NewDustPerfect(Projectile.Center, 226, new Vector2(25, 25).RotatedByRandom(100) * Main.rand.NextFloat(0.05f, 0.8f));
+                Dust dust2 = Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Electric, new Vector2(25, 25).RotatedByRandom(100) * Main.rand.NextFloat(0.05f, 0.8f));
                 dust2.scale = Projectile.ai[0] == 1 ? Main.rand.NextFloat(1.2f, 2.0f) : Main.rand.NextFloat(0.65f, 1.15f);
                 dust2.noGravity = true;
             }

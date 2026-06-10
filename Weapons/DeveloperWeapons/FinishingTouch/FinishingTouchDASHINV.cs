@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
@@ -273,7 +273,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch
             Vector2 origin = texture.Size() * 0.5f;
 
             // Extra_89 多层脉动圆环
-            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[89].Value;
+            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[Terraria.ID.ExtrasID.ThePerfectGlow].Value;
             float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
 
             for (int i = 0; i < 4; i++)

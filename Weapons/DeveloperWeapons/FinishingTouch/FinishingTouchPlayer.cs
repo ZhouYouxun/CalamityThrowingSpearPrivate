@@ -1,4 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.NPCs.Yharon;
 using CalamityThrowingSpear.Global;
@@ -6,7 +6,6 @@ using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.GildedProboscisC;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.TidalMechanics;
 using CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav;
 using Microsoft.Xna.Framework;
-using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,7 +91,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch
         {
             if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
             {
-                int buffDuration = 10 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
                 Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
             }
         }
@@ -103,7 +101,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.FinishingTouch
         {
             if (Player.HeldItem.type == ModContent.ItemType<FinishingTouch>())
             {
-                int buffDuration = 10 * 60; // 5 秒钟，单位为帧（每秒 60 帧）
                 Player.AddBuff(ModContent.BuffType<CreateVictoryPEBuff>(), 450);
             }
         }

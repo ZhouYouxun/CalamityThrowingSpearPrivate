@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +99,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
             for (int i = 0; i < 15; i++)
             {
-                Dust ectoplasm = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30f, 30f) * BurstIntensity, 264);
+                Dust ectoplasm = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30f, 30f) * BurstIntensity, Terraria.ID.DustID.PortalBoltTrail);
                 ectoplasm.velocity = Main.rand.NextVector2Circular(2f, 2f);
                 ectoplasm.color = Color.Lerp(Color.Orange, Color.Yellow, Main.rand.NextFloat(0.67f));
                 ectoplasm.scale = MathHelper.Lerp(1f, 1.6f, BurstIntensity);

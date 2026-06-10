@@ -1,4 +1,4 @@
-﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items;
 using CalamityMod.Rarities;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.RedtideJav;
@@ -337,9 +337,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset
         private void PlaySwitchEffect(Vector2 center, int mode)
         {
             // ---------- 🔧 可调参数（整体放大约 2 倍） ----------
-            float sigilScale = 0.56f;        // 符印初始缩放基准
-            float sigilScaleGrowth = 0.12f;  // 符印层间递增
-            float sigilEndScale = 1.12f;     // 符印终点缩放基准
 
             float satelliteRadius = 120f;    // 卫星冲击波环半径
             int satelliteCount = 6;          // 卫星数量

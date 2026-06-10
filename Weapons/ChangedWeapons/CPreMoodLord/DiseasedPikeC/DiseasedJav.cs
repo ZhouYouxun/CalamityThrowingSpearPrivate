@@ -1,17 +1,14 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Melee
-;
 using CalamityMod.NPCs.HiveMind;
 using CalamityMod.NPCs.PlaguebringerGoliath;
 using CalamityMod.Projectiles.Melee.Spears;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.DiseasedPikeC;
 using CalamityThrowingSpear.Weapons.NewWeapons.APreHardMode.BraisedPorkJav;
 using Microsoft.Xna.Framework;
-using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;

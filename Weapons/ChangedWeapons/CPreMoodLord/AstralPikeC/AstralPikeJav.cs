@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,8 +12,6 @@ using CalamityMod.Projectiles.Melee.Spears;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items;
 using CalamityMod;
-using CalamityMod.Items.Weapons.Melee
-;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 {
@@ -37,7 +34,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityCyanBuyPrice;
-            Item.rare = 9;
+            Item.rare = Terraria.ID.ItemRarityID.Cyan;
             Item.shoot = ModContent.ProjectileType<AstralPikeJavPROJ>(); // 使用新的弹幕
             Item.shootSpeed = 10f; // 更改使用时的武器弹幕飞行速度
             Item.crit = 4; // 基础暴击率都是4

@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
             // 螺旋偏移参数
             float spiralOffset = 10f + Main.rand.NextFloat(-2f, 2f); // 让偏移量稍微随机
-            bool spiralRight = true; // 控制左右交替
             float segmentLength = 16f + Main.rand.NextFloat(-2f, 2f); // 让线段长度有小幅随机变化
 
             // 计算顶端位置作为电流收束目标点
@@ -285,7 +284,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             for (int i = 0; i < 14; i++)
             {
                 Vector2 vel = Vector2.UnitY * (Main.rand.NextBool() ? 1 : -1) * Main.rand.NextFloat(4f, 8f);
-                Dust d = Dust.NewDustPerfect(spawnPosition, 64, vel, 100, Color.White, 1.7f);
+                Dust d = Dust.NewDustPerfect(spawnPosition, Terraria.ID.DustID.YellowTorch, vel, 100, Color.White, 1.7f);
                 d.noGravity = true;
                 d.fadeIn = 1.4f;
             }
@@ -295,7 +294,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
             {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 pos = spawnPosition + angle.ToRotationVector2() * 18f;
-                Dust d = Dust.NewDustPerfect(pos, 10, -angle.ToRotationVector2() * 1f, 80, Color.White, 1.4f);
+                Dust d = Dust.NewDustPerfect(pos, Terraria.ID.DustID.Gold, -angle.ToRotationVector2() * 1f, 80, Color.White, 1.4f);
                 d.noGravity = true;
             }
 

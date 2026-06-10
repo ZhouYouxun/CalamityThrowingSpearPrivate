@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CalamityMod;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
@@ -61,7 +61,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
                     Vector2 offset = GetSquareLoopOffset(progress, outerRadius).RotatedBy(Projectile.ai[0] * 0.05f);
                     Vector2 pos = center + offset;
 
-                    Dust dust = Dust.NewDustPerfect(pos, 261);
+                    Dust dust = Dust.NewDustPerfect(pos, Terraria.ID.DustID.AncientLight);
                     dust.color = Color.Lerp(Color.Cyan, Color.BlueViolet, 0.35f + 0.35f * (float)Math.Sin(progress * MathHelper.TwoPi + Projectile.ai[0] * 0.08f));
                     dust.velocity = offset.SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2) * 0.45f;
                     dust.scale = 1.05f + 0.35f * (float)Math.Sin(progress * MathHelper.TwoPi * 2f + Projectile.ai[0] * 0.09f);
@@ -76,7 +76,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
                     Vector2 offset = GetSquareLoopOffset(progress, innerRadius).RotatedBy(-Projectile.ai[0] * 0.075f + MathHelper.PiOver4);
                     Vector2 pos = center + offset;
 
-                    Dust dust = Dust.NewDustPerfect(pos, 226);
+                    Dust dust = Dust.NewDustPerfect(pos, Terraria.ID.DustID.Electric);
                     dust.color = Utils.SelectRandom(Main.rand, Color.White, Color.LightBlue, new Color(170, 220, 255));
                     dust.velocity = Vector2.Zero;
                     dust.scale = 0.95f + 0.2f * (float)Math.Cos(progress * MathHelper.TwoPi + Projectile.ai[0] * 0.1f);
@@ -97,7 +97,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.GalvanizingG
                     Vector2 offset = angle.ToRotationVector2() * orbitRadius;
                     Vector2 pos = center + offset;
 
-                    Dust dust = Dust.NewDustPerfect(pos, 135);
+                    Dust dust = Dust.NewDustPerfect(pos, Terraria.ID.DustID.IceTorch);
                     dust.color = Utils.SelectRandom(Main.rand, Color.AliceBlue, Color.CornflowerBlue, Color.Cyan);
                     dust.velocity = offset.SafeNormalize(Vector2.UnitX) * 0.25f;
                     dust.scale = 0.9f;

@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -69,7 +69,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             // 持续绿色飞行粒子特效（荧光绿色拖尾）
             if (Main.rand.NextBool(2))
             {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 107, Scale: 1.2f);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Terraria.ID.DustID.Terra, Scale: 1.2f);
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].velocity = Projectile.velocity * 0.3f;
                 Main.dust[dust].color = Color.LimeGreen;
@@ -159,7 +159,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             // 更复杂华丽的死亡特效
             for (int i = 0; i < 40; i++)
             {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 107, Scale: 1.5f);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Terraria.ID.DustID.Terra, Scale: 1.5f);
                 Main.dust[dust].velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].color = Color.LimeGreen;

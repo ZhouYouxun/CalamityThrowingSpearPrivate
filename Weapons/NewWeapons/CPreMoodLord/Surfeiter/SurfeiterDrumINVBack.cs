@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -139,7 +139,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.Surfeiter
             Vector2 origin = texture.Size() * 0.5f;
 
             // === Extra_89 多层脉动圆环绘制 ===
-            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[89].Value;
+            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[Terraria.ID.ExtrasID.ThePerfectGlow].Value;
             float pulse = 1f + 0.08f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f);
 
             for (int i = 0; i < 4; i++)

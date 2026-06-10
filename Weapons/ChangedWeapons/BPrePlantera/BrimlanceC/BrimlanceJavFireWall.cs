@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -115,7 +111,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                     // 形状 1：边缘大光点
                     Dust dust1 = Dust.NewDustPerfect(
                         Projectile.Center + Main.rand.NextVector2CircularEdge(160f, 160f),
-                        235 // 你也可以尝试改成 DustID.Torch or RedTorch for红色调
+                        Terraria.ID.DustID.LifeDrain // 你也可以尝试改成 DustID.Torch or RedTorch for红色调
                     );
                     dust1.scale = Main.rand.NextFloat(2.0f, 3.5f);
                     dust1.color = Color.Red;
@@ -127,7 +123,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.BrimlanceC
                 {
                     Dust dust2 = Dust.NewDustPerfect(
                         Projectile.Center + Main.rand.NextVector2Circular(120f, 120f),
-                        235
+                        Terraria.ID.DustID.LifeDrain
                     );
                     dust2.scale = Main.rand.NextFloat(0.9f, 1.4f);
                     dust2.color = Color.OrangeRed;

@@ -1,6 +1,5 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Enums;
-using CalamityMod.Graphics.Primitives;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;

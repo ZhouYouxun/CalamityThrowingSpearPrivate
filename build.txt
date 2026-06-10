@@ -7,3 +7,4 @@ includeSource = true
 modReferences = CalamityMod
 sortAfter = CalamityMod
 homepage = https://github.com/ZhouYouxun/CalamityThrowingSpearPrivate
+buildIgnore = Weapons/DeveloperWeapons/FinishingTouch/*.gif, Weapons/DeveloperWeapons/FinishingTouch/图/*.gif, Weapons/DeveloperWeapons/Revelation/*.gif, Weapons/DeveloperWeapons/Revelation/.png, icon_small.png

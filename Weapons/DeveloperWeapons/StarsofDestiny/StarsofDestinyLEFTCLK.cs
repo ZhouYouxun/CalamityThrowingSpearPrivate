@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny;
 using Microsoft.Xna.Framework;
@@ -149,7 +149,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny
                 Player owner = Main.player[Projectile.owner];
 
                 // ☆ 查找玩家周围是否已经有属于这个玩家的 CLK50
-                bool alreadyHasOne = false;
                 int clkCount = 0;
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {

@@ -1,14 +1,12 @@
-﻿using CalamityMod.Particles;
+using CalamityMod.Particles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader;
-using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
 using CalamityMod;
 
 namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC

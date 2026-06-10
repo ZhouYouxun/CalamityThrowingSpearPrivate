@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -100,7 +100,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
             for (int i = 0; i < 10; i++)
             {
                 Vector2 offset = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15));
-                Dust.NewDustPerfect(Projectile.Center, 57, offset * 0.5f, 150, Color.Yellow, 1.2f).noGravity = true;
+                Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Enchanted_Gold, offset * 0.5f, 150, Color.Yellow, 1.2f).noGravity = true;
             }
 
             //// 亮黄色闪光点效果
@@ -259,7 +259,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
                     // ===== Dust主结构 =====
                     Dust dust = Dust.NewDustPerfect(
                         pos,
-                        267,
+                        Terraria.ID.DustID.RainbowMk2,
                         Vector2.Zero,
                         0,
                         Color.White,

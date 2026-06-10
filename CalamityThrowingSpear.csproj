@@ -1,11 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
 
 	<!-- General -->
 	<PropertyGroup>
-		
+		<Nullable>annotations</Nullable>
+		<NoWarn>$(NoWarn);CS0414;CS0169;CS0649</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="KaiJuXiaoZhiTiao.png" />

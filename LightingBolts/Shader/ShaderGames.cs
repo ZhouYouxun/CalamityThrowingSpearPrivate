@@ -1,4 +1,4 @@
-﻿using Terraria.Graphics.Effects;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
@@ -88,40 +88,41 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
             //);
             //Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"].Load();
 
-            ScreenSimplyDistortedShader = ModContent.Request<Effect>("CalamityThrowingSpear/LightingBolts/Shader/XNBcoder/Effects/ScreenSimplyDistorted").Value;
+            Asset<Effect> screenSimplyDistortedShader = ModContent.Request<Effect>("CalamityThrowingSpear/LightingBolts/Shader/XNBcoder/Effects/ScreenSimplyDistorted");
+            ScreenSimplyDistortedShader = screenSimplyDistortedShader.Value;
             Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"] = new Filter(
-                new ScreenShaderData(new Ref<Effect>(ScreenSimplyDistortedShader), "Technique1"),
+                new ScreenShaderData(screenSimplyDistortedShader, "Technique1"),
                 EffectPriority.Medium
             );
             Filters.Scene["CalamityThrowingSpear:ScreenSimplyDistorted"].Load();
 
 
             TailFirst = AddShader("TailFirst"); // 1号拖尾
-            RegisterTrailShader(TailFirst, "TrailPass", "TailFirstEffect");
+            RegisterTrailShader("TailFirst", "TrailPass", "TailFirstEffect");
 
             TailSecond = AddShader("TailSecond"); // 2号拖尾
-            RegisterTrailShader(TailSecond, "TrailPass", "TailSecondEffect");
+            RegisterTrailShader("TailSecond", "TrailPass", "TailSecondEffect");
 
             TailMagic = AddShader("TailMagic"); // 魔法拖尾
-            RegisterTrailShader(TailMagic, "TrailPass", "TailMagicEffect");
+            RegisterTrailShader("TailMagic", "TrailPass", "TailMagicEffect");
 
             TailModern = AddShader("TailModern"); // 现代拖尾
-            RegisterTrailShader(TailModern, "TrailPass", "TailModernEffect");
+            RegisterTrailShader("TailModern", "TrailPass", "TailModernEffect");
 
             TailTechnology = AddShader("TailTechnology"); // 科技拖尾
-            RegisterTrailShader(TailTechnology, "TrailPass", "TailTechnologyEffect");
+            RegisterTrailShader("TailTechnology", "TrailPass", "TailTechnologyEffect");
 
             TrailFrostCrystal = AddShader("TrailFrostCrystal"); // 冰霜拖尾
-            RegisterTrailShader(TrailFrostCrystal, "TrailPass", "TrailFrostCrystalEffect");
+            RegisterTrailShader("TrailFrostCrystal", "TrailPass", "TrailFrostCrystalEffect");
 
             TrailGhostlyPhantom = AddShader("TrailGhostlyPhantom"); // 鬼魂拖尾
-            RegisterTrailShader(TrailGhostlyPhantom, "TrailPass", "TrailGhostlyPhantomEffect");
+            RegisterTrailShader("TrailGhostlyPhantom", "TrailPass", "TrailGhostlyPhantomEffect");
 
             TrailBlazingFlame = AddShader("TrailBlazingFlame"); // 烈焰拖尾
-            RegisterTrailShader(TrailBlazingFlame, "TrailPass", "TrailBlazingFlameEffect");
+            RegisterTrailShader("TrailBlazingFlame", "TrailPass", "TrailBlazingFlameEffect");
 
             TrailWarpDistortion = AddShader("TrailWarpDistortion"); // 空间扭曲拖尾
-            RegisterTrailShader(TrailWarpDistortion, "TrailPass", "TrailWarpDistortionEffect");
+            RegisterTrailShader("TrailWarpDistortion", "TrailPass", "TrailWarpDistortionEffect");
 
 
 
@@ -150,11 +151,10 @@ namespace CalamityThrowingSpear.LightingBolts.Shader
 
 
         // **注册拖尾 Shader**
-        [global::System.Obsolete]
-        private static void RegisterTrailShader(Effect shader, string passName, string registrationName)
+        private static void RegisterTrailShader(string shaderName, string passName, string registrationName)
         {
-            Ref<Effect> shaderPointer = new(shader);
-            MiscShaderData passParamRegistration = new(shaderPointer, passName);
+            Asset<Effect> shaderAsset = ModContent.Request<Effect>($"CalamityThrowingSpear/LightingBolts/Shader/XNBcoder/Effects/{shaderName}", AssetRequestMode.ImmediateLoad);
+            MiscShaderData passParamRegistration = new(shaderAsset, passName);
             GameShaders.Misc[$"ModNamespace:{registrationName}"] = passParamRegistration;
         }
 

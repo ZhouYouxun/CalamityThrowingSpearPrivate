@@ -1,4 +1,4 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Particles;
 using CalamityMod;
@@ -497,7 +497,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.PrimordialState
             target.AddBuff(ModContent.BuffType<BurningBlood>(), 300);
             target.AddBuff(ModContent.BuffType<BrainRot>(), 300);   
             target.AddBuff(ModContent.BuffType<HolyFlames>(), 300); 
-            target.AddBuff(31, 300);
+            target.AddBuff(Terraria.ID.BuffID.Confused, 300);
         }
 
 

@@ -1,4 +1,4 @@
-﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items;
 using System;
@@ -82,7 +82,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.ElementalArkJav
                 
                 if (fruitCount == 4)
                 {
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav2")), player.statLifeMax2, 0);
+                    player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromLiteral(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav2"))), player.statLifeMax2, 0);
                     return false;
                 }
 
@@ -93,7 +93,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.ElementalArkJav
                 player.statLife -= totalHealthLoss;
                 if (player.statLife <= 0)
                 {
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav3")), totalHealthLoss, 0);
+                    player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromLiteral(player.name + " " + Language.GetTextValue("Mods.CalamityThrowingSpear.TheSpecialText.ElementalArkJav3"))), totalHealthLoss, 0);
                     return false;
                 }
 

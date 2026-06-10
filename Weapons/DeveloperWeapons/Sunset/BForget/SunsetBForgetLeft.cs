@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer;
@@ -218,7 +218,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.BForget
             float coreTrailScale = 2.0f * fx;                     // 2.0 → 1.0
             int coreTrailLife = (int)(42 * fx);                // 42 → 21
             float sideWaveAmp = 10f * fx;                      // 10 → 5
-            float sideWaveFreq = 0.28f;                         // 频率保留
             int sideWaveLife = (int)(24 * fx);                // 24 → 12
             float ringRadius = 14f * fx;                      // 14 → 7
             float ringSpeed = 2.6f * fx;                     // 2.6 → 1.3

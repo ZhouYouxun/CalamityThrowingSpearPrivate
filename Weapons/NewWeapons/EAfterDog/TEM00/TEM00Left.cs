@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +15,6 @@ using Microsoft.Xna.Framework.Graphics;
 using CalamityMod.Physics;
 using CalamityMod.Graphics.Primitives;
 using Terraria.Graphics.Shaders;
-using CalamityMod.Physics; // ← 来自 Calamity 的 Rope 系统
-using CalamityMod.Graphics.Primitives;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.StarsofDestiny; // ← 用于渲染 trail
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00

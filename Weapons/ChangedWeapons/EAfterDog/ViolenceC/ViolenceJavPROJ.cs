@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -332,7 +332,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.ViolenceC
 
                         for (int j = 0; j < 30; j++)
                         {
-                            Dust starDust = Dust.NewDustPerfect(starPos, 267);
+                            Dust starDust = Dust.NewDustPerfect(starPos, Terraria.ID.DustID.RainbowMk2);
                             starDust.scale = 2.5f;
                             starDust.velocity = Vector2.Lerp(start, end, j / 30f) * 18f;
                             starDust.color = Color.Crimson;

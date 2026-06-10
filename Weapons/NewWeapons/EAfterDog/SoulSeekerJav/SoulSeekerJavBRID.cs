@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -182,7 +182,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
                     Vector2 spawnPos = Projectile.Center + spawnOffset;
 
-                    Dust dust = Dust.NewDustPerfect(spawnPos, 267);
+                    Dust dust = Dust.NewDustPerfect(spawnPos, Terraria.ID.DustID.RainbowMk2);
                     dust.scale = Main.rand.NextFloat(1.0f, 2.8f);
                     dust.velocity = fireDir.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * -Main.rand.NextFloat(1f, 6f); // 向后喷
                     dust.color = Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat()); // 红-橙间波动
@@ -352,7 +352,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
                 Vector2 direction = angle.ToRotationVector2();
                 Vector2 position = Projectile.Center + direction * radius;
 
-                Dust circleDust = Dust.NewDustPerfect(position, 267);
+                Dust circleDust = Dust.NewDustPerfect(position, Terraria.ID.DustID.RainbowMk2);
                 circleDust.scale = 2.5f;
                 circleDust.velocity = direction * 2f;
                 circleDust.color = Color.Crimson;

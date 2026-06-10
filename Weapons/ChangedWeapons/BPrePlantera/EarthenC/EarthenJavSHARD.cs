@@ -1,4 +1,4 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Buffs.StatDebuffs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
             base.Projectile.friendly = true;
             base.Projectile.DamageType = DamageClass.Melee;
             base.Projectile.penetrate = 3;
-            base.Projectile.aiStyle = 1;
+            base.Projectile.aiStyle = Terraria.ID.ProjAIStyleID.Arrow;
             base.Projectile.timeLeft = 250;
             base.Projectile.tileCollide = true;
             AIType = ProjectileID.WoodenArrowFriendly;
@@ -281,7 +281,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.BPrePlantera.EarthenC
         {
             for (int i = 0; i <= 2; i++)
             {
-                Dust.NewDust(base.Projectile.position + base.Projectile.velocity, base.Projectile.width, base.Projectile.height, 32, base.Projectile.oldVelocity.X * 0.5f, base.Projectile.oldVelocity.Y * 0.5f);
+                Dust.NewDust(base.Projectile.position + base.Projectile.velocity, base.Projectile.width, base.Projectile.height, Terraria.ID.DustID.Sand, base.Projectile.oldVelocity.X * 0.5f, base.Projectile.oldVelocity.Y * 0.5f);
             }
 
             for (int i = 0; i < 12; i++)

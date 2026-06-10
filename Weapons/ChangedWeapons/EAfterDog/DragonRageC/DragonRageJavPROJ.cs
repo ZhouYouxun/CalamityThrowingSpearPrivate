@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -677,7 +677,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
                             Vector2 pos = target.Center + angle.ToRotationVector2() * radius;
                             Vector2 vel = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 2.2f; // 切向旋转飞出
 
-                            Dust swirl = Dust.NewDustPerfect(pos, 35, vel, 0, Color.OrangeRed, 1.1f);
+                            Dust swirl = Dust.NewDustPerfect(pos, Terraria.ID.DustID.Lava, vel, 0, Color.OrangeRed, 1.1f);
                             swirl.noGravity = true;
                         }
                     }

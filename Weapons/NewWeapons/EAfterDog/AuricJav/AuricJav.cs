@@ -1,4 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC;
 using System;
@@ -16,8 +16,6 @@ using CalamityMod.Rarities;
 using CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ChaosEssenceJav;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
 using CalamityMod;

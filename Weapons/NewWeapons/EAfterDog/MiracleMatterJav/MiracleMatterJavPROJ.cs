@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -180,15 +180,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                 }
             }
 
-            int dustType = 171;
-            if (Main.rand.NextBool(3))
-            {
-                dustType = 46;
-            }
-            if (Main.rand.NextBool(9))
-            {
-                //Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, dustType, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
-            }
             if (Projectile.ai[0] == 0f)
             {
                 Projectile.spriteDirection = Projectile.direction = (Projectile.velocity.X > 0).ToDirectionInt();
@@ -363,7 +354,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                             Vector2 position = Vector2.Lerp(startPoint, endPoint, progress);
                             Vector2 velocity = position.SafeNormalize(Vector2.Zero) * 5f;
 
-                            Dust magic = Dust.NewDustPerfect(Projectile.Center + position, 267, velocity);
+                            Dust magic = Dust.NewDustPerfect(Projectile.Center + position, Terraria.ID.DustID.RainbowMk2, velocity);
                             magic.scale = 2.2f;
                             magic.fadeIn = 0.7f;
                             magic.color = CalamityUtils.MulticolorLerp(progress, CalamityUtils.ExoPalette);
@@ -372,7 +363,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                             if (i % (particlesPerEdge / 3) == 0)
                             {
                                 Vector2 extraVelocity = velocity.RotatedBy(MathHelper.PiOver4) * 0.5f;
-                                Dust extraMagic = Dust.NewDustPerfect(Projectile.Center + position, 267, extraVelocity);
+                                Dust extraMagic = Dust.NewDustPerfect(Projectile.Center + position, Terraria.ID.DustID.RainbowMk2, extraVelocity);
                                 extraMagic.scale = 1.5f;
                                 extraMagic.fadeIn = 0.3f;
                                 extraMagic.color = magic.color * 0.8f;
@@ -400,7 +391,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                         ).RotatedBy(ellipseRotation1);
 
                         Vector2 ellipse1Velocity = ellipse1Offset * 0.02f;
-                        Dust ellipse1Dust = Dust.NewDustPerfect(Projectile.Center + ellipse1Offset, 267, ellipse1Velocity);
+                        Dust ellipse1Dust = Dust.NewDustPerfect(Projectile.Center + ellipse1Offset, Terraria.ID.DustID.RainbowMk2, ellipse1Velocity);
                         ellipse1Dust.scale = Main.rand.NextFloat(1.5f, 2f);
                         ellipse1Dust.fadeIn = 0.5f;
                         ellipse1Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);
@@ -413,7 +404,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.MiracleMatterJav
                         ).RotatedBy(ellipseRotation2);
 
                         Vector2 ellipse2Velocity = ellipse2Offset * 0.02f;
-                        Dust ellipse2Dust = Dust.NewDustPerfect(Projectile.Center + ellipse2Offset, 267, ellipse2Velocity);
+                        Dust ellipse2Dust = Dust.NewDustPerfect(Projectile.Center + ellipse2Offset, Terraria.ID.DustID.RainbowMk2, ellipse2Velocity);
                         ellipse2Dust.scale = Main.rand.NextFloat(1.5f, 2f);
                         ellipse2Dust.fadeIn = 0.5f;
                         ellipse2Dust.color = CalamityUtils.MulticolorLerp(i / (float)ellipseParticleCount, CalamityUtils.ExoPalette);

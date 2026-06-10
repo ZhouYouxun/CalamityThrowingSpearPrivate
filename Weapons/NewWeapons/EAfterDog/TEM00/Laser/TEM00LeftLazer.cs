@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -162,9 +162,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser
 
             // 其他粒子设置
             float exoVelocityMult = 2.8f;   // EXO之光速度倍率
-            float orbVelocityMult = 1.6f;   // 辉光球速度倍率
-            float squareVelocityMult = 2.2f;// 方块粒子速度倍率
-            float dustVelocityMult = 2.5f;  // Dust 粒子速度倍率
                                             // ==============================
 
             if (beamVector == Vector2.Zero || Projectile.ai[0] <= 2f)

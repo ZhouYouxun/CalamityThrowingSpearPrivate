@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.BForget;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.CConcept;
@@ -703,8 +703,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.ASunset
             float straightSpeed = 30f;    // 直线飞行速度
             float postTeleportUpSpeed = 30f;    // 传送后向上突刺速度
             float searchRadius = 240000f;  // 寻敌半径
-            float teleportOffsetX = 0f;     // 传送到敌人正下方时的横向偏移
-            float teleportOffsetY = 20f;    // 传送到敌人正下方时的纵向偏移
             float shakePower = 8f;     // 屏幕震动强度（会按距离衰减）
 
             // ========== 朝向 & 碰撞 ==========

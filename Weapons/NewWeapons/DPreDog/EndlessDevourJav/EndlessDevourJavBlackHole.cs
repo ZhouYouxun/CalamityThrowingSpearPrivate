@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -463,7 +463,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
                 int spawnCount = 64; // 🚩 极大量粒子
                 float spawnRadius = 3000f; // 🚩 超远距离生成可见
-                float targetRadius = 100f;
 
                 for (int i = 0; i < spawnCount; i++)
                 {

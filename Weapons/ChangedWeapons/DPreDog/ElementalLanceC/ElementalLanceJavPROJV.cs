@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -64,7 +64,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.DPreDog.ElementalLanceC
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 origin = texture.Size() * 0.5f;
-            SpriteEffects flip = SpriteEffects.None;
 
             float time = Main.GlobalTimeWrappedHourly;
             float scale = 1.0f * Projectile.Opacity;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -367,7 +367,7 @@ namespace CalamityThrowingSpear
                 FadingParticle ringParticle = _poolFading.RequestParticle();
 
                 // **修正贴图，使用 Keybrand 的光环贴图**
-                ringParticle.SetBasicInfo(TextureAssets.Extra[174], null, Vector2.Zero, position);
+                ringParticle.SetBasicInfo(TextureAssets.Extra[Terraria.ID.ExtrasID.KeybrandRing], null, Vector2.Zero, position);
                 ringParticle.SetTypeInfo(lifetime);
 
                 // 颜色 & 透明度设定

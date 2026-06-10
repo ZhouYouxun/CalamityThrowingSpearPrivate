@@ -1,4 +1,4 @@
-﻿using CalamityMod.Graphics.Primitives;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
@@ -175,7 +175,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.SoulHunterJav
             }
             for (int i = 0; i < 12; i++)
             {
-                Dust blood = Dust.NewDustPerfect(Projectile.Center, 5);
+                Dust blood = Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Blood);
                 blood.velocity = Main.rand.NextVector2Circular(6f, 6f);
                 blood.scale *= Main.rand.NextFloat(0.7f, 1.3f);
                 blood.noGravity = true;

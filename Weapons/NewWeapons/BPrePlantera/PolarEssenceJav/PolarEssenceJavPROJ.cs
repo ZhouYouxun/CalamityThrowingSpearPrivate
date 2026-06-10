@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -65,7 +65,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                 Vector2 dnaPos1 = Projectile.Center + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * offset;
                 Vector2 dnaPos2 = Projectile.Center + Projectile.velocity.RotatedBy(-MathHelper.PiOver2) * offset;
                 Dust.NewDustPerfect(dnaPos1, DustID.BlueCrystalShard, Vector2.Zero).noGravity = true;
-                Dust.NewDustPerfect(dnaPos2, 185, Vector2.Zero).noGravity = true;
+                Dust.NewDustPerfect(dnaPos2, Terraria.ID.DustID.FrostHydra, Vector2.Zero).noGravity = true;
             }
 
             // === 撞击后的阶段控制 ===
@@ -292,7 +292,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
 
 
             //检查是否存在 CoolWhipProj
-            bool coolWhipExists = Main.projectile.Any(proj => proj.active && proj.type == 917);
+            bool coolWhipExists = Main.projectile.Any(proj => proj.active && proj.type == Terraria.ID.ProjectileID.CoolWhipProj);
             if (!coolWhipExists)
             {
                 // 获取弹幕所属玩家
@@ -300,7 +300,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.PolarEssenceJav
                 bool isInTundra = owner != null && owner.ZoneSnow; // 检测玩家是否在苔原区域
 
                 // 生成 CoolWhipProj
-                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 917, (int)(Projectile.damage * 0.9f), 0, Projectile.owner);
+                int projID = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, Terraria.ID.ProjectileID.CoolWhipProj, (int)(Projectile.damage * 0.9f), 0, Projectile.owner);
 
                 // 修改生成投射物的属性
                 if (projID != Main.maxProjectiles)

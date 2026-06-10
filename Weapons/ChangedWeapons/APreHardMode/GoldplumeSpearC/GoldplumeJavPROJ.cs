@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +8,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using CalamityMod.Particles;
-using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using Terraria.Audio;
 

@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -213,7 +213,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.BloodstoneJav
 
             if (Owner.statLife <= 0)
             {
-                Owner.KillMe(PlayerDeathReason.ByCustomReason($"{Owner.name} 把自己榨干了"), damagePenalty, 0);
+                Owner.KillMe(PlayerDeathReason.ByCustomReason(Terraria.Localization.NetworkText.FromLiteral($"{Owner.name} 把自己榨干了")), damagePenalty, 0);
             }
         }
 

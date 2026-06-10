@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer;
@@ -395,7 +395,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.CConcept
             Color critEnd = new Color(255, 240, 160);
             Color sparkleCore = new Color(255, 230, 150);
 
-            int dustType = 0;
 
             float baseRot = Main.rand.NextFloat(MathHelper.TwoPi);
 

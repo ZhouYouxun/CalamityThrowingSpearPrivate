@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -300,7 +300,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                     {
                         Dust dust = Dust.NewDustPerfect(
                             Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                            107,
+                            Terraria.ID.DustID.Terra,
                             Main.rand.NextVector2Circular(2f, 4f),
                             150,
                             Color.LimeGreen,

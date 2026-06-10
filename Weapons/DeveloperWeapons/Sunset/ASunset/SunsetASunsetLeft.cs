@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
@@ -446,7 +446,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.ASunset
                 // ================= 日冕爆发环（Solar Corona Ring） =================
 
                 int coronaCount = 16;
-                float coronaRadius = 10f;
 
                 for (int i = 0; i < coronaCount; i++)
                 {

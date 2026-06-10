@@ -1,7 +1,6 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance;
 using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +24,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance
                 Player player = Main.player[npc.lastInteraction];
 
                 // 确保最后的攻击是由弹幕造成的，并且是 383 号弹幕（Anchor）
-                if (player != null && player.active && player.HeldItem.shoot == 383 && !hasAwardedTheLastLance)
+                if (player != null && player.active && player.HeldItem.shoot == Terraria.ID.ProjectileID.Anchor && !hasAwardedTheLastLance)
                 {
                     // 给玩家 TheLastLance
                     player.QuickSpawnItem(player.GetSource_Misc("Reward"), ModContent.ItemType<TheLastLance>());

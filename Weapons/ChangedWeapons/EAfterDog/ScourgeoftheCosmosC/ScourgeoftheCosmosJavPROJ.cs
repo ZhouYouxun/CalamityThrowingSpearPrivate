@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,6 @@ using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Graphics.Shaders;
-using Microsoft.Xna.Framework;
 using Terraria.Audio;
 using CalamityMod.Buffs.DamageOverTime;
 using Terraria.DataStructures;

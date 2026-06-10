@@ -1,4 +1,4 @@
-﻿using CalamityMod.Projectiles.BaseProjectiles;
+using CalamityMod.Projectiles.BaseProjectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria.ID;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod;

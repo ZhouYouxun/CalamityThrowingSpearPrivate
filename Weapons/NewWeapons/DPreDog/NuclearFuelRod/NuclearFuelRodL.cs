@@ -1,4 +1,4 @@
-﻿using CalamityMod.Dusts;
+using CalamityMod.Dusts;
 using CalamityMod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -80,7 +80,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
             // 飞行粒子特效
             if (Main.rand.NextBool(2))
             {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 107);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Terraria.ID.DustID.Terra);
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].velocity = Projectile.velocity * 0.3f;
                 Main.dust[dust].scale = Main.rand.NextFloat(1.2f, 1.8f);
@@ -94,7 +94,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.NuclearFuelRod
 
             for (int i = 0; i < 60; i++)
             {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 107, Scale: 1.5f);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Terraria.ID.DustID.Terra, Scale: 1.5f);
                 Main.dust[dust].velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].color = Color.LimeGreen;

@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -203,7 +199,6 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.AstralPikeC
 
 
             // 创建线性粒子特效，朝向正上方、正下方、正左方和正右方，每个方向三条平行线
-            int linesPerDirection = 5; // 每个方向有三条平行线
             float lineOffset = 3f; // 粒子间距为1像素
             float middleSpeedMultiplier = 1.2f; // 中间的粒子比两边的快一点
             float sideSpeedMultiplier = 1.0f; // 两边粒子的速度

@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -218,7 +218,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
 
             // 1) 有序：圆环（黑）
             int ring = 36;
-            float r = 14f;
             for (int i = 0; i < ring; i++)
             {
                 float a = MathHelper.TwoPi * i / ring;

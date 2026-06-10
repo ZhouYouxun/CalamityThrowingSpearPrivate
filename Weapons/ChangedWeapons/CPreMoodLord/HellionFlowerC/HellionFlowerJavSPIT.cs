@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
@@ -152,7 +152,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.HellionFlowe
             {
                 float angle = MathHelper.TwoPi * (i / 16f); // 平均分布角度
                 Vector2 offset = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 20f;
-                Dust.NewDustPerfect(Projectile.Center + offset, 145, null, 150, default, 1.5f).noGravity = true;
+                Dust.NewDustPerfect(Projectile.Center + offset, Terraria.ID.DustID.Orichalcum, null, 150, default, 1.5f).noGravity = true;
                 Dust.NewDustPerfect(Projectile.Center + offset, DustID.JungleSpore, null, 150, default, 1.5f).noGravity = true;
             }
         }

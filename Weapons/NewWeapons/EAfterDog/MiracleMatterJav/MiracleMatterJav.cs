@@ -1,10 +1,8 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
+using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTridentC;
@@ -24,16 +22,12 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 

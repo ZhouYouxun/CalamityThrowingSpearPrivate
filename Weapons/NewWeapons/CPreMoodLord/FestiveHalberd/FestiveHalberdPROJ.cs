@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -114,7 +114,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
                     upwardDirection * (Projectile.velocity.Length() * 1.6f), // 速度为弹幕速度的1.6倍
-                    335,
+                    Terraria.ID.ProjectileID.OrnamentFriendly,
                     (int)(Projectile.damage * 0.6f),
                     Projectile.knockBack,
                     Projectile.owner
@@ -264,7 +264,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
                         {
                             Vector2 position = Projectile.Center + new Vector2(x, y);
                             Vector2 velocity = (position - Projectile.Center).SafeNormalize(Vector2.Zero) * 2f; // 辐射状加速度
-                            Dust dust = Dust.NewDustPerfect(position, 7, velocity, 0, default, Main.rand.NextFloat(minScale, maxScale));
+                            Dust dust = Dust.NewDustPerfect(position, Terraria.ID.DustID.WoodFurniture, velocity, 0, default, Main.rand.NextFloat(minScale, maxScale));
                             dust.noGravity = true; // 无重力
                             dust.fadeIn = 0.7f; // 渐入效果
                         }
@@ -327,7 +327,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.CPreMoodLord.FestiveHalberd
                         Vector2 position = circleCenter + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * radius;
                         Vector2 velocity = (position - circleCenter).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 2.5f); // 粒子扩散速度
 
-                        Dust dust = Dust.NewDustPerfect(position, 130, velocity, 0, default, Main.rand.NextFloat(minScale, maxScale));
+                        Dust dust = Dust.NewDustPerfect(position, Terraria.ID.DustID.Firework_Red, velocity, 0, default, Main.rand.NextFloat(minScale, maxScale));
                         dust.noGravity = true; // 无重力
                         dust.fadeIn = 0.7f; // 渐入效果
                     }

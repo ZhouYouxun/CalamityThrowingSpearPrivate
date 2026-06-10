@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -242,7 +242,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             {
                 float angle = MathHelper.TwoPi / 5 * i;
                 Vector2 position = Projectile.Center + angle.ToRotationVector2() * 50f;
-                Dust dust = Dust.NewDustPerfect(position, 104, null, 0, Color.DarkBlue, 1.5f);
+                Dust dust = Dust.NewDustPerfect(position, Terraria.ID.DustID.Water_Cavern, null, 0, Color.DarkBlue, 1.5f);
                 dust.noGravity = true;
             }
 
@@ -250,7 +250,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
             {
                 float angle = MathHelper.TwoPi / 3 * i;
                 Vector2 position = Projectile.Center + angle.ToRotationVector2() * 30f;
-                Dust dust = Dust.NewDustPerfect(position, 29, null, 0, Color.CadetBlue, 1.8f);
+                Dust dust = Dust.NewDustPerfect(position, Terraria.ID.DustID.WaterCandle, null, 0, Color.CadetBlue, 1.8f);
                 dust.noGravity = true;
             }
         }

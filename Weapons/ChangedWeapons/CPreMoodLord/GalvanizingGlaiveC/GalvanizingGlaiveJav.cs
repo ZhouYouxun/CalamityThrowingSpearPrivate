@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,7 +12,6 @@ using CalamityMod.Projectiles.Melee.Spears;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items;
 using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.DraedonsArsenal;
 using CalamityMod.Items.Weapons.DraedonsArsenal;
 using CalamityMod.CustomRecipes;

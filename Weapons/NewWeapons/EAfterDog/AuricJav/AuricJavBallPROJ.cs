@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -148,7 +148,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
                     Dust yellow = Dust.NewDustPerfect(
                         yellowPos,
-                        269,                           // 金色电能Dust
+                        Terraria.ID.DustID.Sandnado,                           // 金色电能Dust
                         Vector2.Zero,
                         100,
                         Color.Gold,
@@ -170,7 +170,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.AuricJav
 
                     Dust blue = Dust.NewDustPerfect(
                         bluePos,
-                        226,                           // 蓝色能量Dust
+                        Terraria.ID.DustID.Electric,                           // 蓝色能量Dust
                         Vector2.Zero,
                         100,
                         Color.Cyan,

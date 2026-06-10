@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,6 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.Audio;
-using CalamityMod.Particles;
 
 
 namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
@@ -370,7 +369,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SoulSeekerJav
 
                 for (int j = 0; j < 40; j++)
                 {
-                    Dust triangleDust = Dust.NewDustPerfect(center, 267);
+                    Dust triangleDust = Dust.NewDustPerfect(center, Terraria.ID.DustID.RainbowMk2);
                     triangleDust.scale = 2.5f;
                     triangleDust.velocity = Vector2.Lerp(start, next, j / 40f) * 16f;
                     triangleDust.color = Color.Crimson;

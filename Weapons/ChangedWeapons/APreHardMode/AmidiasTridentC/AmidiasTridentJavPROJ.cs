@@ -1,12 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -141,7 +137,7 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.APreHardMode.AmidiasTride
                         // Dust 粒子（33号烟雾，透明度高，柔和）
                         Dust d = Dust.NewDustPerfect(
                             Projectile.Center + offset,
-                            33,
+                            Terraria.ID.DustID.Water,
                             -Projectile.velocity * 0.05f,
                             100,
                             Color.Cyan * 0.8f,

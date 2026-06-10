@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Accessories.Wings;
 using CalamityMod.Items.Weapons.Rogue;
@@ -247,7 +247,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer
 
         private bool AccessoriesAreWhitelistOnly()
         {
-            bool hasAnyAccessory = false;
 
             // 正确：只检查饰品槽位
             for (int i = 3; i < 10; i++) // 3~9 是标准饰品位
@@ -256,8 +255,6 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer
 
                 if (item == null || item.IsAir)
                     continue;
-
-                hasAnyAccessory = true;
 
                 // 出现任意非白名单饰品 → 直接失败
                 if (!MobilityAccessoriesMod.Contains(item.type) &&

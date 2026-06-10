@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -698,7 +698,6 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
             float chargeTime = Projectile.localAI[1];
             // 将比例缩放（例如除以 5），传给黑洞影响后续计算
             //float transferredValue = chargeLevel1 / 5f;
-            float transferredValue = 5f;
             //float finalDamage = chargeLevel1 * 0.1f;
 
             if (chargeTime >= 300f)

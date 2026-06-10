@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 using CalamityMod.Particles;
@@ -60,7 +59,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.TerraLance
                 for (int i = -1; i <= 1; i += 2)
                 {
                     Vector2 offset = new Vector2(0, 8).RotatedBy(Projectile.rotation + MathHelper.PiOver4 * i);
-                    Dust dnaDust = Dust.NewDustPerfect(Projectile.Center + offset, 107, null, 0, Color.Green, 1f);
+                    Dust dnaDust = Dust.NewDustPerfect(Projectile.Center + offset, Terraria.ID.DustID.Terra, null, 0, Color.Green, 1f);
                     dnaDust.noGravity = true;
                     dnaDust.velocity = Projectile.velocity * -0.3f;
                 }

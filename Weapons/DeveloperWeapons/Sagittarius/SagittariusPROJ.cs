@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria.ID;
@@ -399,7 +399,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sagittarius
                     {
                         Dust dust = Dust.NewDustPerfect(
                             sparkPos,
-                            57, // 用一个安全ID
+                            Terraria.ID.DustID.Enchanted_Gold, // 用一个安全ID
                             startVel,
                             0,
                             color,

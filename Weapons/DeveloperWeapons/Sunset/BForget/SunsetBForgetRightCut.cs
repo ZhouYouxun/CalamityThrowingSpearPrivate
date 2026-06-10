@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer;
@@ -43,7 +43,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.BForget
             // ====================
             // ② Extra_89 脉动环绘制（在顶端）
             // ====================
-            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[89].Value;
+            Texture2D ringTex = Terraria.GameContent.TextureAssets.Extra[Terraria.ID.ExtrasID.ThePerfectGlow].Value;
             Texture2D star07 = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_07").Value;
             Texture2D star08 = ModContent.Request<Texture2D>("CalamityThrowingSpear/Texture/KsTexture/star_08").Value;
 

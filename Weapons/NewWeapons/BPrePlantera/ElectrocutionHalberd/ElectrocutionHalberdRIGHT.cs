@@ -1,4 +1,4 @@
-﻿using CalamityMod.Graphics.Primitives;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
@@ -150,7 +150,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             // 额外粒子特效
             if (Main.rand.NextBool(6))
             {
-                Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, 226, 0f, 0f);
+                Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, Terraria.ID.DustID.Electric, 0f, 0f);
             }
 
             // 双螺旋粒子效果
