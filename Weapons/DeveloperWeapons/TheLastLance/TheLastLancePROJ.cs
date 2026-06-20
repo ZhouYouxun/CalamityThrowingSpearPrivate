@@ -111,12 +111,12 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance
             int freezeDuration = target.life < (target.lifeMax / 2) ? 600 : 300;
 
             // 对敌人施加冻结状态
-            target.AddBuff(ModContent.BuffType<GlacialState>(), freezeDuration); // 冰河时代
+            target.AddBuff(BuffID.Frozen, freezeDuration); // 冰河时代
             target.AddBuff(BuffID.Frostburn, freezeDuration); // 原版的霜火效果
             target.AddBuff(BuffID.Chilled, freezeDuration); // 原版的寒冷效果
 
             // 检查敌人是否同时拥有三种冻结状态
-            if (target.HasBuff(ModContent.BuffType<GlacialState>()) && target.HasBuff(BuffID.Frostburn) && target.HasBuff(BuffID.Chilled))
+            if (target.HasBuff(BuffID.Frozen) && target.HasBuff(BuffID.Frostburn) && target.HasBuff(BuffID.Chilled))
             {
                 Projectile.damage = (int)(Projectile.damage * 1.75f); // 造成1.75倍伤害
             }

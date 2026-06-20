@@ -312,7 +312,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             int freezeDuration = 180; // 冻结持续时间，单位为帧
-            target.AddBuff(ModContent.BuffType<GlacialState>(), freezeDuration); // 冰河时代
+            target.AddBuff(BuffID.Frozen, freezeDuration); // 冰河时代
             target.AddBuff(BuffID.Frostburn, freezeDuration); // 原版的霜火效果
             target.AddBuff(BuffID.Chilled, freezeDuration); // 原版的寒冷效果
         }

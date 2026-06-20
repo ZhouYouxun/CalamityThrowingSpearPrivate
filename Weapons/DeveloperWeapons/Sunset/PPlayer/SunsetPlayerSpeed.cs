@@ -49,9 +49,9 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Sunset.PPlayer
             ModContent.ItemType<AsgardianAegis>(), // 阿斯加德庇护
 
             ModContent.ItemType<ReaperToothNecklace>(),      // 猎魂鲨牙项链
-            ModContent.ItemType<DimensionalSoulArtifact>(),  // 维魂神物
+            ModContent.ItemType<CrushingEgo>(),              // 维魂神物
             ModContent.ItemType<SandSharkToothNecklace>(),   // 旱海狂鲨项链
-            ModContent.ItemType<VoidofExtinction>(),         // 终结虚空
+            ModContent.ItemType<Apollyon>(),                 // 终结虚空
             ModContent.ItemType<TheAmalgam>(),               // 聚合之脑
             ModContent.ItemType<BadgeofBravery>(),           // 勇气徽章
             ModContent.ItemType<ElementalGauntlet>(),        // 元素之握

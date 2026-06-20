@@ -100,7 +100,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance
             // 如果玩家手上拿着 TheLastLance，则对敌人施加长达 10 秒的三种状态效果
             if (Player.HeldItem.type == ModContent.ItemType<TheLastLance>())
             {
-                npc.AddBuff(ModContent.BuffType<GlacialState>(), 600); // 冰河时代，来自 CalamityMod
+                npc.AddBuff(BuffID.Frozen, 600); // 冰河时代
                 npc.AddBuff(BuffID.Frostburn, 600); // 原版的霜火效果
                 npc.AddBuff(BuffID.Chilled, 600); // 原版的寒冷效果
             }
@@ -113,7 +113,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.TheLastLance
             if (Player.HeldItem.type == ModContent.ItemType<TheLastLance>())
             {
                 NPC target = Main.npc[proj.owner];
-                target.AddBuff(ModContent.BuffType<GlacialState>(), 600); // 冰河时代，来自 CalamityMod
+                target.AddBuff(BuffID.Frozen, 600); // 冰河时代
                 target.AddBuff(BuffID.Frostburn, 600); // 原版的霜火效果
                 target.AddBuff(BuffID.Chilled, 600); // 原版的寒冷效果
             }
