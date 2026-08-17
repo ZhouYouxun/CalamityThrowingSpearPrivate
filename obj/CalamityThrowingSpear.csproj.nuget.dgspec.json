@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj": {}
+    "C:\\Users\\wangk\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj": {}
   },
   "projects": {
-    "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj": {
+    "C:\\Users\\wangk\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj",
+        "projectUniqueName": "C:\\Users\\wangk\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj",
         "projectName": "CalamityThrowingSpear",
-        "projectPath": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj",
+        "projectPath": "C:\\Users\\wangk\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\CalamityThrowingSpear.csproj",
         "packagesPath": "C:\\Users\\wangk\\.nuget\\packages\\",
-        "outputPath": "D:\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\obj\\",
+        "outputPath": "C:\\Users\\wangk\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\CalamityThrowingSpear\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\wangk\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -61,15 +61,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.29, 8.0.29]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.29, 8.0.29]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
+              "version": "[8.0.29, 8.0.29]"
             }
           ],
           "frameworkReferences": {
@@ -77,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

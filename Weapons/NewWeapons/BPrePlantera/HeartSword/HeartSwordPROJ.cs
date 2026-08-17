@@ -1,4 +1,5 @@
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -111,6 +112,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             }
         }
         public Player Owner => Main.player[Projectile.owner];
+        private int holdoutTimer = 0;
 
         private void DoBehavior_Aim()
         {
@@ -123,27 +125,15 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.HeartSword
             // 不断的让它可以穿透方块
             Projectile.tileCollide = false;
 
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Projectile.Center = Main.player[Projectile.owner].Center;
-            if (!Main.player[Projectile.owner].channel)
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, holdoutTimer, forwardOffset: Projectile.width / 2f);
+            holdoutTimer++;
+
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, holdoutTimer))
             {
+                holdoutTimer = 0;
                 CurrentState = BehaviorState.Fire;
                 Projectile.netUpdate = true;
             }
-
-            // 使投射物与玩家保持一致并瞄准鼠标位置
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            // 将投射物位置与玩家中心对齐，模拟持握效果
-            //Projectile.Center = Owner.Center;
-
-            // 弹幕末端对齐玩家中心
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 2);
-            Owner.heldProj = Projectile.whoAmI;
         }
 
         private void DoBehavior_Fire()

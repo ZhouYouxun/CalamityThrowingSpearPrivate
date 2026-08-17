@@ -1,4 +1,5 @@
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -87,24 +88,14 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
                                     // 初始生成频率
         private int shootInterval = 28;
         private int currentAngle = 0; // 角度累积
+        private int holdoutTimer = 0;
         private void DoBehavior_Aim()
         {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
 
-
-            // 使投射物与玩家保持一致并瞄准鼠标位置
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            // 对齐到玩家中心
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
-            Owner.heldProj = Projectile.whoAmI;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, holdoutTimer, forwardOffset: Projectile.width);
 
             // 生成枪头烟雾
             Vector2 smokePosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
@@ -182,12 +173,15 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.CPreMoodLord.TenebreusTid
 
 
 
+            holdoutTimer++;
+
             // 检测松手
-            if (!Owner.channel)
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, holdoutTimer))
             {
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 180; // 冲刺阶段持续时间
                 Projectile.penetrate = 20; // 设置冲刺阶段的穿透次数
+                holdoutTimer = 0;
 
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/New/深渊潮涌音效") with { Volume = 0.5f, Pitch = 0.0f }, Projectile.Center);
 

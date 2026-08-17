@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria.ID;
@@ -86,28 +87,17 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
                 case State.HoldInHand:
                     {
                         Projectile.timeLeft = 60000;      // 常驻
-                        Projectile.velocity = Vector2.Zero;
 
-                        // 跟随手臂（简单版）：方向对准鼠标，中心置于玩家前方
-                        Vector2 toMouse = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX * Owner.direction);
-                        Owner.ChangeDir(Math.Sign(toMouse.X));
-                        Owner.heldProj = Projectile.whoAmI;
-
-                        // 让弹幕在手前一点（32px），稍微右侧偏移，使持握更自然
-                        Vector2 handPos = Owner.MountedCenter + toMouse * HoldArmLength + new Vector2(Owner.direction == 1 ? 8 : -8, -2);
-                        Projectile.Center = handPos;
-
-                        // 旋转与朝向修正（贴图朝右，+Pi/4）
-                        Projectile.rotation = toMouse.ToRotation() + MathHelper.PiOver4;
+                        CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, T, aimLerp: 0.22f, forwardOffset: HoldArmLength, gripOffset: 18f);
 
                         // 松手 → 甩出去
-                        if (!Owner.channel)
+                        if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, T))
                         {
                             S = (int)State.SpinFlight;
                             T = 0f;
 
                             // 赋予初速与初始自转角速度（方向随机顺/逆时针）
-                            Vector2 launchDir = toMouse;
+                            Vector2 launchDir = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
                             Projectile.velocity = launchDir * ThrowSpeed;
                             SpinVel = (Main.rand.NextBool() ? 1f : -1f) * SpinStartVel;
 

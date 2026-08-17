@@ -1,4 +1,5 @@
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -123,22 +124,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
         private void DoBehavior_Aim()
         {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
 
-
-            // 使投射物与玩家保持一致并瞄准鼠标位置
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            // 对齐到玩家中心
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
-            Owner.heldProj = Projectile.whoAmI;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, Projectile.localAI[1], forwardOffset: Projectile.width);
 
 
             {
@@ -434,7 +424,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.DPreDog.EndlessDevourJav
 
 
             // 检测松手
-            if (!Owner.channel)
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, Projectile.localAI[1]))
             {
                 //if (Projectile.localAI[1] < 150f)
                 //{

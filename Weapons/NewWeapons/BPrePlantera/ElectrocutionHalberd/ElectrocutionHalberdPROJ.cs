@@ -1,4 +1,5 @@
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using CalamityMod.Enums;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
@@ -179,23 +180,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
 
         private void DoBehavior_Aim()
         {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 + MathHelper.ToRadians(25);
             Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
 
-
-            // 使投射物与玩家保持一致并瞄准鼠标位置
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            // 对齐到玩家中心
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
-            //Projectile.Center = Owner.Center;
-            Owner.heldProj = Projectile.whoAmI;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, chargeTimer, rotationOffset: MathHelper.PiOver4 + MathHelper.ToRadians(25f), forwardOffset: Projectile.width);
 
             // 枪头的位置
             Vector2 HeadPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f + Main.rand.NextVector2Circular(5f, 5f);
@@ -262,7 +251,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.BPrePlantera.ElectrocutionHal
             }
 
             // 检测松手
-            if (!Owner.channel)
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, chargeTimer))
             {
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 300; // 冲刺阶段持续时间

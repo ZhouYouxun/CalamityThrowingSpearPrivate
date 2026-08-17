@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Terraria.ModLoader;
 using Terraria;
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Terraria.ID;
 using CalamityMod.Particles;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00.Laser;
@@ -380,6 +381,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
 
         private int chargeTimer = 0; // 在类里新建字段
+        private int holdoutTimer = 0;
         private int chargeCount = 0; // 已经触发几次（最多 8）
 
 
@@ -398,19 +400,11 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
         private void DoBehavior_Aim() // 瞄准阶段
         {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.timeLeft = 300;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
 
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width);
-            Owner.heldProj = Projectile.whoAmI;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, holdoutTimer, forwardOffset: Projectile.width);
 
             // 枪头位置 [这很重要，因为许多特效都需要和他相关]
             Vector2 headPosition = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f * 3f;
@@ -751,11 +745,14 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.TEM00
 
 
             // 松手后进入 Dash
-            if (!Owner.channel)
+            holdoutTimer++;
+
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, holdoutTimer))
             {
                 Projectile.netUpdate = true;
                 Projectile.timeLeft = 80;
                 Projectile.penetrate = -1; // 可调穿透次数
+                holdoutTimer = 0;
                 SoundEngine.PlaySound(new SoundStyle("CalamityThrowingSpear/Sound/新机炮") with { Volume = 0.95f, Pitch = -0.2f }, Projectile.Center);
 
 

@@ -1,4 +1,5 @@
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -146,8 +147,7 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation
 
         public void DoBehavior_Aim()
         {
-            // 保持弹幕旋转
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, Time, forwardOffset: Projectile.width);
 
             // 添加黑色光源
             Lighting.AddLight(Projectile.Center, Color.Black.ToVector3() * 0.55f);
@@ -261,20 +261,8 @@ namespace CalamityThrowingSpear.Weapons.DeveloperWeapons.Revelation
             //int aimDuration = 54;
             //float aimCompletion = Utils.GetLerpValue(0f, aimDuration, Time, true);
 
-            // 使投射物与玩家保持一致并瞄准鼠标位置
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.1f);
-            }
-
-            // 将投射物位置与玩家中心对齐，模拟持握效果
-            // Projectile.Center = Owner.Center;
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.Zero) * (Projectile.width / 1);
-            Owner.heldProj = Projectile.whoAmI; // 玩家持有此投射物
-
             // 检查玩家是否松开鼠标
-            if (!Owner.channel)
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, Time))
             {
                 // 切换至发射状态
                 CurrentState = BehaviorState.Fire;

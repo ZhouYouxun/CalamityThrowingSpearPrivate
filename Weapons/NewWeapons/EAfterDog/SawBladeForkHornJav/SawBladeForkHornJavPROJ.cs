@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Particles;
 using CalamityMod;
+using CalamityThrowingSpear.Global;
 using CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav;
 using Microsoft.Xna.Framework;
 using System;
@@ -207,17 +208,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
             Projectile.timeLeft = 480;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            // 平滑瞄准鼠标（保留）
-            if (Main.myPlayer == Projectile.owner)
-            {
-                Vector2 aimDirection = Owner.SafeDirectionTo(Main.MouseWorld);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, aimDirection, 0.12f);
-            }
-            // 持握在手：向前顶一点，避免完全重叠
-            Projectile.Center = Owner.Center + Projectile.velocity.SafeNormalize(Vector2.UnitX) * (Projectile.width * 0.5f);
-            Owner.heldProj = Projectile.whoAmI;
+            CTSHoldoutUtils.ApplyPulledSpearHoldout(Owner, Projectile, stateTick, aimLerp: 0.12f, forwardOffset: Projectile.width * 0.5f);
 
 
 
@@ -270,7 +261,7 @@ namespace CalamityThrowingSpear.Weapons.NewWeapons.EAfterDog.SawBladeForkHornJav
 
 
             // 松手 → 发射
-            if (!Owner.channel)
+            if (CTSHoldoutUtils.ReleaseReady(Owner, Projectile, stateTick))
             {
                 if (stateTick < 150)
                 {
