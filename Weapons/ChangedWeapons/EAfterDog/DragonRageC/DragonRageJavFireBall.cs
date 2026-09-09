@@ -13,7 +13,9 @@ namespace CalamityThrowingSpear.Weapons.ChangedWeapons.EAfterDog.DragonRageC
     public class DragonRageJavFireBall : ModProjectile, ILocalizedModType
     {
         public new string LocalizationCategory => "Projectiles.ChangedWeapons.EAfterDog";
-        public override string Texture => "CalamityMod/Projectiles/Magic/RancorFog"; // 透明烟雾贴图
+        // This projectile draws itself entirely in PreDraw. Keep its content lookup local so
+        // loading this mod never requests a Calamity asset during the content-load phase.
+        public override string Texture => "CalamityThrowingSpear/Texture/KsTexture/star_09";
 
         private Player owner;
         private int state = 0; // 0: 上升阶段，1: 转圈，2: 冲刺
